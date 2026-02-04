@@ -77,8 +77,9 @@ const SOURCE = 'wsba';
 const DEFAULT_STATE = 'WA';
 
 const DELAY_BETWEEN_PAGES = 2000;
-const DELAY_BETWEEN_PROFILES = 500;
-const MAX_ATTORNEYS = parseInt(process.env.MAX_ATTORNEYS) || 250;
+const DELAY_BETWEEN_PROFILES = 300;
+const MAX_ATTORNEYS = parseInt(process.env.MAX_ATTORNEYS) || 500;
+const EARLY_EXIT_THRESHOLD = 75; // Skip practice area after N consecutive profiles with no new inserts
 const DRY_RUN = process.env.DRY_RUN === 'true';
 const PRACTICE_AREA_SLUG = process.env.PRACTICE_AREA_SLUG || null;
 
@@ -411,7 +412,7 @@ async function scrapeProfile(page, usrId) {
 
     try {
         await page.goto(url, { waitUntil: 'networkidle2', timeout: 15000 });
-        await sleep(300);
+        await sleep(100);
 
         const data = await page.evaluate(() => {
             const result = {
@@ -614,6 +615,8 @@ async function scrapePracticeArea(browser, practiceArea, existingEmails, existin
         profilesFetched: 0,
         inserted: 0,
         skipped: 0,
+        barNumberSkipped: 0,
+        emailSkipped: 0,
         noEmail: 0,
         errors: 0
     };
@@ -661,15 +664,25 @@ async function scrapePracticeArea(browser, practiceArea, existingEmails, existin
             console.log(`     Found ${pageAttorneys.length} attorneys on page`);
 
             // Add new attorneys (dedupe by license number)
+            let newOnThisPage = 0;
             for (const attorney of pageAttorneys) {
                 if (!seenLicenseNumbers.has(attorney.licenseNumber)) {
                     seenLicenseNumbers.add(attorney.licenseNumber);
                     allAttorneys.push(attorney);
+                    if (!existingBarNumbers.has(attorney.licenseNumber)) {
+                        newOnThisPage++;
+                    }
                 }
             }
 
             if (allAttorneys.length >= MAX_ATTORNEYS) {
                 console.log(`     Reached MAX_ATTORNEYS limit`);
+                break;
+            }
+
+            // Stop paginating if no new bar numbers found after first few pages
+            if (newOnThisPage === 0 && pageNum >= 3) {
+                console.log(`     No new bar numbers on page ${pageNum}, stopping collection`);
                 break;
             }
 
@@ -690,6 +703,8 @@ async function scrapePracticeArea(browser, practiceArea, existingEmails, existin
         // Names come from search results (more reliable than profile page extraction)
         console.log(`   Fetching profiles...`);
 
+        let consecutiveNoInsert = 0;
+
         for (let i = 0; i < allAttorneys.length && i < MAX_ATTORNEYS; i++) {
             const attorney = allAttorneys[i];
             const licenseNum = attorney.licenseNumber;
@@ -698,6 +713,8 @@ async function scrapePracticeArea(browser, practiceArea, existingEmails, existin
             // Skip if barNumber already exists in DB (avoids re-fetching profile)
             if (existingBarNumbers.has(licenseNum)) {
                 stats.skipped++;
+                stats.barNumberSkipped++;
+                consecutiveNoInsert++;
                 continue;
             }
 
@@ -706,6 +723,7 @@ async function scrapePracticeArea(browser, practiceArea, existingEmails, existin
 
                 if (!profile) {
                     stats.errors++;
+                    consecutiveNoInsert++;
                     continue;
                 }
 
@@ -714,12 +732,15 @@ async function scrapePracticeArea(browser, practiceArea, existingEmails, existin
                 const emailLower = cleanEmail(profile.email);
                 if (!emailLower) {
                     stats.noEmail++;
+                    consecutiveNoInsert++;
                     continue;
                 }
 
                 // Skip if already exists
                 if (existingEmails.has(emailLower)) {
                     stats.skipped++;
+                    stats.emailSkipped++;
+                    consecutiveNoInsert++;
                     continue;
                 }
 
@@ -753,6 +774,7 @@ async function scrapePracticeArea(browser, practiceArea, existingEmails, existin
                 // Check for government/institutional contact
                 if (isGovernmentContact(docData.email, docData.firmName)) {
                     stats.govt_skipped = (stats.govt_skipped || 0) + 1;
+                    consecutiveNoInsert++;
                     continue;
                 }
 
@@ -765,6 +787,7 @@ async function scrapePracticeArea(browser, practiceArea, existingEmails, existin
                 existingEmails.add(emailLower);
                 existingBarNumbers.add(licenseNum);
                 stats.inserted++;
+                consecutiveNoInsert = 0; // Reset on successful insert
 
                 if (batchCount >= BATCH_SIZE) {
                     await batch.commit();
@@ -782,9 +805,16 @@ async function scrapePracticeArea(browser, practiceArea, existingEmails, existin
 
             } catch (error) {
                 stats.errors++;
+                consecutiveNoInsert++;
                 if (stats.errors <= 5) {
                     console.log(`     Error processing ${licenseNum}: ${error.message}`);
                 }
+            }
+
+            // Early exit if no new inserts for a while (practice area mostly covered)
+            if (consecutiveNoInsert >= EARLY_EXIT_THRESHOLD) {
+                console.log(`     Early exit: ${EARLY_EXIT_THRESHOLD} consecutive profiles with no new inserts`);
+                break;
             }
         }
 
@@ -794,7 +824,7 @@ async function scrapePracticeArea(browser, practiceArea, existingEmails, existin
             console.log(`     Committed final batch of ${batchCount}`);
         }
 
-        console.log(`   ✓ Inserted ${stats.inserted}, Skipped ${stats.skipped}, No Email ${stats.noEmail}, Errors ${stats.errors}`);
+        console.log(`   ✓ Inserted ${stats.inserted}, Skipped ${stats.skipped} (${stats.barNumberSkipped} barNum, ${stats.emailSkipped} email), No Email ${stats.noEmail}, Errors ${stats.errors}`);
 
     } catch (error) {
         console.error(`   Fatal error: ${error.message}`);

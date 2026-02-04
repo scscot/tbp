@@ -808,14 +808,14 @@
             lastUpdated.textContent = `Last updated: ${new Date().toLocaleString()}`;
 
             // Calculate funnel rates
-            const visitRate = pct(data.visitedCount, data.withDemo);
+            const visitRate = pct(data.visitedCount, data.totalSent);
             const viewRate = pct(data.viewedCount, data.visitedCount);
             const overallRate = pct(data.viewedCount, data.withDemo);
 
             // Calculate time-bucketed rates
-            const todayVisitRate = pct(data.todayVisited, data.todayWithDemo);
-            const last7VisitRate = pct(data.last7DaysVisited, data.last7DaysWithDemo);
-            const yesterdayVisitRate = pct(data.yesterdayVisited, data.yesterdayWithDemo);
+            const todayVisitRate = pct(data.todayVisited, data.todaySent);
+            const last7VisitRate = pct(data.last7DaysVisited, data.last7DaysSent);
+            const yesterdayVisitRate = pct(data.yesterdayVisited, data.yesterdaySent);
 
             // Source breakdown sorted by count
             const sources = data.sourceBreakdown ? Object.entries(data.sourceBreakdown)
@@ -989,88 +989,6 @@
             </div>
             `;
 
-            // ═══════════════════════════════════════════════
-            // TIME-BUCKETED STATS
-            // ═══════════════════════════════════════════════
-            html += `
-            <div class="section-header">
-                <span class="section-icon">&#9670;</span>
-                <h2>Campaign Activity</h2>
-            </div>
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <h3>Today</h3>
-                    <div class="stat-row">
-                        <span class="stat-label">Emails Sent</span>
-                        <span class="stat-value">${data.todaySent}</span>
-                    </div>
-                    <div class="stat-row">
-                        <span class="stat-label">With Demos</span>
-                        <span class="stat-value ${data.todayWithDemo > 0 ? 'success' : 'muted'}">${data.todayWithDemo}</span>
-                    </div>
-                    <div class="stat-row">
-                        <span class="stat-label">Page Visits</span>
-                        <span class="stat-value ${data.todayVisited > 0 ? 'success' : 'muted'}">${data.todayVisited || 0}</span>
-                    </div>
-                    <div class="stat-row">
-                        <span class="stat-label">Demo Starts</span>
-                        <span class="stat-value ${data.todayViewed > 0 ? 'success' : 'muted'}">${data.todayViewed}</span>
-                    </div>
-                    <div class="stat-row">
-                        <span class="stat-label">Visit Rate</span>
-                        <span class="stat-value highlight">${todayVisitRate}%</span>
-                    </div>
-                </div>
-
-                <div class="stat-card">
-                    <h3>Yesterday</h3>
-                    <div class="stat-row">
-                        <span class="stat-label">Emails Sent</span>
-                        <span class="stat-value">${data.yesterdaySent}</span>
-                    </div>
-                    <div class="stat-row">
-                        <span class="stat-label">With Demos</span>
-                        <span class="stat-value ${data.yesterdayWithDemo > 0 ? 'success' : 'muted'}">${data.yesterdayWithDemo}</span>
-                    </div>
-                    <div class="stat-row">
-                        <span class="stat-label">Page Visits</span>
-                        <span class="stat-value ${data.yesterdayVisited > 0 ? 'success' : 'muted'}">${data.yesterdayVisited || 0}</span>
-                    </div>
-                    <div class="stat-row">
-                        <span class="stat-label">Demo Starts</span>
-                        <span class="stat-value ${data.yesterdayViewed > 0 ? 'success' : 'muted'}">${data.yesterdayViewed}</span>
-                    </div>
-                    <div class="stat-row">
-                        <span class="stat-label">Visit Rate</span>
-                        <span class="stat-value highlight">${yesterdayVisitRate}%</span>
-                    </div>
-                </div>
-
-                <div class="stat-card">
-                    <h3>Last 7 Days</h3>
-                    <div class="stat-row">
-                        <span class="stat-label">Emails Sent</span>
-                        <span class="stat-value">${data.last7DaysSent}</span>
-                    </div>
-                    <div class="stat-row">
-                        <span class="stat-label">With Demos</span>
-                        <span class="stat-value ${data.last7DaysWithDemo > 0 ? 'success' : 'muted'}">${data.last7DaysWithDemo}</span>
-                    </div>
-                    <div class="stat-row">
-                        <span class="stat-label">Page Visits</span>
-                        <span class="stat-value ${data.last7DaysVisited > 0 ? 'success' : 'muted'}">${data.last7DaysVisited || 0}</span>
-                    </div>
-                    <div class="stat-row">
-                        <span class="stat-label">Demo Starts</span>
-                        <span class="stat-value ${data.last7DaysViewed > 0 ? 'success' : 'muted'}">${data.last7DaysViewed}</span>
-                    </div>
-                    <div class="stat-row">
-                        <span class="stat-label">Visit Rate</span>
-                        <span class="stat-value highlight">${last7VisitRate}%</span>
-                    </div>
-                </div>
-            </div>
-            `;
 
             // ═══════════════════════════════════════════════
             // CONVERSION RATES
@@ -1079,87 +997,40 @@
             <div class="rate-section">
                 <div class="section-header">
                     <span class="section-icon">&#9670;</span>
-                    <h2>Conversion Rates (Visits / Emails with Demos)</h2>
+                    <h2>Conversion Rates (Visits / Total Emails Sent)</h2>
                 </div>
-                ${data.withDemo > 0 ? `
+                ${data.totalSent > 0 ? `
                 <div class="rate-cards">
                     <div class="rate-card">
                         <h4>All Time</h4>
                         <div class="rate-value">${visitRate}%</div>
-                        <div class="rate-details">${data.visitedCount || 0} visits / ${data.withDemo} emails</div>
+                        <div class="rate-details">${data.visitedCount || 0} visits / ${data.totalSent} emails</div>
                     </div>
                     <div class="rate-card">
                         <h4>Last 7 Days</h4>
                         <div class="rate-value">${last7VisitRate}%</div>
-                        <div class="rate-details">${data.last7DaysVisited || 0} visits / ${data.last7DaysWithDemo} emails</div>
+                        <div class="rate-details">${data.last7DaysVisited || 0} visits / ${data.last7DaysSent} emails</div>
                     </div>
                     <div class="rate-card">
                         <h4>Today</h4>
                         <div class="rate-value">${todayVisitRate}%</div>
-                        <div class="rate-details">${data.todayVisited || 0} visits / ${data.todayWithDemo} emails</div>
+                        <div class="rate-details">${data.todayVisited || 0} visits / ${data.todaySent} emails</div>
                     </div>
                     <div class="rate-card">
                         <h4>Yesterday</h4>
                         <div class="rate-value">${yesterdayVisitRate}%</div>
-                        <div class="rate-details">${data.yesterdayVisited || 0} visits / ${data.yesterdayWithDemo} emails</div>
+                        <div class="rate-details">${data.yesterdayVisited || 0} visits / ${data.yesterdaySent} emails</div>
                     </div>
                 </div>
                 ` : `
                 <p style="color: #94a3b8; text-align: center; padding: 40px;">
-                    No emails with pre-generated demos yet.
+                    No emails sent yet.
                 </p>
                 `}
             </div>
             `;
 
 
-            // ═══════════════════════════════════════════════
-            // SOURCE & STATE BREAKDOWN
-            // ═══════════════════════════════════════════════
-            if (sources.length > 0 || states.length > 0) {
-                html += `
-                <div class="breakdown-section">
-                    <div class="section-header">
-                        <span class="section-icon">&#9670;</span>
-                        <h2>Emails Sent by Source &amp; State</h2>
-                    </div>
-                    <div class="breakdown-grid">
-                        ${sources.length > 0 ? `
-                        <div>
-                            <h3 style="color: #94a3b8; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 16px;">By Bar Association</h3>
-                            <ul class="breakdown-list">
-                                ${sources.map(([source, count]) => `
-                                    <li class="breakdown-item">
-                                        <span class="breakdown-label">${sourceNames[source] || source}</span>
-                                        <div class="breakdown-bar-container">
-                                            <div class="breakdown-bar" style="width: ${(count / maxSourceCount * 100).toFixed(0)}%"></div>
-                                        </div>
-                                        <span class="breakdown-value">${count.toLocaleString()}</span>
-                                    </li>
-                                `).join('')}
-                            </ul>
-                        </div>
-                        ` : ''}
-                        ${states.length > 0 ? `
-                        <div>
-                            <h3 style="color: #94a3b8; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 16px;">By State</h3>
-                            <ul class="breakdown-list">
-                                ${states.map(([state, count]) => `
-                                    <li class="breakdown-item">
-                                        <span class="breakdown-label">${state}</span>
-                                        <div class="breakdown-bar-container">
-                                            <div class="breakdown-bar" style="width: ${(count / maxStateCount * 100).toFixed(0)}%"></div>
-                                        </div>
-                                        <span class="breakdown-value">${count.toLocaleString()}</span>
-                                    </li>
-                                `).join('')}
-                            </ul>
-                        </div>
-                        ` : ''}
-                    </div>
-                </div>
-                `;
-            }
 
             // ═══════════════════════════════════════════════
             // TEMPLATE VERSIONS
