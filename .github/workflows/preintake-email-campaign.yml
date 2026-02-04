@@ -123,11 +123,12 @@ jobs:
       - name: Notify on failure
         if: failure()
         run: |
+          DOMAIN="${MAILGUN_DOMAIN:-law.preintake.ai}"
           curl -s --user "api:$MAILGUN_API_KEY" \
-            https://api.mailgun.net/v3/$MAILGUN_DOMAIN/messages \
+            "https://api.mailgun.net/v3/${DOMAIN}/messages" \
             -F from="Stephen Scott <stephen@law.preintake.ai>" \
             -F to="scscot@gmail.com" \
-            -F subject="❌ GitHub Actions: PreIntake Email Campaign FAILED" \
+            -F subject="GitHub Actions: PreIntake Email Campaign FAILED" \
             -F text="Workflow failed: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
             && echo "Failure notification sent" || echo "Failed to send notification"
 

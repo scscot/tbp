@@ -310,9 +310,11 @@ function checkPTBusinessWindow() {
         };
     }
 
+    const windowLabel = windows.find(w => timeInMinutes >= w.start && timeInMinutes < w.end);
+    const windowHour = windowLabel ? `${Math.floor(windowLabel.start / 60)}:00` : '';
     return {
         allowed: true,
-        reason: inWindow1 ? 'Morning window (9:00-10:00am PT)' : 'Afternoon window (1:00-2:00pm PT)',
+        reason: `Business hours window (${windowHour} PT)`,
         ptTime: ptTimeStr
     };
 }
@@ -970,7 +972,7 @@ async function runCampaign() {
 
         if (!timeCheck.allowed) {
             console.log(`⏭️  Skipping: ${timeCheck.reason}`);
-            console.log('   Allowed: Mon-Fri, 9:00-10:00am PT and 1:00-2:00pm PT');
+            console.log('   Allowed: Mon-Fri, 8-9am, 10-11am, 12-1pm, 2-3pm PT');
             console.log('   Set SKIP_TIME_CHECK=true to bypass');
             process.exit(0);
         }
