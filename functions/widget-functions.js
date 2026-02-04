@@ -638,7 +638,8 @@ const getEmailAnalytics = onRequest(
                             { name: 'engagementRate' },
                             { name: 'averageSessionDuration' },
                             { name: 'bounceRate' }
-                        ]
+                        ],
+                        keepEmptyRows: true
                     }),
                     // Traffic sources (last 7 days)
                     ga4Client.runReport({

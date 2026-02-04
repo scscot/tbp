@@ -181,74 +181,12 @@
             font-size: 1.25rem;
         }
 
-        /* Stats Grid */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 24px;
-            margin-bottom: 40px;
-        }
-
+        /* Error State Card */
         .stat-card {
             background: #1e293b;
             border-radius: 16px;
             padding: 24px;
             border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .stat-card.accent {
-            border: 1px solid rgba(201, 169, 98, 0.3);
-        }
-
-        .stat-card h3 {
-            color: #94a3b8;
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 16px;
-        }
-
-        .stat-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .stat-row:last-child {
-            border-bottom: none;
-        }
-
-        .stat-label {
-            color: #94a3b8;
-            font-size: 0.9rem;
-        }
-
-        .stat-value {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #e2e8f0;
-        }
-
-        .stat-value.highlight {
-            color: #c9a962;
-        }
-
-        .stat-value.success {
-            color: #10b981;
-        }
-
-        .stat-value.warning {
-            color: #f59e0b;
-        }
-
-        .stat-value.danger {
-            color: #ef4444;
-        }
-
-        .stat-value.muted {
-            color: #64748b;
         }
 
         /* Big Number Cards */
@@ -293,55 +231,6 @@
             margin-top: 4px;
         }
 
-        /* Funnel Section */
-        .funnel-section {
-            background: #1e293b;
-            border-radius: 16px;
-            padding: 32px;
-            margin-bottom: 40px;
-            border: 1px solid rgba(201, 169, 98, 0.2);
-        }
-
-        .funnel-steps {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .funnel-step {
-            text-align: center;
-            flex: 1;
-            min-width: 120px;
-            max-width: 200px;
-        }
-
-        .funnel-step-value {
-            font-size: 1.75rem;
-            font-weight: 700;
-            color: #e2e8f0;
-        }
-
-        .funnel-step-label {
-            color: #94a3b8;
-            font-size: 0.8rem;
-            margin-top: 4px;
-        }
-
-        .funnel-arrow {
-            color: #334155;
-            font-size: 1.5rem;
-            flex-shrink: 0;
-        }
-
-        .funnel-rate {
-            color: #c9a962;
-            font-size: 0.75rem;
-            font-weight: 600;
-            margin-top: 2px;
-        }
-
         /* Rate Cards */
         .rate-section {
             background: #1e293b;
@@ -382,66 +271,6 @@
         .rate-details {
             color: #94a3b8;
             font-size: 0.85rem;
-        }
-
-        /* Breakdown Bars */
-        .breakdown-section {
-            background: #1e293b;
-            border-radius: 16px;
-            padding: 32px;
-            margin-bottom: 40px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .breakdown-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 32px;
-        }
-
-        .breakdown-list {
-            list-style: none;
-        }
-
-        .breakdown-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .breakdown-item:last-child {
-            border-bottom: none;
-        }
-
-        .breakdown-label {
-            color: #94a3b8;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-        }
-
-        .breakdown-value {
-            color: #e2e8f0;
-            font-weight: 600;
-            font-size: 0.95rem;
-        }
-
-        .breakdown-bar-container {
-            flex: 1;
-            max-width: 120px;
-            height: 6px;
-            background: #0f172a;
-            border-radius: 3px;
-            margin: 0 12px;
-        }
-
-        .breakdown-bar {
-            height: 100%;
-            border-radius: 3px;
-            background: linear-gradient(90deg, #c9a962, #e0c88a);
-            transition: width 0.3s ease;
         }
 
         /* Traffic Sources Table */
@@ -598,25 +427,6 @@
             color: #94a3b8;
         }
 
-        /* Template Versions */
-        .template-versions {
-            display: flex;
-            gap: 16px;
-            flex-wrap: wrap;
-        }
-
-        .template-badge {
-            background: #0f172a;
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-size: 0.85rem;
-        }
-
-        .template-badge code {
-            color: #c9a962;
-            margin-right: 8px;
-        }
-
         /* Loading State */
         .loading {
             display: flex;
@@ -658,14 +468,6 @@
 
             .rate-value {
                 font-size: 2rem;
-            }
-
-            .funnel-steps {
-                flex-direction: column;
-            }
-
-            .funnel-arrow {
-                transform: rotate(90deg);
             }
 
             .big-number {
@@ -807,35 +609,12 @@
             const lastUpdated = document.getElementById('last-updated');
             lastUpdated.textContent = `Last updated: ${new Date().toLocaleString()}`;
 
-            // Calculate funnel rates
+            // Calculate conversion rates
             const visitRate = pct(data.visitedCount, data.totalSent);
-            const viewRate = pct(data.viewedCount, data.visitedCount);
-            const overallRate = pct(data.viewedCount, data.withDemo);
-
             // Calculate time-bucketed rates
             const todayVisitRate = pct(data.todayVisited, data.todaySent);
             const last7VisitRate = pct(data.last7DaysVisited, data.last7DaysSent);
             const yesterdayVisitRate = pct(data.yesterdayVisited, data.yesterdaySent);
-
-            // Source breakdown sorted by count
-            const sources = data.sourceBreakdown ? Object.entries(data.sourceBreakdown)
-                .sort((a, b) => b[1] - a[1]) : [];
-            const maxSourceCount = sources.length > 0 ? sources[0][1] : 1;
-
-            // State breakdown sorted by count
-            const states = data.stateBreakdown ? Object.entries(data.stateBreakdown)
-                .sort((a, b) => b[1] - a[1]) : [];
-            const maxStateCount = states.length > 0 ? states[0][1] : 1;
-
-            // Source display names
-            const sourceNames = {
-                'calbar': 'California', 'flbar': 'Florida', 'ohbar': 'Ohio',
-                'mibar': 'Michigan', 'mobar': 'Missouri', 'kybar': 'Kentucky',
-                'gabar': 'Georgia', 'ilbar': 'Illinois', 'ncbar': 'North Carolina',
-                'wsba': 'Washington', 'msbar': 'Mississippi', 'nebar': 'Nebraska',
-                'nsba': 'Nebraska SBA', 'okbar': 'Oklahoma',
-                'unknown': 'Other/Legacy'
-            };
 
             let html = '';
 
@@ -932,11 +711,6 @@
                     <div class="big-number-sub">${pct(data.totalSent, data.totalContacts)}% complete</div>
                 </div>
                 <div class="big-number-card">
-                    <h4>With Demo</h4>
-                    <div class="big-number blue">${data.withDemo.toLocaleString()}</div>
-                    <div class="big-number-sub">${data.withoutDemo.toLocaleString()} fallback</div>
-                </div>
-                <div class="big-number-card">
                     <h4>Unsubscribed</h4>
                     <div class="big-number ${(data.totalUnsubscribed || 0) > 0 ? 'amber' : 'green'}">${(data.totalUnsubscribed || 0).toLocaleString()}</div>
                     <div class="big-number-sub">${pct(data.totalUnsubscribed, data.totalSent)}% of sent</div>
@@ -946,49 +720,10 @@
                     <div class="big-number ${(data.totalFailed || 0) > 0 ? 'red' : 'green'}">${(data.totalFailed || 0).toLocaleString()}</div>
                     <div class="big-number-sub">${pct(data.totalFailed, data.totalSent)}% failure rate</div>
                 </div>
-                <div class="big-number-card">
-                    <h4>Campaign Leads</h4>
-                    <div class="big-number">${data.campaignLeads}</div>
-                    <div class="big-number-sub">${data.activeLeads} active</div>
-                </div>
             </div>
             `;
 
-            // ═══════════════════════════════════════════════
-            // ENGAGEMENT FUNNEL
-            // ═══════════════════════════════════════════════
-            html += `
-            <div class="funnel-section">
-                <div class="section-header">
-                    <span class="section-icon">&#9670;</span>
-                    <h2>Engagement Funnel (All Time)</h2>
-                </div>
-                <div class="funnel-steps">
-                    <div class="funnel-step">
-                        <div class="funnel-step-value">${data.withDemo.toLocaleString()}</div>
-                        <div class="funnel-step-label">Emails with Demo</div>
-                    </div>
-                    <div class="funnel-arrow">&#8594;</div>
-                    <div class="funnel-step">
-                        <div class="funnel-step-value">${(data.visitedCount || 0)}</div>
-                        <div class="funnel-step-label">Visited Page</div>
-                        <div class="funnel-rate">${visitRate}%</div>
-                    </div>
-                    <div class="funnel-arrow">&#8594;</div>
-                    <div class="funnel-step">
-                        <div class="funnel-step-value">${data.viewedCount}</div>
-                        <div class="funnel-step-label">Started Demo</div>
-                        <div class="funnel-rate">${viewRate}%</div>
-                    </div>
-                    <div class="funnel-arrow">&#8594;</div>
-                    <div class="funnel-step">
-                        <div class="funnel-step-value">${data.activeLeads}</div>
-                        <div class="funnel-step-label">Active Leads</div>
-                    </div>
-                </div>
-            </div>
-            `;
-
+            
 
             // ═══════════════════════════════════════════════
             // CONVERSION RATES
@@ -1027,25 +762,6 @@
                     No emails sent yet.
                 </p>
                 `}
-            </div>
-            `;
-
-
-
-            // ═══════════════════════════════════════════════
-            // TEMPLATE VERSIONS
-            // ═══════════════════════════════════════════════
-            html += `
-            <div class="stat-card" style="margin-bottom: 40px;">
-                <h3>Template Versions Used</h3>
-                <div class="template-versions" style="margin-top: 16px;">
-                    ${Object.entries(data.templateVersions).map(([version, count]) => `
-                        <div class="template-badge">
-                            <code>${version}</code>
-                            <span>${count.toLocaleString()}</span>
-                        </div>
-                    `).join('')}
-                </div>
             </div>
             `;
 
