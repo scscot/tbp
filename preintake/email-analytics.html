@@ -861,14 +861,14 @@
                         <div class="big-number-sub">${fmtEngagement(g.last7Days.engagementRate)} engaged</div>
                     </div>
                     <div class="big-number-card">
-                        <h4>Users Today</h4>
-                        <div class="big-number green">${g.today.activeUsers.toLocaleString()}</div>
-                        <div class="big-number-sub">${g.today.sessions.toLocaleString()} sessions</div>
-                    </div>
-                    <div class="big-number-card">
                         <h4>Users Yesterday</h4>
                         <div class="big-number">${g.yesterday.activeUsers.toLocaleString()}</div>
                         <div class="big-number-sub">${g.yesterday.sessions.toLocaleString()} sessions</div>
+                    </div>
+                    <div class="big-number-card">
+                        <h4>Users Today</h4>
+                        <div class="big-number green">${g.today.activeUsers.toLocaleString()}</div>
+                        <div class="big-number-sub">${g.today.sessions.toLocaleString()} sessions</div>
                     </div>
                     <div class="big-number-card">
                         <h4>Avg Session</h4>
@@ -1012,14 +1012,14 @@
                         <div class="rate-details">${data.last7DaysVisited || 0} visits / ${data.last7DaysSent} emails</div>
                     </div>
                     <div class="rate-card">
-                        <h4>Today</h4>
-                        <div class="rate-value">${todayVisitRate}%</div>
-                        <div class="rate-details">${data.todayVisited || 0} visits / ${data.todaySent} emails</div>
-                    </div>
-                    <div class="rate-card">
                         <h4>Yesterday</h4>
                         <div class="rate-value">${yesterdayVisitRate}%</div>
                         <div class="rate-details">${data.yesterdayVisited || 0} visits / ${data.yesterdaySent} emails</div>
+                    </div>
+                    <div class="rate-card">
+                        <h4>Today</h4>
+                        <div class="rate-value">${todayVisitRate}%</div>
+                        <div class="rate-details">${data.todayVisited || 0} visits / ${data.todaySent} emails</div>
                     </div>
                 </div>
                 ` : `
