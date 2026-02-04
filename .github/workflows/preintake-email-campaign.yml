@@ -2,20 +2,17 @@ name: PreIntake Email Campaign
 
 on:
   schedule:
-    # Script enforces PT time windows - cron triggers cover both DST scenarios
-    # 4 windows: 8-9am, 10-11am, 12-1pm, 2-3pm PT, Mon-Fri only
+    # 4 sends/day at PST offsets (UTC-8). During PDT (Mar-Nov) sends shift
+    # 1 hour earlier (7:30am, 9:30am, 11:30am, 1:30pm) — still business hours.
     #
-    # Each window needs 2 UTC triggers (PDT=UTC-7, PST=UTC-8):
-    #   8:30am PT  → 15:30 UTC (PDT) / 16:30 UTC (PST)
-    #   10:30am PT → 17:30 UTC (PDT) / 18:30 UTC (PST)
-    #   12:30pm PT → 19:30 UTC (PDT) / 20:30 UTC (PST)
-    #   2:30pm PT  → 21:30 UTC (PDT) / 22:30 UTC (PST)
+    #   PST: 8:30am, 10:30am, 12:30pm, 2:30pm PT
+    #   PDT: 7:30am,  9:30am, 11:30am, 1:30pm PT
     #
     # Day-of-week: 1-5 = Mon-Fri
-    - cron: '30 15,16 * * 1-5'
-    - cron: '30 17,18 * * 1-5'
-    - cron: '30 19,20 * * 1-5'
-    - cron: '30 21,22 * * 1-5'
+    - cron: '30 16 * * 1-5'
+    - cron: '30 18 * * 1-5'
+    - cron: '30 20 * * 1-5'
+    - cron: '30 22 * * 1-5'
 
   # Allow manual trigger for testing
   workflow_dispatch:
@@ -24,14 +21,6 @@ on:
         description: 'Number of emails to send'
         required: false
         default: '10'
-      skip_time_check:
-        description: 'Bypass PT time window check'
-        required: false
-        default: 'false'
-        type: choice
-        options:
-          - 'false'
-          - 'true'
 
 env:
   NODE_VERSION: '20'
@@ -110,13 +99,11 @@ jobs:
       - name: Send email batch
         env:
           BATCH_SIZE: ${{ github.event.inputs.batch_size || steps.warming.outputs.batch_size }}
-          SKIP_TIME_CHECK: ${{ github.event.inputs.skip_time_check || 'false' }}
           # Exclude Yahoo/AOL during domain warming (remove this line when warming is complete)
           EXCLUDE_YAHOO_AOL: 'true'
         run: |
           echo "Starting PreIntake email campaign..."
           echo "Batch size: $BATCH_SIZE"
-          echo "Skip time check: $SKIP_TIME_CHECK"
           echo "Yahoo/AOL exclusion: $EXCLUDE_YAHOO_AOL"
           node scripts/send-preintake-campaign.js
 

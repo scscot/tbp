@@ -6,11 +6,11 @@
  * Generates personalized demos for each contact BEFORE sending the email.
  * Uses Mailgun API for email delivery.
  *
- * SCHEDULE (PT Time Enforcement):
+ * SCHEDULE (GitHub Actions cron):
  *   - Days: Monday-Friday (weekdays only)
- *   - Windows: 8-9am, 10-11am, 12-1pm, 2-3pm PT (4 runs/day)
- *   - Automatically handles DST (script checks PT time, not UTC)
- *   - Exits cleanly with code 0 if outside allowed window
+ *   - 4 runs/day at PST offsets (UTC-8)
+ *   - PST: 8:30am, 10:30am, 12:30pm, 2:30pm PT
+ *   - PDT: 7:30am, 9:30am, 11:30am, 1:30pm PT (1hr earlier, still business hours)
  *
  * Environment Variables:
  *   MAILGUN_API_KEY - Mailgun API key
@@ -18,21 +18,17 @@
  *   ANTHROPIC_API_KEY - Anthropic API key for AI analysis
  *   BATCH_SIZE - Number of emails to send per run (default: 5)
  *   TEST_EMAIL - Override recipient for testing (won't mark as sent)
- *   SKIP_TIME_CHECK - Set to 'true' to bypass PT time window check
  *   SKIP_DEMO_GEN - Set to 'true' to skip demo generation (for testing email only)
  *   DOC_ID - Specific document ID from preintake_emails to process
  *   TEST_DEMO_ID - Use existing demo lead ID for all emails (skips demo generation)
  *   TEST_LEAD_ID - Use existing preintake_leads doc for everything (simplest test mode)
  *
  * Usage:
- *   # Normal run (respects PT time window)
+ *   # Normal run (triggered by GitHub Actions cron)
  *   MAILGUN_API_KEY=xxx ANTHROPIC_API_KEY=xxx node scripts/send-preintake-campaign.js
  *
- *   # Force run outside time window (for testing)
- *   SKIP_TIME_CHECK=true MAILGUN_API_KEY=xxx ANTHROPIC_API_KEY=xxx node scripts/send-preintake-campaign.js
- *
  *   # Test mode (sends to test email, doesn't update Firestore)
- *   TEST_EMAIL=test@example.com SKIP_TIME_CHECK=true ... node scripts/send-preintake-campaign.js
+ *   TEST_EMAIL=test@example.com MAILGUN_API_KEY=xxx ANTHROPIC_API_KEY=xxx node scripts/send-preintake-campaign.js
  */
 
 const axios = require('axios');
@@ -99,9 +95,6 @@ const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 
 // Test mode: override recipient email (does NOT mark as sent in Firestore)
 const TEST_EMAIL = process.env.TEST_EMAIL || null;
-
-// Skip time check (for manual testing)
-const SKIP_TIME_CHECK = process.env.SKIP_TIME_CHECK === 'true';
 
 // Skip demo generation (for testing email only)
 const SKIP_DEMO_GEN = process.env.SKIP_DEMO_GEN === 'true';
@@ -253,70 +246,6 @@ function cleanFirmName(firmText) {
     }
 
     return '';
-}
-
-/**
- * Check if current time is within allowed PT business window
- * Returns { allowed: boolean, reason: string, ptTime: string }
- */
-function checkPTBusinessWindow() {
-    const now = new Date();
-    const ptTimeStr = now.toLocaleString('en-US', {
-        timeZone: 'America/Los_Angeles',
-        weekday: 'long',
-        hour: 'numeric',
-        minute: 'numeric',
-        hour12: true
-    });
-
-    // Get PT components
-    const ptDate = new Date(now.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }));
-    const day = ptDate.getDay(); // 0=Sun, 1=Mon, 2=Tue, 3=Wed, 4=Thu, 5=Fri, 6=Sat
-    const hour = ptDate.getHours();
-    const minute = ptDate.getMinutes();
-    const timeInMinutes = hour * 60 + minute;
-
-    // Allowed days: Monday-Friday only (law firms closed weekends)
-    const allowedDays = [1, 2, 3, 4, 5];
-    const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-
-    if (!allowedDays.includes(day)) {
-        return {
-            allowed: false,
-            reason: `${dayNames[day]} is outside allowed days`,
-            ptTime: ptTimeStr
-        };
-    }
-
-    // Allowed windows: 4 runs spread across business hours
-    // Window 1:  8:00am -  9:00am (480-540 minutes)
-    // Window 2: 10:00am - 11:00am (600-660 minutes)
-    // Window 3: 12:00pm -  1:00pm (720-780 minutes)
-    // Window 4:  2:00pm -  3:00pm (840-900 minutes)
-    const windows = [
-        { start:  8 * 60, end:  9 * 60 },  // 8:00-9:00am
-        { start: 10 * 60, end: 11 * 60 },  // 10:00-11:00am
-        { start: 12 * 60, end: 13 * 60 },  // 12:00-1:00pm
-        { start: 14 * 60, end: 15 * 60 },  // 2:00-3:00pm
-    ];
-
-    const inWindow = windows.some(w => timeInMinutes >= w.start && timeInMinutes < w.end);
-
-    if (!inWindow) {
-        return {
-            allowed: false,
-            reason: `${hour}:${minute.toString().padStart(2, '0')} PT is outside allowed windows (8-9am, 10-11am, 12-1pm, 2-3pm)`,
-            ptTime: ptTimeStr
-        };
-    }
-
-    const windowLabel = windows.find(w => timeInMinutes >= w.start && timeInMinutes < w.end);
-    const windowHour = windowLabel ? `${Math.floor(windowLabel.start / 60)}:00` : '';
-    return {
-        allowed: true,
-        reason: `Business hours window (${windowHour} PT)`,
-        ptTime: ptTimeStr
-    };
 }
 
 /**
@@ -964,24 +893,6 @@ async function runCampaign() {
 
     // Get dynamic batch size from Firestore (or fall back to env)
     const BATCH_SIZE = await getDynamicBatchSize();
-
-    // Check PT business window (unless bypassed)
-    if (!SKIP_TIME_CHECK) {
-        const timeCheck = checkPTBusinessWindow();
-        console.log(`🕐 Current PT Time: ${timeCheck.ptTime}`);
-
-        if (!timeCheck.allowed) {
-            console.log(`⏭️  Skipping: ${timeCheck.reason}`);
-            console.log('   Allowed: Mon-Fri, 8-9am, 10-11am, 12-1pm, 2-3pm PT');
-            console.log('   Set SKIP_TIME_CHECK=true to bypass');
-            process.exit(0);
-        }
-
-        console.log(`✅ ${timeCheck.reason}`);
-        console.log('');
-    } else {
-        console.log('⚠️  Time check bypassed (SKIP_TIME_CHECK=true)\n');
-    }
 
     // Validate environment
     if (!MAILGUN_API_KEY) {
