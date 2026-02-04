@@ -4,7 +4,7 @@
  *
  * Scrapes contact information (firstName, lastName, email) from direct sales
  * distributor pages and updates Firestore. Works with any company that has
- * discovered patterns in patterns.json.
+ * pending URLs in the direct_sales_contacts collection.
  *
  * Usage:
  *   node scripts/contacts-scraper.js --company=Herbalife --max=100
@@ -27,8 +27,9 @@
  * Early Termination (Cumulative Tracking):
  *   Company scrape stats are tracked cumulatively in Firestore across runs.
  *   If a company reaches 15+ URLs scraped with 0 emails found (cumulative),
- *   it is marked as a "no-email platform" in patterns.json and ALL documents
- *   for that company are deleted from Firestore to save resources.
+ *   it is blocked in Firestore (config/contactsScraper.blockedPlatforms) and
+ *   ALL documents for that company are deleted from Firestore to save resources.
+ *   Companies yielding <5% emails after 50+ URLs are also blocked.
  *   Stats are stored in: config/contactsScraper.companyStats
  */
 
@@ -61,6 +62,10 @@ const CONFIG = {
   // Early termination - cumulative sample size before marking as no-email platform
   NO_EMAIL_SAMPLE_SIZE: 15,
 
+  // Low-yield threshold - pause companies with email yield below this % after sufficient samples
+  LOW_YIELD_THRESHOLD: 0.05,      // 5%
+  LOW_YIELD_SAMPLE_SIZE: 50,      // Minimum URLs scraped before evaluating yield
+
   // Firestore path for cumulative company stats
   STATS_COLLECTION: 'config',
   STATS_DOC: 'contactsScraper',
@@ -74,7 +79,6 @@ const CONFIG = {
   USER_AGENT: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
 
   // Patterns file
-  PATTERNS_FILE: path.join(__dirname, 'patterns.json'),
 
   // Corporate/generic email prefixes to filter out (these are not individual contacts)
   CORPORATE_EMAIL_PREFIXES: [
@@ -163,18 +167,8 @@ function initializeFirebase() {
 // PATTERNS FILE OPERATIONS
 // ============================================================================
 
-function loadPatterns() {
-  if (!fs.existsSync(CONFIG.PATTERNS_FILE)) {
-    console.error(`Error: patterns.json not found at ${CONFIG.PATTERNS_FILE}`);
-    console.error('Run base_url_discovery.js first to discover URL patterns.');
-    process.exit(1);
-  }
-  return JSON.parse(fs.readFileSync(CONFIG.PATTERNS_FILE, 'utf8'));
-}
-
-function savePatterns(patterns) {
-  fs.writeFileSync(CONFIG.PATTERNS_FILE, JSON.stringify(patterns, null, 2));
-}
+// loadPatterns/savePatterns removed — no-email platform flags now stored in Firestore
+// (config/contactsScraper.blockedPlatforms) instead of patterns.json
 
 // ============================================================================
 // CONTACT EXTRACTION
@@ -604,6 +598,13 @@ async function deleteAllCompanyDocuments(db, company) {
 // ============================================================================
 
 /**
+ * Normalize company name for use as a stats key (fixes Le-Vel vs Le-vel etc.)
+ */
+function normalizeCompanyKey(company) {
+  return company.toLowerCase().trim();
+}
+
+/**
  * Load cumulative company stats from Firestore
  * Returns: { companyName: { scraped: N, emailsFound: N }, ... }
  */
@@ -612,7 +613,20 @@ async function loadCumulativeStats(db) {
     const doc = await db.collection(CONFIG.STATS_COLLECTION).doc(CONFIG.STATS_DOC).get();
     if (doc.exists && doc.data().companyStats) {
       console.log('Loaded cumulative company stats from Firestore');
-      return doc.data().companyStats;
+      const raw = doc.data().companyStats;
+
+      // Normalize keys and merge any duplicates (e.g., "Le-Vel" + "Le-vel")
+      const normalized = {};
+      for (const [key, stats] of Object.entries(raw)) {
+        const normKey = normalizeCompanyKey(key);
+        if (normalized[normKey]) {
+          normalized[normKey].scraped += stats.scraped || 0;
+          normalized[normKey].emailsFound += stats.emailsFound || 0;
+        } else {
+          normalized[normKey] = { scraped: stats.scraped || 0, emailsFound: stats.emailsFound || 0 };
+        }
+      }
+      return normalized;
     }
   } catch (err) {
     console.warn('Could not load cumulative stats:', err.message);
@@ -635,10 +649,41 @@ async function saveCumulativeStats(db, stats) {
 }
 
 /**
+ * Load blocked platforms from Firestore (persisted across runs)
+ * Returns: { normalizedCompanyKey: { reason, detectedAt, scraped, emailsFound }, ... }
+ */
+async function loadBlockedPlatforms(db) {
+  try {
+    const doc = await db.collection(CONFIG.STATS_COLLECTION).doc(CONFIG.STATS_DOC).get();
+    if (doc.exists && doc.data().blockedPlatforms) {
+      return doc.data().blockedPlatforms;
+    }
+  } catch (err) {
+    console.warn('Could not load blocked platforms:', err.message);
+  }
+  return {};
+}
+
+/**
+ * Save blocked platforms to Firestore
+ */
+async function saveBlockedPlatforms(db, blockedPlatforms) {
+  try {
+    await db.collection(CONFIG.STATS_COLLECTION).doc(CONFIG.STATS_DOC).set({
+      blockedPlatforms,
+      updatedAt: admin.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+  } catch (err) {
+    console.warn('Could not save blocked platforms:', err.message);
+  }
+}
+
+/**
  * Reset stats for a specific company (after deletion)
  */
 async function resetCompanyStats(db, cumulativeStats, company) {
-  delete cumulativeStats[company];
+  const normKey = normalizeCompanyKey(company);
+  delete cumulativeStats[normKey];
   await saveCumulativeStats(db, cumulativeStats);
   console.log(`  Reset cumulative stats for ${company}`);
 }
@@ -800,9 +845,6 @@ async function main() {
   console.log(`Max URLs: ${maxUrls}`);
   console.log(`Timestamp: ${new Date().toISOString()}`);
 
-  // Load patterns to check for no-email platforms
-  const patterns = loadPatterns();
-
   // Resolve company name to domain if specific company
   let companyDomain = null;
   let companyDisplayName = null;
@@ -815,20 +857,30 @@ async function main() {
       process.exit(1);
     }
     companyDisplayName = getCompanyDisplayName(companyDomain);
-
-    // Check if this company is already marked as no-email platform
-    if (patterns[companyDomain]?.noEmailPlatform) {
-      console.log(`\n${companyDisplayName} is marked as a no-email platform.`);
-      console.log('   Detected at:', patterns[companyDomain].detectedAt);
-      console.log('   Skipping scrape. Remove noEmailPlatform flag in patterns.json to re-enable.');
-      process.exit(0);
-    }
   }
 
   // Initialize Firebase
   const db = initializeFirebase();
 
-  // Load cumulative company stats (persisted across runs)
+  // Load blocked platforms from Firestore (persisted across runs)
+  const blockedPlatforms = dryRun ? {} : await loadBlockedPlatforms(db);
+
+  // Check if target company is blocked
+  if (targetCompany && companyDisplayName) {
+    const normKey = normalizeCompanyKey(companyDisplayName);
+    if (blockedPlatforms[normKey]) {
+      const bp = blockedPlatforms[normKey];
+      console.log(`\n${companyDisplayName} is blocked (${bp.reason}).`);
+      console.log('   Detected at:', bp.detectedAt);
+      console.log('   Skipping scrape. Remove from blockedPlatforms in Firestore config/contactsScraper to re-enable.');
+      process.exit(0);
+    }
+  }
+
+  // In-memory set of companies to skip during this run (blocked or terminated mid-run)
+  const skippedCompanies = new Set(Object.keys(blockedPlatforms));
+
+  // Load cumulative company stats (persisted across runs, keys are normalized)
   const cumulativeStats = dryRun ? {} : await loadCumulativeStats(db);
 
   // Get URLs to scrape
@@ -887,20 +939,21 @@ async function main() {
   for (let i = 0; i < urlsToScrape.length; i++) {
     const { id, url, company, scrapeAttempts } = urlsToScrape[i];
 
+    const normCompanyKey = normalizeCompanyKey(company);
+
     // Initialize company stats if needed (per-run tracking)
     if (!companyStats[company]) {
       companyStats[company] = { scraped: 0, emailsFound: 0 };
     }
 
-    // Initialize cumulative stats if needed
-    if (!cumulativeStats[company]) {
-      cumulativeStats[company] = { scraped: 0, emailsFound: 0 };
+    // Initialize cumulative stats if needed (normalized key)
+    if (!cumulativeStats[normCompanyKey]) {
+      cumulativeStats[normCompanyKey] = { scraped: 0, emailsFound: 0 };
     }
 
-    // Check if this company has been marked as no-email during this run
-    const companyDomainForUrl = getCompanyDomain(company);
-    if (companyDomainForUrl && patterns[companyDomainForUrl]?.noEmailPlatform) {
-      console.log(`[${i + 1}/${urlsToScrape.length}] Skipping ${url} (${company} marked as no-email platform)`);
+    // Check if this company has been blocked (pre-existing or during this run)
+    if (skippedCompanies.has(normCompanyKey)) {
+      console.log(`[${i + 1}/${urlsToScrape.length}] Skipping ${url} (${company} blocked)`);
       continue;
     }
 
@@ -912,7 +965,7 @@ async function main() {
     const result = await scrapeUrl(browser, url);
     summary.processed++;
     companyStats[company].scraped++;
-    cumulativeStats[company].scraped++;
+    cumulativeStats[normCompanyKey].scraped++;
 
     if (result.success) {
       consecutiveErrors = 0;
@@ -929,7 +982,7 @@ async function main() {
 
       if (emailFound && !corporateCheck.isCorporate) {
         companyStats[company].emailsFound++;
-        cumulativeStats[company].emailsFound++;
+        cumulativeStats[normCompanyKey].emailsFound++;
 
         // Valid individual email found - use Claude AI to extract name
         console.log(`  Email found: ${result.data.email}`);
@@ -971,35 +1024,66 @@ async function main() {
         }
       }
 
-      // Early termination check: 0 emails in cumulative samples (across runs)
-      const cumStats = cumulativeStats[company];
+      // Early termination checks (cumulative across runs)
+      const cumStats = cumulativeStats[normCompanyKey];
       const runStats = companyStats[company];
+
+      // Check 1: Zero emails after NO_EMAIL_SAMPLE_SIZE scrapes → no-email platform
       if (cumStats.scraped >= CONFIG.NO_EMAIL_SAMPLE_SIZE && cumStats.emailsFound === 0) {
-        console.log(`\nEARLY TERMINATION: ${company}`);
-        console.log(`   0/${cumStats.scraped} emails found (cumulative) - marking as no-email platform`);
+        const reason = 'no-email platform';
+        console.log(`\n  BLOCKED: ${company}`);
+        console.log(`   0/${cumStats.scraped} emails found (cumulative) - ${reason}`);
 
-        // Mark in patterns.json
-        const domainKey = getCompanyDomain(company);
-        if (domainKey && patterns[domainKey]) {
-          patterns[domainKey].noEmailPlatform = true;
-          patterns[domainKey].detectedAt = new Date().toISOString();
+        if (!dryRun) {
+          // Block in Firestore (persists across runs)
+          blockedPlatforms[normCompanyKey] = {
+            reason,
+            detectedAt: new Date().toISOString(),
+            scraped: cumStats.scraped,
+            emailsFound: 0,
+          };
+          await saveBlockedPlatforms(db, blockedPlatforms);
+          console.log(`   Saved to Firestore blockedPlatforms`);
 
-          if (!dryRun) {
-            savePatterns(patterns);
-            console.log(`   Updated patterns.json`);
+          // Delete ALL documents for this company
+          const deletedCount = await deleteAllCompanyDocuments(db, company);
+          summary.deleted += deletedCount - runStats.scraped;
 
-            // Delete ALL documents for this company
-            const deletedCount = await deleteAllCompanyDocuments(db, company);
-            summary.deleted += deletedCount - runStats.scraped; // Adjust for ones already counted this run
-
-            // Reset cumulative stats for this company
-            await resetCompanyStats(db, cumulativeStats, company);
-          } else {
-            console.log(`   DRY RUN - Would update patterns.json and delete all documents`);
-          }
-
-          summary.noEmailPlatforms.push(company);
+          // Reset cumulative stats
+          await resetCompanyStats(db, cumulativeStats, company);
+        } else {
+          console.log(`   DRY RUN - Would block and delete all documents`);
         }
+
+        // Skip remaining URLs for this company in current batch
+        skippedCompanies.add(normCompanyKey);
+        summary.noEmailPlatforms.push(company);
+      }
+      // Check 2: Low yield after LOW_YIELD_SAMPLE_SIZE scrapes → low-yield platform
+      else if (cumStats.scraped >= CONFIG.LOW_YIELD_SAMPLE_SIZE &&
+               cumStats.emailsFound > 0 &&
+               (cumStats.emailsFound / cumStats.scraped) < CONFIG.LOW_YIELD_THRESHOLD) {
+        const yieldPct = ((cumStats.emailsFound / cumStats.scraped) * 100).toFixed(1);
+        const reason = `low-yield (${yieldPct}% < ${CONFIG.LOW_YIELD_THRESHOLD * 100}% threshold)`;
+        console.log(`\n  BLOCKED: ${company}`);
+        console.log(`   ${cumStats.emailsFound}/${cumStats.scraped} emails (${yieldPct}%) - ${reason}`);
+
+        if (!dryRun) {
+          blockedPlatforms[normCompanyKey] = {
+            reason,
+            detectedAt: new Date().toISOString(),
+            scraped: cumStats.scraped,
+            emailsFound: cumStats.emailsFound,
+          };
+          await saveBlockedPlatforms(db, blockedPlatforms);
+          console.log(`   Saved to Firestore blockedPlatforms`);
+        } else {
+          console.log(`   DRY RUN - Would block platform`);
+        }
+
+        // Skip remaining URLs for this company in current batch
+        skippedCompanies.add(normCompanyKey);
+        summary.noEmailPlatforms.push(company);
       }
 
     } else {
@@ -1054,7 +1138,7 @@ async function main() {
   }
   console.log(`Duration: ${summary.duration}s`);
   if (summary.noEmailPlatforms.length > 0) {
-    console.log(`No-email platforms detected: ${summary.noEmailPlatforms.join(', ')}`);
+    console.log(`Blocked platforms (this run): ${summary.noEmailPlatforms.join(', ')}`);
   }
   if (summary.stopped) {
     console.log('Status: STOPPED EARLY (consecutive errors)');
@@ -1069,16 +1153,29 @@ async function main() {
     }
   }
 
+  // Blocked platforms summary
+  if (!dryRun && Object.keys(blockedPlatforms).length > 0) {
+    console.log('\nBlocked Platforms (Firestore-persisted):');
+    for (const [key, bp] of Object.entries(blockedPlatforms)) {
+      console.log(`  ${key}: ${bp.reason} (since ${bp.detectedAt})`);
+    }
+  }
+
   // Cumulative stats (all runs)
   if (!dryRun && Object.keys(cumulativeStats).length > 0) {
     console.log('\nCumulative Stats (all runs):');
     for (const [company, stats] of Object.entries(cumulativeStats)) {
-      const status = stats.scraped >= CONFIG.NO_EMAIL_SAMPLE_SIZE && stats.emailsFound === 0
-        ? ' ⚠️  WILL DELETE NEXT RUN'
-        : stats.emailsFound === 0
-          ? ` (${CONFIG.NO_EMAIL_SAMPLE_SIZE - stats.scraped} more needed to trigger deletion)`
-          : '';
-      console.log(`  ${company}: ${stats.emailsFound}/${stats.scraped} emails${status}`);
+      if (skippedCompanies.has(company)) continue; // Already shown in blocked
+      const yieldPct = stats.scraped > 0 ? ((stats.emailsFound / stats.scraped) * 100).toFixed(1) : '0.0';
+      let status = '';
+      if (stats.scraped >= CONFIG.NO_EMAIL_SAMPLE_SIZE && stats.emailsFound === 0) {
+        status = ' -> WILL BLOCK NEXT RUN (no emails)';
+      } else if (stats.scraped >= CONFIG.LOW_YIELD_SAMPLE_SIZE &&
+                 stats.emailsFound > 0 &&
+                 (stats.emailsFound / stats.scraped) < CONFIG.LOW_YIELD_THRESHOLD) {
+        status = ' -> WILL BLOCK NEXT RUN (low yield)';
+      }
+      console.log(`  ${company}: ${stats.emailsFound}/${stats.scraped} emails (${yieldPct}%)${status}`);
     }
 
     // Save cumulative stats to Firestore
