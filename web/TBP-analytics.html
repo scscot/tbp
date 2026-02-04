@@ -1449,12 +1449,8 @@
 
         // Subject line labels
         const SUBJECT_LABELS = {
-            'not_opportunity': 'V1: "Not an opportunity. Just a tool."',
-            'prebuild_advantage': 'V2: "What if your next recruit already had a team?"',
-            'mobile_first_v3': 'V3: "Direct Sales Team" (Generic)',
-            'mobile_first_v4': 'V4: "Direct Sales Team" (Generic Alt)',
-            'mobile_first_v5': 'V5: "{Company} Team" (Personalized)',
-            'mobile_first_v6': 'V6: "{Company} Team" (Personalized Alt)'
+            'mobile_first_v3': 'V3: "Using AI to Build Your Direct Sales Team"',
+            'mobile_first_v4': 'V4: "Not an opportunity. Just a tool."'
         };
 
         // Authentication
@@ -1762,11 +1758,9 @@
                 document.getElementById('emailProgress').textContent = `of ${formatNumber(emailStats.total || 0)} total`;
 
                 // A/B Test Results
-                const SUBJECT_LABELS = {
-                    'not_opportunity': 'V1: "Not an opportunity. Just a tool."',
-                    'prebuild_advantage': 'V2: "What if your next recruit already had a team?"'
-                };
-                const subjectLines = emailStats.subjectLines || [];
+                const subjectLines = (emailStats.subjectLines || []).filter(s =>
+                    s.subjectTag === 'mobile_first_v3' || s.subjectTag === 'mobile_first_v4'
+                );
                 const abTestBody = document.getElementById('emailAbTestBody');
                 const abTestSection = document.getElementById('emailAbTestSection');
                 if (subjectLines.length > 0) {
@@ -1889,15 +1883,18 @@
 
             // A/B test performance
             const abBody = document.getElementById('emailMainAbTestBody');
-            if (emailStatsData.subjectLines && emailStatsData.subjectLines.length > 0) {
-                const sorted = [...emailStatsData.subjectLines].sort((a, b) => {
+            const mainSubjectLines = (emailStatsData.subjectLines || []).filter(sl =>
+                sl.subjectTag === 'mobile_first_v3' || sl.subjectTag === 'mobile_first_v4'
+            );
+            if (mainSubjectLines.length > 0) {
+                const sorted = [...mainSubjectLines].sort((a, b) => {
                     return parseFloat(b.clickRate) - parseFloat(a.clickRate);
                 });
                 const winnerTag = sorted[0].subjectTag;
 
-                abBody.innerHTML = emailStatsData.subjectLines.map(sl => {
+                abBody.innerHTML = mainSubjectLines.map(sl => {
                     const label = SUBJECT_LABELS[sl.subjectTag] || sl.subjectTag;
-                    const isWinner = sl.subjectTag === winnerTag && emailStatsData.subjectLines.length > 1;
+                    const isWinner = sl.subjectTag === winnerTag && mainSubjectLines.length > 1;
                     const badgeClass = getBadgeClass(sl.subjectTag);
                     return `
                         <tr class="${isWinner ? 'ab-winner' : ''}">
@@ -1961,15 +1958,18 @@
 
                 // A/B test performance
                 const contactsAbBody = document.getElementById('emailContactsAbTestBody');
-                if (cc.subjectLines && cc.subjectLines.length > 0) {
-                    const sorted = [...cc.subjectLines].sort((a, b) => {
+                const contactsSubjectLines = (cc.subjectLines || []).filter(sl =>
+                    sl.subjectTag === 'mobile_first_v3' || sl.subjectTag === 'mobile_first_v4'
+                );
+                if (contactsSubjectLines.length > 0) {
+                    const sorted = [...contactsSubjectLines].sort((a, b) => {
                         return parseFloat(b.clickRate) - parseFloat(a.clickRate);
                     });
                     const winnerTag = sorted[0].subjectTag;
 
-                    contactsAbBody.innerHTML = cc.subjectLines.map(sl => {
+                    contactsAbBody.innerHTML = contactsSubjectLines.map(sl => {
                         const label = SUBJECT_LABELS[sl.subjectTag] || sl.subjectTag;
-                        const isWinner = sl.subjectTag === winnerTag && cc.subjectLines.length > 1;
+                        const isWinner = sl.subjectTag === winnerTag && contactsSubjectLines.length > 1;
                         const badgeClass = getBadgeClass(sl.subjectTag);
                         return `
                             <tr class="${isWinner ? 'ab-winner' : ''}">
