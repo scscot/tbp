@@ -1,6 +1,6 @@
 # Team Build Pro - Comprehensive Knowledge Base
 
-**Last Updated**: 2026-01-31
+**Last Updated**: 2026-02-05
 **Purpose**: Persistent knowledge base for AI assistants across sessions
 
 ---
@@ -42,7 +42,7 @@ The Team Build Pro ecosystem is a comprehensive, interconnected network of digit
 │    114 Company            Localized              Localized             │
 │    Landing Pages       Content (ES/PT/DE)     Content (ES/PT/DE)      │
 │         │                      │                        │               │
-│    Blog (18 posts)        Blog (17-18 each)     Blog (17-18 each)     │
+│    Blog (21 posts)        Blog (20-21 each)     Blog (20-21 each)     │
 │         │                      │                        │               │
 │    FAQ/Books              FAQ/Books              FAQ/Books             │
 └─────────────────────────────────────────────────────────────────────────┘
@@ -116,7 +116,7 @@ The Team Build Pro ecosystem is a comprehensive, interconnected network of digit
 | Email Click Rate | Tracked via Firestore | 3%+ |
 | Email Open Rate | N/A (disabled for deliverability) | - |
 | Website Languages | 4 (EN, ES, PT, DE) | 4 |
-| Blog Posts (per language) | 17-18 | 25+ |
+| Blog Posts (per language) | 20-21 | 25+ |
 | Company Landing Pages | 114 (EN/ES) | 150+ |
 | App Languages | 4 (EN, ES, PT, DE) | 4 |
 
@@ -189,37 +189,36 @@ The world's first AI-powered platform that lets **prospects pre-build their team
 ├── scripts/               # Automation scripts
 │   ├── generate-ai-blog.js  # AI blog generation (Claude CLI)
 │   └── generate-blog.js     # Legacy blog generation
-├── .github/workflows/     # GitHub Actions automation (26 active workflows)
+├── .github/workflows/     # GitHub Actions automation (25 active workflows, 7 disabled)
 │   ├── weekly-blog.yml              # Twice-weekly blog automation (Mon/Thu 10am PST) + sitemap pings
 │   ├── weekly-sscott-blog.yml       # Stephen Scott blog automation
 │   ├── domain-warming-update.yml    # TBP/PreIntake domain warming batch sizes
-│   ├── preintake-*.yml              # 6 PreIntake workflows (lead gen, email campaign, analytics)
-│   └── *bar-scraper.yml             # 12 state bar association scraper workflows
+│   └── preintake-*.yml / *bar-scraper.yml  # PreIntake workflows (see preintake/CLAUDE.md)
 ├── web/                   # Public website files (English)
 │   ├── index.html        # Homepage
 │   ├── faq.html          # FAQ with dynamic filtering
 │   ├── books.html        # Books landing page
 │   ├── companies/        # Company-specific recruiting guides (114 pages)
-│   └── blog/             # Blog posts (18 articles)
+│   └── blog/             # Blog posts (21 articles)
 ├── web-es/                # Spanish website (es.teambuildpro.com)
 │   ├── index.html        # Spanish homepage
 │   ├── faq.html          # Spanish FAQ
 │   ├── books.html        # Spanish books page
-│   ├── blog/             # Spanish blog (18 translated posts)
+│   ├── blog/             # Spanish blog (21 translated posts)
 │   ├── sitemap.xml       # Spanish sitemap
 │   └── robots.txt        # Spanish search engine directives
 ├── web-pt/                # Portuguese website (pt.teambuildpro.com)
 │   ├── index.html        # Portuguese homepage
 │   ├── faq.html          # Portuguese FAQ
 │   ├── books.html        # Portuguese books page
-│   ├── blog/             # Portuguese blog (18 translated posts)
+│   ├── blog/             # Portuguese blog (21 translated posts)
 │   ├── sitemap.xml       # Portuguese sitemap
 │   └── robots.txt        # Portuguese search engine directives
 ├── web-de/                # German website (de.teambuildpro.com)
 │   ├── index.html        # German homepage (3x2 screenshot grid)
 │   ├── faq.html          # German FAQ
 │   ├── books.html        # German books page
-│   ├── blog/             # German blog (17 translated posts)
+│   ├── blog/             # German blog (20 translated posts)
 │   ├── sitemap.xml       # German sitemap
 │   └── robots.txt        # German search engine directives
 ├── sscott/                # Stephen Scott author website (stephenscott.us)
@@ -229,18 +228,13 @@ The world's first AI-powered platform that lets **prospects pre-build their team
 │   │   ├── books/       # 13 individual book pages
 │   │   ├── podcasts.html # Podcast listings
 │   │   ├── blog.html    # Author blog index
-│   │   └── blog/        # 15 blog posts (auto-generated weekly)
+│   │   └── blog/        # 16 blog posts (auto-generated weekly)
 │   └── scripts/         # Build automation scripts
 ├── analytics/             # Analytics workspace (GA4)
 │   ├── fetch-combined-analytics.js  # Combined reporting
 │   ├── fetch-ga4-data.js           # Google Analytics 4 data
 │   └── package.json                # Analytics dependencies
-├── preintake/             # PreIntake.ai law firm intake product
-│   ├── CLAUDE.md         # PreIntake-specific knowledge base
-│   ├── index.html        # PreIntake landing page
-│   ├── faq.html          # PreIntake FAQ
-│   ├── email-analytics.html  # Email analytics dashboard
-│   └── *.html            # Various PreIntake pages (account, contact, etc.)
+├── preintake/             # PreIntake.ai (separate product — see preintake/CLAUDE.md for details)
 └── documents/            # Documentation and metadata
 ```
 
@@ -309,13 +303,13 @@ The world's first AI-powered platform that lets **prospects pre-build their team
 
 ### Multi-Language Website Architecture
 
-#### Hosting Structure (5 Sites)
+#### Hosting Structure (5 TBP Sites + PreIntake)
 - **English**: teambuildpro.com (web/) - Primary site
 - **Spanish**: es.teambuildpro.com (web-es/) - Complete Spanish translation
 - **Portuguese**: pt.teambuildpro.com (web-pt/) - Complete Portuguese translation
 - **German**: de.teambuildpro.com (web-de/) - Complete German translation
 - **Author**: stephenscott.us (sscott/) - Stephen Scott author website (migrated from Dreamhost)
-- **Firebase Hosting**: Five separate targets (main, es, pt, de, sscott) with individual configs
+- **Firebase Hosting**: Six targets total (main, es, pt, de, sscott, preintake-ai) — PreIntake is a separate product (see `preintake/CLAUDE.md`)
 
 #### Language Switcher Implementation
 - **Location**: Top-right of header on all pages
@@ -329,7 +323,7 @@ All four main sites have identical structure:
 - Homepage with hero animation
 - FAQ page (8 questions)
 - Books landing page with localized covers
-- Blog index with 8 translated posts
+- Blog index with 20+ translated posts
 - Privacy policy
 - Terms of service
 - Contact form
@@ -354,7 +348,7 @@ All four main sites have identical structure:
 - `/faq.html` - Dynamic FAQ (audience-aware, 8 questions)
 - `/books.html` - Books landing page with AI/MLM book covers
 - `/blog.html` - Blog index
-- `/blog/` - 18 blog posts (auto-generated twice weekly via GitHub Actions)
+- `/blog/` - 21 blog posts (auto-generated twice weekly via GitHub Actions)
 - `/companies.html` - 114 company-specific recruiting guides
 - `/companies/ai-recruiting-[company].html` - Individual company pages
 - `/contact_us.html` - Contact form
@@ -369,7 +363,7 @@ All four main sites have identical structure:
 - `/faq.html` - Spanish FAQ (8 questions with accordion)
 - `/books.html` - Spanish books page (MLM-Cover-ES.jpg)
 - `/blog.html` - Spanish blog index
-- `/blog/` - 18 translated blog posts (same titles as EN)
+- `/blog/` - 21 translated blog posts (same titles as EN)
 - `/companies.html` - Company recruiting guides index (114 companies with pagination)
 - `/companies/` - 114 company-specific recruiting guides in Spanish
 - `/contact_us.html` - Spanish contact form
@@ -383,7 +377,7 @@ All four main sites have identical structure:
 - `/faq.html` - Portuguese FAQ (8 questions with accordion)
 - `/books.html` - Portuguese books page (MLM-Cover-BR.jpg)
 - `/blog.html` - Portuguese blog index
-- `/blog/` - 18 translated blog posts (same titles as EN)
+- `/blog/` - 21 translated blog posts (same titles as EN)
 - `/companies.html` - Company recruiting guides index (39 companies with pagination)
 - `/companies/` - 39 company-specific recruiting guides in Portuguese
 - `/contact_us.html` - Portuguese contact form
@@ -397,7 +391,7 @@ All four main sites have identical structure:
 - `/faq.html` - German FAQ (8 questions with accordion)
 - `/books.html` - German books page (MLM-Cover-DE.jpg)
 - `/blog.html` - German blog index
-- `/blog/` - 17 translated blog posts (same titles as EN)
+- `/blog/` - 20 translated blog posts (same titles as EN)
 - `/companies.html` - Company recruiting guides index (20 companies with pagination)
 - `/companies/` - 20 company-specific recruiting guides in German
 - `/contact_us.html` - German contact form
@@ -612,7 +606,7 @@ The email campaign system consists of two parallel campaigns targeting different
 - **Config**: `.github/warming-config.json`
 - **Schedule**: Runs every Monday at 6am PT
 - **Mechanism**: GitHub Actions calculates current week, looks up batch size from config, updates Firestore
-- **Firestore Config**: `config/emailCampaign` document stores `batchSize`, `batchSizeYahoo`, `warmingWeek`
+- **Firestore Config**: `config/emailCampaign` document stores `batchSize`, `warmingWeek` (legacy `batchSizeYahoo` field unused after Yahoo campaign removal)
 - **TBP Warming Schedule** (started 2026-01-12, 8 runs/day total):
   | Week | Batch Size | Emails/Day |
   |------|------------|------------|
@@ -764,7 +758,7 @@ The email campaign system consists of two parallel campaigns targeting different
 
 ## 🔄 Recent Changes & Milestones
 
-### Key Milestones (Nov 2025 - Jan 2026)
+### Key Milestones (Nov 2025 - Feb 2026)
 
 **App Launches & Localizations**
 - ✅ **Google Play Store Launch** (Nov 12, 2025): Android app live
@@ -801,8 +795,7 @@ The email campaign system consists of two parallel campaigns targeting different
   - Auto-deploys to Firebase Hosting
   - Pings Google and Bing sitemaps after deploy
   - Scripts: `generate-ai-blog.js`, `generate-sscott-blog.js`
-- ✅ **Bar Scraper Workflows**: 12 state bar scrapers for attorney data (PreIntake)
-- ✅ **PreIntake Campaign Workflows**: 6 workflows for law firm outreach
+- ✅ **PreIntake.ai Workflows**: Bar scrapers + email campaign + analytics (see `preintake/CLAUDE.md`)
 
 **Website Enhancements**
 - ✅ **Referral Tracking**: Cross-page tracking with sessionStorage, "Invited by" bar on all pages
@@ -818,7 +811,7 @@ The email campaign system consists of two parallel campaigns targeting different
   - Backend: `fetchGA4Analytics('yesterday')` support with startDate=endDate='yesterday'
   - Frontend: New "Yesterday" button in date range selector
 
-### Current System Status (Jan 2026)
+### Current System Status (Feb 2026)
 
 **PROJECT STATUS: MONITORING PHASE (as of Jan 31, 2026)**
 Active development paused to allow automated systems to run and collect meaningful data. All infrastructure is self-sustaining. Revisit in 6-8 weeks (mid-March 2026) when domain warming completes and sufficient conversion data exists for optimization decisions.
@@ -836,8 +829,8 @@ Active development paused to allow automated systems to run and collect meaningf
 | Push Notifications | Working | profile_reminder, trial_expired verified |
 | Blog Automation | Running | Mon/Thu schedule, 4 languages, sitemap pings |
 | Sitemap Pings | Active | Google + Bing pinged after each blog deploy |
-| Domain Warming | Week 3 | batchSize=12, 96 emails/day (8 runs total) |
-| Bar Scrapers | Active | 12 state workflows |
+| Domain Warming | Week 4 | batchSize=50, 400 emails/day (8 runs total) |
+| PreIntake.ai | Autonomous | See `preintake/CLAUDE.md` for details |
 
 **Monitoring Checklist (Weekly):**
 - [ ] Email click rates via `/email-stats.html`
