@@ -1,20 +1,57 @@
 {
   "indexes": [
     {
-      "collectionGroup": "preintake_emails",
+      "collectionGroup": "beta_testers",
       "queryScope": "COLLECTION",
       "fields": [
-        { "fieldPath": "sent", "order": "ASCENDING" },
-        { "fieldPath": "status", "order": "ASCENDING" },
-        { "fieldPath": "website", "order": "ASCENDING" },
+        { "fieldPath": "deviceType", "order": "ASCENDING" },
+        { "fieldPath": "createdAt", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "chats",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "participants", "arrayConfig": "CONTAINS" },
+        { "fieldPath": "lastMessageTimestamp", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "contacts",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "email", "order": "ASCENDING" },
         { "fieldPath": "randomIndex", "order": "ASCENDING" }
       ]
     },
     {
-      "collectionGroup": "direct_sales_contacts",
+      "collectionGroup": "contacts",
       "queryScope": "COLLECTION",
       "fields": [
-        { "fieldPath": "scraped", "order": "ASCENDING" },
+        { "fieldPath": "sent", "order": "ASCENDING" },
+        { "fieldPath": "randomIndex", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "contacts",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "sent", "order": "ASCENDING" },
+        { "fieldPath": "sentTimestamp", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "contacts",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "sent", "order": "ASCENDING" },
+        { "fieldPath": "sentTimestamp", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "contacts_yahoo",
+      "queryScope": "COLLECTION",
+      "fields": [
         { "fieldPath": "sent", "order": "ASCENDING" },
         { "fieldPath": "randomIndex", "order": "ASCENDING" }
       ]
@@ -27,7 +64,127 @@
         { "fieldPath": "scraped", "order": "ASCENDING" },
         { "fieldPath": "scrapeAttempts", "order": "ASCENDING" }
       ]
+    },
+    {
+      "collectionGroup": "direct_sales_contacts",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "scraped", "order": "ASCENDING" },
+        { "fieldPath": "scrapeAttempts", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "direct_sales_contacts",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "scraped", "order": "ASCENDING" },
+        { "fieldPath": "sent", "order": "ASCENDING" },
+        { "fieldPath": "randomIndex", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "direct_sales_contacts",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "sent", "order": "ASCENDING" },
+        { "fieldPath": "sentTimestamp", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "preintake_emails",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "sent", "order": "ASCENDING" },
+        { "fieldPath": "status", "order": "ASCENDING" },
+        { "fieldPath": "website", "order": "ASCENDING" },
+        { "fieldPath": "randomIndex", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "users",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "createdAt", "order": "ASCENDING" },
+        { "fieldPath": "photoUrl", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "users",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "upline_refs", "arrayConfig": "CONTAINS" },
+        { "fieldPath": "biz_join_date", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "users",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "upline_refs", "arrayConfig": "CONTAINS" },
+        { "fieldPath": "biz_join_date", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "users",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "upline_refs", "arrayConfig": "CONTAINS" },
+        { "fieldPath": "createdAt", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "users",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "upline_refs", "arrayConfig": "CONTAINS" },
+        { "fieldPath": "createdAt", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "users",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "upline_refs", "arrayConfig": "CONTAINS" },
+        { "fieldPath": "isQualified", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "users",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "upline_refs", "arrayConfig": "CONTAINS" },
+        { "fieldPath": "qualifiedDate", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "users",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "upline_refs", "arrayConfig": "CONTAINS" },
+        { "fieldPath": "qualifiedDate", "order": "ASCENDING" },
+        { "fieldPath": "createdAt", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "users",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "upline_refs", "arrayConfig": "CONTAINS" },
+        { "fieldPath": "qualifiedDate", "order": "DESCENDING" }
+      ]
     }
   ],
-  "fieldOverrides": []
+  "fieldOverrides": [
+    {
+      "collectionGroup": "users",
+      "fieldPath": "upline_refs",
+      "ttl": false,
+      "indexes": [
+        {
+          "arrayConfig": "CONTAINS",
+          "queryScope": "COLLECTION"
+        }
+      ]
+    }
+  ]
 }
