@@ -39,15 +39,26 @@
             </header>
         `;
 
-        // Check if user has actually started viewing their demo (not just arrived with ?demo=)
-        // The sessionStorage key is only set when user clicks "Start Demo" in the iframe
-        const demoViewedId = sessionStorage.getItem('tbp_demo_viewed');
+        // Check if user has demo context (either viewed demo or navigated from demo page)
+        // tbp_demo_viewed = set when user clicks "Start Demo" in iframe
+        // tbp_demo_id = set when user navigates away from demo page (before or after starting)
+        const headerTbpDemoViewed = sessionStorage.getItem('tbp_demo_viewed');
+        const headerTbpDemoId = sessionStorage.getItem('tbp_demo_id');
+        const demoViewedId = headerTbpDemoViewed || headerTbpDemoId;
         const accountBtn = container.querySelector('.nav-account');
 
         if (demoViewedId && accountBtn) {
             accountBtn.href = `https://preintake.ai/create-account.html?firm=${demoViewedId}`;
             accountBtn.textContent = 'Get Started →';
             accountBtn.classList.add('nav-get-started');
+
+            // Also update the "Demo" link to go to their existing demo (not request a new one)
+            const demoLink = container.querySelector('#nav-demo-link');
+            if (demoLink) {
+                const firmName = sessionStorage.getItem('tbp_demo_firm');
+                demoLink.href = `/demo/?demo=${demoViewedId}${firmName ? '&firm=' + encodeURIComponent(firmName) : ''}`;
+                demoLink.textContent = 'View Demo';
+            }
         }
 
         // Add mobile menu toggle functionality
@@ -73,15 +84,60 @@
     }
 
     // =========================================================================
-    // FLOATING BUTTONS COMPONENT (shown after demo viewed)
+    // WELCOME BANNER COMPONENT (shown for demo users on non-demo pages)
+    // Uses same CSS classes as index.html's campaign-welcome banner
+    // =========================================================================
+    function renderWelcomeBanner() {
+        // Don't render on the demo page itself (it has its own welcome display)
+        if (window.location.pathname.startsWith('/demo/')) return;
+
+        // Don't render if already exists (index.html has its own)
+        if (document.getElementById('campaign-welcome')) return;
+
+        // Check if user has demo context
+        const demoId = sessionStorage.getItem('tbp_demo_viewed') || sessionStorage.getItem('tbp_demo_id');
+        const firmName = sessionStorage.getItem('tbp_demo_firm');
+
+        if (!demoId) return;
+
+        // Create banner element using same CSS classes as index.html
+        const banner = document.createElement('div');
+        banner.id = 'campaign-welcome';
+        banner.className = 'campaign-welcome visible';
+        banner.innerHTML = `
+            <p class="campaign-welcome-text">Welcome, <strong>${firmName || 'Demo User'}</strong></p>
+        `;
+
+        // Insert after header
+        const header = document.querySelector('.site-header');
+        if (header && header.parentNode) {
+            header.parentNode.insertBefore(banner, header.nextSibling);
+        } else {
+            document.body.insertBefore(banner, document.body.firstChild);
+        }
+    }
+
+    // =========================================================================
+    // FLOATING BUTTONS COMPONENT (shown after demo viewed, on non-demo pages)
     // =========================================================================
     function renderFloatingButtons() {
+        // Don't render on the demo page itself (user is already viewing the demo)
+        if (window.location.pathname.startsWith('/demo/')) return;
+
         // Don't render if already exists (e.g., on index.html which has its own)
         if (document.getElementById('floating-demo-buttons')) return;
 
-        // Check if user has viewed a demo
-        const demoViewedId = sessionStorage.getItem('tbp_demo_viewed');
+        // Check if user has demo context (either viewed demo or navigated from demo page)
+        // tbp_demo_viewed = set when user clicks "Start Demo" in iframe
+        // tbp_demo_id = set when user navigates away from demo page (before or after starting)
+        const tbpDemoViewed = sessionStorage.getItem('tbp_demo_viewed');
+        const tbpDemoId = sessionStorage.getItem('tbp_demo_id');
+        const demoViewedId = tbpDemoViewed || tbpDemoId;
         if (!demoViewedId) return;
+
+        // Get firm name for demo link
+        const firmName = sessionStorage.getItem('tbp_demo_firm');
+        const firmParam = firmName ? '&firm=' + encodeURIComponent(firmName) : '';
 
         // Create floating buttons container
         const container = document.createElement('div');
@@ -94,11 +150,11 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
             </a>
-            <a href="/?demo=${demoViewedId}&autoopen=true" class="view-demo-btn" id="view-demo-btn">
+            <a href="/demo/?demo=${demoViewedId}${firmParam}" class="view-demo-btn" id="view-demo-btn">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
                 </svg>
-                View Demo Again
+                View Demo
             </a>
         `;
 
@@ -459,6 +515,7 @@
     function init() {
         injectStyles();
         renderHeader();
+        renderWelcomeBanner();
         renderFooter();
         renderFloatingButtons();
     }

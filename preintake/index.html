@@ -2477,6 +2477,7 @@
             }
 
             // Check for ?demo= parameter first (pre-generated demo modal)
+            // Then check for ?explore= parameter (left demo page to explore site)
             // Then check for ?completed= parameter (returned from completed demo)
             // Then check for ?firm= parameter (just welcome banner, no demo)
             // Finally check for verification token
@@ -2488,6 +2489,10 @@
                         checkVerificationToken();
                     }
                 });
+            } else if (urlParams.get('explore')) {
+                // ?explore= - user left demo page to explore site
+                // Show welcome banner and floating buttons from sessionStorage
+                handleExploreFromDemo();
             } else if (urlParams.get('completed')) {
                 // ?completed= - user returned from completed demo intake
                 // Show welcome banner, set up Get Started buttons, hide demo form
@@ -2504,6 +2509,67 @@
                 checkPreviouslyViewedDemo();
             }
         });
+
+        // =====================================
+        // Explore From Demo Handler
+        // =====================================
+        // For users who left the demo page to explore the site
+        // Shows welcome banner and floating buttons from sessionStorage
+        function handleExploreFromDemo() {
+            const demoId = sessionStorage.getItem('tbp_demo_id');
+            const firmName = sessionStorage.getItem('tbp_demo_firm');
+
+            if (!demoId) {
+                // No demo context, just show normal page
+                checkVerificationToken();
+                return;
+            }
+
+            // Clean URL
+            window.history.replaceState({}, document.title, window.location.pathname);
+
+            // Show welcome banner with firm name
+            const welcomeBanner = document.getElementById('campaign-welcome');
+            const firmNameSpan = document.getElementById('campaign-firm-name');
+            if (welcomeBanner && firmName) {
+                firmNameSpan.textContent = firmName;
+                welcomeBanner.classList.add('visible');
+            }
+
+            // Hide the demo request form (they already have a demo)
+            const demoSection = document.getElementById('demo');
+            if (demoSection) {
+                demoSection.style.display = 'none';
+            }
+
+            // Hide the "Create Your Custom Demo" hero CTA
+            const defaultHeroCta = document.getElementById('default-hero-cta');
+            if (defaultHeroCta) {
+                defaultHeroCta.style.display = 'none';
+            }
+
+            // Show floating buttons
+            const floatingButtons = document.getElementById('floating-demo-buttons');
+            const getStartedBtn = document.getElementById('get-started-btn');
+            const viewDemoBtn = document.getElementById('view-demo-btn');
+
+            if (floatingButtons && getStartedBtn && viewDemoBtn) {
+                getStartedBtn.href = `/create-account.html?firm=${demoId}`;
+                viewDemoBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg> View Demo`;
+                viewDemoBtn.href = `/demo/?demo=${demoId}${firmName ? '&firm=' + encodeURIComponent(firmName) : ''}`;
+                floatingButtons.classList.add('visible');
+            }
+
+            // Update header button to "Get Started"
+            setTimeout(() => {
+                const accountBtn = document.querySelector('.nav-account');
+                if (accountBtn) {
+                    accountBtn.href = `/create-account.html?firm=${demoId}`;
+                    accountBtn.textContent = 'Get Started →';
+                    accountBtn.classList.add('nav-get-started');
+                }
+            }, 100);
+        }
 
         // =====================================
         // Previously Viewed Demo Handler
@@ -2526,9 +2592,10 @@
             const viewDemoBtn = document.getElementById('view-demo-btn');
 
             if (floatingButtons && getStartedBtn && viewDemoBtn) {
+                const firmName = sessionStorage.getItem('tbp_demo_firm');
                 getStartedBtn.href = `/create-account.html?firm=${viewedDemoId}`;
-                viewDemoBtn.textContent = 'View Demo Again';
-                viewDemoBtn.href = `/?demo=${viewedDemoId}`;
+                viewDemoBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg> View Demo Again`;
+                viewDemoBtn.href = `/demo/?demo=${viewedDemoId}${firmName ? '&firm=' + encodeURIComponent(firmName) : ''}`;
                 floatingButtons.classList.add('visible');
             }
         }

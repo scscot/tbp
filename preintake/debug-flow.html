@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debug Flow Test</title>
+    <script>
+        // Check sessionStorage state
+        function checkState() {
+            console.log('=== SessionStorage State ===');
+            console.log('tbp_demo_id:', sessionStorage.getItem('tbp_demo_id'));
+            console.log('tbp_demo_viewed:', sessionStorage.getItem('tbp_demo_viewed'));
+            console.log('tbp_demo_firm:', sessionStorage.getItem('tbp_demo_firm'));
+            console.log('tbp_demo_email:', sessionStorage.getItem('tbp_demo_email'));
+
+            document.getElementById('output').innerHTML = `
+                <h3>SessionStorage State:</h3>
+                <pre>
+tbp_demo_id: ${sessionStorage.getItem('tbp_demo_id')}
+tbp_demo_viewed: ${sessionStorage.getItem('tbp_demo_viewed')}
+tbp_demo_firm: ${sessionStorage.getItem('tbp_demo_firm')}
+tbp_demo_email: ${sessionStorage.getItem('tbp_demo_email')}
+                </pre>
+            `;
+        }
+
+        // Clear all demo-related sessionStorage
+        function clearState() {
+            sessionStorage.removeItem('tbp_demo_id');
+            sessionStorage.removeItem('tbp_demo_viewed');
+            sessionStorage.removeItem('tbp_demo_firm');
+            sessionStorage.removeItem('tbp_demo_email');
+            checkState();
+        }
+
+        // Simulate setting tbp_demo_id (what handleNavClick should do)
+        function simulateNavClick() {
+            sessionStorage.setItem('tbp_demo_id', '8zAyORR40eEX5Zxy8BtK');
+            sessionStorage.setItem('tbp_demo_firm', 'Test Law Firm');
+            checkState();
+        }
+
+        window.onload = checkState;
+    </script>
+</head>
+<body style="font-family: sans-serif; padding: 20px;">
+    <h1>Debug Flow Test</h1>
+    <div id="output"></div>
+    <br>
+    <button onclick="checkState()">Check State</button>
+    <button onclick="clearState()">Clear State</button>
+    <button onclick="simulateNavClick()">Simulate Nav Click</button>
+    <br><br>
+    <h3>Test Links:</h3>
+    <ul>
+        <li><a href="/demo/?demo=8zAyORR40eEX5Zxy8BtK&firm=Test%20Law%20Firm">Go to Demo Page</a></li>
+        <li><a href="/about-us.html">Go to About Page (no ?explore=1)</a></li>
+        <li><a href="/about-us.html?explore=1">Go to About Page (with ?explore=1)</a></li>
+        <li><a href="/?demo=8zAyORR40eEX5Zxy8BtK&firm=Test%20Law%20Firm">Go to Homepage with demo param</a></li>
+    </ul>
+</body>
+</html>

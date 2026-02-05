@@ -43,34 +43,6 @@
             box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
         }
 
-        .demo-welcome-logo {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 1.5rem;
-            font-family: 'Playfair Display', serif;
-            font-size: 1.5rem;
-            font-weight: 600;
-        }
-
-        .demo-welcome-logo .logo-icon {
-            height: 1.5rem;
-            width: auto;
-            margin-right: 0.5rem;
-        }
-
-        .demo-welcome-logo .logo-pre {
-            color: #ffffff;
-        }
-
-        .demo-welcome-logo .logo-intake {
-            color: #c9a962;
-        }
-
-        .demo-welcome-logo .logo-ai {
-            color: #ffffff;
-        }
-
         .demo-welcome h1 {
             font-family: 'Playfair Display', serif;
             color: var(--accent-gold);
@@ -320,21 +292,6 @@
             border-color: #cbd5e1;
         }
 
-        /* Floating buttons (after demo completed) */
-        .demo-floating-buttons {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            display: none;
-            flex-direction: column;
-            gap: 0.75rem;
-            z-index: 9999;
-        }
-
-        .demo-floating-buttons.visible {
-            display: flex;
-        }
-
         /* Responsive */
         @media (max-width: 768px) {
             .demo-page-content {
@@ -366,11 +323,6 @@
             .exit-modal h2 {
                 font-size: 1.25rem;
             }
-
-            .demo-floating-buttons {
-                bottom: 1rem;
-                right: 1rem;
-            }
         }
     </style>
 </head>
@@ -380,10 +332,6 @@
     <!-- Welcome Content (shown before demo starts) -->
     <div class="demo-page-content" id="demo-page-content">
         <div class="demo-welcome">
-            <div class="demo-welcome-logo">
-                <img src="/images/icon.svg" alt="PreIntake.ai" class="logo-icon">
-                <span class="logo-pre">Pre</span><span class="logo-intake">Intake</span><span class="logo-ai">.ai</span>
-            </div>
             <h1>Welcome to Your Demo</h1>
             <p class="demo-welcome-firm-name" id="demo-firm-name"></p>
             <div class="demo-welcome-steps">
@@ -416,29 +364,13 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
             </button>
-            <a href="#" class="demo-welcome-explore-link" id="explore-link">I'll explore the site first</a>
+            <a href="#" class="demo-welcome-explore-link" id="explore-link">Explore PreIntake.ai website first</a>
         </div>
     </div>
 
     <!-- Demo Iframe Container (shown after Start Demo clicked) -->
     <div class="demo-iframe-container" id="demo-iframe-container">
         <iframe class="demo-iframe" id="demo-iframe" src="" title="PreIntake Demo"></iframe>
-    </div>
-
-    <!-- Floating Buttons (shown after demo completed or closed) -->
-    <div class="demo-floating-buttons" id="demo-floating-buttons">
-        <a href="#" class="get-started-btn" id="get-started-btn">
-            Get Started
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-            </svg>
-        </a>
-        <button class="view-demo-btn" id="view-demo-btn">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-            </svg>
-            View Demo Again
-        </button>
     </div>
 
     <!-- Exit Confirmation Modal -->
@@ -570,6 +502,12 @@
                     accountBtn.textContent = 'Get Started →';
                     accountBtn.classList.add('nav-get-started');
                 }
+
+                // Remove "Demo" link - redundant on demo page
+                const demoLink = document.querySelector('.nav-menu a[href*="demo"]');
+                if (demoLink) {
+                    demoLink.remove();
+                }
             }, 100);
         }
 
@@ -590,15 +528,46 @@
         }
 
         function handleNavClick(e) {
-            // If demo not started or intake completed, allow navigation
-            if (!demoStarted || intakeCompleted) {
-                return; // Allow normal navigation
+            // If intake completed, allow normal navigation (user finished demo)
+            if (intakeCompleted) return;
+
+            e.preventDefault();
+
+            // ALWAYS store demo context for the destination page
+            sessionStorage.setItem('tbp_demo_id', demoLeadId);
+            if (firmName) sessionStorage.setItem('tbp_demo_firm', firmName);
+            if (deliveryEmail) sessionStorage.setItem('tbp_demo_email', deliveryEmail);
+
+            // If demo started but not completed, show exit confirmation
+            if (demoStarted) {
+                pendingNavUrl = e.currentTarget.href;
+                showExitModal();
+                return;
             }
 
-            // Demo started but not completed - show exit confirmation
-            e.preventDefault();
-            pendingNavUrl = e.currentTarget.href;
-            showExitModal();
+            // Demo not started - navigate directly with explore flag
+            navigateWithExploreFlag(e.currentTarget.href);
+        }
+
+        function navigateWithExploreFlag(url) {
+            // Parse URL to handle hash fragments correctly
+            // Query string must come BEFORE hash: /?explore=1#pricing (not /#pricing?explore=1)
+            try {
+                const urlObj = new URL(url, window.location.origin);
+                urlObj.searchParams.set('explore', '1');
+                window.location.href = urlObj.toString();
+            } catch (err) {
+                // Fallback for relative URLs
+                if (url.includes('?')) {
+                    window.location.href = url + '&explore=1';
+                } else if (url.includes('#')) {
+                    // Insert query before hash
+                    const hashIndex = url.indexOf('#');
+                    window.location.href = url.slice(0, hashIndex) + '?explore=1' + url.slice(hashIndex);
+                } else {
+                    window.location.href = url + '?explore=1';
+                }
+            }
         }
 
         // =========================================================================
@@ -625,16 +594,15 @@
         }
 
         function showDemo() {
-            // Show iframe container
+            // If demo not started yet, start it
+            if (!demoStarted) {
+                startDemo();
+                return;
+            }
+
+            // Show iframe container (demo already loaded)
             document.getElementById('demo-page-content').style.display = 'none';
             document.getElementById('demo-iframe-container').classList.add('visible');
-            document.getElementById('demo-floating-buttons').classList.remove('visible');
-        }
-
-        function hideDemo() {
-            // Hide iframe, show floating buttons
-            document.getElementById('demo-iframe-container').classList.remove('visible');
-            document.getElementById('demo-floating-buttons').classList.add('visible');
         }
 
         // =========================================================================
@@ -656,12 +624,14 @@
         function handleLeaveDemo() {
             hideExitModal();
 
-            // Navigate to pending URL or homepage
-            if (pendingNavUrl) {
-                window.location.href = pendingNavUrl;
-            } else {
-                window.location.href = '/';
-            }
+            // Store demo context in sessionStorage for destination page
+            // (needed for "I'll explore" link which doesn't go through handleNavClick)
+            sessionStorage.setItem('tbp_demo_id', demoLeadId);
+            if (firmName) sessionStorage.setItem('tbp_demo_firm', firmName);
+            if (deliveryEmail) sessionStorage.setItem('tbp_demo_email', deliveryEmail);
+
+            // Navigate with explore flag
+            navigateWithExploreFlag(pendingNavUrl || '/');
         }
 
         // =========================================================================
@@ -687,7 +657,8 @@
                 case 'demo-complete':
                     // Demo fully completed (user clicked OK on success modal)
                     intakeCompleted = true;
-                    hideDemo();
+                    // Demo page has no floating buttons - iframe stays visible
+                    // User can navigate away via header or Get Started button
                     break;
 
                 case 'demo-complete-redirect':
@@ -695,9 +666,8 @@
                     intakeCompleted = true;
                     if (e.data.redirectUrl && e.data.redirectUrl !== '/') {
                         window.location.href = e.data.redirectUrl;
-                    } else {
-                        hideDemo();
                     }
+                    // If no redirect URL, iframe stays visible
                     break;
             }
         }
@@ -719,10 +689,6 @@
             // Exit modal buttons
             document.getElementById('exit-modal-continue').addEventListener('click', handleContinueDemo);
             document.getElementById('exit-modal-leave').addEventListener('click', handleLeaveDemo);
-
-            // Floating buttons
-            document.getElementById('get-started-btn').href = `/create-account.html?firm=${demoLeadId}`;
-            document.getElementById('view-demo-btn').addEventListener('click', showDemo);
         }
 
         // =========================================================================
@@ -730,9 +696,10 @@
         // =========================================================================
         function cleanFirmNameForDisplay(name) {
             if (!name) return '';
-            // Remove common suffixes that look redundant
+            // Remove personal suffixes (Attorney at Law) and entity types (PLLC, LLC, etc.)
+            // Keep "Law Firm", "Law Office" as they're often part of branding
             return name
-                .replace(/,?\s*(Attorney at Law|Attorneys at Law|Law Firm|Law Office|Law Offices|PLLC|PLC|LLC|LLP|PC|P\.?C\.?|P\.?A\.?)$/i, '')
+                .replace(/,?\s*(Attorney at Law|Attorneys at Law|PLLC|PLC|LLC|LLP|PC|P\.?C\.?|P\.?A\.?)$/i, '')
                 .trim();
         }
 
