@@ -231,8 +231,8 @@
             margin-top: 4px;
         }
 
-        /* Rate Cards */
-        .rate-section {
+        /* Sections */
+        .dashboard-section {
             background: #1e293b;
             border-radius: 16px;
             padding: 32px;
@@ -240,9 +240,70 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .rate-cards {
+        /* Funnel */
+        .funnel-steps {
+            display: flex;
+            align-items: flex-start;
+            gap: 0;
+            overflow-x: auto;
+            padding-bottom: 8px;
+        }
+
+        .funnel-step {
+            flex: 1;
+            min-width: 140px;
+            text-align: center;
+            position: relative;
+            padding: 0 8px;
+        }
+
+        .funnel-step .funnel-count {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #c9a962;
+            margin-bottom: 4px;
+        }
+
+        .funnel-step .funnel-label {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+
+        .funnel-bar-container {
+            height: 32px;
+            background: #0f172a;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .funnel-bar {
+            height: 100%;
+            border-radius: 6px;
+            transition: width 0.6s ease;
+        }
+
+        .funnel-step .funnel-pct {
+            font-size: 0.75rem;
+            color: #64748b;
+        }
+
+        .funnel-arrow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #334155;
+            font-size: 1.2rem;
+            min-width: 24px;
+            padding-top: 10px;
+        }
+
+        /* Rate Cards Grid */
+        .rate-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
             gap: 24px;
         }
 
@@ -250,7 +311,6 @@
             background: #0f172a;
             border-radius: 12px;
             padding: 24px;
-            text-align: center;
         }
 
         .rate-card h4 {
@@ -258,19 +318,77 @@
             font-size: 0.8rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            margin-bottom: 12px;
+            margin-bottom: 16px;
+            text-align: center;
         }
 
-        .rate-value {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: #c9a962;
-            margin-bottom: 8px;
+        .rate-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        .rate-details {
+        .rate-row:last-child {
+            border-bottom: none;
+        }
+
+        .rate-row .rate-label {
             color: #94a3b8;
             font-size: 0.85rem;
+        }
+
+        .rate-row .rate-value {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #c9a962;
+            margin-bottom: 0;
+        }
+
+        .rate-row .rate-detail {
+            color: #64748b;
+            font-size: 0.75rem;
+            margin-left: 8px;
+        }
+
+        /* Performance Tables */
+        .perf-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .perf-table th {
+            text-align: left;
+            padding: 10px 12px;
+            color: #94a3b8;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #334155;
+        }
+
+        .perf-table th.right {
+            text-align: right;
+        }
+
+        .perf-table td {
+            padding: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 0.85rem;
+        }
+
+        .perf-table td.right {
+            text-align: right;
+        }
+
+        .perf-table tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .perf-table .highlight {
+            color: #c9a962;
+            font-weight: 600;
         }
 
         /* Traffic Sources Table */
@@ -300,14 +418,6 @@
         }
 
         /* Lead Details Table */
-        .leads-section {
-            background: #1e293b;
-            border-radius: 16px;
-            padding: 32px;
-            margin-bottom: 40px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
         .leads-table {
             width: 100%;
             border-collapse: collapse;
@@ -315,76 +425,22 @@
 
         .leads-table th {
             text-align: left;
-            padding: 12px 16px;
+            padding: 12px 12px;
             color: #94a3b8;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             border-bottom: 2px solid #334155;
         }
 
         .leads-table td {
-            padding: 16px;
+            padding: 12px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
 
         .leads-table tr:hover td {
             background: rgba(255, 255, 255, 0.02);
-        }
-
-        .status-badge {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        .status-badge.demo_ready {
-            background: rgba(59, 130, 246, 0.2);
-            color: #60a5fa;
-        }
-
-        .status-badge.awaiting_confirmation {
-            background: rgba(245, 158, 11, 0.2);
-            color: #fbbf24;
-        }
-
-        .status-badge.active {
-            background: rgba(16, 185, 129, 0.2);
-            color: #34d399;
-        }
-
-        /* Subscription status badges */
-        .subscription-badge {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        .subscription-badge.active {
-            background: rgba(16, 185, 129, 0.2);
-            color: #34d399;
-        }
-
-        .subscription-badge.cancelled {
-            background: rgba(239, 68, 68, 0.2);
-            color: #f87171;
-        }
-
-        .subscription-badge.past_due {
-            background: rgba(245, 158, 11, 0.2);
-            color: #fbbf24;
-        }
-
-        .subscription-badge.none {
-            background: rgba(100, 116, 139, 0.2);
-            color: #94a3b8;
         }
 
         .view-count {
@@ -427,6 +483,31 @@
             color: #94a3b8;
         }
 
+        /* Status badges */
+        .status-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-badge.completed {
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+        }
+
+        .status-badge.active {
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+        }
+
+        .status-badge.none {
+            background: rgba(100, 116, 139, 0.15);
+            color: #64748b;
+        }
+
         /* Loading State */
         .loading {
             display: flex;
@@ -461,17 +542,25 @@
                 align-items: flex-start;
             }
 
-            .leads-table, .traffic-table {
+            .leads-table, .traffic-table, .perf-table {
                 display: block;
                 overflow-x: auto;
             }
 
-            .rate-value {
-                font-size: 2rem;
-            }
-
             .big-number {
                 font-size: 1.5rem;
+            }
+
+            .funnel-steps {
+                flex-wrap: nowrap;
+            }
+
+            .funnel-step {
+                min-width: 100px;
+            }
+
+            .funnel-step .funnel-count {
+                font-size: 1.25rem;
             }
         }
     </style>
@@ -604,22 +693,250 @@
             return mapping[source] || source;
         }
 
+        function formatBarSource(source) {
+            const mapping = {
+                'calbar': 'California',
+                'flbar': 'Florida',
+                'ohbar': 'Ohio',
+                'mibar': 'Michigan',
+                'mobar': 'Missouri',
+                'kybar': 'Kentucky',
+                'gabar': 'Georgia',
+                'ilbar': 'Illinois',
+                'inbar': 'Indiana',
+                'msbar': 'Mississippi',
+                'nebar': 'Nebraska',
+                'ncbar': 'North Carolina',
+                'okbar': 'Oklahoma',
+                'wsba': 'Washington',
+                'nsba': 'Nebraska SBA',
+                'unknown': 'Unknown'
+            };
+            return mapping[source] || source;
+        }
+
+        function formatTemplate(version) {
+            const mapping = {
+                'v7-bar-profile-demo': 'Bar Profile (v7)',
+                'v6-personalized-demo': 'Website Demo (v6)',
+                'v6-generic': 'Generic (v6)',
+                'unknown': 'Unknown'
+            };
+            return mapping[version] || version;
+        }
+
         function renderAnalytics(data) {
             const content = document.getElementById('content');
             const lastUpdated = document.getElementById('last-updated');
             lastUpdated.textContent = `Last updated: ${new Date().toLocaleString()}`;
 
-            // Calculate conversion rates
-            const visitRate = pct(data.visitedCount, data.totalSent);
-            // Calculate time-bucketed rates
-            const todayVisitRate = pct(data.todayVisited, data.todaySent);
-            const last7VisitRate = pct(data.last7DaysVisited, data.last7DaysSent);
-            const yesterdayVisitRate = pct(data.yesterdayVisited, data.yesterdaySent);
-
             let html = '';
 
             // ═══════════════════════════════════════════════
-            // GA4 WEBSITE TRAFFIC
+            // SECTION 1: ENGAGEMENT FUNNEL
+            // ═══════════════════════════════════════════════
+            const funnelSteps = [
+                { label: 'Emails Sent', count: data.totalSent || 0, color: '#3b82f6' },
+                { label: 'Clicked', count: data.visitedCount || 0, color: '#8b5cf6' },
+                { label: 'Demo Started', count: data.viewedCount || 0, color: '#c9a962' },
+                { label: 'Explored Site', count: data.exploredCount || 0, color: '#f59e0b' },
+                { label: 'Intake Completed', count: data.intakeCompletedCount || 0, color: '#10b981' }
+            ];
+            const maxCount = funnelSteps[0].count || 1;
+
+            html += `
+            <div class="dashboard-section">
+                <div class="section-header">
+                    <span class="section-icon">&#9670;</span>
+                    <h2>Engagement Funnel</h2>
+                </div>
+                <div class="funnel-steps">
+                    ${funnelSteps.map((step, i) => {
+                        const barWidth = Math.max(4, (step.count / maxCount) * 100);
+                        const prevCount = i > 0 ? funnelSteps[i - 1].count : null;
+                        const dropoff = prevCount ? pct(step.count, prevCount) : null;
+                        const ofTotal = i > 0 ? pct(step.count, funnelSteps[0].count) : null;
+                        return `
+                            ${i > 0 ? '<div class="funnel-arrow">&#9654;</div>' : ''}
+                            <div class="funnel-step">
+                                <div class="funnel-count">${step.count.toLocaleString()}</div>
+                                <div class="funnel-label">${step.label}</div>
+                                <div class="funnel-bar-container">
+                                    <div class="funnel-bar" style="width: ${barWidth}%; background: ${step.color};"></div>
+                                </div>
+                                <div class="funnel-pct">
+                                    ${dropoff !== null ? `${dropoff}% of prev` : '100%'}
+                                    ${ofTotal !== null ? ` &middot; ${ofTotal}% of sent` : ''}
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            </div>
+            `;
+
+            // ═══════════════════════════════════════════════
+            // SECTION 2: KEY RATES BY TIME PERIOD
+            // ═══════════════════════════════════════════════
+            const periods = [
+                {
+                    label: 'All Time',
+                    sent: data.totalSent,
+                    visited: data.visitedCount || 0,
+                    viewed: data.viewedCount || 0,
+                    completed: data.intakeCompletedCount || 0
+                },
+                {
+                    label: 'Last 7 Days',
+                    sent: data.last7DaysSent,
+                    visited: data.last7DaysVisited || 0,
+                    viewed: data.last7DaysViewed || 0,
+                    completed: data.last7DaysCompleted || 0
+                },
+                {
+                    label: 'Yesterday',
+                    sent: data.yesterdaySent,
+                    visited: data.yesterdayVisited || 0,
+                    viewed: data.yesterdayViewed || 0,
+                    completed: data.yesterdayCompleted || 0
+                },
+                {
+                    label: 'Today',
+                    sent: data.todaySent,
+                    visited: data.todayVisited || 0,
+                    viewed: data.todayViewed || 0,
+                    completed: data.todayCompleted || 0
+                }
+            ];
+
+            html += `
+            <div class="dashboard-section">
+                <div class="section-header">
+                    <span class="section-icon">&#9670;</span>
+                    <h2>Key Rates</h2>
+                </div>
+                <div class="rate-grid">
+                    ${periods.map(p => `
+                        <div class="rate-card">
+                            <h4>${p.label}</h4>
+                            <div class="rate-row">
+                                <span class="rate-label">Click Rate</span>
+                                <span>
+                                    <span class="rate-value">${pct(p.visited, p.sent)}%</span>
+                                    <span class="rate-detail">${p.visited}/${p.sent}</span>
+                                </span>
+                            </div>
+                            <div class="rate-row">
+                                <span class="rate-label">Demo Start Rate</span>
+                                <span>
+                                    <span class="rate-value">${pct(p.viewed, p.visited)}%</span>
+                                    <span class="rate-detail">${p.viewed}/${p.visited}</span>
+                                </span>
+                            </div>
+                            <div class="rate-row">
+                                <span class="rate-label">Completion Rate</span>
+                                <span>
+                                    <span class="rate-value">${pct(p.completed, p.viewed)}%</span>
+                                    <span class="rate-detail">${p.completed}/${p.viewed}</span>
+                                </span>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+            `;
+
+            // ═══════════════════════════════════════════════
+            // SECTION 3: TEMPLATE PERFORMANCE
+            // ═══════════════════════════════════════════════
+            if (data.templatePerformance && Object.keys(data.templatePerformance).length > 0) {
+                const templates = Object.entries(data.templatePerformance)
+                    .sort((a, b) => b[1].sent - a[1].sent);
+
+                html += `
+                <div class="dashboard-section">
+                    <div class="section-header">
+                        <span class="section-icon">&#9670;</span>
+                        <h2>Template Performance</h2>
+                    </div>
+                    <table class="perf-table">
+                        <thead>
+                            <tr>
+                                <th>Template</th>
+                                <th class="right">Sent</th>
+                                <th class="right">Clicked</th>
+                                <th class="right">Click Rate</th>
+                                <th class="right">Demo Starts</th>
+                                <th class="right">Start Rate</th>
+                                <th class="right">Completed</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${templates.map(([version, perf]) => `
+                                <tr>
+                                    <td style="color: #e2e8f0; font-weight: 500;">${formatTemplate(version)}</td>
+                                    <td class="right">${perf.sent.toLocaleString()}</td>
+                                    <td class="right">${perf.visited}</td>
+                                    <td class="right highlight">${pct(perf.visited, perf.sent)}%</td>
+                                    <td class="right">${perf.viewed}</td>
+                                    <td class="right highlight">${pct(perf.viewed, perf.visited)}%</td>
+                                    <td class="right">${perf.completed}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+                `;
+            }
+
+            // ═══════════════════════════════════════════════
+            // SECTION 4: SOURCE PERFORMANCE (Bar Associations)
+            // ═══════════════════════════════════════════════
+            if (data.sourcePerformance && Object.keys(data.sourcePerformance).length > 0) {
+                const sources = Object.entries(data.sourcePerformance)
+                    .filter(([src]) => src !== 'unknown')
+                    .sort((a, b) => b[1].sent - a[1].sent);
+
+                if (sources.length > 0) {
+                    html += `
+                    <div class="dashboard-section">
+                        <div class="section-header">
+                            <span class="section-icon">&#9670;</span>
+                            <h2>Source Performance (Bar Associations)</h2>
+                        </div>
+                        <table class="perf-table">
+                            <thead>
+                                <tr>
+                                    <th>Source</th>
+                                    <th class="right">Sent</th>
+                                    <th class="right">Clicked</th>
+                                    <th class="right">Click Rate</th>
+                                    <th class="right">Demo Starts</th>
+                                    <th class="right">Start Rate</th>
+                                    <th class="right">Completed</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${sources.map(([source, perf]) => `
+                                    <tr>
+                                        <td style="color: #e2e8f0; font-weight: 500;">${formatBarSource(source)}</td>
+                                        <td class="right">${perf.sent.toLocaleString()}</td>
+                                        <td class="right">${perf.visited}</td>
+                                        <td class="right highlight">${pct(perf.visited, perf.sent)}%</td>
+                                        <td class="right">${perf.viewed}</td>
+                                        <td class="right highlight">${pct(perf.viewed, perf.visited)}%</td>
+                                        <td class="right">${perf.completed}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                    `;
+                }
+            }
+
+            // ═══════════════════════════════════════════════
+            // SECTION 5: GA4 WEBSITE TRAFFIC
             // ═══════════════════════════════════════════════
             if (data.ga4Stats) {
                 const g = data.ga4Stats;
@@ -635,7 +952,7 @@
                         <div class="big-number-sub">${g.last7Days.sessions.toLocaleString()} sessions</div>
                     </div>
                     <div class="big-number-card">
-                        <h4>Page Views<br />(7 Days)</h4>
+                        <h4>Page Views (7 Days)</h4>
                         <div class="big-number">${g.last7Days.pageViews.toLocaleString()}</div>
                         <div class="big-number-sub">${fmtEngagement(g.last7Days.engagementRate)} engaged</div>
                     </div>
@@ -662,7 +979,7 @@
                 </div>
 
                 ${g.trafficSources && g.trafficSources.length > 0 ? `
-                <div class="rate-section" style="margin-bottom: 40px;">
+                <div class="dashboard-section" style="margin-bottom: 40px;">
                     <div class="section-header" style="margin-bottom: 16px;">
                         <h2 style="font-size: 1.1rem;">Traffic Sources (Last 7 Days)</h2>
                     </div>
@@ -692,7 +1009,7 @@
             }
 
             // ═══════════════════════════════════════════════
-            // EMAIL DATABASE OVERVIEW
+            // SECTION 6: EMAIL DATABASE OVERVIEW
             // ═══════════════════════════════════════════════
             html += `
             <div class="section-header">
@@ -723,56 +1040,13 @@
             </div>
             `;
 
-            
-
             // ═══════════════════════════════════════════════
-            // CONVERSION RATES
+            // SECTION 7: LEAD DETAILS TABLE (ENHANCED)
             // ═══════════════════════════════════════════════
-            html += `
-            <div class="rate-section">
-                <div class="section-header">
-                    <span class="section-icon">&#9670;</span>
-                    <h2>Conversion Rates (Visits / Total Emails Sent)</h2>
-                </div>
-                ${data.totalSent > 0 ? `
-                <div class="rate-cards">
-                    <div class="rate-card">
-                        <h4>All Time</h4>
-                        <div class="rate-value">${visitRate}%</div>
-                        <div class="rate-details">${data.visitedCount || 0} visits / ${data.totalSent} emails</div>
-                    </div>
-                    <div class="rate-card">
-                        <h4>Last 7 Days</h4>
-                        <div class="rate-value">${last7VisitRate}%</div>
-                        <div class="rate-details">${data.last7DaysVisited || 0} visits / ${data.last7DaysSent} emails</div>
-                    </div>
-                    <div class="rate-card">
-                        <h4>Yesterday</h4>
-                        <div class="rate-value">${yesterdayVisitRate}%</div>
-                        <div class="rate-details">${data.yesterdayVisited || 0} visits / ${data.yesterdaySent} emails</div>
-                    </div>
-                    <div class="rate-card">
-                        <h4>Today</h4>
-                        <div class="rate-value">${todayVisitRate}%</div>
-                        <div class="rate-details">${data.todayVisited || 0} visits / ${data.todaySent} emails</div>
-                    </div>
-                </div>
-                ` : `
-                <p style="color: #94a3b8; text-align: center; padding: 40px;">
-                    No emails sent yet.
-                </p>
-                `}
-            </div>
-            `;
-
-            // ═══════════════════════════════════════════════
-            // LEAD DETAILS TABLE
-            // ═══════════════════════════════════════════════
-            // Filter to only show leads with at least 1 visit
             const visitedLeads = data.leadDetails ? data.leadDetails.filter(lead => lead.visitCount > 0) : [];
             if (visitedLeads.length > 0) {
                 html += `
-                <div class="leads-section">
+                <div class="dashboard-section">
                     <div class="section-header">
                         <span class="section-icon">&#9670;</span>
                         <h2>Campaign Lead Details (${visitedLeads.length} with visits)</h2>
@@ -782,21 +1056,26 @@
                             <tr>
                                 <th>Firm Name</th>
                                 <th>Source</th>
-                                <th>Created</th>
                                 <th>Visits</th>
-                                <th>Explored</th>
                                 <th>Demo Starts</th>
+                                <th>Explored</th>
+                                <th>Intake</th>
+                                <th>Subscription</th>
                             </tr>
                         </thead>
                         <tbody>
                             ${visitedLeads.map(lead => `
                                 <tr>
-                                    <td>${lead.firmName}</td>
+                                    <td style="color: #e2e8f0; font-weight: 500;">${lead.firmName}</td>
                                     <td><span class="source-badge ${lead.source}">${formatSource(lead.source)}</span></td>
-                                    <td>${lead.createdAt || 'Unknown'}</td>
                                     <td>
                                         <span class="view-count ${lead.visitCount > 0 ? 'viewed' : 'not-viewed'}">
                                             ${lead.visitCount > 0 ? lead.visitCount + 'x' : '-'}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="view-count ${lead.viewCount > 0 ? 'viewed' : 'not-viewed'}">
+                                            ${lead.viewCount > 0 ? lead.viewCount + 'x' : '-'}
                                         </span>
                                     </td>
                                     <td>
@@ -805,9 +1084,14 @@
                                         </span>
                                     </td>
                                     <td>
-                                        <span class="view-count ${lead.viewCount > 0 ? 'viewed' : 'not-viewed'}">
-                                            ${lead.viewCount > 0 ? lead.viewCount + 'x' : '-'}
-                                        </span>
+                                        ${lead.intakeCompleted
+                                            ? '<span class="status-badge completed">Completed</span>'
+                                            : '<span class="status-badge none">-</span>'}
+                                    </td>
+                                    <td>
+                                        ${lead.subscriptionStatus
+                                            ? `<span class="status-badge ${lead.subscriptionStatus}">${lead.subscriptionStatus}</span>`
+                                            : '<span class="status-badge none">-</span>'}
                                     </td>
                                 </tr>
                             `).join('')}

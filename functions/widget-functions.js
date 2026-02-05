@@ -795,11 +795,24 @@ const getEmailAnalytics = onRequest(
             let todayViewed = 0;
             let yesterdayViewed = 0;
 
+            // Intake completion tracking
+            let intakeCompletedCount = 0;
+            let last7DaysCompleted = 0;
+            let todayCompleted = 0;
+            let yesterdayCompleted = 0;
+
+            // Explore tracking (aggregate)
+            let exploredCount = 0;
+
             let activeLeads = 0;
             const leadDetails = [];
 
+            // Build leadId → engagement map for per-template/per-source performance
+            const leadEngagement = {};
+
             leadsSnap.forEach(doc => {
                 const data = doc.data();
+                const leadId = doc.id;
 
                 // Visit tracking
                 const visitCount = data.visitCount || 0;
@@ -827,10 +840,36 @@ const getEmailAnalytics = onRequest(
                     }
                 }
 
+                // Explore tracking
+                const exploreCount = data.exploreCount || 0;
+                if (exploreCount > 0) exploredCount++;
+
+                // Intake completion tracking (set by logDelivery in intake-delivery-functions.js)
+                const intakeDelivery = data.intakeDelivery;
+                const intakeCompleted = !!(intakeDelivery && intakeDelivery.success);
+                const deliveredAt = intakeDelivery?.deliveredAt?.toDate();
+
+                if (intakeCompleted) {
+                    intakeCompletedCount++;
+                    if (deliveredAt) {
+                        if (deliveredAt >= startDate) last7DaysCompleted++;
+                        if (deliveredAt >= todayStart && deliveredAt < endDate) todayCompleted++;
+                        if (deliveredAt >= yesterdayStart && deliveredAt < todayStart) yesterdayCompleted++;
+                    }
+                }
+
                 // Active leads (status changed or has delivery config)
                 if (data.status !== 'demo_ready' || data.deliveryConfig) {
                     activeLeads++;
                 }
+
+                // Store engagement data for per-template/per-source cross-reference
+                leadEngagement[leadId] = {
+                    visited: visitCount > 0,
+                    viewed: viewCount > 0,
+                    explored: exploreCount > 0,
+                    completed: intakeCompleted
+                };
 
                 leadDetails.push({
                     firmName: data.name || data.analysis?.firmName || 'Unknown',
@@ -838,17 +877,63 @@ const getEmailAnalytics = onRequest(
                     createdAt: data.createdAt?.toDate()?.toISOString().split('T')[0] || null,
                     firstVisitAt: firstVisitAt?.toISOString().split('T')[0] || null,
                     visitCount: visitCount,
-                    exploreCount: data.exploreCount || 0,
+                    exploreCount: exploreCount,
                     firstViewedAt: firstViewedAt?.toISOString().split('T')[0] || null,
                     viewCount: viewCount,
+                    intakeCompleted: intakeCompleted,
+                    intakeDeliveredAt: deliveredAt?.toISOString().split('T')[0] || null,
+                    subscriptionStatus: data.subscriptionStatus || null,
                 });
             });
 
-            // Sort leads by creation date (newest first)
+            // Build per-template and per-source performance by cross-referencing
+            // preintake_emails (via preintakeLeadId) with lead engagement data
+            const templatePerformance = {};
+            const sourcePerformance = {};
+
+            emailsSnap.forEach(doc => {
+                const data = doc.data();
+                const template = data.templateVersion || 'unknown';
+                const source = data.source || 'unknown';
+                const leadId = data.preintakeLeadId || null;
+
+                // Initialize template entry
+                if (!templatePerformance[template]) {
+                    templatePerformance[template] = { sent: 0, visited: 0, viewed: 0, completed: 0 };
+                }
+                templatePerformance[template].sent++;
+
+                // Initialize source entry
+                if (!sourcePerformance[source]) {
+                    sourcePerformance[source] = { sent: 0, visited: 0, viewed: 0, completed: 0 };
+                }
+                sourcePerformance[source].sent++;
+
+                // Cross-reference with lead engagement
+                if (leadId && leadEngagement[leadId]) {
+                    const eng = leadEngagement[leadId];
+                    if (eng.visited) {
+                        templatePerformance[template].visited++;
+                        sourcePerformance[source].visited++;
+                    }
+                    if (eng.viewed) {
+                        templatePerformance[template].viewed++;
+                        sourcePerformance[source].viewed++;
+                    }
+                    if (eng.completed) {
+                        templatePerformance[template].completed++;
+                        sourcePerformance[source].completed++;
+                    }
+                }
+            });
+
+            // Sort leads by most recent activity (visit, view, or creation)
             leadDetails.sort((a, b) => {
-                if (!a.createdAt) return 1;
-                if (!b.createdAt) return -1;
-                return b.createdAt.localeCompare(a.createdAt);
+                const aDate = a.firstViewedAt || a.firstVisitAt || a.createdAt || '';
+                const bDate = b.firstViewedAt || b.firstVisitAt || b.createdAt || '';
+                if (!aDate) return 1;
+                if (!bDate) return -1;
+                return bDate.localeCompare(aDate);
             });
 
             return res.json({
@@ -873,8 +958,17 @@ const getEmailAnalytics = onRequest(
                 last7DaysViewed,
                 todayViewed,
                 yesterdayViewed,
+                // Intake completion
+                intakeCompletedCount,
+                last7DaysCompleted,
+                todayCompleted,
+                yesterdayCompleted,
+                // Explore aggregate
+                exploredCount,
                 activeLeads,
                 templateVersions,
+                templatePerformance,
+                sourcePerformance,
                 leadDetails,
                 // Database overview
                 totalContacts,
