@@ -1063,11 +1063,11 @@ async function runCampaign() {
             console.log(`\n⚠️  Skipping ${email}: ${validation.issues.join(', ')}`);
             skipped++;
 
-            // Mark as skipped in Firestore (so we don't keep retrying)
+            // Mark as failed in Firestore (so we don't keep retrying)
             if (!TEST_EMAIL) {
                 await doc.ref.update({
-                    status: 'skipped_bad_data',
-                    skipReason: validation.issues.join('; '),
+                    status: 'failed',
+                    failReason: validation.issues.join('; '),
                     skippedAt: admin.firestore.FieldValue.serverTimestamp()
                 });
             }
