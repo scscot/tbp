@@ -16,7 +16,8 @@
  *   node scripts/scrape-wsba-attorneys.js
  *
  * Environment variables:
- *   MAX_ATTORNEYS - Maximum attorneys to process per run (default: 500)
+ *   MAX_ATTORNEYS - Maximum attorneys to process per practice area (default: 500)
+ *   MAX_AREAS - Maximum practice areas per run (default: 8)
  *   DRY_RUN - If "true", don't write to Firestore
  *   PRACTICE_AREA_SLUG - Specific practice area to scrape (optional)
  *   PREINTAKE_SMTP_USER - SMTP username for notifications
@@ -80,6 +81,10 @@ const DELAY_BETWEEN_PAGES = 2000;
 const DELAY_BETWEEN_PROFILES = 300;
 const MAX_ATTORNEYS = parseInt(process.env.MAX_ATTORNEYS) || 500;
 const EARLY_EXIT_THRESHOLD = 75; // Skip practice area after N consecutive profiles with no new inserts
+const MAX_PRACTICE_AREAS_PER_RUN = parseInt(process.env.MAX_AREAS) || 8; // Limit areas per run to avoid timeout
+const SATURATION_THRESHOLD = 3; // Zero-insert runs before marking an area as saturated
+const SATURATION_RECHECK_DAYS = 7; // Days before rechecking a saturated area
+const PRE_FILTER_KNOWN_PCT = 0.95; // Skip profile fetching if >95% of search results are already known
 const DRY_RUN = process.env.DRY_RUN === 'true';
 const PRACTICE_AREA_SLUG = process.env.PRACTICE_AREA_SLUG || null;
 
@@ -189,7 +194,9 @@ async function getProgress() {
         totalSkipped: data.totalSkipped || 0,
         failedAttempts: data.failedAttempts || {},
         permanentlySkipped: data.permanentlySkipped || [],
-        lastRunDate: data.lastRunDate || null
+        lastRunDate: data.lastRunDate || null,
+        areaStatus: data.areaStatus || {},  // { slug: { zeroInsertRuns, lastRunDate } }
+        runCount: data.runCount || 0
     };
 }
 
@@ -699,6 +706,23 @@ async function scrapePracticeArea(browser, practiceArea, existingEmails, existin
 
         console.log(`   Total attorneys collected: ${allAttorneys.length}`);
 
+        // Pre-filter: check how many collected attorneys are already known
+        if (allAttorneys.length >= 20) {
+            const knownCount = allAttorneys.filter(a => existingBarNumbers.has(a.licenseNumber)).length;
+            const knownPct = knownCount / allAttorneys.length;
+            console.log(`   Pre-filter: ${knownCount}/${allAttorneys.length} (${(knownPct * 100).toFixed(0)}%) already in DB`);
+
+            if (knownPct >= PRE_FILTER_KNOWN_PCT) {
+                console.log(`   Skipping profile fetch — area is ${(knownPct * 100).toFixed(0)}% covered`);
+                stats.skipped = knownCount;
+                stats.barNumberSkipped = knownCount;
+                stats.profilesFetched = allAttorneys.length;
+                stats.prefilterSkipped = true;
+                await page.close();
+                return stats;
+            }
+        }
+
         // Now fetch each profile to get email, phone, firmName, website
         // Names come from search results (more reliable than profile page extraction)
         console.log(`   Fetching profiles...`);
@@ -706,6 +730,12 @@ async function scrapePracticeArea(browser, practiceArea, existingEmails, existin
         let consecutiveNoInsert = 0;
 
         for (let i = 0; i < allAttorneys.length && i < MAX_ATTORNEYS; i++) {
+            // Early exit if no new inserts for a while (practice area mostly covered)
+            if (consecutiveNoInsert >= EARLY_EXIT_THRESHOLD) {
+                console.log(`     Early exit: ${EARLY_EXIT_THRESHOLD} consecutive profiles with no new inserts`);
+                break;
+            }
+
             const attorney = allAttorneys[i];
             const licenseNum = attorney.licenseNumber;
             stats.profilesFetched++;
@@ -811,11 +841,6 @@ async function scrapePracticeArea(browser, practiceArea, existingEmails, existin
                 }
             }
 
-            // Early exit if no new inserts for a while (practice area mostly covered)
-            if (consecutiveNoInsert >= EARLY_EXIT_THRESHOLD) {
-                console.log(`     Early exit: ${EARLY_EXIT_THRESHOLD} consecutive profiles with no new inserts`);
-                break;
-            }
         }
 
         // Commit remaining batch
@@ -915,20 +940,20 @@ async function main() {
     console.log(`Progress: ${progress.scrapedPracticeAreaSlugs.length}/${PRACTICE_AREAS.length} practice areas complete`);
     console.log(`Total inserted so far: ${progress.totalInserted.toLocaleString()}\n`);
 
-    // Load existing emails and bar numbers for deduplication
+    // Load ALL existing emails (cross-source) for deduplication
     console.log('Loading existing emails and bar numbers...');
     const existingEmails = new Set();
     const existingBarNumbers = new Set();
     const existingSnapshot = await db.collection('preintake_emails')
-        .where('source', '==', SOURCE)
-        .select('email', 'barNumber')
+        .select('email', 'barNumber', 'source')
         .get();
     existingSnapshot.forEach(doc => {
         const data = doc.data();
         if (data.email) existingEmails.add(data.email.toLowerCase());
-        if (data.barNumber) existingBarNumbers.add(data.barNumber.toString());
+        // Only track bar numbers for WSBA source (bar numbers are source-specific)
+        if (data.source === SOURCE && data.barNumber) existingBarNumbers.add(data.barNumber.toString());
     });
-    console.log(`Loaded ${existingEmails.size} existing emails, ${existingBarNumbers.size} bar numbers\n`);
+    console.log(`Loaded ${existingEmails.size} existing emails (all sources), ${existingBarNumbers.size} WSBA bar numbers\n`);
 
     const startTime = Date.now();
 
@@ -955,24 +980,64 @@ async function main() {
             console.log(`Scraping only: ${PRACTICE_AREA_SLUG}\n`);
         }
 
-        // Process practice areas
-        for (const practiceArea of areasToScrape) {
-            // Skip completed practice areas (unless specific one requested)
-            if (!PRACTICE_AREA_SLUG && progress.scrapedPracticeAreaSlugs.includes(practiceArea.slug)) {
-                console.log(`\nSkipping ${practiceArea.displayName} (already completed)`);
-                continue;
-            }
+        // ================================================================
+        // AREA SELECTION: filter to incomplete, non-saturated areas
+        // ================================================================
+        const incompleteAreas = areasToScrape.filter(a =>
+            !progress.scrapedPracticeAreaSlugs.includes(a.slug) &&
+            !progress.permanentlySkipped.includes(a.slug)
+        );
 
-            // Skip permanently skipped
-            if (progress.permanentlySkipped.includes(practiceArea.slug)) {
-                console.log(`\nSkipping ${practiceArea.displayName} (permanently skipped)`);
-                continue;
-            }
+        // Separate active vs saturated areas
+        const activeAreas = [];
+        const saturatedRechecks = [];
+        const skippedSaturated = [];
 
+        for (const area of incompleteAreas) {
+            const status = progress.areaStatus[area.slug];
+            if (!status || (status.zeroInsertRuns || 0) < SATURATION_THRESHOLD) {
+                activeAreas.push(area);
+            } else {
+                // Saturated — only include if enough time has passed for a recheck
+                const daysSinceLastRun = status.lastRunDate
+                    ? (Date.now() - new Date(status.lastRunDate).getTime()) / (1000 * 60 * 60 * 24)
+                    : Infinity;
+                if (daysSinceLastRun >= SATURATION_RECHECK_DAYS) {
+                    saturatedRechecks.push(area);
+                } else {
+                    skippedSaturated.push(area);
+                }
+            }
+        }
+
+        // Prioritize active areas, then saturated rechecks
+        const candidateAreas = [...activeAreas, ...saturatedRechecks];
+
+        // Limit to MAX_PRACTICE_AREAS_PER_RUN (unless specific area requested)
+        const areasThisRun = PRACTICE_AREA_SLUG
+            ? candidateAreas
+            : candidateAreas.slice(0, MAX_PRACTICE_AREAS_PER_RUN);
+
+        console.log(`Area selection: ${activeAreas.length} active, ${saturatedRechecks.length} recheck, ${skippedSaturated.length} saturated (skipped)`);
+        console.log(`Processing ${areasThisRun.length} areas this run (max ${MAX_PRACTICE_AREAS_PER_RUN})\n`);
+
+        if (skippedSaturated.length > 0) {
+            console.log(`Saturated areas (next recheck in ≤${SATURATION_RECHECK_DAYS}d): ${skippedSaturated.map(a => a.displayName).join(', ')}\n`);
+        }
+
+        // ================================================================
+        // PROCESS SELECTED AREAS
+        // ================================================================
+        for (const practiceArea of areasThisRun) {
             // Check if we've hit MAX_ATTORNEYS
             if (totalInsertedThisRun >= MAX_ATTORNEYS) {
                 console.log(`\nReached MAX_ATTORNEYS limit (${MAX_ATTORNEYS})`);
                 break;
+            }
+
+            const isSaturatedRecheck = saturatedRechecks.includes(practiceArea);
+            if (isSaturatedRecheck) {
+                console.log(`\n[RECHECK] ${practiceArea.displayName} (saturated — periodic recheck)`);
             }
 
             const stats = await scrapePracticeArea(browser, practiceArea, existingEmails, existingBarNumbers);
@@ -992,10 +1057,27 @@ async function main() {
                 console.log(`   ⏳ Practice area incomplete (${stats.profilesFetched}/${stats.totalResults} processed - will continue next run)`);
             }
 
+            // Update area saturation status
+            const areaState = progress.areaStatus[practiceArea.slug] || { zeroInsertRuns: 0 };
+            if (stats.inserted === 0) {
+                areaState.zeroInsertRuns = (areaState.zeroInsertRuns || 0) + 1;
+            } else {
+                areaState.zeroInsertRuns = 0; // Reset on any successful insert
+            }
+            areaState.lastRunDate = new Date().toISOString();
+            areaState.lastInserted = stats.inserted;
+            areaState.lastProfilesFetched = stats.profilesFetched;
+            progress.areaStatus[practiceArea.slug] = areaState;
+
+            if (areaState.zeroInsertRuns >= SATURATION_THRESHOLD) {
+                console.log(`   ⚡ Area marked saturated (${areaState.zeroInsertRuns} consecutive zero-insert runs)`);
+            }
+
             // Save progress after each practice area
             progress.totalInserted = (progress.totalInserted || 0) + stats.inserted;
             progress.totalSkipped = (progress.totalSkipped || 0) + stats.skipped;
             progress.lastRunDate = new Date().toISOString();
+            progress.runCount = (progress.runCount || 0) + 1;
 
             if (!DRY_RUN) {
                 await saveProgress(progress);
@@ -1009,13 +1091,16 @@ async function main() {
         const totalInDb = await getTotalAttorneysInDb();
         const duration = ((Date.now() - startTime) / 1000 / 60).toFixed(1);
 
+        const saturatedCount = Object.values(progress.areaStatus).filter(s => (s.zeroInsertRuns || 0) >= SATURATION_THRESHOLD).length;
+
         console.log('\n' + '='.repeat(60));
         console.log('SUMMARY');
         console.log('='.repeat(60));
-        console.log(`   Practice areas scraped: ${allStats.length}`);
+        console.log(`   Practice areas scraped this run: ${allStats.length}`);
         console.log(`   Inserted this run: ${totalInsertedThisRun}`);
         console.log(`   Total WSBA in DB: ${totalInDb.toLocaleString()}`);
         console.log(`   Practice areas complete: ${progress.scrapedPracticeAreaSlugs.length}/${PRACTICE_AREAS.length}`);
+        console.log(`   Practice areas saturated: ${saturatedCount}`);
         console.log(`   Duration: ${duration} minutes`);
 
         // Save summary

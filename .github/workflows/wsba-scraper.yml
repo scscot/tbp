@@ -11,9 +11,13 @@ on:
         description: 'Practice area slug (e.g., "Personal Injury", "Bankruptcy")'
         required: false
       max_attorneys:
-        description: 'Max attorneys to scrape'
+        description: 'Max attorneys to scrape per practice area'
         required: false
-        default: '350'
+        default: '500'
+      max_areas:
+        description: 'Max practice areas per run'
+        required: false
+        default: '8'
 
 env:
   NODE_VERSION: '20'
@@ -53,7 +57,8 @@ jobs:
       - name: Run scraper
         env:
           PRACTICE_AREA_SLUG: ${{ inputs.practice_area_slug }}
-          MAX_ATTORNEYS: ${{ inputs.max_attorneys || '350' }}
+          MAX_ATTORNEYS: ${{ inputs.max_attorneys || '500' }}
+          MAX_AREAS: ${{ inputs.max_areas || '8' }}
           PREINTAKE_SMTP_USER: ${{ secrets.PREINTAKE_SMTP_USER }}
           PREINTAKE_SMTP_PASS: ${{ secrets.PREINTAKE_SMTP_PASS }}
         run: node scripts/scrape-wsba-attorneys.js
