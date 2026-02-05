@@ -9,6 +9,24 @@
         { "fieldPath": "website", "order": "ASCENDING" },
         { "fieldPath": "randomIndex", "order": "ASCENDING" }
       ]
+    },
+    {
+      "collectionGroup": "direct_sales_contacts",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "scraped", "order": "ASCENDING" },
+        { "fieldPath": "sent", "order": "ASCENDING" },
+        { "fieldPath": "randomIndex", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "direct_sales_contacts",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "company", "order": "ASCENDING" },
+        { "fieldPath": "scraped", "order": "ASCENDING" },
+        { "fieldPath": "scrapeAttempts", "order": "ASCENDING" }
+      ]
     }
   ],
   "fieldOverrides": []

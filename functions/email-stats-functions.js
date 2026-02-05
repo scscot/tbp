@@ -132,7 +132,7 @@ async function fetchGA4Stats(serviceAccountJson) {
         filter: {
           fieldName: 'sessionMedium',
           stringFilter: {
-            value: 'smtp',
+            value: 'email',
             matchType: 'EXACT'
           }
         }

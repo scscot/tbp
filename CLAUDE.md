@@ -100,7 +100,7 @@ The Team Build Pro ecosystem is a comprehensive, interconnected network of digit
 
 **6. Email Campaign Integration**
 - Cold email to 17,900+ direct sales professionals
-- SMTP via Dreamhost (news.teambuildpro.com) with Firestore tracking
+- Mailgun API via news.teambuildpro.com with Firestore tracking
 - Click tracking via trackEmailClick endpoint; open tracking disabled for deliverability
 - Drives traffic to landing page → app downloads
 
@@ -175,7 +175,7 @@ The world's first AI-powered platform that lets **prospects pre-build their team
 - **Backend**: Firebase (Firestore, Cloud Functions v2, Authentication, Remote Config)
 - **Functions**: 99 Cloud Functions handling real-time operations
 - **Hosting**: Firebase Hosting for web properties
-- **Email**: SMTP via Dreamhost nodemailer (news.teambuildpro.com) for campaign delivery
+- **Email**: Mailgun API (news.teambuildpro.com) for campaign delivery
 
 ### Key Directories
 ```
@@ -482,7 +482,7 @@ All four main sites have identical structure:
 
 **Email Stats Dashboard** (`web/email-stats.html` + `functions/email-stats-functions.js`)
 - Password-protected dashboard at `/email-stats.html`
-- **Data sources**: Firestore (`emailCampaigns/master/contacts`) + GA4 (filtered by `sessionMedium: 'smtp'`)
+- **Data sources**: Firestore (`emailCampaigns/master/contacts`) + GA4 (filtered by `sessionMedium: 'email'`)
 - **Tracking**: Click tracking via `trackEmailClick` Cloud Function; open tracking disabled for deliverability
 - **Metrics**: Campaign progress (sent/remaining/failed), click tracking, A/B test subject line breakdown
 - **A/B test tags**: `mobile_first_v3` (V3) and `mobile_first_v4` (V4); legacy tags `not_opportunity`, `prebuild_advantage`, `subject_recruiting_app`, `unknown` supported for historical data
@@ -568,18 +568,18 @@ git add . && git commit -m "message" && git push
 
 ### Campaign Architecture Overview
 
-The email campaign system consists of two parallel campaigns targeting different audience segments, using SMTP via Dreamhost nodemailer with Firestore-based tracking.
+The email campaign system consists of two parallel campaigns targeting different audience segments, using Mailgun API with Firestore-based tracking.
 
-**SMTP Configuration:**
+**Email Configuration:**
 - **Sending Domain**: `news.teambuildpro.com`
 - **From**: `Stephen Scott <stephen@news.teambuildpro.com>`
-- **Template**: `functions/email_templates/tbp-smtp-template.js` (personal note style)
+- **Template**: Mailgun-hosted 'mailer' template with v1-v6 versions (personal note style)
 - **Subject A/B Test**: V3/V4 "Using AI to Build Your Team" (`mobile_first_v3` / `mobile_first_v4`)
 - **Tracking**: Click tracking via `trackEmailClick` Cloud Function endpoint; open tracking disabled (pixel removed for deliverability)
 - **DNS**: SPF + DKIM + DMARC configured for 10/10 mail-tester.com score
 - **SMTP Credentials**: `functions/.env.teambuilder-plus-fe74d` (TBP_SMTP_* variables)
 
-### Main Campaign (SMTP - Automated)
+### Main Campaign (Mailgun API - Automated)
 - **Function**: `sendHourlyEmailCampaign` in `functions/email-campaign-functions.js`
 - **Tags**: `tbp_campaign`, `tracked`
 - **Schedule**: 8am, 11am, 2pm, 5pm PT (4 runs/day)
@@ -588,15 +588,16 @@ The email campaign system consists of two parallel campaigns targeting different
 - **Batch Size**: Dynamic via Firestore `config/emailCampaign.batchSize` (automated by GitHub Actions)
 - **Domain Warming**: Automated via `.github/workflows/domain-warming-update.yml`
 
-### Contacts Campaign (SMTP - Automated)
+### Contacts Campaign (Mailgun API - Automated)
 - **Function**: `sendHourlyContactsCampaign` in `functions/email-campaign-contacts.js`
-- **Tags**: `tbp_campaign`, `tracked`
+- **Tags**: `contacts_campaign`, `tracked`
 - **Schedule**: 9am, 12pm, 3pm, 6pm PT (4 runs/day, staggered 1hr after Main)
 - **Data Source**: Firestore `direct_sales_contacts` collection
-- **Control Variable**: EMAIL_CAMPAIGN_ENABLED (shares with Main)
+- **Control Variable**: CONTACTS_CAMPAIGN_ENABLED (separate from Main)
 - **Batch Size**: Dynamic via Firestore `config/emailCampaign.batchSize` (shares with Main)
 - **Subject**: "Using AI to Build Your {Company} Team" (company-specific)
 - **Template Variables**: `first_name`, `company`, `tracked_cta_url`, `unsubscribe_url`
+- **ABCD Test**: v3/v4/v5/v6 template rotation (v5/v6 are company-specific subject lines)
 
 ### Yahoo Campaign (REMOVED - Jan 2026)
 - **Status**: REMOVED - File and function deleted
@@ -620,11 +621,11 @@ The email campaign system consists of two parallel campaigns targeting different
   | 6+ | 100 | 800 |
 - **Manual Override**: `workflow_dispatch` with `force_week` input to test specific week
 
-### Campaign Tracking (Post-SMTP Migration)
+### Campaign Tracking
 - **Sent/Failed/Remaining**: Tracked in Firestore `emailCampaigns/master/contacts` (sent, status fields)
 - **Click Tracking**: Firestore `clickedAt` timestamp via `trackEmailClick` Cloud Function endpoint
 - **Open Tracking**: Disabled (tracking pixel removed for deliverability)
-- **GA4 Campaign Traffic**: Filtered by `sessionMedium: 'smtp'` (UTM parameters in email links)
+- **GA4 Campaign Traffic**: Filtered by `sessionMedium: 'email'` (UTM parameters in email links)
 - **A/B Test Breakdown**: By `subjectTag` field (`mobile_first_v3`, `mobile_first_v4`); legacy tags (`not_opportunity`, `prebuild_advantage`) supported
 - **Dashboards**: `email-stats.html` (email-focused) and `TBP-analytics.html` (unified analytics)
 
@@ -847,9 +848,10 @@ Automated 4-stage pipeline that discovers direct sales distributor URLs, scrapes
   - ES: "Team Build Pro: IA Equipo", PT: "Team Build Pro: IA Equipe", DE: "Team Build Pro: KI Team"
 
 **Email Campaign Infrastructure**
-- ✅ **SMTP Migration**: Migrated from Mailgun API to SMTP via Dreamhost nodemailer (Jan 2026)
-  - Sending domain: `news.teambuildpro.com` with 10/10 mail-tester.com score
-  - Open tracking pixel removed for deliverability; click tracking via Firestore `trackEmailClick` endpoint
+- ✅ **Email Campaigns via Mailgun API**: Both Main and Contacts campaigns use Mailgun API with template versioning
+  - Sending domain: `news.teambuildpro.com` with 10/10 mail-tester.com score (SPF/DKIM/DMARC configured)
+  - Open tracking disabled for deliverability; click tracking via Firestore `trackEmailClick` endpoint
+  - SMTP sender utility (`email-smtp-sender.js`) exists but is used only for blog notifications, not campaigns
 - ✅ **A/B Testing Active**: V3/V4 "Using AI to Build Your Team" (strict alternation with `mobile_first_v3`/`mobile_first_v4` tags)
 - ✅ **A/B Test Template Update** (Jan 28, 2026): Migrated from v1/v2 to v3/v4 Mailgun templates
   - Subject changed from "Not an opportunity" / "What if your next recruit" to unified "Using AI to Build Your Team"
@@ -867,7 +869,7 @@ Automated 4-stage pipeline that discovers direct sales distributor URLs, scrapes
   - Revisit mid-March 2026 for data-driven optimization
 - ✅ **Domain Warming Automation**: GitHub Actions workflow manages batch sizes via Firestore config
 - ✅ **SMTP Email Validation**: 18,334 Gmail addresses validated, 89.3% valid
-- ✅ **Analytics Dashboards Migrated to Firestore**: Both `email-stats.html` and `TBP-analytics.html` now use Firestore for email stats (sent/failed/clicked/A/B test) and GA4 filtered by `sessionMedium: 'smtp'` for website traffic. Mailgun API dependencies removed from dashboards.
+- ✅ **Analytics Dashboards Migrated to Firestore**: Both `email-stats.html` and `TBP-analytics.html` now use Firestore for email stats (sent/failed/clicked/A/B test) and GA4 filtered by `sessionMedium: 'email'` for website traffic.
 
 **Contacts Discovery Pipeline** (Feb 2026)
 - ✅ **BFH Company Scraper** (`scripts/scrape-bfh-companies.js`): Scrapes BusinessForHome.org sitemap (~710 companies), extracts website URLs, appends to `base_urls.txt`
@@ -914,7 +916,7 @@ Active development paused to allow automated systems to run and collect meaningf
 |-----------|--------|-------|
 | Main Campaign | Active | 8am, 11am, 2pm, 5pm PT (4 runs/day) |
 | Contacts Campaign | Active | 9am, 12pm, 3pm, 6pm PT (4 runs/day) |
-| Email Sending | SMTP | Via Dreamhost nodemailer, news.teambuildpro.com |
+| Email Sending | Mailgun API | Via Mailgun, news.teambuildpro.com |
 | Email A/B Testing | Active | V3/V4 strict alternation ("Using AI to Build Your Team") |
 | Yahoo Campaign | Removed | File and function deleted (Jan 31) |
 | Android Campaign | Removed | Function deleted (Jan 31) |

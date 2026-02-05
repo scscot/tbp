@@ -74,10 +74,10 @@ jobs:
 
           if [ -n "$COMPANY" ]; then
             echo "Company: $COMPANY"
-            node scripts/seed-contacts-urls.js --company="$COMPANY" --max=$MAX_URLS
+            node scripts/seed-contacts-urls.js --company="$COMPANY" --max=$MAX_URLS --max-minutes=55
           else
             echo "Seeding all companies with discovered patterns"
-            node scripts/seed-contacts-urls.js --max=$MAX_URLS
+            node scripts/seed-contacts-urls.js --max=$MAX_URLS --max-minutes=55
           fi
 
       - name: Cleanup

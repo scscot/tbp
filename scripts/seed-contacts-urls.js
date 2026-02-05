@@ -68,6 +68,12 @@ const CONFIG = {
   DELAY_BETWEEN_REQUESTS: 1000,
   MAX_URLS_PER_COMPANY: 10000,
 
+  // Resilience
+  FETCH_TIMEOUT: 8000,           // 8 seconds per Common Crawl request
+  CIRCUIT_BREAKER_THRESHOLD: 5,  // Consecutive failures before pausing
+  CIRCUIT_BREAKER_PAUSE: 30000,  // 30 second pause when circuit trips
+  MAX_CIRCUIT_TRIPS: 2,          // Abort after this many circuit breaker trips
+
   // Paths/files to exclude
   EXCLUDED_PATHS: [
     'robots.txt', 'sitemap', 'favicon',
@@ -644,22 +650,26 @@ async function queryCommonCrawlIndex(indexName, urlPattern) {
   const indexUrl = `${CONFIG.COMMON_CRAWL_BASE}/${indexName}-index`;
   const queryUrl = `${indexUrl}?url=${encodeURIComponent(urlPattern)}&output=json`;
 
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), CONFIG.FETCH_TIMEOUT);
+
   try {
     const response = await fetch(queryUrl, {
       headers: {
         'User-Agent': 'Mozilla/5.0 (compatible; TBP-URL-Seeder/1.0)',
       },
+      signal: controller.signal,
     });
 
     if (!response.ok) {
       if (response.status === 404) {
-        return urls;
+        return { urls, error: false };
       }
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
 
     const text = await response.text();
-    if (!text.trim()) return urls;
+    if (!text.trim()) return { urls, error: false };
 
     // Common Crawl returns JSONL (one JSON object per line)
     const lines = text.trim().split('\n').filter(line => line.trim());
@@ -675,27 +685,59 @@ async function queryCommonCrawlIndex(indexName, urlPattern) {
       }
     }
 
+    return { urls, error: false };
   } catch (error) {
     console.log(`    Error querying ${indexName}: ${error.message}`);
+    return { urls, error: true };
+  } finally {
+    clearTimeout(timeout);
   }
-
-  return urls;
 }
 
 /**
  * Query multiple Common Crawl indexes and merge results
  */
+// Circuit breaker state (shared across all Common Crawl queries)
+const circuitBreaker = {
+  consecutiveFailures: 0,
+  tripCount: 0,
+  isOpen: false,
+};
+
 async function discoverUrlsFromCommonCrawl(pattern) {
   const allUrls = new Set();
 
   console.log(`  Pattern: ${pattern}`);
 
+  if (circuitBreaker.isOpen) {
+    console.log(`    Circuit breaker OPEN — skipping Common Crawl`);
+    return allUrls;
+  }
+
   for (const indexName of CONFIG.COMMON_CRAWL_INDEXES) {
     console.log(`    Querying ${indexName}...`);
-    const urls = await queryCommonCrawlIndex(indexName, pattern);
+    const { urls, error } = await queryCommonCrawlIndex(indexName, pattern);
     urls.forEach(url => allUrls.add(url));
 
     console.log(`    Found ${urls.length} URLs (total unique: ${allUrls.size})`);
+
+    // Circuit breaker tracking
+    if (error) {
+      circuitBreaker.consecutiveFailures++;
+      if (circuitBreaker.consecutiveFailures >= CONFIG.CIRCUIT_BREAKER_THRESHOLD) {
+        circuitBreaker.tripCount++;
+        if (circuitBreaker.tripCount >= CONFIG.MAX_CIRCUIT_TRIPS) {
+          console.log(`    ⚠️ Circuit breaker OPEN after ${circuitBreaker.tripCount} trips — Common Crawl appears down`);
+          circuitBreaker.isOpen = true;
+          break;
+        }
+        console.log(`    ⚠️ Circuit breaker tripped (${circuitBreaker.tripCount}/${CONFIG.MAX_CIRCUIT_TRIPS}) — pausing ${CONFIG.CIRCUIT_BREAKER_PAUSE / 1000}s...`);
+        circuitBreaker.consecutiveFailures = 0;
+        await sleep(CONFIG.CIRCUIT_BREAKER_PAUSE);
+      }
+    } else {
+      circuitBreaker.consecutiveFailures = 0;
+    }
 
     // Rate limit between index queries
     await sleep(CONFIG.DELAY_BETWEEN_REQUESTS);
@@ -1023,6 +1065,7 @@ function parseArgs() {
     company: null,
     maxUrls: process.env.MAX_URLS ? parseInt(process.env.MAX_URLS, 10) : CONFIG.MAX_URLS_PER_COMPANY,
     dryRun: process.env.DRY_RUN === 'true',
+    maxMinutes: null,
   };
 
   for (const arg of args) {
@@ -1032,6 +1075,8 @@ function parseArgs() {
       options.maxUrls = parseInt(arg.split('=')[1], 10);
     } else if (arg === '--dry-run') {
       options.dryRun = true;
+    } else if (arg.startsWith('--max-minutes=')) {
+      options.maxMinutes = parseInt(arg.split('=')[1], 10);
     }
   }
 
@@ -1138,6 +1183,9 @@ async function main() {
   console.log('='.repeat(60));
   console.log(`Mode: ${options.dryRun ? 'DRY RUN' : 'LIVE'}`);
   console.log(`Max URLs per company: ${options.maxUrls}`);
+  if (options.maxMinutes) {
+    console.log(`Time budget: ${options.maxMinutes} minutes`);
+  }
   console.log(`Timestamp: ${new Date().toISOString()}`);
 
   // Load patterns
@@ -1189,13 +1237,20 @@ async function main() {
   // Process each company
   const results = [];
   for (const [domain, patternInfo] of companiesToProcess) {
+    // Time budget check (stop 2 minutes before deadline)
+    if (options.maxMinutes) {
+      const elapsedMinutes = (Date.now() - startTime) / 60000;
+      if (elapsedMinutes >= options.maxMinutes - 2) {
+        console.log(`\n⏰ Time budget reached (${elapsedMinutes.toFixed(1)}/${options.maxMinutes} min) — stopping gracefully`);
+        break;
+      }
+    }
+
     const result = await processCompany(db, domain, patternInfo, options);
     results.push(result);
 
     // Rate limit between companies
-    if (companiesToProcess.indexOf([domain, patternInfo]) < companiesToProcess.length - 1) {
-      await sleep(CONFIG.DELAY_BETWEEN_REQUESTS * 2);
-    }
+    await sleep(CONFIG.DELAY_BETWEEN_REQUESTS * 2);
   }
 
   // Summary
