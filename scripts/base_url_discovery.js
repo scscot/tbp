@@ -39,6 +39,10 @@ const CONFIG = {
 
   // Rate limiting
   DELAY_BETWEEN_REQUESTS: 1500,  // 1.5 seconds
+  FETCH_TIMEOUT: 8000,           // 8 seconds per Common Crawl request
+  CIRCUIT_BREAKER_THRESHOLD: 5,  // Consecutive failures before pausing
+  CIRCUIT_BREAKER_PAUSE: 30000,  // 30 second pause when circuit trips
+  MAX_CIRCUIT_TRIPS: 2,          // Abort after this many circuit breaker trips
 
   // Known rep URL patterns (from research)
   // Maps company domain to their rep platform domain/pattern
@@ -271,28 +275,49 @@ async function validateCompanyUrl(domain) {
 // COMMON CRAWL QUERY
 // ============================================================================
 
+// Circuit breaker state for Common Crawl API
+const circuitBreaker = {
+  consecutiveFailures: 0,
+  tripCount: 0,
+  isOpen: false,
+};
+
 /**
  * Query Common Crawl Index for URLs matching pattern
  */
 async function queryCommonCrawl(indexName, urlPattern) {
+  // Check circuit breaker
+  if (circuitBreaker.isOpen) {
+    return [];
+  }
+
   const indexUrl = `${CONFIG.COMMON_CRAWL_BASE}/${indexName}-index`;
   const queryUrl = `${indexUrl}?url=${encodeURIComponent(urlPattern)}&output=json`;
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), CONFIG.FETCH_TIMEOUT);
 
   try {
     const response = await fetch(queryUrl, {
       headers: {
         'User-Agent': 'Mozilla/5.0 (compatible; TBP-Pattern-Discovery/1.0)',
       },
+      signal: controller.signal,
     });
+
+    clearTimeout(timeoutId);
 
     if (!response.ok) {
       if (response.status === 404) {
+        circuitBreaker.consecutiveFailures = 0;
         return [];
       }
       throw new Error(`HTTP ${response.status}`);
     }
 
     const text = await response.text();
+    circuitBreaker.consecutiveFailures = 0;  // Reset on success
+
     if (!text.trim()) return [];
 
     const lines = text.trim().split('\n').filter(line => line.trim());
@@ -311,7 +336,24 @@ async function queryCommonCrawl(indexName, urlPattern) {
 
     return urls;
   } catch (error) {
-    console.log(`    Error: ${error.message}`);
+    clearTimeout(timeoutId);
+    const msg = error.name === 'AbortError' ? 'Timeout' : error.message;
+    console.log(`    Error: ${msg}`);
+
+    // Track consecutive failures for circuit breaker
+    circuitBreaker.consecutiveFailures++;
+    if (circuitBreaker.consecutiveFailures >= CONFIG.CIRCUIT_BREAKER_THRESHOLD) {
+      circuitBreaker.tripCount++;
+      if (circuitBreaker.tripCount >= CONFIG.MAX_CIRCUIT_TRIPS) {
+        console.log(`\n  *** Common Crawl API appears down — aborting remaining queries ***`);
+        circuitBreaker.isOpen = true;
+      } else {
+        console.log(`\n  *** Circuit breaker tripped (${circuitBreaker.consecutiveFailures} consecutive failures) — pausing ${CONFIG.CIRCUIT_BREAKER_PAUSE / 1000}s ***`);
+        await sleep(CONFIG.CIRCUIT_BREAKER_PAUSE);
+        circuitBreaker.consecutiveFailures = 0;
+      }
+    }
+
     return [];
   }
 }
@@ -659,6 +701,8 @@ async function main() {
   const specificCompany = args.find(a => a.startsWith('--company='))?.split('=')[1];
   const limitArg = args.find(a => a.startsWith('--limit='))?.split('=')[1];
   const limit = limitArg ? parseInt(limitArg, 10) : null;
+  const maxMinutesArg = args.find(a => a.startsWith('--max-minutes='))?.split('=')[1];
+  const maxMinutes = maxMinutesArg ? parseInt(maxMinutesArg, 10) : null;
 
   console.log('='.repeat(60));
   console.log('BASE URL DISCOVERY - Common Crawl Pattern Finder');
@@ -666,6 +710,7 @@ async function main() {
   console.log(`Timestamp: ${new Date().toISOString()}`);
   console.log(`URL Validation: ${skipValidation ? 'DISABLED' : 'ENABLED'}`);
   if (limit) console.log(`Batch Limit: ${limit} companies`);
+  if (maxMinutes) console.log(`Time Budget: ${maxMinutes} minutes`);
 
   // Load base URLs
   const allCompanies = loadBaseUrls();
@@ -709,6 +754,21 @@ async function main() {
   let inactive = 0;
 
   for (const company of companiesToProcess) {
+    // Check time budget before starting next company
+    if (maxMinutes) {
+      const elapsedMinutes = (Date.now() - startTime) / 60000;
+      if (elapsedMinutes >= maxMinutes - 2) {  // Stop 2 minutes before budget
+        console.log(`\nTime budget reached (${elapsedMinutes.toFixed(1)}/${maxMinutes} min) — stopping gracefully`);
+        break;
+      }
+    }
+
+    // Check circuit breaker — if API is down, stop processing new companies
+    if (circuitBreaker.isOpen) {
+      console.log('\nCommon Crawl API is down — stopping early to avoid wasting time');
+      break;
+    }
+
     try {
       const result = await discoverPatternsForCompany(company, skipValidation);
       patterns[company] = result;

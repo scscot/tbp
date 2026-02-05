@@ -57,7 +57,7 @@ jobs:
           echo "Starting URL Pattern Discovery..."
           echo "Limit: $LIMIT companies"
 
-          ARGS="--all --limit=$LIMIT"
+          ARGS="--all --limit=$LIMIT --max-minutes=55"
 
           if [ "$SKIP_VALIDATION" = "true" ]; then
             echo "URL Validation: DISABLED"
