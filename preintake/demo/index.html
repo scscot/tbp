@@ -624,6 +624,9 @@
         function handleLeaveDemo() {
             hideExitModal();
 
+            // Track explore event (user chose to explore site instead of starting demo)
+            fetch(`${TRACK_ENDPOINT}?firmId=${demoLeadId}&type=explore`).catch(() => {});
+
             // Store demo context in sessionStorage for destination page
             // (needed for "I'll explore" link which doesn't go through handleNavClick)
             sessionStorage.setItem('tbp_demo_id', demoLeadId);
