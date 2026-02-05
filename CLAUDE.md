@@ -1,6 +1,6 @@
 # Team Build Pro - Comprehensive Knowledge Base
 
-**Last Updated**: 2026-02-05
+**Last Updated**: 2026-02-05 (Contacts Pipeline + BFH Scraper)
 **Purpose**: Persistent knowledge base for AI assistants across sessions
 
 ---
@@ -189,10 +189,12 @@ The world's first AI-powered platform that lets **prospects pre-build their team
 ├── scripts/               # Automation scripts
 │   ├── generate-ai-blog.js  # AI blog generation (Claude CLI)
 │   └── generate-blog.js     # Legacy blog generation
-├── .github/workflows/     # GitHub Actions automation (25 active workflows, 7 disabled)
+├── .github/workflows/     # GitHub Actions automation (25 workflows)
 │   ├── weekly-blog.yml              # Twice-weekly blog automation (Mon/Thu 10am PST) + sitemap pings
 │   ├── weekly-sscott-blog.yml       # Stephen Scott blog automation
 │   ├── domain-warming-update.yml    # TBP/PreIntake domain warming batch sizes
+│   ├── url-discovery.yml            # URL pattern discovery (every 2h, 120 companies/batch)
+│   ├── contacts-scraper.yml         # Contact scraping (hourly, 400 URLs/batch)
 │   └── preintake-*.yml / *bar-scraper.yml  # PreIntake workflows (see preintake/CLAUDE.md)
 ├── web/                   # Public website files (English)
 │   ├── index.html        # Homepage
@@ -671,6 +673,64 @@ The email campaign system consists of two parallel campaigns targeting different
 
 ---
 
+## 🔗 Contacts Discovery Pipeline
+
+### Pipeline Overview
+Automated 4-stage pipeline that discovers direct sales distributor URLs, scrapes contact info, and feeds the email campaigns.
+
+```
+┌──────────────────────────────────────────────────────────────────────┐
+│  Stage 1: Company Discovery                                         │
+│  scripts/scrape-bfh-companies.js → base_urls.txt (1,082 companies) │
+│  Source: BusinessForHome.org sitemap (~710 companies)               │
+│  Manual run, appends new company domains                            │
+├──────────────────────────────────────────────────────────────────────┤
+│  Stage 2: URL Pattern Discovery                                     │
+│  scripts/base_url_discovery.js → patterns.json                      │
+│  Source: Common Crawl Index (5 indexes)                             │
+│  Schedule: Every 2 hours, 120 companies/batch (GitHub Actions)      │
+│  Discovers subdomain/path patterns for distributor pages            │
+├──────────────────────────────────────────────────────────────────────┤
+│  Stage 3: Distributor URL Seeding                                   │
+│  scripts/seed-contacts-urls.js → Firestore direct_sales_contacts   │
+│  Sources: Common Crawl (17 indexes) + Wayback Machine + crt.sh     │
+│  Schedule: Every 4 hours, 40 companies/batch (GitHub Actions)       │
+│  Queries web indexes for actual distributor page URLs               │
+├──────────────────────────────────────────────────────────────────────┤
+│  Stage 4: Contact Scraping                                          │
+│  scripts/contacts-scraper.js → Firestore direct_sales_contacts     │
+│  Schedule: Hourly, 400 URLs/batch (GitHub Actions)                  │
+│  Puppeteer-based scraping for emails/phones on distributor pages    │
+│  Blocked platforms tracked in config/contactsScraper                │
+└──────────────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+              Contacts Campaign (email-campaign-contacts.js)
+              Sends company-specific emails to scraped contacts
+```
+
+### Key Scripts
+
+| Script | Purpose | Schedule |
+|--------|---------|----------|
+| `scrape-bfh-companies.js` | Discover new MLM companies from BFH | Manual |
+| `base_url_discovery.js` | Find distributor URL patterns via Common Crawl | Every 2h (120/batch) |
+| `seed-contacts-urls.js` | Seed distributor URLs from 3 web indexes | Every 4h (40/batch) |
+| `contacts-scraper.js` | Scrape contact info from distributor pages | Hourly (400/batch) |
+
+### Key Files
+- `scripts/base_urls.txt` — Master list of 1,082 MLM company domains
+- `scripts/patterns.json` — Discovered URL patterns per company (subdomain/path/third-party/unknown/inactive)
+- Firestore `direct_sales_contacts` — Scraped contacts with email, phone, company, URL
+- Firestore `config/contactsScraper` — Blocked platforms and scraper config
+
+### Data Sources for URL Discovery (seed-contacts-urls.js)
+1. **Common Crawl Index API** — 17 indexes (2024-2026), JSONL format, free, 1.5s delay
+2. **Wayback Machine CDX API** — Internet Archive historical URLs, free, no key required
+3. **Certificate Transparency (crt.sh)** — SSL cert logs for subdomain discovery, free
+
+---
+
 ## 🚨 Critical Don'ts
 
 1. **NEVER modify these files**:
@@ -735,6 +795,10 @@ The email campaign system consists of two parallel campaigns targeting different
 - `web/TBP-analytics.html` - TBP analytics dashboard (Website/iOS/Android tabs)
 - `web/email-stats.html` - Email campaign stats dashboard
 - `web/faq.html` - Dynamic FAQ implementation
+- `scripts/scrape-bfh-companies.js` - BFH company scraper (base_urls.txt source)
+- `scripts/base_url_discovery.js` - URL pattern discovery (Common Crawl → patterns.json)
+- `scripts/seed-contacts-urls.js` - Multi-source URL seeder (CC + Wayback + crt.sh → Firestore)
+- `scripts/contacts-scraper.js` - Puppeteer contact scraper (Firestore → emails/phones)
 
 ### Utility Scripts (functions/)
 - `count-todays-emails.js` - Query Firestore for daily email send counts
@@ -753,6 +817,22 @@ The email campaign system consists of two parallel campaigns targeting different
   - `--notify-email=EMAIL` - Recipient for notification emails
   - Generates 4 language versions: English, Spanish, Portuguese, German
 - `generate-blog.js` - Legacy blog generation (static template approach)
+- `scrape-bfh-companies.js` - Scrape BusinessForHome.org sitemap for MLM company URLs
+  - Fetches company-sitemap.xml (~710 companies), extracts website URLs from detail pages
+  - Appends new URLs to `base_urls.txt` (grew 462 → 1,082)
+  - `--dry-run` flag for preview mode
+- `base_url_discovery.js` - Discover distributor URL patterns from Common Crawl
+  - `--all --limit=120` - Process next 120 unprocessed companies
+  - `--company=herbalife` - Process specific company
+  - Output: `patterns.json` with subdomain/path/third-party patterns
+- `seed-contacts-urls.js` - Seed distributor URLs into Firestore from 3 web indexes
+  - Sources: Common Crawl + Wayback Machine + crt.sh Certificate Transparency
+  - `--all --limit=40` - Process next 40 companies with patterns
+  - `--company=monat` - Process specific company
+  - `DRY_RUN=true` for preview mode
+- `contacts-scraper.js` - Puppeteer-based contact scraper for distributor pages
+  - `--all --max=400` - Scrape up to 400 URLs across all companies
+  - `--company="Monat"` - Scrape specific company
 
 ---
 
@@ -788,6 +868,20 @@ The email campaign system consists of two parallel campaigns targeting different
 - ✅ **Domain Warming Automation**: GitHub Actions workflow manages batch sizes via Firestore config
 - ✅ **SMTP Email Validation**: 18,334 Gmail addresses validated, 89.3% valid
 - ✅ **Analytics Dashboards Migrated to Firestore**: Both `email-stats.html` and `TBP-analytics.html` now use Firestore for email stats (sent/failed/clicked/A/B test) and GA4 filtered by `sessionMedium: 'smtp'` for website traffic. Mailgun API dependencies removed from dashboards.
+
+**Contacts Discovery Pipeline** (Feb 2026)
+- ✅ **BFH Company Scraper** (`scripts/scrape-bfh-companies.js`): Scrapes BusinessForHome.org sitemap (~710 companies), extracts website URLs, appends to `base_urls.txt`
+  - Grew company list from 462 → 1,082 URLs (620 new companies added)
+  - Uses cheerio + axios (no Puppeteer needed), 500ms delay between requests
+  - Supports `--dry-run` flag for preview mode
+- ✅ **Multi-Source URL Seeder**: `seed-contacts-urls.js` now queries 3 sources instead of just Common Crawl:
+  1. Common Crawl Index API (17 indexes, 2024-2026)
+  2. Wayback Machine CDX API (Internet Archive historical data)
+  3. Certificate Transparency logs via crt.sh (subdomain discovery)
+  - Monat test: 0 new URLs (CC only) → 452 new URLs (all 3 sources)
+- ✅ **Firestore Blocked-Platform Filtering**: `seed-contacts-urls.js` loads `config/contactsScraper.blockedPlatforms` to skip companies already marked as blocked by `contacts-scraper.js`
+- ✅ **URL Discovery Throughput 3x**: Workflow batch size 40→120, schedule every 4h→every 2h
+  - Processes 1,082 companies in ~10 hours instead of ~4 days
 
 **Automation Systems**
 - ✅ **Automated Blog Generation**: Twice-weekly (Mon/Thu) via GitHub Actions + Claude CLI
@@ -830,6 +924,9 @@ Active development paused to allow automated systems to run and collect meaningf
 | Blog Automation | Running | Mon/Thu schedule, 4 languages, sitemap pings |
 | Sitemap Pings | Active | Google + Bing pinged after each blog deploy |
 | Domain Warming | Week 4 | batchSize=50, 400 emails/day (8 runs total) |
+| URL Discovery | Active | Every 2h, 120 companies/batch (processing 1,082 companies) |
+| Contacts Seeder | Active | Every 4h, 3 sources (Common Crawl + Wayback + crt.sh) |
+| Contacts Scraper | Active | Hourly, 400 URLs/batch |
 | PreIntake.ai | Autonomous | See `preintake/CLAUDE.md` for details |
 
 **Monitoring Checklist (Weekly):**
