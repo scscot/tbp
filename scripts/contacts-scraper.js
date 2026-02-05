@@ -49,13 +49,13 @@ const CONFIG = {
   COLLECTION: 'direct_sales_contacts',
 
   // Rate limiting
-  DELAY_BETWEEN_PAGES: 2000,
+  DELAY_BETWEEN_PAGES: 1000,
   JITTER_MS: 500,
   PAGE_TIMEOUT: 30000,
   NAVIGATION_TIMEOUT: 30000,
 
   // Safety limits
-  MAX_URLS_PER_RUN: 200,
+  MAX_URLS_PER_RUN: 400,
   MAX_RETRIES: 2,  // Delete after 2 failed attempts
   CONSECUTIVE_ERROR_LIMIT: 10,
 
