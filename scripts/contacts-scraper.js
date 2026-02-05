@@ -688,6 +688,65 @@ async function resetCompanyStats(db, cumulativeStats, company) {
   console.log(`  Reset cumulative stats for ${company}`);
 }
 
+/**
+ * Delete unscraped URLs from blocked companies
+ * This prevents blocked company URLs from clogging the pipeline
+ */
+async function cleanupBlockedCompanyUrls(db, blockedPlatforms) {
+  if (Object.keys(blockedPlatforms).length === 0) return 0;
+
+  const contactsRef = db.collection('direct_sales_contacts');
+  let totalDeleted = 0;
+
+  // Map normalized keys back to display names for querying
+  // Query each blocked company and delete unscraped docs
+  for (const [normKey, blockInfo] of Object.entries(blockedPlatforms)) {
+    // The company field in Firestore uses display names, not normalized keys
+    // We need to query by the original company name stored in blockInfo or try common formats
+    const possibleNames = [
+      blockInfo.company, // If we stored it
+      normKey, // Normalized form
+      normKey.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' '), // Title Case
+    ].filter(Boolean);
+
+    for (const companyName of possibleNames) {
+      try {
+        const snapshot = await contactsRef
+          .where('company', '==', companyName)
+          .where('scraped', '==', false)
+          .get();
+
+        if (snapshot.empty) continue;
+
+        // Delete in batches of 500
+        const docs = snapshot.docs;
+        let deleted = 0;
+
+        while (deleted < docs.length) {
+          const batch = db.batch();
+          const batchEnd = Math.min(deleted + 500, docs.length);
+
+          for (let i = deleted; i < batchEnd; i++) {
+            batch.delete(docs[i].ref);
+          }
+
+          await batch.commit();
+          deleted = batchEnd;
+        }
+
+        console.log(`  Cleaned up ${docs.length} unscraped URLs from blocked company: ${companyName}`);
+        totalDeleted += docs.length;
+        break; // Found the right name format, move to next company
+      } catch (err) {
+        // Query might fail if company name format doesn't match, try next
+        continue;
+      }
+    }
+  }
+
+  return totalDeleted;
+}
+
 // ============================================================================
 // EMAIL NOTIFICATIONS
 // ============================================================================
@@ -880,6 +939,17 @@ async function main() {
   // In-memory set of companies to skip during this run (blocked or terminated mid-run)
   const skippedCompanies = new Set(Object.keys(blockedPlatforms));
 
+  // Cleanup: Delete unscraped URLs from blocked companies to keep pipeline healthy
+  if (!dryRun && Object.keys(blockedPlatforms).length > 0) {
+    console.log('\nCleaning up unscraped URLs from blocked companies...');
+    const cleanedUp = await cleanupBlockedCompanyUrls(db, blockedPlatforms);
+    if (cleanedUp > 0) {
+      console.log(`Removed ${cleanedUp} blocked company URLs from pipeline`);
+    } else {
+      console.log('No blocked company URLs to clean up');
+    }
+  }
+
   // Load cumulative company stats (persisted across runs, keys are normalized)
   const cumulativeStats = dryRun ? {} : await loadCumulativeStats(db);
 
@@ -1037,6 +1107,7 @@ async function main() {
         if (!dryRun) {
           // Block in Firestore (persists across runs)
           blockedPlatforms[normCompanyKey] = {
+            company, // Store display name for cleanup
             reason,
             detectedAt: new Date().toISOString(),
             scraped: cumStats.scraped,
@@ -1070,6 +1141,7 @@ async function main() {
 
         if (!dryRun) {
           blockedPlatforms[normCompanyKey] = {
+            company, // Store display name for cleanup
             reason,
             detectedAt: new Date().toISOString(),
             scraped: cumStats.scraped,
