@@ -1,7 +1,7 @@
 # PreIntake.ai: Comprehensive Project Documentation
 
-**Last Updated**: 2026-02-03
-**Version**: 5.0 (Pre-demo screen refactor for campaign conversion)
+**Last Updated**: 2026-02-05
+**Version**: 5.1 (Dedicated demo page & campaign schedule simplification)
 
 ---
 
@@ -14,8 +14,8 @@
 ### Rationale
 
 PreIntake.ai has reached a mature, fully-automated state:
-- ✅ 15 bar scrapers continuously adding attorney contacts
-- ✅ Email campaign runs 4x daily Mon-Fri (8am, 10am, 12pm, 2pm PT) with domain warming
+- ✅ 8 active bar scrapers continuously adding attorney contacts (7 disabled after completion)
+- ✅ Email campaign runs 4x daily Mon-Fri (PST: 8:30am, 10:30am, 12:30pm, 2:30pm) with domain warming
 - ✅ Demo generation fully automated (website + bar profile)
 - ✅ Analytics dashboard operational (GA4 + Firestore)
 - ✅ Customer portal implemented (magic link auth, settings, billing)
@@ -34,7 +34,7 @@ PreIntake.ai has reached a mature, fully-automated state:
 |--------|-----------------|----------|
 | Email bounces/spam complaints | Weekly | >2% bounce or any spam complaints |
 | Demo start rate | Bi-weekly | Drops below 2% sustained |
-| Scraper failures | Weekly (GitHub Actions) | Multiple consecutive failures |
+| Scraper failures (8 active) | Weekly (GitHub Actions) | Multiple consecutive failures |
 | First paying customer | Passive | 🎉 Celebrate and re-engage |
 
 ### Resume Development When
@@ -699,7 +699,7 @@ When you're spending $300-500 per lead, even small conversion improvements mean 
   - Tracks sent status, batch ID, message ID in Firestore
   - Template version: `v4-generic` (practice-agnostic messaging)
 - [x] **GitHub Actions Workflow** - `.github/workflows/preintake-email-campaign.yml`
-  - Scheduled: Mon-Fri, 4 runs/day at 8am, 10am, 12pm, 2pm PT
+  - Scheduled: Mon-Fri, 4 runs/day (PST: 8:30am, 10:30am, 12:30pm, 2:30pm PT)
   - Manual trigger with configurable batch size
   - Uses `PREINTAKE_SMTP_USER` and `PREINTAKE_SMTP_PASS` secrets
   - Uses `FIREBASE_SERVICE_ACCOUNT` for Firestore access
@@ -1015,11 +1015,13 @@ When you're spending $300-500 per lead, even small conversion improvements mean 
   - Valid/invalid results cached in Firestore progress documents
   - Safety valve: if ALL categories return 0 results, falls back to using all categories
 - [x] **Disabled Complete Scrapers** - Workflows renamed to `.yml.disabled`
-  - Illinois (`ilbar-scraper.yml`) - all categories scraped (re-enabled after rewrite)
-  - North Carolina (`ncbar-scraper.yml`) - all categories scraped (re-enabled after rewrite)
   - Mississippi (`msbar-scraper.yml.disabled`) - 20/20 categories, 283 attorneys
   - Georgia (`gabar-scraper.yml.disabled`) - fully complete
   - Indiana (`inbar-scraper.yml.disabled`) - fully complete
+  - Illinois (`ilbar-scraper.yml.disabled`) - fully complete (was re-enabled after rewrite, now complete)
+  - Michigan (`mibar-scraper.yml.disabled`) - fully complete
+  - Missouri (`mobar-scraper.yml.disabled`) - fully complete
+  - Nebraska State Bar Association (`nsba-scraper.yml.disabled`) - fully complete
 - [x] **New Utility Scripts** - `scripts/fetch-bar-categories.js` and `scripts/fetch-bar-categories-2.js`
   - Fetch and validate practice area categories from ReliaGuide and other bar association websites
   - Used for verifying hardcoded category IDs match live data
@@ -1088,20 +1090,19 @@ function markEmailAsInserted(email) {
   - Query logic only fetches contacts with `website != ''` OR `domainChecked == true`
   - 68 v6-generic emails in analytics are legacy from before bar profile system
 
-**Email Campaign User Flow (Current Architecture):**
+**Email Campaign User Flow (Current Architecture — as of Phase 53):**
 ```
-Email Sent → Link Clicked → Homepage Loads → Pre-Demo Screen → "Start Demo" Click → Iframe Loads → Intake Completed
-                                 ↓
-                       Welcome Banner + CTA Transform
+Email Sent → Link Clicked → Homepage (?demo=) → REDIRECT → /demo/?demo={id}&firm={name}
+  → Demo Page Welcome Screen → "Start Demo" Click → Iframe Loads → Intake Completed
+  → OR Header Nav / "Explore" → sessionStorage + ?explore=1 → Destination shows banner + floating buttons
 ```
 
-**Campaign Visitor Detection (index.html):**
-- `?demo={leadId}` triggers campaign mode
-- Welcome banner: "Welcome [FirmName] — Your demo is ready [Start Now]" shown immediately
-- Pre-demo screen auto-opens in modal (native HTML, no iframe yet)
+**Campaign Visitor Detection (index.html → /demo/index.html):**
+- `?demo={leadId}` on homepage triggers redirect to `/demo/?demo={id}&firm={name}`
+- Demo page shows full-page welcome screen with firm name, 3-step instructions
 - User clicks "Start Demo" → iframe loads with `skip_onboarding=true`
-- Exit confirmation modal prevents abandonment
-- Re-opening after close shows iframe directly (skips pre-screen)
+- Exit confirmation modal prevents abandonment during active demo
+- Header navigation stores context in sessionStorage and navigates with `?explore=1`
 
 **Template Distribution (as of 2026-01-31):**
 | Template | Purpose | Usage |
@@ -1110,10 +1111,12 @@ Email Sent → Link Clicked → Homepage Loads → Pre-Demo Screen → "Start De
 | v6-personalized-demo | Website contacts | 19% |
 | v6-generic | Fallback (legacy) | 19% |
 
-**Tracking Flow:**
-1. `trackDemoView?type=visit` - On page load with `?demo=`
-2. `trackDemoView?type=view` - On "Start Demo" click in parent pre-demo screen (moved from iframe postMessage)
-3. `sessionStorage.tbp_demo_viewed` - Header CTA becomes "Get Started →"
+**Tracking Flow (updated in Phase 53):**
+1. `trackDemoView?type=visit` - On `/demo/` page load with `?demo=`
+2. `trackDemoView?type=view` - On "Start Demo" click on `/demo/` page
+3. `trackDemoView?type=explore` - When user leaves demo to explore site
+4. `sessionStorage.tbp_demo_viewed` - Set on "Start Demo" click, triggers "Get Started →" in header
+5. `sessionStorage.tbp_demo_id` - Set on navigation away, triggers welcome banner + floating buttons
 
 ### Phase 50: Welcome Banner CTA (2026-01-31)
 - [x] **Welcome Banner CTA** - Made banner actionable for campaign visitors
@@ -1151,15 +1154,12 @@ Email Sent → Link Clicked → Homepage Loads → Pre-Demo Screen → "Start De
 - [x] **Email Analytics Cleanup** - Removed legacy A/B test section from `email-analytics.html`
   - Removed V1/V2 ("Not an opportunity" / "What if your next recruit") table (legacy subject lines)
 
-**Data Flow (Post-Refactor):**
+**Data Flow (Phase 51 — superseded by Phase 53):**
 ```
-Email click → page loads with ?demo= → visit tracked
-  → Modal overlay opens with PRE-DEMO SCREEN (native HTML, no iframe)
-  → Firm name from URL (instant), email from getPreIntakeFirmStatus (async)
-  → User clicks "Start Demo"
-    → View tracked, header updated
-    → iframe loads with skip_onboarding=true
-    → Demo conversation starts directly (no second onboarding modal)
+NOTE: Phase 51 implemented pre-demo screen as a modal overlay on index.html.
+Phase 53 replaced this with a dedicated /demo/index.html page.
+The modal code on index.html is now unreachable (redirect to /demo/ happens first).
+See Phase 53 for current architecture.
 ```
 
 **Deploy Order:**
@@ -1167,28 +1167,93 @@ Email click → page loads with ?demo= → visit tracked
 2. Demo regeneration (already completed — 473 demos)
 3. `firebase deploy --only hosting:preintake-ai` — parent page + CSS
 
-### Phase 52: Email Campaign Schedule Optimization (2026-02-03)
+### Phase 52: Email Campaign Schedule Optimization (2026-02-03/04)
 - [x] **4 Runs/Day** - Increased from 2 to 4 daily sends for better deliverability spread
-  - Windows: 8-9am, 10-11am, 12-1pm, 2-3pm PT
+  - PST times: 8:30am, 10:30am, 12:30pm, 2:30pm PT
+  - PDT times: 7:30am, 9:30am, 11:30am, 1:30pm PT (1hr earlier, still business hours)
   - Spreads volume across business hours (ISPs prefer steady flow vs bursts)
-  - Updated `checkPTBusinessWindow()` in `send-preintake-campaign.js`
 - [x] **Weekday-Only Sending** - Reverted from 7 days/week to Mon-Fri
   - Law firms closed weekends; weekend emails get buried in Monday inbox
   - Lower weekend engagement hurts sender reputation
-  - `allowedDays` changed from `[0,1,2,3,4,5,6]` to `[1,2,3,4,5]`
-- [x] **Workflow Cron Update** - `.github/workflows/preintake-email-campaign.yml`
-  - 4 cron entries with DST dual-triggers, Mon-Fri (`1-5`)
-  - 8 total triggers/day → 4 effective runs (DST dedup via script time check)
+- [x] **Removed PT Time Window Check** - Script no longer enforces time windows internally
+  - Deleted `checkPTBusinessWindow()` function and `SKIP_TIME_CHECK` env var
+  - Scheduling now handled entirely by GitHub Actions cron (4 direct triggers, not DST dual-triggers)
+  - Simpler architecture: cron fires → script runs immediately (no time validation)
+- [x] **Workflow Cron Simplified** - `.github/workflows/preintake-email-campaign.yml`
+  - 4 cron entries at fixed UTC offsets, Mon-Fri (`1-5`)
+  - `cron: '30 16 * * 1-5'`, `'30 18 * * 1-5'`, `'30 20 * * 1-5'`, `'30 22 * * 1-5'`
+  - During PDT (Mar-Nov), sends shift 1 hour earlier — still within business hours
 - **Net effect**: 4 runs x batch x 5 days vs previous 2 runs x batch x 7 days
   - At week 4 (batch=40): 800 emails/week (was 560) — 43% increase, concentrated on business days
+
+### Phase 53: Dedicated Demo Page & Explore Flow (2026-02-04)
+- [x] **Dedicated Demo Page** - Created `/demo/index.html` as standalone demo experience
+  - Full-page welcome screen with firm name, 3-step instructions, "Start Demo" button
+  - Iframe container loads demo with `skip_onboarding=true` after user clicks "Start Demo"
+  - Exit confirmation modal when navigating away mid-demo
+  - "Explore PreIntake.ai website first" escape link with explore tracking
+  - Uses shared `components.js` for header/footer
+  - Header customizations: "Get Started →" button, "Demo" link removed (redundant)
+  - `cleanFirmNameForDisplay()` strips ", Attorney at Law" suffixes
+  - postMessage handling for `demo-started`, `intake-completed`, `demo-complete`, `demo-complete-redirect`
+- [x] **Homepage Redirect** - `?demo=` on homepage now redirects to `/demo/` page
+  - `checkCampaignDemo()` in `index.html` redirects to `/demo/?demo={id}&firm={name}`
+  - Previous inline modal code kept but unreachable (reference only)
+  - Separates demo experience from marketing homepage
+- [x] **Explore Flow** - Navigation from demo page stores context and adds `?explore=1`
+  - `handleNavClick()` in demo page:
+    1. Stores `tbp_demo_id`, `tbp_demo_firm`, `tbp_demo_email` in sessionStorage
+    2. Navigates with `?explore=1` flag appended to destination URL
+    3. If demo started (not completed), shows exit confirmation first
+  - `handleExploreFromDemo()` in homepage:
+    1. Reads demo context from sessionStorage
+    2. Shows welcome banner with firm name
+    3. Hides demo request form and hero CTA (user already has a demo)
+    4. Shows floating buttons ("Get Started" + "View Demo")
+    5. Updates header button to "Get Started →"
+    6. Cleans URL (removes `?explore=1`)
+- [x] **components.js Updates** - Welcome banner and floating buttons for explore users
+  - `renderWelcomeBanner()` - Shows "Welcome, {firmName}" on non-demo pages when `tbp_demo_id` in sessionStorage
+  - `renderFloatingButtons()` - Shows "Get Started" + "View Demo" buttons on non-demo pages
+  - Path-based exclusion: both functions skip rendering on `/demo/` paths
+  - Header `renderHeader()` checks both `tbp_demo_viewed` and `tbp_demo_id` for "Get Started →" state
+  - "Demo" nav link updated to "View Demo" pointing to `/demo/?demo={id}&firm={name}`
+- [x] **Explore Tracking** - `trackDemoView?type=explore` tracked when user leaves demo to explore site
+  - Tracked in `handleLeaveDemo()` (exit modal "Leave Anyway") and explore link on homepage
+- [x] **Email Analytics Dashboard Cleanup** - Removed legacy stats grid and campaign detail sections
+  - Simplified to focus on GA4 metrics and engagement funnel
+- [x] **debug-flow.html** - Added diagnostic page for testing demo/explore flow
+
+**Campaign Visitor Flow (Post-Refactor):**
+```
+Email click → homepage loads with ?demo= → REDIRECT to /demo/?demo={id}&firm={name}
+  → Demo page loads → visit tracked
+  → Welcome screen with firm name, 3 steps, "Start Demo" button
+  → User clicks "Start Demo"
+    → View tracked, sessionStorage updated
+    → iframe loads with skip_onboarding=true
+    → Demo conversation starts directly
+  → OR User clicks header nav / "Explore" link
+    → sessionStorage stores demo context (tbp_demo_id, tbp_demo_firm, tbp_demo_email)
+    → Navigate to destination with ?explore=1
+    → Destination page shows welcome banner + floating buttons from sessionStorage
+```
+
+**sessionStorage Keys (Demo Context):**
+| Key | Set By | Purpose |
+|-----|--------|---------|
+| `tbp_demo_viewed` | Demo page (on "Start Demo" click) | Tracks that user started the demo |
+| `tbp_demo_id` | Demo page (on navigation away) | Demo lead ID for "Get Started" / "View Demo" links |
+| `tbp_demo_firm` | Demo page (on navigation away) | Firm name for welcome banner display |
+| `tbp_demo_email` | Demo page (on navigation away) | Delivery email for exit modal |
 
 **Banner Display Logic:**
 | Visitor Type | Banner Display |
 |--------------|----------------|
-| `?demo=` (campaign with demo) | "Welcome, Smith & Associates — Your demo is ready [Start Now →]" |
-| `?demo=` (bar profile, no firm) | "Welcome, John Smith — Your demo is ready [Start Now →]" |
-| `?firm=` (no demo yet) | "Welcome, Smith & Associates" (no suffix/CTA) |
+| `/demo/?demo=` (campaign visitor) | Demo page welcome screen with firm name |
+| `?explore=1` (left demo to explore) | "Welcome, Smith & Associates" + floating buttons |
 | `?completed=` (finished demo) | "Welcome, Smith & Associates" (no suffix/CTA) |
+| `?firm=` (no demo yet) | "Welcome, Smith & Associates" (no suffix/CTA) |
 
 ---
 
@@ -1203,7 +1268,7 @@ pending → analyzing → researching → generating_demo → demo_ready
 
 ```
 /preintake/
-├── index.html              # Landing page with demo request form
+├── index.html              # Landing page with demo request form (redirects ?demo= to /demo/)
 ├── create-account.html     # Account activation + Stripe checkout
 ├── payment-success.html    # Post-payment success page
 ├── account.html            # My Account page (subscriber portal)
@@ -1216,6 +1281,7 @@ pending → analyzing → researching → generating_demo → demo_ready
 ├── terms-of-service.html   # Terms of service
 ├── unsubscribe.html        # Email unsubscribe confirmation page
 ├── preintake.html          # Legacy intake page (standalone)
+├── debug-flow.html         # Debug tool for demo/explore flow testing
 ├── sitemap.xml             # SEO sitemap (6 pages)
 ├── robots.txt              # Search engine directives
 ├── intake-button.js        # Embeddable floating button
@@ -1224,10 +1290,16 @@ pending → analyzing → researching → generating_demo → demo_ready
 ├── widget-test.html        # Another widget test page (noindex)
 ├── EMBED-INSTRUCTIONS.md   # Client embed documentation
 ├── CLAUDE.md               # Project documentation
+├── css/
+│   └── styles.css          # Shared CSS (campaign-welcome, floating buttons, demo page styles)
+├── demo/
+│   └── index.html          # Dedicated demo page (welcome screen, iframe, exit modal)
 ├── js/
-│   └── components.js       # Shared header/footer (conditional Get Started button)
+│   └── components.js       # Shared header/footer/welcome banner/floating buttons
 └── images/
-    └── icon.svg            # Site icon/favicon (gold #c9a962)
+    ├── icon.svg            # Site icon/favicon (gold #c9a962)
+    ├── icon.png            # PNG version of site icon
+    └── og-image.png        # Open Graph social sharing image (1200x630)
 
 /functions/
 ├── preintake-functions.js           # Form submission handler
