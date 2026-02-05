@@ -879,34 +879,56 @@
                 <!-- Key Metrics -->
                 <div class="stats-grid" id="websiteStats">
                     <div class="stat-card">
-                        <h3>Total Users</h3>
+                        <h3>Active Users</h3>
                         <div class="stat-value" id="ga4TotalUsers">-</div>
-                        <div class="stat-label">Unique visitors</div>
+                        <div class="stat-label">Unique active visitors</div>
+                        <div class="stat-comparison" id="ga4TotalUsersChange"></div>
                     </div>
                     <div class="stat-card">
                         <h3>New Users</h3>
                         <div class="stat-value green" id="ga4NewUsers">-</div>
                         <div class="stat-label">First-time visitors</div>
+                        <div class="stat-comparison" id="ga4NewUsersChange"></div>
                     </div>
                     <div class="stat-card">
                         <h3>Sessions</h3>
                         <div class="stat-value purple" id="ga4Sessions">-</div>
                         <div class="stat-label">Total sessions</div>
+                        <div class="stat-comparison" id="ga4SessionsChange"></div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Bounce Rate</h3>
+                        <div class="stat-value red" id="ga4BounceRate">-</div>
+                        <div class="stat-label">Non-engaged sessions</div>
+                        <div class="stat-comparison" id="ga4BounceRateChange"></div>
                     </div>
                     <div class="stat-card">
                         <h3>Engagement Rate</h3>
                         <div class="stat-value orange" id="ga4EngagementRate">-</div>
                         <div class="stat-label">Engaged sessions</div>
+                        <div class="stat-comparison" id="ga4EngagementRateChange"></div>
                     </div>
                     <div class="stat-card">
                         <h3>Avg Session Duration</h3>
                         <div class="stat-value" id="ga4AvgDuration">-</div>
                         <div class="stat-label">Time on site</div>
+                        <div class="stat-comparison" id="ga4AvgDurationChange"></div>
                     </div>
                     <div class="stat-card">
                         <h3>Page Views</h3>
                         <div class="stat-value purple" id="ga4PageViews">-</div>
                         <div class="stat-label">Total views</div>
+                        <div class="stat-comparison" id="ga4PageViewsChange"></div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Sessions / User</h3>
+                        <div class="stat-value" id="ga4SessionsPerUser">-</div>
+                        <div class="stat-label">Avg sessions per user</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Pages / Session</h3>
+                        <div class="stat-value" id="ga4PagesPerSession">-</div>
+                        <div class="stat-label">Avg pages per session</div>
                     </div>
                 </div>
 
@@ -919,12 +941,14 @@
                             <thead>
                                 <tr>
                                     <th>Source / Medium</th>
+                                    <th>Campaign</th>
                                     <th>Sessions</th>
                                     <th>Users</th>
+                                    <th>Engagement</th>
                                 </tr>
                             </thead>
                             <tbody id="trafficSourcesTable">
-                                <tr><td colspan="3" class="no-data-message">Loading...</td></tr>
+                                <tr><td colspan="5" class="no-data-message">Loading...</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -938,18 +962,36 @@
                                     <th>Page</th>
                                     <th>Views</th>
                                     <th>Engagement</th>
+                                    <th>Avg Duration</th>
                                 </tr>
                             </thead>
                             <tbody id="topPagesTable">
-                                <tr><td colspan="3" class="no-data-message">Loading...</td></tr>
+                                <tr><td colspan="4" class="no-data-message">Loading...</td></tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
 
+                <!-- Top Events -->
+                <div class="section-card" id="topEventsSection" style="display: none;">
+                    <h3>Top Events</h3>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Event Name</th>
+                                <th>Count</th>
+                                <th>Per User</th>
+                            </tr>
+                        </thead>
+                        <tbody id="topEventsTable">
+                            <tr><td colspan="3" class="no-data-message">Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
                 <!-- Email Campaign Performance (Firestore + GA4) -->
                 <div class="section-card" id="emailCampaignSection">
-                    <h3>Email Campaign Performance <span style="font-size: 0.7rem; color: #999; background: #f0f0f0; padding: 2px 8px; border-radius: 4px; margin-left: 8px; font-weight: 400;">Firestore</span></h3>
+                    <h3>Email Campaign Performance <span style="font-size: 0.7rem; color: #999; background: #f0f0f0; padding: 2px 8px; border-radius: 4px; margin-left: 8px; font-weight: 400;">Firestore &middot; All Time</span></h3>
                     <!-- Firestore Stats -->
                     <div class="stats-grid" id="emailCampaignStats">
                         <div class="stat-card">
@@ -998,7 +1040,7 @@
                 <!-- Device Breakdown -->
                 <div class="section-card">
                     <h3>Device Breakdown</h3>
-                    <div id="deviceBreakdown" class="stats-grid">
+                    <div id="deviceBreakdown">
                         <p class="no-data-message">Loading...</p>
                     </div>
                 </div>
@@ -1031,11 +1073,12 @@
                             <tr>
                                 <th>Country</th>
                                 <th>Users</th>
+                                <th>Sessions</th>
                                 <th>Engagement Rate</th>
                             </tr>
                         </thead>
                         <tbody id="topCountriesTable">
-                            <tr><td colspan="3" class="no-data-message">Loading...</td></tr>
+                            <tr><td colspan="4" class="no-data-message">Loading...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -1195,6 +1238,16 @@
                         <h3>Uninstalls</h3>
                         <div class="stat-value orange" id="androidUninstalls">-</div>
                         <div class="stat-label" id="androidUninstallsPeriod">Last 7 days</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Net Installs</h3>
+                        <div class="stat-value green" id="androidNetInstalls">-</div>
+                        <div class="stat-label" id="androidNetInstallsPeriod">Last 7 days (installs - uninstalls)</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Retention Rate</h3>
+                        <div class="stat-value" id="androidRetentionRate">-</div>
+                        <div class="stat-label">Active / Total installs</div>
                     </div>
                 </div>
 
@@ -1426,7 +1479,7 @@
 
                 <!-- GA4 Email Campaign Traffic (shared between both) -->
                 <div class="section-card" id="emailGa4TrafficDetailed" style="margin-top: 30px;">
-                    <h3>Website Traffic from Email <span class="source-label">GA4</span></h3>
+                    <h3>Website Traffic from Email <span class="source-label">GA4 &middot; Last 24 Hours</span></h3>
                     <div id="emailCampaignTrafficContent">
                         <p class="no-data-message">Loading...</p>
                     </div>
@@ -1610,14 +1663,23 @@
                 document.getElementById('ga4TotalUsers').textContent = 'N/A';
                 document.getElementById('ga4NewUsers').textContent = 'N/A';
                 document.getElementById('ga4Sessions').textContent = 'N/A';
+                document.getElementById('ga4BounceRate').textContent = 'N/A';
                 document.getElementById('ga4EngagementRate').textContent = 'N/A';
                 document.getElementById('ga4AvgDuration').textContent = 'N/A';
                 document.getElementById('ga4PageViews').textContent = 'N/A';
-                document.getElementById('trafficSourcesTable').innerHTML = '<tr><td colspan="3" class="no-data-message">No data for this date range</td></tr>';
-                document.getElementById('topPagesTable').innerHTML = '<tr><td colspan="3" class="no-data-message">No data for this date range</td></tr>';
+                document.getElementById('ga4SessionsPerUser').textContent = 'N/A';
+                document.getElementById('ga4PagesPerSession').textContent = 'N/A';
+                // Clear comparison indicators
+                ['ga4TotalUsersChange', 'ga4NewUsersChange', 'ga4SessionsChange', 'ga4BounceRateChange', 'ga4EngagementRateChange', 'ga4AvgDurationChange', 'ga4PageViewsChange'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.innerHTML = '';
+                });
+                document.getElementById('trafficSourcesTable').innerHTML = '<tr><td colspan="5" class="no-data-message">No data for this date range</td></tr>';
+                document.getElementById('topPagesTable').innerHTML = '<tr><td colspan="4" class="no-data-message">No data for this date range</td></tr>';
                 document.getElementById('deviceBreakdown').innerHTML = '<p class="no-data-message">No data for this date range</p>';
                 document.getElementById('domainBreakdownTable').innerHTML = '<tr><td colspan="6" class="no-data-message">No data for this date range</td></tr>';
-                document.getElementById('topCountriesTable').innerHTML = '<tr><td colspan="3" class="no-data-message">No data for this date range</td></tr>';
+                document.getElementById('topCountriesTable').innerHTML = '<tr><td colspan="4" class="no-data-message">No data for this date range</td></tr>';
+                document.getElementById('topEventsSection').style.display = 'none';
                 document.getElementById('emailGa4Traffic').style.display = 'none';
                 return;
             }
@@ -1627,10 +1689,21 @@
             document.getElementById('ga4TotalUsers').textContent = formatNumber(overview.activeUsers || 0);
             document.getElementById('ga4NewUsers').textContent = formatNumber(overview.newUsers || 0);
             document.getElementById('ga4Sessions').textContent = formatNumber(overview.sessions || 0);
+            document.getElementById('ga4BounceRate').textContent = (overview.bounceRate || 0).toFixed(1) + '%';
             // engagementRate is already a percentage from the API (e.g., 11.72)
             document.getElementById('ga4EngagementRate').textContent = (overview.engagementRate || 0).toFixed(1) + '%';
             document.getElementById('ga4AvgDuration').textContent = formatDuration(overview.averageSessionDuration || 0);
             document.getElementById('ga4PageViews').textContent = formatNumber(overview.pageViews || 0);
+
+            // Derived metrics
+            const activeUsers = overview.activeUsers || 0;
+            const sessions = overview.sessions || 0;
+            const pageViews = overview.pageViews || 0;
+            document.getElementById('ga4SessionsPerUser').textContent = activeUsers > 0 ? (sessions / activeUsers).toFixed(2) : '-';
+            document.getElementById('ga4PagesPerSession').textContent = sessions > 0 ? (pageViews / sessions).toFixed(2) : '-';
+
+            // Period-over-period comparison (7d vs 30d, or yesterday vs 7d)
+            updatePeriodComparisons(overview);
 
             // Traffic Sources - API returns 'trafficSources.data' with sessionSource/sessionMedium
             const sourcesTable = document.getElementById('trafficSourcesTable');
@@ -1639,12 +1712,14 @@
                 sourcesTable.innerHTML = trafficData.slice(0, 10).map(s => `
                     <tr>
                         <td>${escapeHtml(s.sessionSource || '(not set)')} / ${escapeHtml(s.sessionMedium || '(none)')}</td>
+                        <td>${escapeHtml(s.sessionCampaignName || '(none)')}</td>
                         <td>${formatNumber(s.sessions || 0)}</td>
                         <td>${formatNumber(s.activeUsers || 0)}</td>
+                        <td>${(s.engagementRate || 0).toFixed(1)}%</td>
                     </tr>
                 `).join('');
             } else {
-                sourcesTable.innerHTML = '<tr><td colspan="3" class="no-data-message">No traffic data</td></tr>';
+                sourcesTable.innerHTML = '<tr><td colspan="5" class="no-data-message">No traffic data</td></tr>';
             }
 
             // Top Pages - API returns 'topPages.data' with pagePath/screenPageViews
@@ -1656,29 +1731,55 @@
                         <td title="${escapeHtml(p.pagePath || '')}">${escapeHtml(truncatePath(p.pagePath || ''))}</td>
                         <td>${formatNumber(p.screenPageViews || 0)}</td>
                         <td>${(p.engagementRate || 0).toFixed(1)}%</td>
+                        <td>${formatDuration(p.averageSessionDuration || 0)}</td>
                     </tr>
                 `).join('');
             } else {
-                pagesTable.innerHTML = '<tr><td colspan="3" class="no-data-message">No page data</td></tr>';
+                pagesTable.innerHTML = '<tr><td colspan="4" class="no-data-message">No page data</td></tr>';
             }
 
-            // Device Breakdown - API returns 'deviceBreakdown.data' with deviceCategory
+            // Device Breakdown - API returns 'deviceBreakdown.data' with deviceCategory + operatingSystem
             const deviceDiv = document.getElementById('deviceBreakdown');
             const deviceData = data.deviceBreakdown?.data || [];
             if (deviceData.length > 0) {
+                // Aggregate by device category + OS
                 const deviceMap = {};
                 deviceData.forEach(d => {
-                    const key = d.deviceCategory || 'unknown';
-                    if (!deviceMap[key]) deviceMap[key] = 0;
-                    deviceMap[key] += (d.activeUsers || 0);
+                    const key = (d.deviceCategory || 'unknown') + '|' + (d.operatingSystem || 'unknown');
+                    if (!deviceMap[key]) deviceMap[key] = { users: 0, sessions: 0, engagementSum: 0, count: 0 };
+                    deviceMap[key].users += (d.activeUsers || 0);
+                    deviceMap[key].sessions += (d.sessions || 0);
+                    deviceMap[key].engagementSum += (d.engagementRate || 0);
+                    deviceMap[key].count++;
                 });
-                deviceDiv.innerHTML = Object.entries(deviceMap).map(([device, users]) => `
-                    <div class="stat-card">
-                        <h3>${capitalize(device)}</h3>
-                        <div class="stat-value">${formatNumber(users)}</div>
-                        <div class="stat-label">users</div>
-                    </div>
-                `).join('');
+                // Sort by users descending
+                const sorted = Object.entries(deviceMap).sort((a, b) => b[1].users - a[1].users);
+                deviceDiv.innerHTML = `
+                    <table class="data-table" style="width: 100%;">
+                        <thead>
+                            <tr>
+                                <th>Device</th>
+                                <th>OS</th>
+                                <th>Users</th>
+                                <th>Sessions</th>
+                                <th>Engagement</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${sorted.map(([key, stats]) => {
+                                const [device, os] = key.split('|');
+                                const avgEngagement = stats.count > 0 ? (stats.engagementSum / stats.count).toFixed(1) : '0.0';
+                                return `<tr>
+                                    <td>${capitalize(device)}</td>
+                                    <td>${escapeHtml(os)}</td>
+                                    <td>${formatNumber(stats.users)}</td>
+                                    <td>${formatNumber(stats.sessions)}</td>
+                                    <td>${avgEngagement}%</td>
+                                </tr>`;
+                            }).join('')}
+                        </tbody>
+                    </table>
+                `;
             } else {
                 deviceDiv.innerHTML = '<p class="no-data-message">No device data</p>';
             }
@@ -1740,11 +1841,28 @@
                     <tr>
                         <td>${escapeHtml(c.country || '(not set)')}</td>
                         <td>${formatNumber(c.activeUsers || 0)}</td>
+                        <td>${formatNumber(c.sessions || 0)}</td>
                         <td>${(c.engagementRate || 0).toFixed(1)}%</td>
                     </tr>
                 `).join('');
             } else {
-                countriesTable.innerHTML = '<tr><td colspan="3" class="no-data-message">No country data</td></tr>';
+                countriesTable.innerHTML = '<tr><td colspan="4" class="no-data-message">No country data</td></tr>';
+            }
+
+            // Top Events
+            const eventsData = data.topEvents?.data || [];
+            const eventsSection = document.getElementById('topEventsSection');
+            if (eventsData.length > 0) {
+                eventsSection.style.display = 'block';
+                document.getElementById('topEventsTable').innerHTML = eventsData.slice(0, 15).map(e => `
+                    <tr>
+                        <td>${escapeHtml(e.eventName || '(unknown)')}</td>
+                        <td>${formatNumber(e.eventCount || 0)}</td>
+                        <td>${(e.eventCountPerUser || 0).toFixed(2)}</td>
+                    </tr>
+                `).join('');
+            } else {
+                eventsSection.style.display = 'none';
             }
 
             // Email Campaign - Firestore stats (top-level) + GA4 traffic (date-range)
@@ -2039,6 +2157,90 @@
             }
         }
 
+        // Period-over-period comparison
+        function updatePeriodComparisons(currentOverview) {
+            if (!analyticsData || !analyticsData.website) return;
+
+            // Determine comparison data based on current date range
+            let compareData = null;
+            let compareLabel = '';
+            if (currentDateRange === '7day') {
+                // Compare 7d against 30d averages (normalized to 7 days)
+                const thirtyDay = analyticsData.website.thirtyDay?.overview;
+                if (thirtyDay) {
+                    compareData = {};
+                    // Normalize 30d values to 7d equivalent for rate comparison
+                    compareData.activeUsers = (thirtyDay.activeUsers || 0) / 4.28; // ~30/7
+                    compareData.newUsers = (thirtyDay.newUsers || 0) / 4.28;
+                    compareData.sessions = (thirtyDay.sessions || 0) / 4.28;
+                    compareData.bounceRate = thirtyDay.bounceRate || 0;
+                    compareData.engagementRate = thirtyDay.engagementRate || 0;
+                    compareData.averageSessionDuration = thirtyDay.averageSessionDuration || 0;
+                    compareData.pageViews = (thirtyDay.pageViews || 0) / 4.28;
+                    compareLabel = 'vs 30d avg';
+                }
+            } else if (currentDateRange === 'yesterday') {
+                // Compare yesterday against 7d daily average
+                const sevenDay = analyticsData.website.sevenDay?.overview;
+                if (sevenDay) {
+                    compareData = {};
+                    compareData.activeUsers = (sevenDay.activeUsers || 0) / 7;
+                    compareData.newUsers = (sevenDay.newUsers || 0) / 7;
+                    compareData.sessions = (sevenDay.sessions || 0) / 7;
+                    compareData.bounceRate = sevenDay.bounceRate || 0;
+                    compareData.engagementRate = sevenDay.engagementRate || 0;
+                    compareData.averageSessionDuration = sevenDay.averageSessionDuration || 0;
+                    compareData.pageViews = (sevenDay.pageViews || 0) / 7;
+                    compareLabel = 'vs 7d avg';
+                }
+            }
+
+            const metrics = [
+                { id: 'ga4TotalUsersChange', key: 'activeUsers', isRate: false },
+                { id: 'ga4NewUsersChange', key: 'newUsers', isRate: false },
+                { id: 'ga4SessionsChange', key: 'sessions', isRate: false },
+                { id: 'ga4BounceRateChange', key: 'bounceRate', isRate: true, invertColor: true },
+                { id: 'ga4EngagementRateChange', key: 'engagementRate', isRate: true },
+                { id: 'ga4AvgDurationChange', key: 'averageSessionDuration', isRate: false },
+                { id: 'ga4PageViewsChange', key: 'pageViews', isRate: false }
+            ];
+
+            metrics.forEach(m => {
+                const el = document.getElementById(m.id);
+                if (!el) return;
+
+                if (!compareData || currentDateRange === '30day') {
+                    el.innerHTML = '';
+                    return;
+                }
+
+                const current = currentOverview[m.key] || 0;
+                const compare = compareData[m.key] || 0;
+
+                if (compare === 0) {
+                    el.innerHTML = '';
+                    return;
+                }
+
+                let pctChange;
+                if (m.isRate) {
+                    // For rates, show point difference
+                    pctChange = current - compare;
+                    const direction = pctChange > 0 ? 'up' : pctChange < 0 ? 'down' : '';
+                    const colorClass = m.invertColor ? (pctChange > 0 ? 'down' : 'up') : direction;
+                    const arrow = pctChange > 0 ? '&#9650;' : pctChange < 0 ? '&#9660;' : '';
+                    el.className = 'stat-comparison ' + colorClass;
+                    el.innerHTML = pctChange !== 0 ? `${arrow} ${Math.abs(pctChange).toFixed(1)}pts ${compareLabel}` : '';
+                } else {
+                    pctChange = ((current - compare) / compare) * 100;
+                    const direction = pctChange > 0 ? 'up' : pctChange < 0 ? 'down' : '';
+                    const arrow = pctChange > 0 ? '&#9650;' : pctChange < 0 ? '&#9660;' : '';
+                    el.className = 'stat-comparison ' + direction;
+                    el.innerHTML = Math.abs(pctChange) >= 1 ? `${arrow} ${Math.abs(pctChange).toFixed(0)}% ${compareLabel}` : '';
+                }
+            });
+        }
+
         function getVariantBadge(subjectTag) {
             const badges = {
                 'not_opportunity': '<span class="badge badge-v1">V1</span>',
@@ -2266,6 +2468,17 @@
             document.getElementById('androidTotalInstallsLabel').textContent = 'All time';
             document.getElementById('androidRecentPeriod').textContent = 'Last 7 days';
             document.getElementById('androidUninstallsPeriod').textContent = 'Last 7 days';
+
+            // Net installs and retention rate
+            const netInstalls = (metrics.recentInstalls || 0) - (metrics.recentUninstalls || 0);
+            document.getElementById('androidNetInstalls').textContent = (netInstalls >= 0 ? '+' : '') + formatNumber(netInstalls);
+            document.getElementById('androidNetInstalls').className = 'stat-value ' + (netInstalls >= 0 ? 'green' : 'red');
+            document.getElementById('androidNetInstallsPeriod').textContent = 'Last 7 days (installs - uninstalls)';
+
+            const totalInstalls = metrics.totalInstalls || 0;
+            const activeInstalls = metrics.activeInstalls || 0;
+            const retentionRate = totalInstalls > 0 ? ((activeInstalls / totalInstalls) * 100).toFixed(1) + '%' : 'N/A';
+            document.getElementById('androidRetentionRate').textContent = retentionRate;
 
             // Draw chart from API daily data
             if (metrics.dailyData && metrics.dailyData.length > 0) {
@@ -2498,6 +2711,14 @@
             document.getElementById('androidUninstalls').textContent = recentUninstalls;
             document.getElementById('androidRecentPeriod').textContent = `Last ${Math.min(7, data.length)} days`;
             document.getElementById('androidUninstallsPeriod').textContent = `Last ${Math.min(7, data.length)} days`;
+
+            // Net installs and retention rate
+            const netInstalls = recentInstalls - recentUninstalls;
+            document.getElementById('androidNetInstalls').textContent = (netInstalls >= 0 ? '+' : '') + netInstalls;
+            document.getElementById('androidNetInstalls').className = 'stat-value ' + (netInstalls >= 0 ? 'green' : 'red');
+            document.getElementById('androidNetInstallsPeriod').textContent = `Last ${Math.min(7, data.length)} days (installs - uninstalls)`;
+            const csvRetention = totalInstalls > 0 ? ((activeInstalls / totalInstalls) * 100).toFixed(1) + '%' : 'N/A';
+            document.getElementById('androidRetentionRate').textContent = csvRetention;
 
             // Draw chart
             drawAndroidChart(data);
