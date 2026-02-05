@@ -6939,5 +6939,17 @@
     "detectedAt": null,
     "discoveredAt": "2026-02-05T22:39:16.704Z",
     "siteStatus": "active"
+  },
+  "thanksai.jp": {
+    "companyDomain": "thanksai.jp",
+    "type": "unknown",
+    "repDomain": null,
+    "pattern": null,
+    "urlCount": 0,
+    "sampleUrls": [],
+    "noEmailPlatform": false,
+    "detectedAt": null,
+    "discoveredAt": "2026-02-05T23:27:57.298Z",
+    "siteStatus": "active"
   }
 }
