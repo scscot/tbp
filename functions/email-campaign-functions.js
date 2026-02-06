@@ -42,9 +42,9 @@ const LANDING_PAGE_URL = 'https://teambuildpro.com';
 const AB_TEST_VARIANTS = {
   v3: {
     templateVersion: 'v3',
-    subject: 'Using AI to Build Your Direct Sales Team',
+    subject: "This isn't another opportunity email",
     subjectTag: 'mobile_first_v3',
-    description: 'Critiques old advice, TBP as correction'
+    description: 'Pattern interrupt - anti-pitch positioning'
   },
   v4: {
     templateVersion: 'v4',
