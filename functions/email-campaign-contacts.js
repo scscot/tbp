@@ -2,11 +2,11 @@
  * Team Build Pro Email Campaign for Direct Sales Contacts
  *
  * Sends emails to scraped direct_sales_contacts (distributors from Herbalife, doTERRA, etc.)
- * Uses Mailgun API with template versioning and company-specific personalization.
+ * Uses Mailgun API with template versioning.
  *
  * Templates stored in Mailgun under 'mailer' template:
- * - v5: Company-specific subject lines
- * - v6: Company-specific subject lines (alternate version)
+ * - v3: "This isn't another opportunity email" - Pattern interrupt
+ * - v4: "Not an opportunity. Just a tool." - Tool focus
  *
  * Collection: direct_sales_contacts (NOT emailCampaigns/master/contacts)
  * Query: scraped == true, sent == false
@@ -39,33 +39,21 @@ const TRACKING_BASE_URL = 'https://us-central1-teambuilder-plus-fe74d.cloudfunct
 const LANDING_PAGE_URL = 'https://teambuildpro.com';
 
 // =============================================================================
-// ABCD TEST CONFIGURATIONS
+// A/B TEST CONFIGURATIONS
 // =============================================================================
 
-const ABCD_TEST_VARIANTS = {
+const AB_TEST_VARIANTS = {
   v3: {
     templateVersion: 'v3',
-    subject: 'Using AI to Build Your Direct Sales Team',
+    subject: "This isn't another opportunity email",
     subjectTag: 'mobile_first_v3',
-    description: 'Critiques old advice, TBP as correction'
+    description: 'Pattern interrupt - anti-pitch positioning'
   },
   v4: {
     templateVersion: 'v4',
     subject: 'Not an opportunity. Just a tool.',
     subjectTag: 'mobile_first_v4',
-    description: 'Flip the script - confidence before joining'
-  },
-  v5: {
-    templateVersion: 'v5',
-    subject: "Using AI to Build Your ${company} Team",
-    subjectTag: 'mobile_first_v5',
-    description: 'Critiques old advice, TBP as correction (company-specific)'
-  },
-  v6: {
-    templateVersion: 'v6',
-    subject: "Using AI to Build Your ${company} Team",
-    subjectTag: 'mobile_first_v6',
-    description: 'Flip the script - confidence before joining (company-specific)'
+    description: 'Pattern interrupt - tool focus'
   }
 };
 
@@ -164,14 +152,15 @@ async function sendEmailViaMailgun(contact, docId, config, index) {
     throw new Error('TBP_MAILGUN_API_KEY not configured');
   }
 
-  // ABCD Test: Strict rotation through v3, v4, v5, v6
-  const variantKeys = ['v3', 'v4', 'v5', 'v6'];
-  const templateVariant = variantKeys[index % 4];
-  const variant = ABCD_TEST_VARIANTS[templateVariant];
+  // A/B Test: Strict alternation between v3 and v4
+  const templateVariant = index % 2 === 0 ? 'v3' : 'v4';
+  const variant = AB_TEST_VARIANTS[templateVariant];
 
-  // Interpolate company name in subject line
-  const companyName = contact.company || 'Your';
-  const subject = variant.subject.replace('${company}', companyName);
+  // Subject line (no longer company-specific)
+  const subject = variant.subject;
+
+  // Company name still used in template body for personalization
+  const companyName = contact.company || 'your company';
 
   // Build tracking URLs (includes contact name for personalized welcome on landing page)
   const landingPageUrl = buildLandingPageUrl(config.utmCampaign, variant.subjectTag, contact);
