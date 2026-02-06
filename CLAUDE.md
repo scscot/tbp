@@ -882,6 +882,8 @@ Automated 4-stage pipeline that discovers direct sales distributor URLs, scrapes
   3. Certificate Transparency logs via crt.sh (subdomain discovery)
   - Monat test: 0 new URLs (CC only) → 452 new URLs (all 3 sources)
 - ✅ **Firestore Blocked-Platform Filtering**: `seed-contacts-urls.js` loads `config/contactsScraper.blockedPlatforms` to skip companies already marked as blocked by `contacts-scraper.js`
+- ✅ **Auto-Cleanup of Blocked URLs**: `contacts-scraper.js` deletes unscraped URLs from blocked companies at start of each run
+  - Blocked platforms (12): doTERRA, Ambit Energy, Le-Vel, Herbalife, Zilis, It Works!, Arbonne, LifeWave, Scentsy, Young Living, Nu Skin, Shaklee
 - ✅ **URL Discovery Throughput 3x**: Workflow batch size 40→120, schedule every 4h→every 2h
   - Processes 1,082 companies in ~10 hours instead of ~4 days
 
@@ -899,13 +901,16 @@ Automated 4-stage pipeline that discovers direct sales distributor URLs, scrapes
 - ✅ **App Store URLs Standardized**: Simplified format `apps.apple.com/us/app/id6751211622` across 328 files
 - ✅ **SEO Audits**: Canonical URLs, hreflang tags, sitemaps verified across all sites
 
-**Analytics Dashboard Enhancements** (Jan 28, 2026)
+**Analytics Dashboard Enhancements** (Jan-Feb 2026)
 - ✅ **Top Countries Feature**: Added GA4 country dimension query to TBP Analytics Dashboard
   - Backend: New GA4 report query using `country` dimension in `analytics-dashboard-functions.js`
   - Frontend: Dynamic country data display in `TBP-analytics.html` (was previously hardcoded "not available")
 - ✅ **Yesterday Date Range**: Added "Yesterday" option to date range selector
   - Backend: `fetchGA4Analytics('yesterday')` support with startDate=endDate='yesterday'
   - Frontend: New "Yesterday" button in date range selector
+- ✅ **Today Date Range** (Feb 5, 2026): Added "Today" option to date range selector
+  - Backend: `fetchGA4Analytics('today')` support with startDate=endDate='today'
+  - Frontend: New "Today" button in date range selector (to right of Yesterday)
 
 ### Current System Status (Feb 2026)
 
@@ -921,14 +926,14 @@ Active development paused to allow automated systems to run and collect meaningf
 | Yahoo Campaign | Removed | File and function deleted (Jan 31) |
 | Android Campaign | Removed | Function deleted (Jan 31) |
 | Email Tracking | Firestore | Clicks via trackEmailClick; opens disabled |
-| Analytics Dashboards | Firestore + GA4 | Top Countries + Yesterday date range added |
+| Analytics Dashboards | Firestore + GA4 | Top Countries + Yesterday + Today date ranges |
 | Push Notifications | Working | profile_reminder, trial_expired verified |
 | Blog Automation | Running | Mon/Thu schedule, 4 languages, sitemap pings |
 | Sitemap Pings | Active | Google + Bing pinged after each blog deploy |
 | Domain Warming | Week 4 | batchSize=50, 400 emails/day (8 runs total) |
 | URL Discovery | Active | Every 2h, 120 companies/batch (processing 1,082 companies) |
 | Contacts Seeder | Active | Every 4h, 3 sources (Common Crawl + Wayback + crt.sh) |
-| Contacts Scraper | Active | Hourly, 400 URLs/batch |
+| Contacts Scraper | Active | Hourly, 400 URLs/batch, 12 blocked platforms |
 | PreIntake.ai | Autonomous | See `preintake/CLAUDE.md` for details |
 
 **Monitoring Checklist (Weekly):**

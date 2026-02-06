@@ -874,6 +874,7 @@
                     <button class="date-range-btn active" onclick="selectDateRange('30day', this)">30 Days</button>
                     <button class="date-range-btn" onclick="selectDateRange('7day', this)">7 Days</button>
                     <button class="date-range-btn" onclick="selectDateRange('yesterday', this)">Yesterday</button>
+                    <button class="date-range-btn" onclick="selectDateRange('today', this)">Today</button>
                 </div>
 
                 <!-- Key Metrics -->
@@ -1656,6 +1657,8 @@
                 data = analyticsData.website.sevenDay;
             } else if (currentDateRange === 'yesterday') {
                 data = analyticsData.website.yesterday;
+            } else if (currentDateRange === 'today') {
+                data = analyticsData.website.today;
             }
 
             if (!data) {
