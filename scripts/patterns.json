@@ -6999,5 +6999,77 @@
     "detectedAt": null,
     "discoveredAt": "2026-02-06T00:32:31.641Z",
     "siteStatus": "active"
+  },
+  "nutonic.com": {
+    "companyDomain": "nutonic.com",
+    "type": "inactive",
+    "repDomain": null,
+    "pattern": null,
+    "urlCount": 0,
+    "sampleUrls": [],
+    "noEmailPlatform": false,
+    "detectedAt": null,
+    "discoveredAt": "2026-02-06T03:02:41.322Z",
+    "siteStatus": "HTTP 404"
+  },
+  "swagyourlife.com": {
+    "companyDomain": "swagyourlife.com",
+    "type": "inactive",
+    "repDomain": null,
+    "pattern": null,
+    "urlCount": 0,
+    "sampleUrls": [],
+    "noEmailPlatform": false,
+    "detectedAt": null,
+    "discoveredAt": "2026-02-06T03:02:50.886Z",
+    "siteStatus": "Error: fetch failed"
+  },
+  "uzestaglobal.com": {
+    "companyDomain": "uzestaglobal.com",
+    "type": "inactive",
+    "repDomain": null,
+    "pattern": null,
+    "urlCount": 0,
+    "sampleUrls": [],
+    "noEmailPlatform": false,
+    "detectedAt": null,
+    "discoveredAt": "2026-02-06T03:02:53.955Z",
+    "siteStatus": "Error: fetch failed"
+  },
+  "rutessentials.com": {
+    "companyDomain": "rutessentials.com",
+    "type": "unknown",
+    "repDomain": null,
+    "pattern": null,
+    "urlCount": 0,
+    "sampleUrls": [],
+    "noEmailPlatform": false,
+    "detectedAt": null,
+    "discoveredAt": "2026-02-06T03:02:57.005Z",
+    "siteStatus": "active"
+  },
+  "teoma.pe": {
+    "companyDomain": "teoma.pe",
+    "type": "inactive",
+    "repDomain": null,
+    "pattern": null,
+    "urlCount": 0,
+    "sampleUrls": [],
+    "noEmailPlatform": false,
+    "detectedAt": null,
+    "discoveredAt": "2026-02-06T03:03:50.421Z",
+    "siteStatus": "Error: fetch failed"
+  },
+  "riseoo.com": {
+    "companyDomain": "riseoo.com",
+    "type": "unknown",
+    "repDomain": null,
+    "pattern": null,
+    "urlCount": 0,
+    "sampleUrls": [],
+    "noEmailPlatform": false,
+    "detectedAt": null,
+    "discoveredAt": "2026-02-06T03:03:53.873Z",
+    "siteStatus": "active"
   }
 }
