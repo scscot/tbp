@@ -74,7 +74,7 @@
   </script>
 
   <style>
-    .blog-hero{padding:80px 0 60px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;text-align:center}
+    .blog-hero{padding:80px 0 60px;background:linear-gradient(135deg,#0c1929 0%,#1a365d 100%);color:#fff;text-align:center}
     .blog-hero h1{font-size:3rem;font-weight:900;margin-bottom:1rem;line-height:1.2;color:#fff}
     .blog-hero p{font-size:1.25rem;opacity:0.95;max-width:700px;margin:0 auto;color:#fff}
     .blog-section{padding:60px 0}
@@ -514,9 +514,16 @@
       // Mobile menu
       if (menuBtn && mobileMenu) {
         menuBtn.addEventListener('click', function() {
-          const isExpanded = menuBtn.getAttribute('aria-expanded') === 'true';
-          menuBtn.setAttribute('aria-expanded', !isExpanded);
-          mobileMenu.classList.toggle('active');
+          mobileMenu.classList.toggle('open');
+          menuBtn.setAttribute('aria-expanded', mobileMenu.classList.contains('open'));
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', function(e) {
+          if (!menuBtn.contains(e.target) && !mobileMenu.contains(e.target)) {
+            mobileMenu.classList.remove('open');
+            menuBtn.setAttribute('aria-expanded', 'false');
+          }
         });
       }
 
