@@ -6951,5 +6951,53 @@
     "detectedAt": null,
     "discoveredAt": "2026-02-05T23:27:57.298Z",
     "siteStatus": "active"
+  },
+  "neffulusa.com": {
+    "companyDomain": "neffulusa.com",
+    "type": "unknown",
+    "repDomain": null,
+    "pattern": null,
+    "urlCount": 0,
+    "sampleUrls": [],
+    "noEmailPlatform": false,
+    "detectedAt": null,
+    "discoveredAt": "2026-02-06T00:29:58.177Z",
+    "siteStatus": "active"
+  },
+  "lurraglobal.com": {
+    "companyDomain": "lurraglobal.com",
+    "type": "inactive",
+    "repDomain": null,
+    "pattern": null,
+    "urlCount": 0,
+    "sampleUrls": [],
+    "noEmailPlatform": false,
+    "detectedAt": null,
+    "discoveredAt": "2026-02-06T00:32:25.226Z",
+    "siteStatus": "Error: fetch failed"
+  },
+  "innov8tive.com": {
+    "companyDomain": "innov8tive.com",
+    "type": "inactive",
+    "repDomain": null,
+    "pattern": null,
+    "urlCount": 0,
+    "sampleUrls": [],
+    "noEmailPlatform": false,
+    "detectedAt": null,
+    "discoveredAt": "2026-02-06T00:32:28.465Z",
+    "siteStatus": "Error: fetch failed"
+  },
+  "profinancialgroup.com": {
+    "companyDomain": "profinancialgroup.com",
+    "type": "unknown",
+    "repDomain": null,
+    "pattern": null,
+    "urlCount": 0,
+    "sampleUrls": [],
+    "noEmailPlatform": false,
+    "detectedAt": null,
+    "discoveredAt": "2026-02-06T00:32:31.641Z",
+    "siteStatus": "active"
   }
 }
