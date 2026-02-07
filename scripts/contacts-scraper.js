@@ -510,6 +510,25 @@ async function getUnscrapedUrlsAllCompanies(db, limit) {
 }
 
 /**
+ * Check if an email already exists in the collection (excluding the current document)
+ * @returns {boolean} - True if email already exists
+ */
+async function emailExists(db, email, excludeDocId) {
+  const snapshot = await db.collection(CONFIG.COLLECTION)
+    .where('email', '==', email)
+    .limit(2)  // Only need to check if at least one other exists
+    .get();
+
+  // Check if any returned document is not the current one
+  for (const doc of snapshot.docs) {
+    if (doc.id !== excludeDocId) {
+      return true;
+    }
+  }
+  return false;
+}
+
+/**
  * Update document with scraped data
  * @param {number} currentAttempts - Current scrapeAttempts count BEFORE this attempt
  */
@@ -517,6 +536,14 @@ async function updateDocument(db, docId, company, data, success, error, currentA
   const docRef = db.collection(CONFIG.COLLECTION).doc(docId);
 
   if (success && data.email) {
+    // Check if this email already exists in another document
+    const isDuplicate = await emailExists(db, data.email, docId);
+    if (isDuplicate) {
+      // Email already exists - delete this document to prevent duplicates
+      await docRef.delete();
+      return 'deleted_duplicate';
+    }
+
     // Success with email found - update document
     await docRef.update({
       firstName: data.firstName,
@@ -991,6 +1018,7 @@ async function main() {
     successWithEmail: 0,
     deleted: 0,
     deletedMaxRetries: 0,  // Documents deleted after max failed attempts
+    deletedDuplicate: 0,   // Documents deleted because email already exists
     failed: 0,
     httpFallbacks: 0,  // URLs that succeeded via HTTP fallback
     stopped: false,
@@ -1070,10 +1098,20 @@ async function main() {
         }
 
         console.log(`  Final: ${result.data.firstName || '(no first)'} ${result.data.lastName || '(no last)'} <${result.data.email}>`);
-        summary.successWithEmail++;
 
         if (!dryRun) {
-          await updateDocument(db, id, company, result.data, true, null);
+          const updateResult = await updateDocument(db, id, company, result.data, true, null);
+          if (updateResult === 'deleted_duplicate') {
+            console.log(`  Duplicate email - document deleted`);
+            summary.deletedDuplicate++;
+            // Undo the emailsFound increment since we're not keeping this contact
+            companyStats[company].emailsFound--;
+            cumulativeStats[normCompanyKey].emailsFound--;
+          } else {
+            summary.successWithEmail++;
+          }
+        } else {
+          summary.successWithEmail++;
         }
       } else if (emailFound && corporateCheck.isCorporate) {
         // Corporate/generic email found - delete document (not an individual contact)
@@ -1203,6 +1241,9 @@ async function main() {
   console.log(`Deleted (no email): ${summary.deleted - summary.deletedMaxRetries}`);
   if (summary.deletedMaxRetries > 0) {
     console.log(`Deleted (max retries): ${summary.deletedMaxRetries}`);
+  }
+  if (summary.deletedDuplicate > 0) {
+    console.log(`Deleted (duplicate email): ${summary.deletedDuplicate}`);
   }
   console.log(`Failed (will retry): ${summary.failed}`);
   if (summary.httpFallbacks > 0) {

@@ -614,6 +614,37 @@ const getEmailAnalytics = onRequest(
         try {
             const now = new Date();
 
+            // Calculate date boundaries in PST (UTC-8)
+            // This ensures consistent "today" regardless of server timezone
+            const PST_OFFSET = -8 * 60 * 60 * 1000; // -8 hours in ms
+            const nowPST = new Date(now.getTime() + PST_OFFSET);
+
+            // Get PST date components
+            const pstYear = nowPST.getUTCFullYear();
+            const pstMonth = nowPST.getUTCMonth();
+            const pstDay = nowPST.getUTCDate();
+
+            // Create boundaries at midnight PST (converted back to UTC)
+            const todayStart = new Date(Date.UTC(pstYear, pstMonth, pstDay) - PST_OFFSET);
+            const yesterdayStart = new Date(Date.UTC(pstYear, pstMonth, pstDay - 1) - PST_OFFSET);
+            const endDate = new Date(Date.UTC(pstYear, pstMonth, pstDay + 1) - PST_OFFSET);
+            const startDate = new Date(Date.UTC(pstYear, pstMonth, pstDay - 7) - PST_OFFSET);
+
+            // Create date strings for GA4 (YYYY-MM-DD format in PST)
+            const formatDateStr = (date) => {
+                const y = date.getUTCFullYear();
+                const m = String(date.getUTCMonth() + 1).padStart(2, '0');
+                const d = String(date.getUTCDate()).padStart(2, '0');
+                return `${y}-${m}-${d}`;
+            };
+            // Use Date.UTC to properly handle month/day rollover
+            const todayDatePST = new Date(Date.UTC(pstYear, pstMonth, pstDay));
+            const yesterdayDatePST = new Date(Date.UTC(pstYear, pstMonth, pstDay - 1));
+            const sevenDaysAgoDatePST = new Date(Date.UTC(pstYear, pstMonth, pstDay - 7));
+            const todayStr = formatDateStr(todayDatePST);
+            const yesterdayStr = formatDateStr(yesterdayDatePST);
+            const sevenDaysAgoStr = formatDateStr(sevenDaysAgoDatePST);
+
             // Fetch GA4 website analytics for preintake.ai
             let ga4Stats = null;
             try {
@@ -622,29 +653,41 @@ const getEmailAnalytics = onRequest(
                     keyFilename: './ga4-service-account.json'
                 });
 
-                const [overviewResponse, trafficResponse] = await Promise.all([
-                    // Overview: 7-day and today metrics
+                // Define metrics once for reuse
+                const ga4Metrics = [
+                    { name: 'activeUsers' },
+                    { name: 'sessions' },
+                    { name: 'screenPageViews' },
+                    { name: 'engagementRate' },
+                    { name: 'averageSessionDuration' },
+                    { name: 'bounceRate' }
+                ];
+
+                // Run SEPARATE queries for each date range to avoid row alignment issues
+                // When using multi-dateRange, GA4 may skip empty date ranges, causing misalignment
+                const [last7DaysResponse, todayResponse, yesterdayResponse, trafficResponse] = await Promise.all([
+                    // 7-day metrics
                     ga4Client.runReport({
                         property: `properties/${GA4_PREINTAKE_PROPERTY_ID}`,
-                        dateRanges: [
-                            { startDate: '7daysAgo', endDate: 'today' },
-                            { startDate: 'today', endDate: 'today' },
-                            { startDate: 'yesterday', endDate: 'yesterday' }
-                        ],
-                        metrics: [
-                            { name: 'activeUsers' },
-                            { name: 'sessions' },
-                            { name: 'screenPageViews' },
-                            { name: 'engagementRate' },
-                            { name: 'averageSessionDuration' },
-                            { name: 'bounceRate' }
-                        ],
-                        keepEmptyRows: true
+                        dateRanges: [{ startDate: sevenDaysAgoStr, endDate: todayStr }],
+                        metrics: ga4Metrics
+                    }),
+                    // Today metrics
+                    ga4Client.runReport({
+                        property: `properties/${GA4_PREINTAKE_PROPERTY_ID}`,
+                        dateRanges: [{ startDate: todayStr, endDate: todayStr }],
+                        metrics: ga4Metrics
+                    }),
+                    // Yesterday metrics
+                    ga4Client.runReport({
+                        property: `properties/${GA4_PREINTAKE_PROPERTY_ID}`,
+                        dateRanges: [{ startDate: yesterdayStr, endDate: yesterdayStr }],
+                        metrics: ga4Metrics
                     }),
                     // Traffic sources (last 7 days)
                     ga4Client.runReport({
                         property: `properties/${GA4_PREINTAKE_PROPERTY_ID}`,
-                        dateRanges: [{ startDate: '7daysAgo', endDate: 'today' }],
+                        dateRanges: [{ startDate: sevenDaysAgoStr, endDate: todayStr }],
                         dimensions: [
                             { name: 'sessionSource' },
                             { name: 'sessionMedium' }
@@ -659,8 +702,7 @@ const getEmailAnalytics = onRequest(
                     })
                 ]);
 
-                // Parse overview (3 date ranges: 7days, today, yesterday)
-                const rows = overviewResponse[0]?.rows || [];
+                // Parse each response separately - now each is guaranteed to be for the correct date range
                 const parseRow = (row) => ({
                     activeUsers: parseInt(row?.metricValues?.[0]?.value || '0'),
                     sessions: parseInt(row?.metricValues?.[1]?.value || '0'),
@@ -670,9 +712,9 @@ const getEmailAnalytics = onRequest(
                     bounceRate: parseFloat(row?.metricValues?.[5]?.value || '0')
                 });
 
-                const last7Days = rows[0] ? parseRow(rows[0]) : parseRow(null);
-                const today = rows[1] ? parseRow(rows[1]) : parseRow(null);
-                const yesterday = rows[2] ? parseRow(rows[2]) : parseRow(null);
+                const last7Days = parseRow(last7DaysResponse[0]?.rows?.[0]);
+                const today = parseRow(todayResponse[0]?.rows?.[0]);
+                const yesterday = parseRow(yesterdayResponse[0]?.rows?.[0]);
 
                 // Parse traffic sources
                 const trafficRows = trafficResponse[0]?.rows || [];
@@ -689,22 +731,6 @@ const getEmailAnalytics = onRequest(
                 console.error('GA4 stats fetch error:', ga4Error.message);
                 // Continue without GA4 stats
             }
-
-            // Calculate date boundaries in PST (UTC-8)
-            // This ensures consistent "today" regardless of server timezone
-            const PST_OFFSET = -8 * 60 * 60 * 1000; // -8 hours in ms
-            const nowPST = new Date(now.getTime() + PST_OFFSET);
-
-            // Get PST date components
-            const pstYear = nowPST.getUTCFullYear();
-            const pstMonth = nowPST.getUTCMonth();
-            const pstDay = nowPST.getUTCDate();
-
-            // Create boundaries at midnight PST (converted back to UTC)
-            const todayStart = new Date(Date.UTC(pstYear, pstMonth, pstDay) - PST_OFFSET);
-            const yesterdayStart = new Date(Date.UTC(pstYear, pstMonth, pstDay - 1) - PST_OFFSET);
-            const endDate = new Date(Date.UTC(pstYear, pstMonth, pstDay + 1) - PST_OFFSET);
-            const startDate = new Date(Date.UTC(pstYear, pstMonth, pstDay - 7) - PST_OFFSET);
 
             // Get sent emails + database overview in parallel
             const [emailsSnap, unsubSnap, failedSnap, pendingSnap] = await Promise.all([
