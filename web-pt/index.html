@@ -147,6 +147,9 @@
 </head>
 
 <body>
+    <!-- Top Invite Bar (populated by JavaScript when referral exists) -->
+    <div id="top-invite-bar" class="top-invite-bar"></div>
+
     <!-- Header (rendered by components.js) -->
     <div id="tbp-header"></div>
 
@@ -315,7 +318,7 @@
                 <h2 style="text-align: center; margin-bottom: 2.5rem;">Por Que o Team Build Pro Funciona para Todos</h2>
                 <div style="max-width: 900px; margin: 0 auto;">
                     <!-- Para Profissionais de Vendas Diretas -->
-                    <div style="margin-bottom: 4rem;">
+                    <div data-audience="professionals" style="margin-bottom: 4rem;">
                         <h3 style="text-align: center; margin-bottom: 1.5rem; font-size: 1.5rem;">Para Profissionais de Vendas Diretas</h3>
                         <p style="text-align: center; margin-bottom: 2.5rem; opacity: 0.75; font-size: 1rem;">Por Que Seus Prospects Vão Adorar Isso (E Ingressar em SEU Negócio)</p>
                         <div style="display: flex; flex-direction: column; gap: 1.5rem;">
@@ -506,32 +509,107 @@
         }
 
         // ============================================================================
-        // REFERRAL ROUTING - Redirect to correct page based on URL parameters
+        // REFERRAL HANDLING - Show invite bar and customize page based on referral type
+        // ?ref= users see full page, ?new= users see prospect-focused content
         // ============================================================================
-        function checkReferralRouting() {
-            if (window.location.protocol === "file:") return;
 
+        // Validate referral code format
+        function isValidReferralCode(code) {
+            return (
+                code &&
+                code.trim().length >= 3 &&
+                code.length <= 50 &&
+                !/[:/\\]/.test(code) &&
+                !/^(file|C:)/.test(code)
+            );
+        }
+
+        // Get referral info from URL parameters
+        function getReferralInfo() {
+            if (window.location.protocol === "file:") return null;
             const urlParams = new URLSearchParams(window.location.search);
             const newProspectCode = urlParams.get("new");
             const partnerCode = urlParams.get("ref");
 
-            // If ?new= is present, redirect to prospects page
-            if (newProspectCode && newProspectCode.length >= 3) {
-                window.location.href = `/prospects.html?new=${newProspectCode}`;
-                return;
+            if (partnerCode && isValidReferralCode(partnerCode)) {
+                return { code: partnerCode, type: "partner" };
+            } else if (newProspectCode && isValidReferralCode(newProspectCode)) {
+                return { code: newProspectCode, type: "new" };
             }
-
-            // If ?ref= is present, redirect to professionals page
-            if (partnerCode && partnerCode.length >= 3) {
-                window.location.href = `/professionals.html?ref=${partnerCode}`;
-                return;
-            }
-
-            // No referral code - stay on homepage (default professional view)
+            return null;
         }
 
-        // Run routing check on page load
-        checkReferralRouting();
+        // Fetch user data from Cloud Function
+        async function fetchUserData(referralCode) {
+            try {
+                const url = `https://us-central1-teambuilder-plus-fe74d.cloudfunctions.net/getUserByReferralCode?code=${referralCode}`;
+                const response = await fetch(url);
+                if (!response.ok) return null;
+                return await response.json();
+            } catch (error) {
+                console.error("Error fetching user data:", error);
+                return null;
+            }
+        }
+
+        // Create the top invite bar
+        function createInviteSection(firstName, lastName, referralType, photoUrl) {
+            const avatarUrl = photoUrl || 'assets/images/default_avatar.png';
+            const referrerFullName = `${firstName} ${lastName}`;
+            const label = referralType === 'new' ? 'Convidado por' : 'Recomendado por';
+
+            const topInviteBar = document.getElementById('top-invite-bar');
+            if (topInviteBar) {
+                topInviteBar.innerHTML = `
+                    <img src="${avatarUrl}" alt="${referrerFullName}" class="top-invite-avatar" onerror="this.src='assets/images/default_avatar.png';">
+                    <span class="top-invite-text">${label} ${referrerFullName}</span>
+                `;
+                topInviteBar.classList.add('visible');
+            }
+        }
+
+        // Customize page for prospect users (?new= parameter)
+        function customizeForProspects() {
+            // 1. Hide "For Direct Sales Professionals" subsection
+            const professionalsSection = document.querySelector('[data-audience="professionals"]');
+            if (professionalsSection) {
+                professionalsSection.style.display = 'none';
+            }
+
+            // 2. Swap video source to prospect version
+            const videoSource = document.querySelector('#video video source');
+            if (videoSource) {
+                videoSource.src = '/assets/videos/TBP_Prospects.mp4';
+                videoSource.parentElement.load(); // Reload video with new source
+            }
+
+            // 3. Swap video headline
+            const videoHeadline = document.querySelector('.video-headline');
+            if (videoHeadline) {
+                videoHeadline.textContent = 'Teste o sucesso — antes de se comprometer';
+            }
+        }
+
+        // Initialize invite bar if referral exists
+        async function initializeInviteBar() {
+            const referralInfo = getReferralInfo();
+            if (!referralInfo) return;
+
+            // Fetch user data for both ?new= and ?ref= users
+            const userData = await fetchUserData(referralInfo.code);
+            if (userData && userData.firstName && userData.lastName) {
+                const photoUrl = userData.photoUrl || userData.photoURL || userData.profilePhotoUrl || null;
+                createInviteSection(userData.firstName, userData.lastName, referralInfo.type, photoUrl);
+            }
+
+            // Customize page for prospect users
+            if (referralInfo.type === "new") {
+                customizeForProspects();
+            }
+        }
+
+        // Run initialization
+        initializeInviteBar();
     </script>
 
     <!-- Referral Tracking: Mints tokens, updates Play Store links, shows invite bar -->

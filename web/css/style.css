@@ -282,6 +282,11 @@ body:has(.top-invite-bar.visible) {
     padding-top: 50px;
 }
 
+/* Push header down when invite bar is visible */
+body:has(.top-invite-bar.visible) .header {
+    top: 50px;
+}
+
 /* Mobile adjustments */
 @media (max-width: 480px) {
     .top-invite-bar {
@@ -299,6 +304,10 @@ body:has(.top-invite-bar.visible) {
 
     body:has(.top-invite-bar.visible) {
         padding-top: 45px;
+    }
+
+    body:has(.top-invite-bar.visible) .header {
+        top: 45px;
     }
 }
 

@@ -5,7 +5,7 @@
   <!-- Homepage -->
   <url>
     <loc>https://teambuildpro.com/</loc>
-    <lastmod>2025-12-01</lastmod>
+    <lastmod>2026-02-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://teambuildpro.com/" />
@@ -41,7 +41,7 @@
   <!-- Blog -->
   <url>
     <loc>https://teambuildpro.com/blog.html</loc>
-    <lastmod>2025-12-01</lastmod>
+    <lastmod>2026-02-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -49,7 +49,7 @@
   <!-- Companies -->
   <url>
     <loc>https://teambuildpro.com/companies.html</loc>
-    <lastmod>2025-12-01</lastmod>
+    <lastmod>2026-02-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -97,7 +97,7 @@
   <!-- Books -->
   <url>
     <loc>https://teambuildpro.com/books.html</loc>
-    <lastmod>2025-12-01</lastmod>
+    <lastmod>2026-02-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://teambuildpro.com/books.html" />

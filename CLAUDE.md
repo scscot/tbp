@@ -1,6 +1,6 @@
 # Team Build Pro - Comprehensive Knowledge Base
 
-**Last Updated**: 2026-02-05 (Contacts Pipeline + BFH Scraper)
+**Last Updated**: 2026-02-06 (Prospect/Referral Page Consolidation)
 **Purpose**: Persistent knowledge base for AI assistants across sessions
 
 ---
@@ -259,8 +259,10 @@ The world's first AI-powered platform that lets **prospects pre-build their team
 - Helper vs Trigger modes (environment variable controlled)
 
 **4. Referral System**
-- `?new=ABC` = Prospect view (considering joining referrer's opportunity)
-- `?ref=ABC` = Professional view (existing team member)
+- All referral handling consolidated on `index.html` (no separate prospect/professional pages)
+- `?new=ABC` = Prospect view: "Invited by" bar, hides professionals section, TBP_Prospects.mp4 video
+- `?ref=ABC` = Professional view: "Recommended by" bar, full page content, TBP_Professionals.mp4 video
+- No params = Default view: full page content, TBP_Professionals.mp4 video
 - Referral codes map to Firebase UIDs via `referralCodes` collection
 - Language-specific domains: es.teambuildpro.com (Spanish), pt.teambuildpro.com (Portuguese), de.teambuildpro.com (German)
 - Share screen uses language selection to route to appropriate domain
@@ -896,7 +898,12 @@ Automated 4-stage pipeline that discovers direct sales distributor URLs, scrapes
 - ✅ **PreIntake.ai Workflows**: Bar scrapers + email campaign + analytics (see `preintake/CLAUDE.md`)
 
 **Website Enhancements**
-- ✅ **Referral Tracking**: Cross-page tracking with sessionStorage, "Invited by" bar on all pages
+- ✅ **Prospect/Referral Page Consolidation** (Feb 6, 2026): All user types now handled on `index.html`
+  - Deleted: `prospects.html` and `professionals.html` (all 4 languages)
+  - `?new=` users: "Invited by" bar, hidden professionals section, TBP_Prospects.mp4, prospect headline
+  - `?ref=` users: "Recommended by" bar, full page content, TBP_Professionals.mp4
+  - Updated `components.js` logo links to route `?new=` to `/?new=` instead of `/prospects.html?new=`
+- ✅ **Referral Tracking**: Cross-page tracking with sessionStorage, invite bar on all pages
 - ✅ **Testimonial Section**: 5-star review from "Arya N." on all homepage variants
 - ✅ **App Store URLs Standardized**: Simplified format `apps.apple.com/us/app/id6751211622` across 328 files
 - ✅ **SEO Audits**: Canonical URLs, hreflang tags, sitemaps verified across all sites

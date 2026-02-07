@@ -150,17 +150,17 @@
 
     /**
      * Determine the logo link based on referral context
-     * - ?new=ABC → /prospects.html?new=ABC
-     * - ?ref=ABC → /professionals.html?ref=ABC
+     * - ?new=ABC → /?new=ABC (index.html handles prospect display)
+     * - ?ref=ABC → /?ref=ABC (index.html handles referral display)
      * - No referral → /
      */
     function getLogoLink() {
         const referral = getReferralInfo();
         if (referral) {
             if (referral.type === 'new') {
-                return '/prospects.html?new=' + encodeURIComponent(referral.code);
+                return '/?new=' + encodeURIComponent(referral.code);
             } else if (referral.type === 'partner') {
-                return '/professionals.html?ref=' + encodeURIComponent(referral.code);
+                return '/?ref=' + encodeURIComponent(referral.code);
             }
         }
         return '/';
