@@ -1,7 +1,7 @@
 # PreIntake.ai: Comprehensive Project Documentation
 
-**Last Updated**: 2026-02-05
-**Version**: 5.1 (Dedicated demo page & campaign schedule simplification)
+**Last Updated**: 2026-02-08
+**Version**: 5.2 (Demo welcome page card layout fix)
 
 ---
 
@@ -1254,6 +1254,18 @@ Email click → homepage loads with ?demo= → REDIRECT to /demo/?demo={id}&firm
 | `?explore=1` (left demo to explore) | "Welcome, Smith & Associates" + floating buttons |
 | `?completed=` (finished demo) | "Welcome, Smith & Associates" (no suffix/CTA) |
 | `?firm=` (no demo yet) | "Welcome, Smith & Associates" (no suffix/CTA) |
+
+### Phase 54: Demo Welcome Page Card Layout Fix (2026-02-08)
+- [x] **Welcome Card Wrapper** - Fixed welcome page layout by adding missing `.demo-welcome` wrapper
+  - Problem: Welcome page content (badge, firm name, steps, button) was spread out instead of contained in a card
+  - Root cause: The `.demo-welcome` CSS class and wrapper div were removed in a previous refactor
+  - Solution: Restored `.demo-welcome` CSS with card styling (max-width, border-radius, padding, box-shadow)
+  - Wrapped all welcome content in `<div class="demo-welcome">` container
+  - Responsive padding for mobile (2.5rem desktop, 1.75rem mobile)
+- [x] **Iframe Content Fix** - Fixed iframe content visibility (reverted in earlier commit)
+  - Changed `.demo-iframe-container` from `flex: 1` to explicit `height: calc(100vh - 72px)`
+  - Changed `#landing-screen` in template from `overflow: hidden` + `justify-content: center` to `overflow-y: auto` + `justify-content: flex-start`
+- [x] **Demo Regeneration** - All demos regenerated with updated template
 
 ---
 
