@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Test script for email-campaign-contacts.js
- * Sends a test email using the same Mailgun templates (v5/v6)
+ * Sends a test email using the same Mailgun templates (v3/v4)
  *
  * Usage:
  *   node test-contacts-email.js scscot@gmail.com
@@ -38,19 +38,19 @@ const FROM_ADDRESS = 'Stephen Scott <stephen@news.teambuildpro.com>';
 const TRACKING_BASE_URL = 'https://us-central1-teambuilder-plus-fe74d.cloudfunctions.net';
 const LANDING_PAGE_URL = 'https://teambuildpro.com';
 
-// A/B Test Variants
+// A/B Test Variants (must match email-campaign-contacts.js)
 const AB_TEST_VARIANTS = {
   v3: {
-    templateVersion: 'v5',
-    subject: "Using AI to Build Your ${company} Team",
-    subjectTag: 'mobile_first_v5',
-    description: 'Critiques old advice, TBP as correction'
+    templateVersion: 'v3',
+    subject: "This isn't another opportunity email",
+    subjectTag: 'mobile_first_v3',
+    description: 'Pattern interrupt - anti-pitch positioning'
   },
   v4: {
-    templateVersion: 'v6',
-    subject: "Using AI to Build Your ${company} Team",
-    subjectTag: 'mobile_first_v6',
-    description: 'Flip the script - confidence before joining'
+    templateVersion: 'v4',
+    subject: 'Not an opportunity. Just a tool.',
+    subjectTag: 'mobile_first_v4',
+    description: 'Pattern interrupt - tool focus'
   }
 };
 
@@ -90,8 +90,8 @@ async function sendTestEmail(toEmail, company, templateVariant) {
     process.exit(1);
   }
 
-  // Build subject with company interpolation
-  const subject = variant.subject.replace('${company}', company);
+  // Use subject directly (no longer company-specific in v3/v4)
+  const subject = variant.subject;
 
   // Use a test tracking ID
   const trackingId = `test_${Date.now()}`;
