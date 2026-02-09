@@ -44,6 +44,29 @@
             display: none;
         }
 
+        /* In embed mode, make content fill the iframe viewport properly */
+        body.embed-mode {
+            min-height: 100dvh;
+            min-height: 100vh; /* fallback */
+        }
+
+        body.embed-mode .screen {
+            min-height: 100dvh;
+            min-height: 100vh; /* fallback */
+        }
+
+        body.embed-mode #landing-screen .landing-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        body.embed-mode #landing-screen .disclaimer {
+            margin-top: auto;
+            padding-bottom: 1.5rem;
+        }
+
         .screen {
             display: none;
             min-height: 100vh;
@@ -59,7 +82,6 @@
             align-items: center;
             justify-content: flex-start;
             padding: 2rem;
-            padding-top: 4rem;
             text-align: center;
             background: var(--gradient-primary);
             position: relative;
@@ -76,6 +98,7 @@
             height: 200%;
             background: radial-gradient(circle at center, rgba(201, 169, 98, 0.05) 0%, transparent 50%);
             animation: pulse 8s ease-in-out infinite;
+            pointer-events: none;
         }
 
         @keyframes pulse {
