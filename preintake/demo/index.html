@@ -23,13 +23,27 @@
     <script src="/js/components.js"></script>
     <style>
         /* Demo page specific styles */
+        :root {
+            --header-h: 72px; /* fallback, overwritten by JS measurement */
+        }
+
+        html, body {
+            overflow-x: hidden;
+        }
+
+        body {
+            background: var(--primary-dark, #0a1628); /* mask any tiny rounding gaps */
+        }
+
         .demo-page-content {
-            min-height: calc(100vh - 72px);
+            min-height: calc(100vh - var(--header-h)); /* fallback for older browsers */
+            min-height: calc(100dvh - var(--header-h)); /* modern browsers with dynamic viewport */
             background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-blue) 50%, var(--primary-dark) 100%);
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 2rem;
+            box-sizing: border-box;
         }
 
         /* Welcome badge styling (matches homepage hero-badge) */
@@ -149,7 +163,8 @@
         .demo-iframe-container {
             display: none;
             width: 100%;
-            height: calc(100vh - 72px);
+            height: calc(100vh - var(--header-h)); /* fallback for older browsers */
+            height: calc(100dvh - var(--header-h)); /* modern browsers with dynamic viewport */
             background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-blue) 50%, var(--primary-dark) 100%);
         }
 
@@ -327,6 +342,41 @@
             }
         }
     </style>
+    <script>
+    // Dynamically measure header height and set CSS variable
+    (function() {
+        function setHeaderH() {
+            const host = document.getElementById('preintake-header');
+            if (!host) return false;
+
+            // components.js injects a <header> inside the container
+            const headerEl = host.querySelector('header') || host.firstElementChild || host;
+            if (!headerEl) return false;
+
+            const cs = getComputedStyle(headerEl);
+            const mb = parseFloat(cs.marginBottom) || 0;
+            const h = Math.ceil(headerEl.getBoundingClientRect().height + mb);
+
+            if (h > 0) {
+                document.documentElement.style.setProperty('--header-h', h + 'px');
+                return true;
+            }
+            return false;
+        }
+
+        // Retry until header is rendered
+        const trySet = () => setHeaderH() || setTimeout(trySet, 50);
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', trySet);
+        } else {
+            trySet();
+        }
+
+        window.addEventListener('load', setHeaderH);
+        window.addEventListener('resize', setHeaderH);
+    })();
+    </script>
 </head>
 <body>
     <div id="preintake-header"></div>
