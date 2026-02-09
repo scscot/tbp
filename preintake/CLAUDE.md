@@ -1,7 +1,7 @@
 # PreIntake.ai: Comprehensive Project Documentation
 
 **Last Updated**: 2026-02-09
-**Version**: 5.3 (Demo URL simplification & path detection fix)
+**Version**: 5.4 (Email analytics date filter)
 
 ---
 
@@ -1283,6 +1283,20 @@ Email click → homepage loads with ?demo= → REDIRECT to /demo/?demo={id}&firm
 - [x] **New Utility Scripts**
   - `scripts/find-valid-demos.js` - Query Firestore for demos with valid firm names
   - `scripts/force-regen-demo.js` - Force regenerate a specific demo regardless of status
+
+### Phase 56: Email Analytics Date Filter (2026-02-09)
+- [x] **Data Cutoff Date** - Added February 9, 2026 cutoff to `getEmailAnalytics` Cloud Function
+  - All email and lead data before this date is excluded from analytics
+  - Constant `DATA_START_DATE = new Date('2026-02-09T00:00:00-08:00')` in `widget-functions.js`
+  - Provides clean baseline for campaign performance measurement
+- [x] **Application-Level Filtering** - Implemented in-memory filtering to avoid composite index requirements
+  - `filterByDate()` helper filters `preintake_emails` by `sentTimestamp >= DATA_START_DATE`
+  - Leads filtered by `createdAt >= DATA_START_DATE`
+  - No Firestore composite indexes needed (avoids index creation delays)
+- [x] **Affected Metrics** - All dashboard metrics now start from Feb 9, 2026:
+  - Email stats: totalSent, withDemo, withoutDemo, templateVersions
+  - Lead stats: campaignLeads, visitedCount, viewedCount, intakeCompletedCount
+  - Source/state breakdowns filtered accordingly
 
 ---
 
