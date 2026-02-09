@@ -1,104 +1,102 @@
 #!/usr/bin/env node
 /**
- * Force regenerate a specific demo regardless of status
+ * Force regenerate a specific demo regardless of status.
+ * Uses the same generateDemoFiles function as the production demo generator.
+ *
+ * Usage:
+ *   node scripts/force-regen-demo.js LEAD_ID
  */
 
-const admin = require('firebase-admin');
-const { initializeApp, cert } = require('firebase-admin/app');
-const { getFirestore } = require('firebase-admin/firestore');
-const { getStorage } = require('firebase-admin/storage');
-const fs = require('fs');
 const path = require('path');
 
+// Load environment from functions directory
 require('dotenv').config({ path: path.join(__dirname, '../functions/.env.teambuilder-plus-fe74d') });
 
-const serviceAccount = JSON.parse(fs.readFileSync(path.join(__dirname, '../secrets/serviceAccountKey.json'), 'utf8'));
-const app = initializeApp({
-    credential: cert(serviceAccount),
-    storageBucket: 'teambuilder-plus-fe74d.firebasestorage.app'
-}, 'regen-force');
+const serviceAccount = require('../secrets/serviceAccountKey.json');
 
-const db = getFirestore(app, 'preintake');
-const bucket = getStorage(app).bucket();
+// Import demo generation functions and initialize Firebase via their helper
+const { generateDemoFiles, uploadToStorage, initFirebaseAdmin } = require('../functions/demo-generator-functions');
+const STORAGE_BUCKET = 'teambuilder-plus-fe74d.firebasestorage.app';
 
-async function regenerateDemo(leadId) {
+// Initialize Firebase Admin using the functions' helper (ensures Storage works)
+const admin = initFirebaseAdmin(serviceAccount, STORAGE_BUCKET);
+
+// Use the dedicated 'preintake' database
+const piDb = admin.firestore();
+piDb.settings({ databaseId: 'preintake' });
+
+const FieldValue = admin.firestore.FieldValue;
+
+async function forceRegenDemo(leadId) {
     console.log(`\n🔄 Force regenerating demo: ${leadId}\n`);
 
-    const leadDoc = await db.collection('preintake_leads').doc(leadId).get();
-
-    if (!leadDoc.exists) {
+    const doc = await piDb.collection('preintake_leads').doc(leadId).get();
+    if (!doc.exists) {
         console.log('❌ Lead not found');
-        return;
+        process.exit(1);
     }
 
-    const lead = leadDoc.data();
-    console.log('Lead status:', lead.status);
-    console.log('Firm name:', lead.firmName);
+    const leadData = doc.data();
+    console.log('Lead status:', leadData.status);
+    console.log('Firm name:', leadData.name || leadData.firmName || leadData.analysis?.firmName || 'Unknown');
 
-    // Read template
-    const templatePath = path.join(__dirname, '../functions/templates/demo-intake.html.template');
-    let template = fs.readFileSync(templatePath, 'utf8');
+    try {
+        const analysis = leadData.analysis || {};
+        const deepResearch = leadData.deepResearch || {};
 
-    // Get practiceAreas
-    const practiceAreas = lead.analysisData?.practiceAreas || lead.practiceAreas || ['General'];
-    const firmName = lead.firmName || 'Your Law Firm';
-    const firmEmail = lead.email || lead.deliveryEmail || '';
-    const isMultiPractice = practiceAreas.length > 1;
-    const primaryPracticeArea = practiceAreas[0] || 'General';
+        console.log('🏗️ Generating demo files...');
 
-    // Build CONFIG
-    const config = {
-        firmName: firmName,
-        firmEmail: firmEmail,
-        practiceAreas: practiceAreas,
-        leadId: leadId
-    };
+        // Generate the demo HTML using the current template
+        const { htmlContent, configContent } = generateDemoFiles(leadId, leadData, analysis, deepResearch);
 
-    // Generate landing headline/subheadline
-    const landingHeadline = isMultiPractice ? 'Free Consultation' : `Free ${primaryPracticeArea} Consultation`;
-    const landingSubheadline = isMultiPractice
-        ? `Find out if ${firmName} can help with your legal matter in under 5 minutes. We'll review your situation quickly, carefully, and confidentially.`
-        : `Find out if ${firmName} can help with your ${primaryPracticeArea.toLowerCase()} matter in under 5 minutes. We'll review your situation quickly, carefully, and confidentially.`;
+        console.log('📤 Uploading to Firebase Storage...');
 
-    // Replace placeholders
-    template = template.replace(/{{LEAD_ID}}/g, leadId);
-    template = template.replace(/{{PAGE_TITLE}}/g, firmName + ' | Free Consultation');
-    template = template.replace(/{{FIRM_NAME}}/g, firmName.replace(/'/g, "\\'"));
-    template = template.replace(/{{LOGO_HTML}}/g, '<span class="logo-text">' + firmName + '</span>');
-    template = template.replace(/{{PRACTICE_AREAS_JSON}}/g, JSON.stringify(practiceAreas));
-    template = template.replace(/{{PRIMARY_DARK}}/g, '#0a1628');
-    template = template.replace(/{{PRIMARY_BLUE}}/g, '#1a365d');
-    template = template.replace(/{{ACCENT_COLOR}}/g, '#c9a962');
-    template = template.replace(/{{ACCENT_COLOR_LIGHT}}/g, '#d4b978');
-    template = template.replace(/{{CONFIG_JSON}}/g, JSON.stringify(config));
-    template = template.replace(/{{IS_MULTI_PRACTICE}}/g, isMultiPractice ? 'true' : 'false');
-    template = template.replace(/{{FIRM_PRACTICE_AREAS}}/g, JSON.stringify(practiceAreas));
-    template = template.replace(/{{LANDING_HEADLINE}}/g, landingHeadline);
-    template = template.replace(/{{LANDING_SUBHEADLINE}}/g, landingSubheadline);
+        // Upload to Firebase Storage
+        const demoUrl = await uploadToStorage(leadId, htmlContent, configContent);
 
-    // Upload
-    const file = bucket.file('preintake-demos/' + leadId + '/index.html');
-    await file.save(template, {
-        contentType: 'text/html',
-        metadata: {
-            cacheControl: 'public, max-age=300'
+        // Update Firestore with new generation timestamp
+        await piDb.collection('preintake_leads').doc(leadId).update({
+            demoUrl: demoUrl,
+            'demo.generatedAt': FieldValue.serverTimestamp(),
+            'demo.regeneratedAt': FieldValue.serverTimestamp(),
+            updatedAt: FieldValue.serverTimestamp(),
+        });
+
+        console.log('✅ Demo regenerated successfully');
+        console.log(`📍 URL: ${demoUrl}`);
+
+        // Verify skip_onboarding is in the template
+        if (htmlContent.includes('skip_onboarding')) {
+            console.log('✅ skip_onboarding logic confirmed in output');
+        } else {
+            console.log('❌ skip_onboarding logic NOT found');
         }
-    });
 
-    console.log('✅ Demo regenerated successfully');
+        // Verify CONFIG placeholders are replaced
+        if (htmlContent.includes("{{WEBHOOK_URL}}")) {
+            console.log('❌ WARNING: {{WEBHOOK_URL}} placeholder not replaced!');
+        } else {
+            console.log('✅ WEBHOOK_URL properly replaced');
+        }
 
-    // Verify skip_onboarding is in the template
-    if (template.includes('skip_onboarding')) {
-        console.log('✅ skip_onboarding logic confirmed in output');
-    } else {
-        console.log('❌ skip_onboarding logic NOT found');
+        if (htmlContent.includes("{{FIRM_NAME_JS}}")) {
+            console.log('❌ WARNING: {{FIRM_NAME_JS}} placeholder not replaced!');
+        } else {
+            console.log('✅ FIRM_NAME_JS properly replaced');
+        }
+
+        process.exit(0);
+    } catch (error) {
+        console.error('❌ Error regenerating demo:', error.message);
+        console.error(error.stack);
+        process.exit(1);
     }
-
-    process.exit(0);
 }
 
-const leadId = process.argv[2] || '9yXCw3SXVjBeHJTbD4qr';
-regenerateDemo(leadId).catch(err => {
-    console.error('Error:', err.message);
+const leadId = process.argv[2];
+if (!leadId) {
+    console.error('Usage: node scripts/force-regen-demo.js LEAD_ID');
     process.exit(1);
-});
+}
+
+forceRegenDemo(leadId);
