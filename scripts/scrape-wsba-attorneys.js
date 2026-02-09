@@ -637,6 +637,7 @@ async function scrapePracticeArea(browser, practiceArea, existingEmails, existin
     const BATCH_SIZE = 400;
     const allAttorneys = []; // Objects with {licenseNumber, firstName, lastName, city}
     const seenLicenseNumbers = new Set();
+    let consecutiveZeroNewPages = 0; // Track consecutive pages with no new bar numbers
 
     try {
         // Navigate to search results
@@ -687,9 +688,16 @@ async function scrapePracticeArea(browser, practiceArea, existingEmails, existin
                 break;
             }
 
-            // Stop paginating if no new bar numbers found after first few pages
-            if (newOnThisPage === 0 && pageNum >= 3) {
-                console.log(`     No new bar numbers on page ${pageNum}, stopping collection`);
+            // Track consecutive pages with no new bar numbers
+            if (newOnThisPage === 0) {
+                consecutiveZeroNewPages++;
+            } else {
+                consecutiveZeroNewPages = 0;
+            }
+
+            // Stop paginating after 5 consecutive pages with no new bar numbers (after page 3)
+            if (consecutiveZeroNewPages >= 5 && pageNum >= 3) {
+                console.log(`     ${consecutiveZeroNewPages} consecutive pages with no new bar numbers, stopping collection`);
                 break;
             }
 
@@ -741,10 +749,12 @@ async function scrapePracticeArea(browser, practiceArea, existingEmails, existin
             stats.profilesFetched++;
 
             // Skip if barNumber already exists in DB (avoids re-fetching profile)
+            // Note: Don't increment consecutiveNoInsert for bar number skips - these are
+            // expected duplicates due to practice area overlap, not failures to find new contacts
             if (existingBarNumbers.has(licenseNum)) {
                 stats.skipped++;
                 stats.barNumberSkipped++;
-                consecutiveNoInsert++;
+                // Don't increment consecutiveNoInsert - we want to keep looking for truly new profiles
                 continue;
             }
 
@@ -766,11 +776,11 @@ async function scrapePracticeArea(browser, practiceArea, existingEmails, existin
                     continue;
                 }
 
-                // Skip if already exists
+                // Skip if already exists (from another bar source)
+                // Don't increment consecutiveNoInsert - we found a valid contact, just already have them
                 if (existingEmails.has(emailLower)) {
                     stats.skipped++;
                     stats.emailSkipped++;
-                    consecutiveNoInsert++;
                     continue;
                 }
 
