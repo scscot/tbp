@@ -743,20 +743,21 @@ When you're spending $300-500 per lead, even small conversion improvements mean 
 - The `audit-preintake-emails.js` script validates data integrity before campaign runs
 - If a record cannot be sent (bad data, missing required fields), delete it or set `status: 'failed'` with `failReason`
 
-**Dynamic Batch Size (2026-01-19):**
+**Dynamic Batch Size (updated 2026-02-09):**
 - [x] **Firestore-Based Batch Size** - Domain warming automation
   - Batch size now read from Firestore `config/emailCampaign` document (in default TBP database)
   - Added `getDynamicBatchSize()` function to `scripts/send-preintake-campaign.js`
   - Uses secondary Firebase Admin app instance (`configApp`) to read from default database
   - Falls back to `BATCH_SIZE` environment variable if Firestore value not set
   - GitHub Actions workflow `.github/workflows/domain-warming-update.yml` updates `preintakeBatchSize` weekly
-  - Domain warming schedule in `.github/warming-config.json`:
-    - Week 1: 5 emails/batch
-    - Week 2: 10 emails/batch
-    - Week 3: 20 emails/batch
-    - Week 4: 40 emails/batch
-    - Week 5: 75 emails/batch
-    - Week 6+: 100 emails/batch (max)
+  - Domain warming schedule in `.github/warming-config.json` (reset 2026-02-09):
+    | Week | Batch Size | Emails/Day |
+    |------|------------|------------|
+    | 1 | 100 | 400 |
+    | 2 | 150 | 600 |
+    | 3 | 225 | 900 |
+    | 4+ | 300 | 1,200 |
+  - **Monthly Projection** (at max): 300 × 88 runs (4/day × 22 days) = 26,400/month (53% of 50K Mailgun limit)
   - Batch size resolution: Firestore → .env fallback
 
 ### Phase 19: Homepage Conversion Optimization (2026-01-06)

@@ -611,16 +611,23 @@ The email campaign system consists of two parallel campaigns targeting different
 - **Config**: `.github/warming-config.json`
 - **Schedule**: Runs every Monday at 6am PT
 - **Mechanism**: GitHub Actions calculates current week, looks up batch size from config, updates Firestore
-- **Firestore Config**: `config/emailCampaign` document stores `batchSize`, `warmingWeek` (legacy `batchSizeYahoo` field unused after Yahoo campaign removal)
-- **TBP Warming Schedule** (started 2026-01-12, 8 runs/day total):
+- **Firestore Config**: `config/emailCampaign` document stores `batchSize`, `preintakeBatchSize`, `warmingWeek`
+- **TBP Warming Schedule** (reset 2026-02-09, 8 runs/day total):
   | Week | Batch Size | Emails/Day |
   |------|------------|------------|
-  | 1 | 6 | 48 |
-  | 2 | 12 | 96 |
-  | 3 | 25 | 200 |
-  | 4 | 50 | 400 |
-  | 5 | 75 | 600 |
-  | 6+ | 100 | 800 |
+  | 1+ | 60 | 480 |
+  - TBP capped at 60/batch to stay within 50K Mailgun monthly limit (shared with PreIntake)
+- **PreIntake Warming Schedule** (reset 2026-02-09, 4 runs/day Mon-Fri):
+  | Week | Batch Size | Emails/Day |
+  |------|------------|------------|
+  | 1 | 100 | 400 |
+  | 2 | 150 | 600 |
+  | 3 | 225 | 900 |
+  | 4+ | 300 | 1,200 |
+- **Monthly Projections** (at max batch sizes):
+  - TBP: 60 × 240 runs = 14,400/month (29%)
+  - PreIntake: 300 × 88 runs = 26,400/month (53%)
+  - Total: 40,800/month (82% of 50K Mailgun limit)
 - **Manual Override**: `workflow_dispatch` with `force_week` input to test specific week
 
 ### Campaign Tracking
