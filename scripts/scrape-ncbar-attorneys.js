@@ -364,6 +364,20 @@ async function extractProfileData(page, memberId) {
             return '';
         }
 
+        // Helper to get HTML content from dt/dd pair (preserves <br> tags)
+        function getDdHtml(dtText) {
+            const dts = document.querySelectorAll('dt');
+            for (const dt of dts) {
+                if (dt.textContent.trim().toLowerCase().includes(dtText.toLowerCase())) {
+                    const dd = dt.nextElementSibling;
+                    if (dd && dd.tagName === 'DD') {
+                        return dd.innerHTML;
+                    }
+                }
+            }
+            return '';
+        }
+
         // Get name from panel heading: "Mr. Brian Charles Behr - Attorney"
         const panelHeading = document.querySelector('.panel-heading');
         if (panelHeading) {
@@ -398,13 +412,20 @@ async function extractProfileData(page, memberId) {
         if (barNumVal) data.barNumber = barNumVal;
 
         // Get firm name from Address field (often contains employer name)
-        const address = getDdValue('address');
-        if (address) {
-            // First line of address is often the firm name
-            const lines = address.split('\n').filter(l => l.trim());
-            if (lines.length > 0 && !lines[0].match(/^\d/)) {
-                // If first line doesn't start with a number, it might be firm name
-                data.firmName = lines[0].trim();
+        // Use HTML to properly split on <br> tags
+        const addressHtml = getDdHtml('address');
+        if (addressHtml) {
+            // Split on <br> tags (various formats: <br>, <br/>, <br />)
+            const lines = addressHtml.split(/<br\s*\/?>/i)
+                .map(line => line.replace(/<[^>]*>/g, '').trim())  // Strip any remaining HTML tags
+                .filter(line => line.length > 0);
+
+            if (lines.length > 0) {
+                // First line is the firm name ONLY if it doesn't start with a number (street address)
+                const firstLine = lines[0];
+                if (!firstLine.match(/^\d/)) {
+                    data.firmName = firstLine;
+                }
             }
         }
 
