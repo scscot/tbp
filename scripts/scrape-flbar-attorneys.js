@@ -570,11 +570,22 @@ async function parseSearchResults(practiceAreaCode, county, pageNum) {
             const profileContact = $(el).find('.profile-contact');
             let firmName = '';
 
-            // Firm name is in the first <p> of profile-contact, but may include address
+            // Firm name is in the first <p> of profile-contact
+            // Use .html() and split on <br> to get just the first line (firm name)
+            // Otherwise .text() concatenates everything: "Firm NamePO Box 123City, FL"
             const firmEl = profileContact.find('p').first();
             if (firmEl.length) {
-                const firmText = firmEl.text().trim();
-                firmName = cleanFirmName(firmText);
+                const firmHtml = firmEl.html() || '';
+                // Split on <br> tags (various formats: <br>, <br/>, <br />)
+                const lines = firmHtml.split(/<br\s*\/?>/i)
+                    .map(line => line.replace(/<[^>]*>/g, '').trim())
+                    .filter(line => line.length > 0);
+
+                if (lines.length > 0) {
+                    // First line should be the firm name
+                    // Apply cleanFirmName in case it still has address concatenated
+                    firmName = cleanFirmName(lines[0]);
+                }
             }
 
             // Extract phone (Office phone preferred)
