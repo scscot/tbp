@@ -1581,7 +1581,7 @@
     <div id="chat-screen" class="screen">
         <header class="chat-header">
             <div class="chat-header-logo" id="chat-logo">{{FIRM_NAME}}</div>
-            <div class="chat-header-disclosure">AI-assisted intake | No attorney-client relationship<br><a href="https://preintake.ai" target="_blank">Powered by PreIntake.ai</a></div>
+            <div class="chat-header-disclosure">AI-assisted intake | No attorney-client relationship</div>
         </header>
         <div class="chat-main">
             <aside class="progress-sidebar">
