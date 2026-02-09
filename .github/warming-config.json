@@ -1,26 +1,19 @@
 {
   "preintake": {
-    "startDate": "2026-01-12",
-    "maxBatchSize": 100,
+    "startDate": "2026-02-09",
+    "maxBatchSize": 300,
     "schedule": [
-      { "week": 1, "batchSize": 5 },
-      { "week": 2, "batchSize": 10 },
-      { "week": 3, "batchSize": 20 },
-      { "week": 4, "batchSize": 40 },
-      { "week": 5, "batchSize": 75 },
-      { "week": 6, "batchSize": 100 }
+      { "week": 1, "batchSize": 100 },
+      { "week": 2, "batchSize": 150 },
+      { "week": 3, "batchSize": 225 },
+      { "week": 4, "batchSize": 300 }
     ]
   },
   "tbp": {
-    "startDate": "2026-01-12",
-    "maxBatchSize": 100,
+    "startDate": "2026-02-09",
+    "maxBatchSize": 60,
     "schedule": [
-      { "week": 1, "batchSize": 6 },
-      { "week": 2, "batchSize": 12 },
-      { "week": 3, "batchSize": 25 },
-      { "week": 4, "batchSize": 50 },
-      { "week": 5, "batchSize": 75 },
-      { "week": 6, "batchSize": 100 }
+      { "week": 1, "batchSize": 60 }
     ]
   }
 }
