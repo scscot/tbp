@@ -263,11 +263,9 @@ function generateDemoFiles(leadId, leadData, analysis, deepResearch) {
     let htmlTemplate = fs.readFileSync(templatePath, 'utf8');
 
     // Extract values
-    // For campaign-sourced leads, prioritize leadData.name (from contact database)
-    // over analysis.firmName (scraped from website, often unreliable)
-    const firmName = leadData.source === 'campaign'
-        ? (leadData.name || analysis.firmName || 'Law Firm')
-        : (analysis.firmName || leadData.name || 'Law Firm');
+    // Priority: leadData.firmName (explicit) > analysis.firmName (scraped) > leadData.name (fallback)
+    // For campaign leads, leadData.name is often a person's name, not firm name
+    const firmName = leadData.firmName || analysis.firmName || leadData.name || 'Law Firm';
 
     // Use confirmed practice areas (from user confirmation modal) or fallback to analysis
     const confirmedAreas = leadData.confirmedPracticeAreas?.areas || [];

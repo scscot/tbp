@@ -38,7 +38,7 @@ async function forceRegenDemo(leadId) {
 
     const leadData = doc.data();
     console.log('Lead status:', leadData.status);
-    console.log('Firm name:', leadData.name || leadData.firmName || leadData.analysis?.firmName || 'Unknown');
+    console.log('Firm name:', leadData.firmName || leadData.analysis?.firmName || leadData.name || 'Unknown');
 
     try {
         const analysis = leadData.analysis || {};
