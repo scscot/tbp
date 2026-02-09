@@ -135,7 +135,6 @@ jobs:
             // Update Firestore
             await configRef.set({
               batchSize: tbpBatch,
-              batchSizeYahoo: tbpBatch,
               preintakeBatchSize: preintakeBatch,
               warmingWeek: week,
               updatedAt: admin.firestore.FieldValue.serverTimestamp(),
