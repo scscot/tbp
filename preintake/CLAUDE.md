@@ -1,7 +1,7 @@
 # PreIntake.ai: Comprehensive Project Documentation
 
-**Last Updated**: 2026-02-08
-**Version**: 5.2 (Demo welcome page card layout fix)
+**Last Updated**: 2026-02-09
+**Version**: 5.3 (Demo URL simplification & path detection fix)
 
 ---
 
@@ -1266,6 +1266,23 @@ Email click → homepage loads with ?demo= → REDIRECT to /demo/?demo={id}&firm
   - Changed `.demo-iframe-container` from `flex: 1` to explicit `height: calc(100vh - 72px)`
   - Changed `#landing-screen` in template from `overflow: hidden` + `justify-content: center` to `overflow-y: auto` + `justify-content: flex-start`
 - [x] **Demo Regeneration** - All demos regenerated with updated template
+
+### Phase 55: Demo URL Simplification & Path Detection Fix (2026-02-09)
+- [x] **Firm Name from Database** - Simplified demo URLs to fetch firm name from database instead of URL params
+  - Removed `&firm=` parameter from all demo URLs (emails, redirects, floating buttons)
+  - `getPreIntakeFirmStatus` API now checks `data.firmName` (root level) first, then `data.analysis?.firmName`
+  - Cleaner URLs: `/demo/?demo={leadId}` instead of `/demo/?demo={leadId}&firm={encoded_name}`
+  - More reliable: firm name always comes from database, not potentially stale/truncated URL params
+- [x] **Path Detection Fix** - Added `isOnDemoPage()` helper in `components.js`
+  - Fixed issue where `/demo` (no trailing slash) didn't match `/demo/` check
+  - Helper correctly matches `/demo`, `/demo/`, `/demo/index.html`, and `/demo/*` paths
+  - Welcome banner and floating buttons now correctly hidden on demo page
+- [x] **Badge Styling Update** - Demo page badge now matches homepage hero-badge
+  - Pill shape (`border-radius: 50px`), gold border, transparent background, uppercase text
+  - Consistent visual language across homepage and demo page
+- [x] **New Utility Scripts**
+  - `scripts/find-valid-demos.js` - Query Firestore for demos with valid firm names
+  - `scripts/force-regen-demo.js` - Force regenerate a specific demo regardless of status
 
 ---
 

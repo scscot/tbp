@@ -966,8 +966,8 @@ const getPreIntakeFirmStatus = onRequest(
                 practiceAreas: practiceAreas,
                 primaryArea: primaryArea,
 
-                // Firm info from analysis
-                firmName: data.analysis?.firmName || 'Your Firm',
+                // Firm info - check root level first (set by demo generator), then analysis
+                firmName: data.firmName || data.analysis?.firmName || 'Your Firm',
                 firmWebsite: data.website || null,
                 location: data.analysis?.location || null,
 

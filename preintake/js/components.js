@@ -55,8 +55,7 @@
             // Also update the "Demo" link to go to their existing demo (not request a new one)
             const demoLink = container.querySelector('#nav-demo-link');
             if (demoLink) {
-                const firmName = sessionStorage.getItem('tbp_demo_firm');
-                demoLink.href = `/demo/?demo=${demoViewedId}${firmName ? '&firm=' + encodeURIComponent(firmName) : ''}`;
+                demoLink.href = `/demo/?demo=${demoViewedId}`;
                 demoLink.textContent = 'View Demo';
             }
         }
@@ -84,12 +83,21 @@
     }
 
     // =========================================================================
+    // HELPER: Check if on demo page
+    // =========================================================================
+    function isOnDemoPage() {
+        const path = window.location.pathname;
+        // Match /demo, /demo/, /demo/index.html, or any /demo/* path
+        return path === '/demo' || path.startsWith('/demo/') || path.startsWith('/demo?');
+    }
+
+    // =========================================================================
     // WELCOME BANNER COMPONENT (shown for demo users on non-demo pages)
     // Uses same CSS classes as index.html's campaign-welcome banner
     // =========================================================================
     function renderWelcomeBanner() {
         // Don't render on the demo page itself (it has its own welcome display)
-        if (window.location.pathname.startsWith('/demo/')) return;
+        if (isOnDemoPage()) return;
 
         // Don't render if already exists (index.html has its own)
         if (document.getElementById('campaign-welcome')) return;
@@ -122,7 +130,7 @@
     // =========================================================================
     function renderFloatingButtons() {
         // Don't render on the demo page itself (user is already viewing the demo)
-        if (window.location.pathname.startsWith('/demo/')) return;
+        if (isOnDemoPage()) return;
 
         // Don't render if already exists (e.g., on index.html which has its own)
         if (document.getElementById('floating-demo-buttons')) return;
@@ -135,10 +143,6 @@
         const demoViewedId = tbpDemoViewed || tbpDemoId;
         if (!demoViewedId) return;
 
-        // Get firm name for demo link
-        const firmName = sessionStorage.getItem('tbp_demo_firm');
-        const firmParam = firmName ? '&firm=' + encodeURIComponent(firmName) : '';
-
         // Create floating buttons container
         const container = document.createElement('div');
         container.className = 'floating-demo-buttons visible';
@@ -150,7 +154,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
             </a>
-            <a href="/demo/?demo=${demoViewedId}${firmParam}" class="view-demo-btn" id="view-demo-btn">
+            <a href="/demo/?demo=${demoViewedId}" class="view-demo-btn" id="view-demo-btn">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
                 </svg>

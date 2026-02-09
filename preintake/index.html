@@ -1968,15 +1968,10 @@
             // =====================================
             // Firm Name Display Helper
             // =====================================
-            // Clean firm name for display: strip ", Attorney at Law" suffix for bar profile contacts
+            // Return full firm name as-is (preserves "Attorney at Law", etc.)
             function cleanFirmNameForDisplay(rawFirmName) {
                 if (!rawFirmName) return '';
-                let name = decodeURIComponent(rawFirmName);
-                // Strip ", Attorney at Law" suffix (used for bar profile contacts without firm names)
-                if (name.endsWith(', Attorney at Law')) {
-                    name = name.replace(/, Attorney at Law$/, '');
-                }
-                return name;
+                return decodeURIComponent(rawFirmName).trim();
             }
 
             // =====================================
@@ -2087,13 +2082,11 @@
             async function checkCampaignDemo() {
                 const urlParams = new URLSearchParams(window.location.search);
                 const demoLeadId = urlParams.get('demo');
-                const firmNameFromUrl = urlParams.get('firm');
 
                 if (!demoLeadId) return false;
 
-                // Redirect to dedicated demo page (preserves all URL params)
-                const redirectUrl = `/demo/?demo=${demoLeadId}${firmNameFromUrl ? `&firm=${encodeURIComponent(firmNameFromUrl)}` : ''}`;
-                window.location.href = redirectUrl;
+                // Redirect to dedicated demo page (firm name fetched from database)
+                window.location.href = `/demo/?demo=${demoLeadId}`;
                 return true; // Redirecting, so we handled it
 
                 // NOTE: Code below is now unreachable but kept for reference
@@ -2556,7 +2549,7 @@
             if (floatingButtons && getStartedBtn && viewDemoBtn) {
                 getStartedBtn.href = `/create-account.html?firm=${demoId}`;
                 viewDemoBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg> View Demo`;
-                viewDemoBtn.href = `/demo/?demo=${demoId}${firmName ? '&firm=' + encodeURIComponent(firmName) : ''}`;
+                viewDemoBtn.href = `/demo/?demo=${demoId}`;
                 floatingButtons.classList.add('visible');
             }
 
@@ -2595,7 +2588,7 @@
                 const firmName = sessionStorage.getItem('tbp_demo_firm');
                 getStartedBtn.href = `/create-account.html?firm=${viewedDemoId}`;
                 viewDemoBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg> View Demo Again`;
-                viewDemoBtn.href = `/demo/?demo=${viewedDemoId}${firmName ? '&firm=' + encodeURIComponent(firmName) : ''}`;
+                viewDemoBtn.href = `/demo/?demo=${viewedDemoId}`;
                 floatingButtons.classList.add('visible');
             }
         }
