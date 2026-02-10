@@ -505,6 +505,13 @@ const serveHostedIntake = onRequest(
                 'const DEMO_MODE = false;'
             );
 
+            // Skip onboarding modal for hosted intake (live mode)
+            // The onboarding modal is for demo users; live customers should see intake directly
+            html = html.replace(
+                "if (urlParams.get('skip_onboarding') === 'true') {",
+                "if (true) { // Live mode: always skip onboarding"
+            );
+
             res.setHeader('Content-Type', 'text/html; charset=utf-8');
             res.setHeader('Cache-Control', 'public, max-age=300'); // 5 minute cache
             res.send(html);
