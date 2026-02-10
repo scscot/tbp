@@ -1,7 +1,7 @@
 # PreIntake.ai: Comprehensive Project Documentation
 
-**Last Updated**: 2026-02-09
-**Version**: 5.4 (Email analytics date filter)
+**Last Updated**: 2026-02-10
+**Version**: 5.5 (firmName data quality cleanup)
 
 ---
 
@@ -1331,6 +1331,38 @@ Email click → homepage loads with ?demo= → REDIRECT to /demo/?demo={id}
 2. `trackDemoView?type=explore` - When user leaves demo to explore site
 3. `intakeDelivery.success` - When intake report is sent to firm's email
 
+### Phase 58: firmName Data Quality Cleanup (2026-02-10)
+- [x] **Kentucky Bar firmName Fix** - Scraper was storing "Official Address Information" placeholder text
+  - Fixed `scripts/scrape-kybar-attorneys.js` to skip placeholder text and PO Box patterns
+  - Cleaned 5,894 existing records (set firmName to empty string)
+- [x] **NC Bar firmName Fix** - Scraper was concatenating firm name + address
+  - Fixed `scripts/scrape-ncbar-attorneys.js` to skip PO Box addresses in firm name extraction
+  - Created `functions/fix-ncbar-firmnames.js` with regex patterns to extract firm names from concatenated strings
+  - Cleaned 590 records with concatenated addresses (legal suffixes + street numbers, PO Box patterns)
+- [x] **FL Bar firmName Fix** - Some records had standalone PO Box as firm name
+  - Fixed `scripts/scrape-flbar-attorneys.js` `cleanFirmName()` to reject PO Box entries
+  - Cleaned 26 records
+- [x] **General firmName Cleanup** - Created comprehensive audit and fix scripts
+  - Created `functions/fix-firmname-issues.js` for clear errors (N/A, emails, URLs, phone numbers, addresses)
+  - Fixed 35 additional records across various sources
+- [x] **Comprehensive Audit** - Audited all firmName fields for data quality issues
+  - Audit checks: startsWithNumber, containsZipCode, tooShort, justNumbers, containsSuite, containsStateAbbr, allCaps, containsAtSymbol, containsUrl, trailingPunctuation, containsPhonePattern, suffixThenNumber, startsLowercase, containsBrTag
+  - Remaining issues are mostly false positives (legal suffixes like PA, PC, LLP flagged near address numbers)
+
+**Total Records Cleaned: ~6,545**
+| Source | Records | Issue |
+|--------|---------|-------|
+| Kentucky Bar | 5,894 | "Official Address Information" placeholder |
+| NC Bar | 590 | Concatenated firm name + address |
+| FL Bar | 26 | PO Box in firm name |
+| Various | 35 | N/A, emails, URLs, phone numbers |
+
+**Utility Scripts Created:**
+| Script | Purpose |
+|--------|---------|
+| `functions/fix-firmname-issues.js` | Fix clear errors (N/A, emails, URLs, phone numbers, addresses) |
+| `functions/fix-ncbar-firmnames.js` | Extract firm names from NC Bar concatenated address strings |
+
 ---
 
 ## Architecture
@@ -1386,6 +1418,8 @@ pending → analyzing → researching → generating_demo → demo_ready
 ├── widget-functions.js              # Widget endpoints + getEmailAnalytics
 ├── stripe-functions.js              # Payment processing
 ├── account-portal-functions.js      # Account portal (magic link auth, settings, billing)
+├── fix-firmname-issues.js           # Fix clear firmName errors (N/A, emails, URLs, etc.)
+├── fix-ncbar-firmnames.js           # Extract firm names from NC Bar concatenated addresses
 └── templates/
     ├── demo-intake.html.template    # Demo intake template
     └── demo-config.js               # Demo config template

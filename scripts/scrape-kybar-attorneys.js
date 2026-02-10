@@ -944,9 +944,12 @@ async function extractProfileData(iframe, name, customerCode, practiceArea) {
         // This is heuristic and may need adjustment
         for (let i = 0; i < lines.length; i++) {
             if (lines[i].includes(name) && i + 1 < lines.length) {
-                const nextLine = lines[i + 1];
-                // If next line doesn't look like an address and isn't the attorney info header
-                if (!nextLine.match(/^\d/) && !nextLine.includes('Attorney Info')) {
+                const nextLine = lines[i + 1].trim();
+                // Skip if: starts with number (address), is a header, or is placeholder text
+                if (!nextLine.match(/^\d/) &&
+                    !nextLine.includes('Attorney Info') &&
+                    !/^official\s+address/i.test(nextLine) &&
+                    !/^p\.?\s*o\.?\s*box/i.test(nextLine)) {
                     data.firmName = nextLine;
                 }
                 break;

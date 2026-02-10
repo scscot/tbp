@@ -503,8 +503,8 @@ function cleanFirmName(firmText) {
         }
     }
 
-    // Pattern 5: If text doesn't start with a number, return as-is
-    if (!cleaned.match(/^\d/)) {
+    // Pattern 5: If text doesn't start with a number and isn't just a PO Box, return as-is
+    if (!cleaned.match(/^\d/) && !/^p\.?\s*o\.?\s*box/i.test(cleaned)) {
         return cleaned;
     }
 

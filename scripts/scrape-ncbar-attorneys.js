@@ -421,9 +421,9 @@ async function extractProfileData(page, memberId) {
                 .filter(line => line.length > 0);
 
             if (lines.length > 0) {
-                // First line is the firm name ONLY if it doesn't start with a number (street address)
+                // First line is the firm name ONLY if it doesn't look like an address
                 const firstLine = lines[0];
-                if (!firstLine.match(/^\d/)) {
+                if (!firstLine.match(/^\d/) && !/^p\.?\s*o\.?\s*box/i.test(firstLine)) {
                     data.firmName = firstLine;
                 }
             }
