@@ -1496,9 +1496,9 @@
             <div class="logo-container">
                 {{LOGO_HTML}}
             </div>
-            <h1 class="landing-headline">{{LANDING_HEADLINE}}</h1>
+            <h1 class="landing-headline">Free Case Review</h1>
             <p class="landing-subheadline">
-                {{LANDING_SUBHEADLINE}}
+                Find out if {{FIRM_NAME}} can help with your case in under 5 minutes. Your unique situation will be reviewed quickly, carefully, and confidentially.
             </p>
             <button class="cta-button" onclick="showConsentScreen()">
                 Start My Evaluation

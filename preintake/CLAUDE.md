@@ -1,7 +1,7 @@
 # PreIntake.ai: Comprehensive Project Documentation
 
 **Last Updated**: 2026-02-10
-**Version**: 5.5 (firmName data quality cleanup)
+**Version**: 5.6 (added fast demo patching operations guide)
 
 ---
 
@@ -1605,6 +1605,95 @@ For firms with strict data residency requirements, self-hosted option at custom 
 | CRM integrations | Email/webhook only (covers 80%) | Native integrations when 5+ customers request same CRM | Low (deferred) |
 | Multi-language support | English only | Spanish, Chinese intake options | Low |
 | A/B testing (question flows) | Subject lines only | Question flow optimization | Low |
+
+---
+
+## Operations & Maintenance
+
+### Fast Demo Patching (gsutil)
+
+For simple text changes to demo templates (CSS, copy, JS snippets), use **gsutil parallel operations** instead of sequential regeneration. This is **15x faster** (~3 min vs ~45 min for 1,400+ demos).
+
+**When to use:** Simple find/replace changes that don't require regenerating the full template (e.g., wording changes, CSS fixes, JS tweaks).
+
+**When NOT to use:** Structural changes that require `generateDemoFiles()` logic (e.g., new placeholders, practice-area-specific content).
+
+**Process:**
+```bash
+# 1. Create patch script
+cat << 'EOF' > /tmp/fast-patch-demos.sh
+#!/bin/bash
+set -e
+BUCKET="gs://teambuilder-plus-fe74d.firebasestorage.app"
+PREFIX="preintake-demos"
+TEMP_DIR="/tmp/preintake-demos-patch"
+
+rm -rf "$TEMP_DIR" && mkdir -p "$TEMP_DIR"
+
+# Parallel download (~23 sec for 1,400 demos)
+gsutil -m cp -r "$BUCKET/$PREFIX" "$TEMP_DIR/"
+
+# Find/replace locally (instant)
+MODIFIED=0
+for f in $(find "$TEMP_DIR" -name "index.html"); do
+    if grep -q "OLD_TEXT" "$f" 2>/dev/null; then
+        sed -i '' "s/OLD_TEXT/NEW_TEXT/g" "$f"
+        ((MODIFIED++))
+    fi
+done
+echo "Modified: $MODIFIED files"
+
+# Parallel upload (~2-3 min)
+gsutil -m -h "Content-Type:text/html" -h "Cache-Control:public, max-age=300" \
+    cp -r "$TEMP_DIR/$PREFIX/*" "$BUCKET/$PREFIX/"
+
+rm -rf "$TEMP_DIR"
+EOF
+chmod +x /tmp/fast-patch-demos.sh
+
+# 2. Edit the sed command with your find/replace, then run:
+/tmp/fast-patch-demos.sh
+```
+
+**Important notes:**
+- Always update the template file first (`functions/templates/demo-intake.html.template`)
+- The script patches ALL demos including `active` subscribers (not just `demo_ready`)
+- Cache-Control is 5 minutes, so changes propagate quickly
+- For `active` leads that need full regeneration, use manual regeneration (see below)
+
+### Full Demo Regeneration
+
+For structural template changes requiring `generateDemoFiles()`:
+
+```bash
+# Regenerate all demo_ready leads
+node scripts/regenerate-preintake-demos.js --run
+
+# Regenerate specific lead (works for any status)
+cd /Users/sscott/tbp/functions && node << 'EOF'
+const admin = require('firebase-admin');
+admin.initializeApp({
+    credential: admin.credential.cert(require('../secrets/serviceAccountKey.json')),
+    storageBucket: 'teambuilder-plus-fe74d.firebasestorage.app'
+});
+const { generateDemoFiles } = require('./demo-generator-functions');
+const db = admin.firestore();
+db.settings({ databaseId: 'preintake' });
+
+async function regen(leadId) {
+    const doc = await db.collection('preintake_leads').doc(leadId).get();
+    const { htmlContent } = generateDemoFiles(leadId, doc.data(), doc.data().analysis || {}, doc.data().deepResearch || {});
+    await admin.storage().bucket().file(`preintake-demos/${leadId}/index.html`).save(htmlContent, {
+        contentType: 'text/html',
+        metadata: { cacheControl: 'public, max-age=300' }
+    });
+    console.log('Done');
+}
+regen('LEAD_ID_HERE').then(() => process.exit(0));
+EOF
+```
+
+**Note:** The regeneration script (`regenerate-preintake-demos.js`) only processes `demo_ready` leads. For `active` subscribers, use the manual script above.
 
 ---
 

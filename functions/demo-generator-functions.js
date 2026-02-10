@@ -347,8 +347,6 @@ function generateDemoFiles(leadId, leadData, analysis, deepResearch) {
         '{{ACCENT_COLOR}}': accentColor,
         '{{ACCENT_COLOR_LIGHT}}': accentColorLight,
         '{{LOGO_HTML}}': logoHtml,
-        '{{LANDING_HEADLINE}}': getLandingHeadline(practiceArea, isMultiPractice),
-        '{{LANDING_SUBHEADLINE}}': getLandingSubheadline(practiceArea, firmName, isMultiPractice),
         '{{PROGRESS_STEPS_HTML}}': progressStepsHtml,
         '{{LOADING_STAGES_HTML}}': loadingStagesHtml,
         '{{LOADING_STAGES_JSON}}': loadingStagesJson,
@@ -2811,32 +2809,6 @@ function generateDeclineResources(state) {
 }
 
 /**
- * Get landing headline by practice area
- */
-function getLandingHeadline(practiceArea, isMultiPractice) {
-    // For multi-practice firms, use generic headline
-    if (isMultiPractice) return 'Free Consultation';
-
-    // Single practice area: "Free {practiceArea} Consultation"
-    if (practiceArea) {
-        return `Free ${practiceArea} Consultation`;
-    }
-
-    return 'Free Consultation';
-}
-
-/**
- * Get landing subheadline
- */
-function getLandingSubheadline(practiceArea, firmName, isMultiPractice) {
-    // For multi-practice firms, use generic subheadline
-    if (isMultiPractice) {
-        return `Find out if ${firmName} can help with your legal matter in under 5 minutes. We'll review your situation quickly, carefully, and confidentially.`;
-    }
-    return `Find out if ${firmName} can help with your ${practiceArea.toLowerCase()} matter in under 5 minutes. We'll review your situation quickly, carefully, and confidentially.`;
-}
-
-/**
  * Get initial message for starting conversation
  */
 function getInitialMessage(practiceArea, state, isMultiPractice) {
@@ -3293,8 +3265,6 @@ module.exports = {
     generateTools,
     buildPracticeAreasList,
     // Exported for demo regeneration script
-    getLandingHeadline,
-    getLandingSubheadline,
     generateProgressSteps,
     generateLoadingStagesHtml,
     generateLoadingStagesJson,
