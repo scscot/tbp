@@ -1299,6 +1299,38 @@ Email click → homepage loads with ?demo= → REDIRECT to /demo/?demo={id}&firm
   - Lead stats: campaignLeads, visitedCount, viewedCount, intakeCompletedCount
   - Source/state breakdowns filtered accordingly
 
+### Phase 57: Auto-Load Demo & Analytics Simplification (2026-02-09)
+- [x] **Auto-Load Demo on Page Visit** - Removed "Start Demo" button friction
+  - Problem: Email CTA says "View Your Firm's Demo" but users landed on welcome page requiring another click
+  - Result: High visits but virtually no demo starts (users bounced at welcome page)
+  - Solution: Demo now auto-loads immediately when page loads
+  - Removed welcome screen content (badge, 3-step instructions, Start Demo button)
+  - Added minimal firm name banner above demo iframe
+  - Track both `visit` and `view` on page load (merged since demo auto-loads)
+  - Simplified CSS and JS for streamlined UX
+- [x] **Analytics Dashboard Update** - Merged visit/view metrics since they're now equivalent
+  - Updated engagement funnel: Sent → Demo Viewed → Explored → Completed (4 steps, was 5)
+  - Removed redundant "Demo Start Rate" from Key Rates (would always be ~100%)
+  - Renamed columns: "Clicked" → "Demo Viewed", added "Completion Rate"
+  - Removed "Demo Starts" column from Template Performance table
+  - Removed "Demo Starts" column from Source Performance table
+  - Removed "Demo Starts" column from Lead Details table
+  - Consistent terminology across all dashboard sections
+
+**Updated Campaign Visitor Flow:**
+```
+Email click → homepage loads with ?demo= → REDIRECT to /demo/?demo={id}
+  → Demo page loads → visit + view tracked simultaneously
+  → Demo iframe auto-loads with skip_onboarding=true
+  → Demo conversation starts immediately (no button click required)
+  → OR User clicks header nav / "Explore" link → explore flow unchanged
+```
+
+**Updated Tracking Flow:**
+1. `trackDemoView?type=visit` + `type=view` - Both on `/demo/` page load (merged)
+2. `trackDemoView?type=explore` - When user leaves demo to explore site
+3. `intakeDelivery.success` - When intake report is sent to firm's email
+
 ---
 
 ## Architecture
