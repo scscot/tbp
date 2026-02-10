@@ -735,10 +735,10 @@
             // ═══════════════════════════════════════════════
             // SECTION 1: ENGAGEMENT FUNNEL
             // ═══════════════════════════════════════════════
+            // Note: With auto-loading demos, visit = view, so we show "Demo Viewed" (using visitedCount)
             const funnelSteps = [
                 { label: 'Emails Sent', count: data.totalSent || 0, color: '#3b82f6' },
-                { label: 'Clicked', count: data.visitedCount || 0, color: '#8b5cf6' },
-                { label: 'Demo Started', count: data.viewedCount || 0, color: '#c9a962' },
+                { label: 'Demo Viewed', count: data.visitedCount || 0, color: '#c9a962' },
                 { label: 'Explored Site', count: data.exploredCount || 0, color: '#f59e0b' },
                 { label: 'Intake Completed', count: data.intakeCompletedCount || 0, color: '#10b981' }
             ];
@@ -820,24 +820,17 @@
                         <div class="rate-card">
                             <h4>${p.label}</h4>
                             <div class="rate-row">
-                                <span class="rate-label">Click Rate</span>
+                                <span class="rate-label">Demo View Rate</span>
                                 <span>
                                     <span class="rate-value">${pct(p.visited, p.sent)}%</span>
                                     <span class="rate-detail">${p.visited}/${p.sent}</span>
                                 </span>
                             </div>
                             <div class="rate-row">
-                                <span class="rate-label">Demo Start Rate</span>
-                                <span>
-                                    <span class="rate-value">${pct(p.viewed, p.visited)}%</span>
-                                    <span class="rate-detail">${p.viewed}/${p.visited}</span>
-                                </span>
-                            </div>
-                            <div class="rate-row">
                                 <span class="rate-label">Completion Rate</span>
                                 <span>
-                                    <span class="rate-value">${pct(p.completed, p.viewed)}%</span>
-                                    <span class="rate-detail">${p.completed}/${p.viewed}</span>
+                                    <span class="rate-value">${pct(p.completed, p.visited)}%</span>
+                                    <span class="rate-detail">${p.completed}/${p.visited}</span>
                                 </span>
                             </div>
                         </div>
@@ -864,11 +857,10 @@
                             <tr>
                                 <th>Template</th>
                                 <th class="right">Sent</th>
-                                <th class="right">Clicked</th>
-                                <th class="right">Click Rate</th>
-                                <th class="right">Demo Starts</th>
-                                <th class="right">Start Rate</th>
+                                <th class="right">Demo Viewed</th>
+                                <th class="right">View Rate</th>
                                 <th class="right">Completed</th>
+                                <th class="right">Completion Rate</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -878,9 +870,8 @@
                                     <td class="right">${perf.sent.toLocaleString()}</td>
                                     <td class="right">${perf.visited}</td>
                                     <td class="right highlight">${pct(perf.visited, perf.sent)}%</td>
-                                    <td class="right">${perf.viewed}</td>
-                                    <td class="right highlight">${pct(perf.viewed, perf.visited)}%</td>
                                     <td class="right">${perf.completed}</td>
+                                    <td class="right highlight">${pct(perf.completed, perf.visited)}%</td>
                                 </tr>
                             `).join('')}
                         </tbody>
@@ -909,11 +900,10 @@
                                 <tr>
                                     <th>Source</th>
                                     <th class="right">Sent</th>
-                                    <th class="right">Clicked</th>
-                                    <th class="right">Click Rate</th>
-                                    <th class="right">Demo Starts</th>
-                                    <th class="right">Start Rate</th>
+                                    <th class="right">Demo Viewed</th>
+                                    <th class="right">View Rate</th>
                                     <th class="right">Completed</th>
+                                    <th class="right">Completion Rate</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -923,9 +913,8 @@
                                         <td class="right">${perf.sent.toLocaleString()}</td>
                                         <td class="right">${perf.visited}</td>
                                         <td class="right highlight">${pct(perf.visited, perf.sent)}%</td>
-                                        <td class="right">${perf.viewed}</td>
-                                        <td class="right highlight">${pct(perf.viewed, perf.visited)}%</td>
                                         <td class="right">${perf.completed}</td>
+                                        <td class="right highlight">${pct(perf.completed, perf.visited)}%</td>
                                     </tr>
                                 `).join('')}
                             </tbody>
@@ -1057,8 +1046,7 @@
                                 <th>Firm Name</th>
                                 <th>Source</th>
                                 <th>Date</th>
-                                <th>Visits</th>
-                                <th>Demo Starts</th>
+                                <th>Demo Viewed</th>
                                 <th>Explored</th>
                                 <th>Intake</th>
                                 <th>Subscription</th>
@@ -1073,11 +1061,6 @@
                                     <td>
                                         <span class="view-count ${lead.visitCount > 0 ? 'viewed' : 'not-viewed'}">
                                             ${lead.visitCount > 0 ? lead.visitCount + 'x' : '-'}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <span class="view-count ${lead.viewCount > 0 ? 'viewed' : 'not-viewed'}">
-                                            ${lead.viewCount > 0 ? lead.viewCount + 'x' : '-'}
                                         </span>
                                     </td>
                                     <td>

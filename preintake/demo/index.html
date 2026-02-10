@@ -35,141 +35,12 @@
             background: var(--primary-dark, #0a1628); /* mask any tiny rounding gaps */
         }
 
-        .demo-page-content {
-            min-height: calc(100vh - var(--header-h)); /* fallback for older browsers */
-            min-height: calc(100dvh - var(--header-h)); /* modern browsers with dynamic viewport */
-            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-blue) 50%, var(--primary-dark) 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 2rem;
-            box-sizing: border-box;
-        }
-
-        /* Welcome badge styling (matches homepage hero-badge) */
-        .demo-welcome-badge {
-            display: inline-block;
-            background: rgba(201, 169, 98, 0.25);
-            border: 2px solid var(--accent-gold);
-            color: var(--accent-gold);
-            padding: 1rem 2.5rem;
-            border-radius: 50px;
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: 2.5rem;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-        }
-
-        .demo-welcome-firm-name {
-            font-size: 1.75rem;
-            color: var(--accent-gold);
-            font-family: Georgia, 'Times New Roman', serif;
-            font-weight: 400;
-            letter-spacing: 0.5px;
-            margin-bottom: 2rem;
-            padding: 1rem 1.5rem;
-            border: 1px solid rgba(201, 169, 98, 0.4);
-            border-radius: 4px;
-            display: inline-block;
-            max-width: 100%;
-            word-wrap: break-word;
-            overflow-wrap: break-word;
-            line-height: 1.3;
-        }
-
-        .demo-welcome-firm-name:empty,
-        .demo-welcome-firm-name.hidden {
-            display: none;
-        }
-
-        .firm-name-loading {
-            color: rgba(201, 169, 98, 0.5);
-            font-style: italic;
-            font-size: 1rem;
-        }
-
-        .demo-welcome-steps {
-            text-align: left;
-            margin: 0 auto 2rem;
-            padding: 0;
-            list-style: none;
-            max-width: 520px;
-        }
-
-        .demo-welcome-step {
-            display: flex;
-            align-items: flex-start;
-            gap: 1rem;
-            margin-bottom: 1.25rem;
-            color: white;
-            font-size: 1.1rem;
-            line-height: 1.5;
-        }
-
-        .demo-welcome-step:last-child {
-            margin-bottom: 0;
-        }
-
-        .demo-welcome-step-icon {
-            flex-shrink: 0;
-            width: 32px;
-            height: 32px;
-            background: rgba(201, 169, 98, 0.2);
-            border: 1px solid rgba(201, 169, 98, 0.5);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--accent-gold);
-            font-size: 0.9rem;
-            font-weight: 600;
-        }
-
-        .demo-welcome-step-email {
-            color: var(--accent-gold);
-            font-weight: 500;
-        }
-
-        .demo-welcome-start-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            background: linear-gradient(135deg, var(--accent-gold) 0%, var(--accent-gold-light) 50%, var(--accent-gold) 100%);
-            color: var(--primary-dark);
-            border: none;
-            padding: 1.25rem 3.5rem;
-            font-size: 1.25rem;
-            font-weight: 600;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .demo-welcome-start-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-glow);
-        }
-
-        /* Welcome content wrapper (full-page layout, no card) */
-        .demo-welcome {
-            max-width: 600px;
-            width: 100%;
-            text-align: center;
-        }
-
         /* Iframe container (full width below header) */
         .demo-iframe-container {
-            display: none;
             width: 100%;
-            height: calc(100vh - var(--header-h)); /* fallback for older browsers */
-            height: calc(100dvh - var(--header-h)); /* modern browsers with dynamic viewport */
+            height: calc(100vh - var(--header-h));
+            height: calc(100dvh - var(--header-h));
             background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-blue) 50%, var(--primary-dark) 100%);
-        }
-
-        .demo-iframe-container.visible {
-            display: block;
         }
 
         .demo-iframe {
@@ -301,38 +172,6 @@
 
         /* Responsive */
         @media (max-width: 768px) {
-            .demo-page-content {
-                padding: 1rem 1.25rem;
-            }
-
-            .demo-welcome {
-                padding: 1.75rem 1.5rem;
-            }
-
-            .demo-welcome-badge {
-                font-size: 1.1rem;
-                padding: 0.75rem 1.75rem;
-                margin-bottom: 2rem;
-            }
-
-            .demo-welcome-firm-name {
-                font-size: 1.35rem;
-                padding: 0.75rem 1rem;
-            }
-
-            .demo-welcome-steps {
-                max-width: 100%;
-            }
-
-            .demo-welcome-step {
-                font-size: 1rem;
-            }
-
-            .demo-welcome-start-btn {
-                padding: 1rem 2.5rem;
-                font-size: 1.15rem;
-            }
-
             .exit-modal {
                 padding: 2rem 1.5rem;
             }
@@ -381,47 +220,8 @@
 <body>
     <div id="preintake-header"></div>
 
-    <!-- Welcome Content (shown before demo starts) -->
-    <div class="demo-page-content" id="demo-page-content">
-        <div class="demo-welcome">
-            <div class="demo-welcome-badge">Welcome to Your Demo</div>
-            <p class="demo-welcome-firm-name" id="demo-firm-name">
-                <span class="firm-name-loading">Loading...</span>
-            </p>
-            <div class="demo-welcome-steps">
-                <div class="demo-welcome-step">
-                    <div class="demo-welcome-step-icon">1</div>
-                    <div>
-                        <strong style="color: #fbbf24;">Try the Intake Conversation</strong>
-                        <span>Experience the AI-powered screening as your potential clients would</span>
-                    </div>
-                </div>
-                <div class="demo-welcome-step">
-                    <div class="demo-welcome-step-icon">2</div>
-                    <div>
-                        <strong style="color: #fbbf24;">See the Case Assessment</strong>
-                        <span>See how inquiries get qualified with a GREEN, YELLOW, or RED rating</span>
-                    </div>
-                </div>
-                <div class="demo-welcome-step">
-                    <div class="demo-welcome-step-icon">3</div>
-                    <div>
-                        <strong style="color: #fbbf24;">Receive the Intake Summary</strong>
-                        <span>A complete report is sent to <span class="demo-welcome-step-email" id="demo-delivery-email">your email</span></span>
-                    </div>
-                </div>
-            </div>
-            <button class="demo-welcome-start-btn" id="start-demo-btn">
-                Start Demo
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                </svg>
-            </button>
-        </div>
-    </div>
-
-    <!-- Demo Iframe Container (shown after Start Demo clicked) -->
-    <div class="demo-iframe-container" id="demo-iframe-container">
+    <!-- Demo Iframe Container (loads immediately) -->
+    <div class="demo-iframe-container visible" id="demo-iframe-container">
         <iframe class="demo-iframe" id="demo-iframe" src="" title="PreIntake Demo"></iframe>
     </div>
 
@@ -485,8 +285,9 @@
                 return;
             }
 
-            // Track visit
+            // Track visit AND view together (demo auto-loads now)
             fetch(`${TRACK_ENDPOINT}?firmId=${demoLeadId}&type=visit`).catch(() => {});
+            fetch(`${TRACK_ENDPOINT}?firmId=${demoLeadId}&type=view`).catch(() => {});
 
             // Fetch firm status to get firm name and delivery email
             fetchFirmStatus();
@@ -494,7 +295,10 @@
             // Update header button to "Get Started"
             updateHeaderButton();
 
-            // Setup event listeners
+            // Auto-load the demo immediately
+            loadDemo();
+
+            // Setup event listeners (exit modal only now)
             setupEventListeners();
 
             // Intercept header navigation clicks
@@ -508,8 +312,6 @@
         // FIRM STATUS
         // =========================================================================
         function fetchFirmStatus() {
-            const firmNameEl = document.getElementById('demo-firm-name');
-            const deliveryEmailEl = document.getElementById('demo-delivery-email');
             const exitModalEmailEl = document.getElementById('exit-modal-email');
 
             fetch(`${STATUS_ENDPOINT}?leadId=${demoLeadId}`)
@@ -520,30 +322,16 @@
                     return response.json();
                 })
                 .then(data => {
-                    if (!data) {
-                        // Hide firm name if no data
-                        firmNameEl.classList.add('hidden');
-                        return;
-                    }
+                    if (!data) return;
 
-                    // Update firm name from database (single source of truth)
-                    // Hide if no firm name OR if it's a placeholder value
-                    const isPlaceholder = !data.firmName ||
-                        data.firmName === 'Your Firm' ||
-                        data.firmName === 'Your Law Firm' ||
-                        data.firmName.toLowerCase() === 'test';
-
-                    if (isPlaceholder) {
-                        firmNameEl.classList.add('hidden');
-                    } else {
+                    // Store firm name for internal use
+                    if (data.firmName) {
                         firmName = cleanFirmNameForDisplay(data.firmName);
-                        firmNameEl.innerHTML = firmName;
                     }
 
-                    // Update delivery email display
+                    // Update delivery email for exit modal
                     if (data.deliveryEmail) {
                         deliveryEmail = data.deliveryEmail;
-                        deliveryEmailEl.textContent = deliveryEmail;
                         exitModalEmailEl.textContent = deliveryEmail;
                     }
 
@@ -554,8 +342,6 @@
                 })
                 .catch(err => {
                     console.warn('Status check failed:', err);
-                    // Hide firm name on error
-                    firmNameEl.classList.add('hidden');
                 });
         }
 
@@ -642,36 +428,15 @@
         // =========================================================================
         // DEMO FLOW
         // =========================================================================
-        function startDemo() {
+        function loadDemo() {
             demoStarted = true;
-
-            // Track view
-            fetch(`${TRACK_ENDPOINT}?firmId=${demoLeadId}&type=view`).catch(() => {});
 
             // Store in sessionStorage for header button state
             sessionStorage.setItem('tbp_demo_viewed', demoLeadId);
 
-            // Hide welcome content
-            document.getElementById('demo-page-content').style.display = 'none';
-
-            // Show and load iframe
-            const iframeContainer = document.getElementById('demo-iframe-container');
+            // Load iframe immediately
             const iframe = document.getElementById('demo-iframe');
-
-            iframeContainer.classList.add('visible');
             iframe.src = `https://preintake.ai/demo/${demoLeadId}?embed=true&skip_onboarding=true&_t=${Date.now()}`;
-        }
-
-        function showDemo() {
-            // If demo not started yet, start it
-            if (!demoStarted) {
-                startDemo();
-                return;
-            }
-
-            // Show iframe container (demo already loaded)
-            document.getElementById('demo-page-content').style.display = 'none';
-            document.getElementById('demo-iframe-container').classList.add('visible');
         }
 
         // =========================================================================
@@ -748,9 +513,6 @@
         // EVENT LISTENERS
         // =========================================================================
         function setupEventListeners() {
-            // Start Demo button
-            document.getElementById('start-demo-btn').addEventListener('click', startDemo);
-
             // Exit modal buttons
             document.getElementById('exit-modal-continue').addEventListener('click', handleContinueDemo);
             document.getElementById('exit-modal-leave').addEventListener('click', handleLeaveDemo);
@@ -761,10 +523,8 @@
         // =========================================================================
         function cleanFirmNameForDisplay(name) {
             if (!name) return '';
-            let cleaned = name.trim();
-            // Add line break before "Attorney at Law" for better visual balance
-            cleaned = cleaned.replace(/\s+(Attorney at Law)$/i, '<br>$1');
-            return cleaned;
+            // Strip ", Attorney at Law" suffix for cleaner display in banner
+            return name.trim().replace(/,?\s*Attorney at Law$/i, '');
         }
 
         // =========================================================================
