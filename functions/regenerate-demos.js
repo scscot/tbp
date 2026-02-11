@@ -52,7 +52,8 @@ async function regenerateDemo(leadId) {
         practiceArea = sorted[0].name;
     }
 
-    const firmName = analysis.firmName || data.name || 'Law Firm';
+    // Priority: data.firmName (hosted/bar), analysis.firmName (website), data.name (fallback)
+    const firmName = data.firmName || analysis.firmName || data.name || 'Law Firm';
     const state = analysis.state || data.state || 'California';
 
     console.log('Firm:', firmName);
@@ -87,10 +88,18 @@ async function regenerateDemo(leadId) {
     // Avatar icon SVG
     const avatarIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" /></svg>';
 
+    // Escape firm name for JavaScript string context
+    const firmNameJS = firmName.replace(/'/g, "\\'").replace(/"/g, '\\"');
+
+    // Determine if hosted (no website) vs embed (has website)
+    const isHosted = data.hosted === true || data.hasWebsite === false;
+
     // Replacements
     const replacements = {
         '{{PAGE_TITLE}}': `Free Case Evaluation - ${firmName}`,
         '{{FIRM_NAME}}': firmName,
+        '{{FIRM_NAME_JS}}': firmNameJS,
+        '{{FIRM_EMAIL}}': data.email || '',
         '{{PRIMARY_DARK}}': primaryDark,
         '{{PRIMARY_BLUE}}': primaryBlue,
         '{{ACCENT_COLOR}}': accentColor,
@@ -113,7 +122,24 @@ async function regenerateDemo(leadId) {
         '{{DETECT_BUTTONS_FUNCTION}}': detectButtonsFunction,
         '{{INITIAL_MESSAGE}}': 'Hello, I need help with a legal matter.',
         '{{AVATAR_ICON}}': avatarIcon,
-        '{{LEAD_ID}}': leadId
+        '{{LEAD_ID}}': leadId,
+        '{{RETURN_URL}}': data.source === 'campaign'
+            ? `https://preintake.ai/?completed=${leadId}`
+            : (data.website || 'https://preintake.ai'),
+        '{{FIRM_PRACTICE_AREAS_JSON}}': JSON.stringify(practiceAreasList.map(a => a.name.toLowerCase())),
+        '{{ONBOARDING_GO_LIVE_TEXT}}': isHosted
+            ? 'Your PreIntake.ai link is ready!'
+            : 'Your embed code is ready!',
+        '{{SIDEBAR_CTA_TEXT}}': isHosted
+            ? 'Get Your Shareable Link'
+            : 'Add to Your Website',
+        '{{PROMO_TEXT}}': isHosted
+            ? 'Ready to capture real leads? Your hosted intake link is ready to share anywhere.'
+            : 'Ready for real leads? Add this to your website in 2 minutes.',
+        '{{DEMO_LIMIT_TEXT}}': isHosted
+            ? '• One intake demo. Activate to receive actual leads via your shareable link.'
+            : '• One intake demo. Activate to receive actual leads on your website.',
+        '{{ESCAPE_LINK_DISPLAY}}': 'block'
     };
 
     let html = template;
@@ -140,8 +166,7 @@ async function regenerateDemo(leadId) {
 // Main
 async function main() {
     const leadsToRegenerate = [
-        'LDWNdUEhcPLm6NRpmSMj',  // Emily Rubenstein Law
-        'aolwszrxeJGhMdRElk7T'   // Holstrom, Block & Parke
+        '9yXCw3SXVjBeHJTbD4qr'   // Scott Law Group (Stephen's test account)
     ];
 
     for (const leadId of leadsToRegenerate) {

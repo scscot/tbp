@@ -49,7 +49,7 @@
 
         if (demoViewedId && accountBtn) {
             accountBtn.href = `https://preintake.ai/create-account.html?firm=${demoViewedId}`;
-            accountBtn.textContent = 'Get Started →';
+            accountBtn.textContent = 'Create Account →';
             accountBtn.classList.add('nav-get-started');
 
             // Also update the "Demo" link to go to their existing demo (not request a new one)
@@ -149,7 +149,7 @@
         container.id = 'floating-demo-buttons';
         container.innerHTML = `
             <a href="/create-account.html?firm=${demoViewedId}" class="get-started-btn" id="get-started-btn">
-                Get Started
+                Create Account
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>

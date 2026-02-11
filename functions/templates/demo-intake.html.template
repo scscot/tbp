@@ -125,7 +125,7 @@
 
         .logo-text {
             font-family: Georgia, 'Times New Roman', serif;
-            font-size: 1.75rem;
+            font-size: 2.1rem;
             font-weight: 400;
             color: var(--accent-gold);
             letter-spacing: 0.5px;
@@ -139,6 +139,29 @@
             hyphens: auto;
             text-align: center;
             line-height: 1.3;
+        }
+
+        /* Demo Notice Banner (shown via postMessage from parent) */
+        .demo-notice {
+            background: rgba(201, 169, 98, 0.15);
+            border: 1px solid rgba(201, 169, 98, 0.3);
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1.5rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .demo-notice p {
+            color: #ffffff;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        .demo-notice strong {
+            color: var(--accent-gold);
         }
 
         .landing-headline {
@@ -1493,6 +1516,11 @@
     <!-- Landing Screen -->
     <div id="landing-screen" class="screen active">
         <div class="landing-content">
+            <!-- Demo Notice Banner (shown via postMessage from parent) -->
+            <div id="demo-notice" class="demo-notice" style="display: none;">
+                <p id="demo-notice-text"></p>
+            </div>
+
             <div class="logo-container">
                 {{LOGO_HTML}}
             </div>
@@ -1501,7 +1529,7 @@
                 Find out if {{FIRM_NAME}} can help with your case in under 5 minutes. Your unique situation will be reviewed quickly, carefully, and confidentially.
             </p>
             <button class="cta-button" onclick="showConsentScreen()">
-                Start My Evaluation
+                Start My Review
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
@@ -1585,7 +1613,7 @@
         </header>
         <div class="chat-main">
             <aside class="progress-sidebar">
-                <h3 class="progress-title">Evaluation Progress</h3>
+                <h3 class="progress-title">Case Review Progress</h3>
                 <div class="progress-steps">
                     {{PROGRESS_STEPS_HTML}}
                 </div>
@@ -1904,6 +1932,25 @@
                 );
                 if (response.ok) {
                     firmStatus = await response.json();
+
+                    // Show demo notice for demo users (not paid subscribers, or Stephen's test account)
+                    const isPaidSubscriber = firmStatus.subscriptionStatus === 'active';
+                    const isStephenTestAccount = firmStatus.deliveryEmail === 'stephen@teambuildpro.com';
+                    const showDemoUI = !isPaidSubscriber || isStephenTestAccount;
+
+                    if (showDemoUI) {
+                        const notice = document.getElementById('demo-notice');
+                        const text = document.getElementById('demo-notice-text');
+                        if (notice && text) {
+                            const hasWebsite = firmStatus.hasWebsite !== false;
+                            if (hasWebsite) {
+                                text.innerHTML = '<strong>Demo Mode:</strong> This intake is customized for your firm. Create Account to get an embed code\u2014your clients complete intakes directly on your website.';
+                            } else {
+                                text.innerHTML = '<strong>Demo Mode:</strong> This intake is customized for your firm. Create Account to get a shareable link for emails, social media, or anywhere you connect with clients.';
+                            }
+                            notice.style.display = 'block';
+                        }
+                    }
                 }
             } catch (error) {
                 console.warn('Could not fetch firm status, defaulting to demo mode');

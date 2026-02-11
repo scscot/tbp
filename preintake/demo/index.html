@@ -335,10 +335,22 @@
                         exitModalEmailEl.textContent = deliveryEmail;
                     }
 
-                    // If already subscribed, could show different messaging
-                    if (data.subscriptionStatus === 'active') {
-                        console.log('Account already active');
+                    // Determine if we should show demo UI (header + notice)
+                    // Show for: demo_ready OR (active AND Stephen's test account)
+                    const isPaidSubscriber = data.subscriptionStatus === 'active';
+                    const isStephenTestAccount = data.deliveryEmail === 'stephen@teambuildpro.com';
+                    const showDemoUI = !isPaidSubscriber || isStephenTestAccount;
+
+                    // Hide header for paid subscribers (white-label experience)
+                    if (!showDemoUI) {
+                        const headerContainer = document.getElementById('preintake-header');
+                        if (headerContainer) {
+                            headerContainer.style.display = 'none';
+                        }
+                        // Recalculate layout - iframe should use full viewport
+                        document.documentElement.style.setProperty('--header-h', '0px');
                     }
+
                 })
                 .catch(err => {
                     console.warn('Status check failed:', err);
@@ -354,7 +366,7 @@
                 const accountBtn = document.querySelector('.nav-account');
                 if (accountBtn) {
                     accountBtn.href = `/create-account.html?firm=${demoLeadId}`;
-                    accountBtn.textContent = 'Get Started →';
+                    accountBtn.textContent = 'Create Account →';
                     accountBtn.classList.add('nav-get-started');
                 }
 

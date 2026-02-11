@@ -1,7 +1,7 @@
 # PreIntake.ai: Comprehensive Project Documentation
 
 **Last Updated**: 2026-02-10
-**Version**: 5.6 (added fast demo patching operations guide)
+**Version**: 5.7 (conditional header + demo notice banner)
 
 ---
 
@@ -1362,6 +1362,32 @@ Email click → homepage loads with ?demo= → REDIRECT to /demo/?demo={id}
 |--------|---------|
 | `functions/fix-firmname-issues.js` | Fix clear errors (N/A, emails, URLs, phone numbers, addresses) |
 | `functions/fix-ncbar-firmnames.js` | Extract firm names from NC Bar concatenated address strings |
+
+### Phase 59: Conditional Header & Demo Notice Banner (2026-02-10)
+- [x] **Conditional Header Display** - White-label experience for paid subscribers
+  - Header hidden when `subscriptionStatus === 'active'` (paid subscribers)
+  - Header shown for `demo_ready` status OR Stephen's test account (`deliveryEmail === 'stephen@teambuildpro.com'`)
+  - Parent page (`/demo/index.html`) fetches status via `getPreIntakeFirmStatus` API
+  - Uses `--header-h` CSS variable to adjust iframe height when header hidden
+- [x] **Demo Notice Banner** - Contextual messaging for demo users
+  - Banner displayed via postMessage from parent to iframe
+  - Website users: "Activate to get an embed code—your clients complete intakes directly on your website"
+  - Hosted users: "Activate to get a shareable link for emails, social media, or anywhere you connect with clients"
+  - Gold accent styling matching brand (rgba(201, 169, 98, 0.15) background)
+- [x] **Button Text Updates** - Consistent "Create Account" terminology
+  - Changed "Get Started" → "Create Account" across demo template and parent pages
+  - Changed "Start My Evaluation" → "Start My Review" on landing screen CTA
+  - Changed "Evaluation Progress" → "Case Review Progress" in sidebar
+- [x] **Demo Regeneration** - All 1,517 demos regenerated with updated template
+  - Used fast gsutil patch method for simple text changes (~3 min vs ~45 min)
+
+**Files Modified:**
+| File | Changes |
+|------|---------|
+| `/preintake/demo/index.html` | Header hiding logic, postMessage to iframe |
+| `/functions/templates/demo-intake.html.template` | Demo notice HTML/CSS, button text changes |
+| `/preintake/js/components.js` | Button label updates |
+| `/preintake/index.html` | CTA button text updates |
 
 ---
 

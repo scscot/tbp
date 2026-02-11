@@ -478,6 +478,13 @@ const serveHostedIntake = onRequest(
                 }
             }
 
+            // For Stephen's test account, redirect to /demo/ wrapper (shows PreIntake.ai header)
+            // This is for internal testing - paid subscribers normally get white-label (no header)
+            const deliveryEmail = data.deliveryEmail || data.email;
+            if (deliveryEmail === 'stephen@teambuildpro.com') {
+                return res.redirect(302, `/demo/?demo=${leadId}`);
+            }
+
             // Get the demo HTML from Firebase Storage
             const bucket = getStorage().bucket('teambuilder-plus-fe74d.firebasestorage.app');
             const file = bucket.file(`preintake-demos/${leadId}/index.html`);
