@@ -691,10 +691,12 @@
         const SUBJECT_LABELS = {
             'not_opportunity': 'V1: "Not an opportunity. Just a tool."',
             'prebuild_advantage': 'V2: "What if your next recruit already had a team?"',
-            'mobile_first_v3': 'V3: "Using AI to Build Your Direct Sales Team"',
-            'mobile_first_v4': 'V4: "Using AI to Build Your Direct Sales Team"',
-            'mobile_first_v5': 'V5: "Using AI to Build Your {{company}} Team"',
-            'mobile_first_v6': 'V6: "Using AI to Build Your {{company}} Team"'
+            'mobile_first_v3': 'V3: "This isn\'t another opportunity email"',
+            'mobile_first_v4': 'V4: "Not an opportunity. Just a tool."',
+            'mobile_first_v5': 'V5: "Using AI to Build Your Direct Sales Team"',
+            'mobile_first_v6': 'V6: "Using AI to Build Your Direct Sales Team"',
+            'mobile_first_v7': 'V7: "The future of direct sales is here"',
+            'mobile_first_v8': 'V8: "Not an opportunity. Just a tool."'
         };
 
         function switchTab(tabName) {
@@ -793,7 +795,9 @@
                 'mobile_first_v3': '<span class="badge badge-v1">V3</span>',
                 'mobile_first_v4': '<span class="badge badge-v2">V4</span>',
                 'mobile_first_v5': '<span class="badge badge-v1">V5</span>',
-                'mobile_first_v6': '<span class="badge badge-v2">V6</span>'
+                'mobile_first_v6': '<span class="badge badge-v2">V6</span>',
+                'mobile_first_v7': '<span class="badge badge-v1">V7</span>',
+                'mobile_first_v8': '<span class="badge badge-v2">V8</span>'
             };
             return badges[subjectTag] || (subjectTag || '-');
         }
@@ -840,7 +844,7 @@
                 abBody.innerHTML = data.subjectLines.map(sl => {
                     const label = SUBJECT_LABELS[sl.subjectTag] || sl.subjectTag;
                     const isWinner = sl.subjectTag === winnerTag && data.subjectLines.length > 1;
-                    const badgeClass = (sl.subjectTag === 'not_opportunity' || sl.subjectTag === 'mobile_first_v3' || sl.subjectTag === 'mobile_first_v5') ? 'badge-v1' : 'badge-v2';
+                    const badgeClass = (sl.subjectTag === 'not_opportunity' || sl.subjectTag === 'mobile_first_v3' || sl.subjectTag === 'mobile_first_v5' || sl.subjectTag === 'mobile_first_v7') ? 'badge-v1' : 'badge-v2';
                     return `
                         <tr class="${isWinner ? 'ab-winner' : ''}">
                             <td>${label} ${isWinner ? '<span class="badge badge-clicked">LEADING</span>' : ''}</td>
@@ -910,7 +914,7 @@
                     contactsAbBody.innerHTML = cc.subjectLines.map(sl => {
                         const label = SUBJECT_LABELS[sl.subjectTag] || sl.subjectTag;
                         const isWinner = sl.subjectTag === winnerTag && cc.subjectLines.length > 1;
-                        const badgeClass = (sl.subjectTag === 'mobile_first_v5') ? 'badge-v1' : 'badge-v2';
+                        const badgeClass = (sl.subjectTag === 'mobile_first_v5' || sl.subjectTag === 'mobile_first_v7') ? 'badge-v1' : 'badge-v2';
                         return `
                             <tr class="${isWinner ? 'ab-winner' : ''}">
                                 <td>${label} ${isWinner ? '<span class="badge badge-clicked">LEADING</span>' : ''}</td>

@@ -6,7 +6,8 @@
  * Usage:
  *   node test-contacts-email.js scscot@gmail.com
  *   node test-contacts-email.js scscot@gmail.com "Herbalife"
- *   node test-contacts-email.js scscot@gmail.com "doTERRA" v4
+ *   node test-contacts-email.js scscot@gmail.com "doTERRA" v7
+ *   node test-contacts-email.js scscot@gmail.com "Herbalife" v8
  */
 
 const fs = require('fs');
@@ -42,15 +43,39 @@ const LANDING_PAGE_URL = 'https://teambuildpro.com';
 const AB_TEST_VARIANTS = {
   v3: {
     templateVersion: 'v3',
-    subject: "The future of direct sales is here",
+    subject: "This isn't another opportunity email",
     subjectTag: 'mobile_first_v3',
-    description: 'Pattern interrupt - anti-pitch positioning'
+    description: 'Pattern interrupt - anti-pitch positioning (legacy)'
   },
   v4: {
     templateVersion: 'v4',
     subject: 'Not an opportunity. Just a tool.',
     subjectTag: 'mobile_first_v4',
-    description: 'Pattern interrupt - tool focus'
+    description: 'Flip the script - confidence before joining (legacy)'
+  },
+  v5: {
+    templateVersion: 'v5',
+    subject: 'Using AI to Build Your Direct Sales Team',
+    subjectTag: 'mobile_first_v5',
+    description: 'AI focus - direct sales team building (legacy)'
+  },
+  v6: {
+    templateVersion: 'v6',
+    subject: 'Using AI to Build Your Direct Sales Team',
+    subjectTag: 'mobile_first_v6',
+    description: 'AI focus - direct sales team building (legacy)'
+  },
+  v7: {
+    templateVersion: 'v7',
+    subject: 'The future of direct sales is here',
+    subjectTag: 'mobile_first_v7',
+    description: 'Conversational - personal app sharing'
+  },
+  v8: {
+    templateVersion: 'v8',
+    subject: 'Not an opportunity. Just a tool.',
+    subjectTag: 'mobile_first_v8',
+    description: 'Direct value proposition - tool focus'
   }
 };
 
@@ -86,7 +111,7 @@ async function sendTestEmail(toEmail, company, templateVariant) {
 
   const variant = AB_TEST_VARIANTS[templateVariant];
   if (!variant) {
-    console.error(`❌ Invalid template variant: ${templateVariant}. Use v3 or v4`);
+    console.error(`❌ Invalid template variant: ${templateVariant}. Use v3, v4, v5, v6, v7, or v8`);
     process.exit(1);
   }
 
@@ -182,15 +207,16 @@ async function sendTestEmail(toEmail, company, templateVariant) {
 const args = process.argv.slice(2);
 const toEmail = args[0];
 const company = args[1] || 'Herbalife';
-const templateVariant = args[2] || 'v3';
+const templateVariant = args[2] || 'v7';
 
 if (!toEmail) {
-  console.log('Usage: node test-contacts-email.js <email> [company] [v3|v4]');
+  console.log('Usage: node test-contacts-email.js <email> [company] [v3|v4|v5|v6|v7|v8]');
   console.log('');
   console.log('Examples:');
   console.log('  node test-contacts-email.js scscot@gmail.com');
   console.log('  node test-contacts-email.js scscot@gmail.com "doTERRA"');
-  console.log('  node test-contacts-email.js scscot@gmail.com "Herbalife" v4');
+  console.log('  node test-contacts-email.js scscot@gmail.com "Herbalife" v7');
+  console.log('  node test-contacts-email.js scscot@gmail.com "Herbalife" v8');
   process.exit(1);
 }
 

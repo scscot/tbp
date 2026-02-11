@@ -5,8 +5,12 @@
  * Uses Mailgun API with template versioning.
  *
  * Templates stored in Mailgun under 'mailer' template:
- * - v3: "The future of direct sales is here" - Pattern interrupt
- * - v4: "Not an opportunity. Just a tool." - Tool focus
+ * - v3: "This isn't another opportunity email" (legacy)
+ * - v4: "Not an opportunity. Just a tool." (legacy)
+ * - v5: "Using AI to Build Your Direct Sales Team" (legacy)
+ * - v6: "Using AI to Build Your Direct Sales Team" (legacy)
+ * - v7: "The future of direct sales is here" (active)
+ * - v8: "Not an opportunity. Just a tool." (active)
  *
  * Collection: direct_sales_contacts (NOT emailCampaigns/master/contacts)
  * Query: scraped == true, sent == false
@@ -45,17 +49,44 @@ const LANDING_PAGE_URL = 'https://teambuildpro.com';
 const AB_TEST_VARIANTS = {
   v3: {
     templateVersion: 'v3',
-    subject: "The future of direct sales is here",
+    subject: "This isn't another opportunity email",
     subjectTag: 'mobile_first_v3',
-    description: 'Pattern interrupt - anti-pitch positioning'
+    description: 'Pattern interrupt - anti-pitch positioning (legacy)'
   },
   v4: {
     templateVersion: 'v4',
     subject: 'Not an opportunity. Just a tool.',
     subjectTag: 'mobile_first_v4',
-    description: 'Pattern interrupt - tool focus'
+    description: 'Flip the script - confidence before joining (legacy)'
+  },
+  v5: {
+    templateVersion: 'v5',
+    subject: 'Using AI to Build Your Direct Sales Team',
+    subjectTag: 'mobile_first_v5',
+    description: 'AI focus - direct sales team building (legacy)'
+  },
+  v6: {
+    templateVersion: 'v6',
+    subject: 'Using AI to Build Your Direct Sales Team',
+    subjectTag: 'mobile_first_v6',
+    description: 'AI focus - direct sales team building (legacy)'
+  },
+  v7: {
+    templateVersion: 'v7',
+    subject: 'The future of direct sales is here',
+    subjectTag: 'mobile_first_v7',
+    description: 'Pattern interrupt - future-focused positioning'
+  },
+  v8: {
+    templateVersion: 'v8',
+    subject: 'Not an opportunity. Just a tool.',
+    subjectTag: 'mobile_first_v8',
+    description: 'Direct value proposition - tool focus'
   }
 };
+
+// Active variants for A/B testing (rotate through these)
+const ACTIVE_VARIANTS = ['v7', 'v8'];
 
 // =============================================================================
 // CAMPAIGN CONFIGURATIONS
@@ -152,8 +183,8 @@ async function sendEmailViaMailgun(contact, docId, config, index) {
     throw new Error('TBP_MAILGUN_API_KEY not configured');
   }
 
-  // A/B Test: Strict alternation between v3 and v4
-  const templateVariant = index % 2 === 0 ? 'v3' : 'v4';
+  // A/B Test: Strict alternation between active variants
+  const templateVariant = ACTIVE_VARIANTS[index % ACTIVE_VARIANTS.length];
   const variant = AB_TEST_VARIANTS[templateVariant];
 
   // Subject line (no longer company-specific)
