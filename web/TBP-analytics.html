@@ -1884,7 +1884,7 @@
 
                 // A/B Test Results
                 const subjectLines = (emailStats.subjectLines || []).filter(s =>
-                    s.subjectTag === 'mobile_first_v3' || s.subjectTag === 'mobile_first_v4'
+                    s.subjectTag === 'mobile_first_v7' || s.subjectTag === 'mobile_first_v8'
                 );
                 const abTestBody = document.getElementById('emailAbTestBody');
                 const abTestSection = document.getElementById('emailAbTestSection');
@@ -2009,7 +2009,7 @@
             // A/B test performance
             const abBody = document.getElementById('emailMainAbTestBody');
             const mainSubjectLines = (emailStatsData.subjectLines || []).filter(sl =>
-                sl.subjectTag === 'mobile_first_v3' || sl.subjectTag === 'mobile_first_v4'
+                sl.subjectTag === 'mobile_first_v7' || sl.subjectTag === 'mobile_first_v8'
             );
             if (mainSubjectLines.length > 0) {
                 const sorted = [...mainSubjectLines].sort((a, b) => {
@@ -2084,7 +2084,7 @@
                 // A/B test performance
                 const contactsAbBody = document.getElementById('emailContactsAbTestBody');
                 const contactsSubjectLines = (cc.subjectLines || []).filter(sl =>
-                    sl.subjectTag === 'mobile_first_v3' || sl.subjectTag === 'mobile_first_v4'
+                    sl.subjectTag === 'mobile_first_v7' || sl.subjectTag === 'mobile_first_v8'
                 );
                 if (contactsSubjectLines.length > 0) {
                     const sorted = [...contactsSubjectLines].sort((a, b) => {
