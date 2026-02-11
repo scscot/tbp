@@ -3,7 +3,7 @@
     <!-- Homepage -->
     <url>
         <loc>https://preintake.ai/</loc>
-        <lastmod>2026-01-21</lastmod>
+        <lastmod>2026-02-11</lastmod>
         <changefreq>weekly</changefreq>
         <priority>1.0</priority>
     </url>
@@ -11,7 +11,7 @@
     <!-- About Us -->
     <url>
         <loc>https://preintake.ai/about-us.html</loc>
-        <lastmod>2026-01-04</lastmod>
+        <lastmod>2026-02-11</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
@@ -19,7 +19,7 @@
     <!-- FAQ -->
     <url>
         <loc>https://preintake.ai/faq.html</loc>
-        <lastmod>2026-01-19</lastmod>
+        <lastmod>2026-02-11</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
@@ -27,7 +27,7 @@
     <!-- Contact Us -->
     <url>
         <loc>https://preintake.ai/contact-us.html</loc>
-        <lastmod>2026-01-14</lastmod>
+        <lastmod>2026-02-11</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
     </url>
@@ -35,7 +35,7 @@
     <!-- Privacy Policy -->
     <url>
         <loc>https://preintake.ai/privacy-policy.html</loc>
-        <lastmod>2026-01-04</lastmod>
+        <lastmod>2026-02-11</lastmod>
         <changefreq>yearly</changefreq>
         <priority>0.3</priority>
     </url>
@@ -43,7 +43,7 @@
     <!-- Terms of Service -->
     <url>
         <loc>https://preintake.ai/terms-of-service.html</loc>
-        <lastmod>2026-01-05</lastmod>
+        <lastmod>2026-02-11</lastmod>
         <changefreq>yearly</changefreq>
         <priority>0.3</priority>
     </url>
