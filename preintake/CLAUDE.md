@@ -1399,9 +1399,14 @@ Email click → homepage loads with ?demo= → REDIRECT to /demo/?demo={id}
   - About Us, FAQ, Privacy Policy, Terms of Service all now have full Twitter Card meta tags
   - Uses `summary_large_image` card type with consistent branding
 - [x] **Sitemap Update** - Updated all lastmod dates to 2026-02-11
-- [ ] **Organization Schema** - Add to About Us page (medium priority)
-- [ ] **Contact Page H1** - Optimize from "Get In Touch" to SEO-friendly heading
-- [ ] **Internal Linking** - Add cross-links between pages (beyond navigation)
+- [x] **Organization Schema** - Added to About Us page with contact point and service info
+- [x] **Contact Page H1** - Changed from "Get In Touch" to "Contact PreIntake.ai"
+- [x] **Contact Page Twitter Cards** - Added missing Twitter Card tags
+- [x] **Internal Linking** - Added cross-links between pages:
+  - About Us → FAQ (in "Our Approach" section)
+  - About Us → Contact (in "Mission" section)
+  - FAQ → Contact (in CRM integration answer and CTA section)
+  - Contact → About Us (in contact info section)
 
 **SEO Audit Summary (Score: 7.5/10):**
 | Strength | Status |
