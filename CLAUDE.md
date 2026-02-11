@@ -1,6 +1,6 @@
 # Team Build Pro - Comprehensive Knowledge Base
 
-**Last Updated**: 2026-02-06 (Prospect/Referral Page Consolidation)
+**Last Updated**: 2026-02-10 (CLAUDE.md Audit)
 **Purpose**: Persistent knowledge base for AI assistants across sessions
 
 ---
@@ -42,7 +42,7 @@ The Team Build Pro ecosystem is a comprehensive, interconnected network of digit
 │    114 Company            Localized              Localized             │
 │    Landing Pages       Content (ES/PT/DE)     Content (ES/PT/DE)      │
 │         │                      │                        │               │
-│    Blog (21 posts)        Blog (20-21 each)     Blog (20-21 each)     │
+│    Blog (23 posts)        Blog (22-23 each)     Blog (22-23 each)     │
 │         │                      │                        │               │
 │    FAQ/Books              FAQ/Books              FAQ/Books             │
 └─────────────────────────────────────────────────────────────────────────┘
@@ -116,7 +116,7 @@ The Team Build Pro ecosystem is a comprehensive, interconnected network of digit
 | Email Click Rate | Tracked via Firestore | 3%+ |
 | Email Open Rate | N/A (disabled for deliverability) | - |
 | Website Languages | 4 (EN, ES, PT, DE) | 4 |
-| Blog Posts (per language) | 20-21 | 25+ |
+| Blog Posts (per language) | 22-23 | 25+ |
 | Company Landing Pages | 114 (EN/ES) | 150+ |
 | App Languages | 4 (EN, ES, PT, DE) | 4 |
 
@@ -173,7 +173,7 @@ The world's first AI-powered platform that lets **prospects pre-build their team
 ### Platform
 - **Frontend**: Flutter (Dart) for iOS and Android
 - **Backend**: Firebase (Firestore, Cloud Functions v2, Authentication, Remote Config)
-- **Functions**: 99 Cloud Functions handling real-time operations
+- **Functions**: 105 Cloud Functions handling real-time operations
 - **Hosting**: Firebase Hosting for web properties
 - **Email**: Mailgun API (news.teambuildpro.com) for campaign delivery
 
@@ -201,26 +201,26 @@ The world's first AI-powered platform that lets **prospects pre-build their team
 │   ├── faq.html          # FAQ with dynamic filtering
 │   ├── books.html        # Books landing page
 │   ├── companies/        # Company-specific recruiting guides (114 pages)
-│   └── blog/             # Blog posts (21 articles)
+│   └── blog/             # Blog posts (23 articles)
 ├── web-es/                # Spanish website (es.teambuildpro.com)
 │   ├── index.html        # Spanish homepage
 │   ├── faq.html          # Spanish FAQ
 │   ├── books.html        # Spanish books page
-│   ├── blog/             # Spanish blog (21 translated posts)
+│   ├── blog/             # Spanish blog (23 translated posts)
 │   ├── sitemap.xml       # Spanish sitemap
 │   └── robots.txt        # Spanish search engine directives
 ├── web-pt/                # Portuguese website (pt.teambuildpro.com)
 │   ├── index.html        # Portuguese homepage
 │   ├── faq.html          # Portuguese FAQ
 │   ├── books.html        # Portuguese books page
-│   ├── blog/             # Portuguese blog (21 translated posts)
+│   ├── blog/             # Portuguese blog (23 translated posts)
 │   ├── sitemap.xml       # Portuguese sitemap
 │   └── robots.txt        # Portuguese search engine directives
 ├── web-de/                # German website (de.teambuildpro.com)
 │   ├── index.html        # German homepage (3x2 screenshot grid)
 │   ├── faq.html          # German FAQ
 │   ├── books.html        # German books page
-│   ├── blog/             # German blog (20 translated posts)
+│   ├── blog/             # German blog (22 translated posts)
 │   ├── sitemap.xml       # German sitemap
 │   └── robots.txt        # German search engine directives
 ├── sscott/                # Stephen Scott author website (stephenscott.us)
@@ -230,7 +230,7 @@ The world's first AI-powered platform that lets **prospects pre-build their team
 │   │   ├── books/       # 13 individual book pages
 │   │   ├── podcasts.html # Podcast listings
 │   │   ├── blog.html    # Author blog index
-│   │   └── blog/        # 16 blog posts (auto-generated weekly)
+│   │   └── blog/        # 18 blog posts (auto-generated weekly)
 │   └── scripts/         # Build automation scripts
 ├── analytics/             # Analytics workspace (GA4)
 │   ├── fetch-combined-analytics.js  # Combined reporting
@@ -327,7 +327,7 @@ All four main sites have identical structure:
 - Homepage with hero animation
 - FAQ page (8 questions)
 - Books landing page with localized covers
-- Blog index with 20+ translated posts
+- Blog index with 22+ translated posts
 - Privacy policy
 - Terms of service
 - Contact form
@@ -352,7 +352,7 @@ All four main sites have identical structure:
 - `/faq.html` - Dynamic FAQ (audience-aware, 8 questions)
 - `/books.html` - Books landing page with AI/MLM book covers
 - `/blog.html` - Blog index
-- `/blog/` - 21 blog posts (auto-generated twice weekly via GitHub Actions)
+- `/blog/` - 23 blog posts (auto-generated twice weekly via GitHub Actions)
 - `/companies.html` - 114 company-specific recruiting guides
 - `/companies/ai-recruiting-[company].html` - Individual company pages
 - `/contact_us.html` - Contact form
@@ -367,7 +367,7 @@ All four main sites have identical structure:
 - `/faq.html` - Spanish FAQ (8 questions with accordion)
 - `/books.html` - Spanish books page (MLM-Cover-ES.jpg)
 - `/blog.html` - Spanish blog index
-- `/blog/` - 21 translated blog posts (same titles as EN)
+- `/blog/` - 23 translated blog posts (same titles as EN)
 - `/companies.html` - Company recruiting guides index (114 companies with pagination)
 - `/companies/` - 114 company-specific recruiting guides in Spanish
 - `/contact_us.html` - Spanish contact form
@@ -381,7 +381,7 @@ All four main sites have identical structure:
 - `/faq.html` - Portuguese FAQ (8 questions with accordion)
 - `/books.html` - Portuguese books page (MLM-Cover-BR.jpg)
 - `/blog.html` - Portuguese blog index
-- `/blog/` - 21 translated blog posts (same titles as EN)
+- `/blog/` - 23 translated blog posts (same titles as EN)
 - `/companies.html` - Company recruiting guides index (39 companies with pagination)
 - `/companies/` - 39 company-specific recruiting guides in Portuguese
 - `/contact_us.html` - Portuguese contact form
@@ -395,7 +395,7 @@ All four main sites have identical structure:
 - `/faq.html` - German FAQ (8 questions with accordion)
 - `/books.html` - German books page (MLM-Cover-DE.jpg)
 - `/blog.html` - German blog index
-- `/blog/` - 20 translated blog posts (same titles as EN)
+- `/blog/` - 22 translated blog posts (same titles as EN)
 - `/companies.html` - Company recruiting guides index (20 companies with pagination)
 - `/companies/` - 20 company-specific recruiting guides in German
 - `/contact_us.html` - German contact form
@@ -639,7 +639,7 @@ The email campaign system consists of two parallel campaigns targeting different
 - **Dashboards**: `email-stats.html` (email-focused) and `TBP-analytics.html` (unified analytics)
 
 ### Android Launch Campaign (REMOVED - Jan 2026)
-- **Status**: REMOVED - Function deleted
+- **Status**: REMOVED - Function and all references deleted
 - **Purpose**: Was for re-engaging contacts sent before Nov 12, 2025 Android launch
 
 ### Mailgun Event Sync (Legacy - Disabled)
@@ -938,13 +938,13 @@ Active development paused to allow automated systems to run and collect meaningf
 | Email Sending | Mailgun API | Via Mailgun, news.teambuildpro.com |
 | Email A/B Testing | Active | V3/V4 strict alternation ("Using AI to Build Your Team") |
 | Yahoo Campaign | Removed | File and function deleted (Jan 31) |
-| Android Campaign | Removed | Function deleted (Jan 31) |
+| Android Campaign | Removed | Function and all references deleted |
 | Email Tracking | Firestore | Clicks via trackEmailClick; opens disabled |
 | Analytics Dashboards | Firestore + GA4 | Top Countries + Yesterday + Today date ranges |
 | Push Notifications | Working | profile_reminder, trial_expired verified |
 | Blog Automation | Running | Mon/Thu schedule, 4 languages, sitemap pings |
 | Sitemap Pings | Active | Google + Bing pinged after each blog deploy |
-| Domain Warming | Week 4 | batchSize=50, 400 emails/day (8 runs total) |
+| Domain Warming | Week 1 | TBP: 60/batch, PreIntake: 100/batch (reset 2026-02-09) |
 | URL Discovery | Active | Every 2h, 120 companies/batch (processing 1,082 companies) |
 | Contacts Seeder | Active | Every 4h, 3 sources (Common Crawl + Wayback + crt.sh) |
 | Contacts Scraper | Active | Hourly, 400 URLs/batch, 12 blocked platforms |

@@ -127,7 +127,6 @@ const {
 // ==============================
 const {
   sendHourlyEmailCampaign,
-  sendAndroidLaunchCampaign,
   syncMailgunEvents,
 } = require('./email-campaign-functions');
 
@@ -385,7 +384,6 @@ module.exports = {
 
   // Email campaign (scheduled)
   sendHourlyEmailCampaign,
-  sendAndroidLaunchCampaign,
   syncMailgunEvents,
 
   // Email campaign for direct sales contacts (scheduled)
