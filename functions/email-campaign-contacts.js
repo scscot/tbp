@@ -5,7 +5,7 @@
  * Uses Mailgun API with template versioning.
  *
  * Templates stored in Mailgun under 'mailer' template:
- * - v3: "This isn't another opportunity email" - Pattern interrupt
+ * - v3: "The future of direct sales is here" - Pattern interrupt
  * - v4: "Not an opportunity. Just a tool." - Tool focus
  *
  * Collection: direct_sales_contacts (NOT emailCampaigns/master/contacts)
@@ -45,7 +45,7 @@ const LANDING_PAGE_URL = 'https://teambuildpro.com';
 const AB_TEST_VARIANTS = {
   v3: {
     templateVersion: 'v3',
-    subject: "This isn't another opportunity email",
+    subject: "The future of direct sales is here",
     subjectTag: 'mobile_first_v3',
     description: 'Pattern interrupt - anti-pitch positioning'
   },

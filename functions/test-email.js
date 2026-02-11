@@ -17,10 +17,10 @@ async function sendTestEmail() {
   };
 
   // Current A/B test: v3 vs v4 templates
-  // v3: "This isn't another opportunity email"
+  // v3: "The future of direct sales is here"
   // v4: "Not an opportunity. Just a tool."
   const selectedVersion = 'v3';
-  const selectedSubject = "This isn't another opportunity email";
+  const selectedSubject = "The future of direct sales is here";
 
   form.append('from', 'Stephen Scott <stephen@news.teambuildpro.com>');
   form.append('to', `${contact.firstName} ${contact.lastName} <${contact.email}>`);
