@@ -2053,121 +2053,6 @@ const cleanupOrphanedUsers = onCall({
 // ==============================
 // Referral Analytics
 // ==============================
-
-/**
- * Get user by referral code with analytics tracking
- */
-const getUserByReferralCode = onRequest({
-  region: "us-central1",
-  cors: true,
-  timeoutSeconds: 10,
-  memory: '256MiB'
-}, async (req, res) => {
-  // Security: Method validation
-  if (req.method !== 'GET') {
-    logger.warn(`🚫 REFERRAL_LOOKUP: Invalid method ${req.method} from ${req.ip}`);
-    return res.status(405).send('Method Not Allowed');
-  }
-
-  // Security: Rate limiting (100 requests per IP per hour)
-  const clientIP = req.ip || req.connection.remoteAddress || 'unknown';
-  const rateLimitKey = `referral_${clientIP}`;
-  const now = Date.now();
-  const hourAgo = now - (60 * 60 * 1000);
-
-  // Clean old entries and check rate limit
-  cleanRateLimitCache();
-  const requestTimes = rateLimitCache.get(rateLimitKey) || [];
-  const recentRequests = requestTimes.filter(time => time > hourAgo);
-
-  if (recentRequests.length >= 100) {
-    logger.warn(`🚫 REFERRAL_LOOKUP: Rate limit exceeded for IP ${clientIP}`);
-    return res.status(429).json({ error: 'Too many requests. Please try again later.' });
-  }
-
-  // Update rate limit cache
-  recentRequests.push(now);
-  rateLimitCache.set(rateLimitKey, recentRequests);
-
-  // Security: Input validation and sanitization
-  const code = req.query.code;
-  if (!code || typeof code !== 'string') {
-    logger.warn(`🚫 REFERRAL_LOOKUP: Missing or invalid referral code from ${clientIP}`);
-    return res.status(400).json({ error: 'Valid referral code is required.' });
-  }
-
-  // Sanitize referral code (alphanumeric only, max 20 chars)
-  const sanitizedCode = code.trim().replace(/[^a-zA-Z0-9]/g, '').substring(0, 20);
-  if (sanitizedCode.length === 0 || sanitizedCode !== code.trim()) {
-    logger.warn(`🚫 REFERRAL_LOOKUP: Invalid referral code format: ${code} from ${clientIP}`);
-    return res.status(400).json({ error: 'Invalid referral code format.' });
-  }
-
-  try {
-    logger.info(`🔍 REFERRAL_LOOKUP: Processing referral code ${sanitizedCode} from ${clientIP}`);
-
-    // Query Firestore for user with matching referral code
-    const userQuery = await retryWithBackoff(async () => {
-      return db.collection('users')
-        .where('referralCode', '==', sanitizedCode)
-        .limit(1)
-        .get();
-    }, 3, 500);
-
-    if (userQuery.empty) {
-      logger.info(`❌ REFERRAL_LOOKUP: No user found for code ${sanitizedCode} from ${clientIP}`);
-      return res.status(404).json({
-        error: 'Referral code not found.',
-        code: sanitizedCode
-      });
-    }
-
-    const userDoc = userQuery.docs[0];
-    const userData = userDoc.data();
-
-    // Security: Only return safe, public information
-    const safeUserData = {
-      uid: userDoc.id,
-      firstName: userData.firstName || '',
-      lastName: userData.lastName || '',
-      photoUrl: userData.photoUrl || '',
-      referralCode: userData.referralCode || '',
-      bizOppName: userData.bizOppName || 'Business Opportunity',
-      country: userData.country || '',
-      state: userData.state || '',
-      isActive: userData.isActive === true,
-    };
-
-    // Analytics: Track referral code lookup
-    try {
-      await db.collection('analytics').doc('referral_lookups').collection('events').add({
-        referralCode: sanitizedCode,
-        userId: userDoc.id,
-        clientIP: clientIP,
-        timestamp: FieldValue.serverTimestamp(),
-        userAgent: req.headers['user-agent'] || 'unknown'
-      });
-    } catch (analyticsError) {
-      // Don't fail the request if analytics logging fails
-      logger.warn('Failed to log referral lookup analytics:', analyticsError);
-    }
-
-    logger.info(`✅ REFERRAL_LOOKUP: Found user ${userDoc.id} for code ${sanitizedCode} from ${clientIP}`);
-    return res.status(200).json({
-      success: true,
-      user: safeUserData
-    });
-
-  } catch (error) {
-    logger.error(`❌ REFERRAL_LOOKUP: Database error for code ${sanitizedCode} from ${clientIP}:`, error);
-    return res.status(500).json({
-      error: 'Internal server error. Please try again later.',
-      code: sanitizedCode
-    });
-  }
-});
-
-// ==============================
 // User Profile Management Functions
 // ==============================
 
@@ -2238,9 +2123,6 @@ module.exports = {
 
   // User profile management
   updateUserTimezone,
-
-  // Referral analytics
-  getUserByReferralCode,
 
   // Helper functions
   serializeData,

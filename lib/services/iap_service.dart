@@ -14,7 +14,7 @@ class IAPService {
   final InAppPurchase _iap = InAppPurchase.instance;
   final FirebaseFunctions _functions =
       FirebaseFunctions.instanceFor(region: 'us-central1');
-  late StreamSubscription<List<PurchaseDetails>> _subscription;
+  StreamSubscription<List<PurchaseDetails>>? _subscription;
   final String _subscriptionId = '1001';
 
   bool available = false;
@@ -48,9 +48,7 @@ class IAPService {
     products = response.productDetails;
     debugPrint('✅ Loaded IAP products');
 
-    _subscription = _iap.purchaseStream.listen(_onPurchaseUpdated, onDone: () {
-      _subscription.cancel();
-    }, onError: (error) {
+    _subscription = _iap.purchaseStream.listen(_onPurchaseUpdated, onError: (error) {
       debugPrint('❌ Purchase stream error: $error');
     });
   }
@@ -146,7 +144,11 @@ class IAPService {
         'isSandbox': true,
       });
 
-      final validationResult = result.data as Map<String, dynamic>;
+      final validationResult = result.data as Map<String, dynamic>?;
+      if (validationResult == null) {
+        debugPrint('❌ APPLE SUBSCRIPTION: No validation result returned');
+        return;
+      }
 
       if (validationResult['isValid'] == true) {
         debugPrint('✅ APPLE SUBSCRIPTION: Receipt validated successfully');
@@ -198,7 +200,11 @@ class IAPService {
         'packageName': packageName,
       });
 
-      final validationResult = result.data as Map<String, dynamic>;
+      final validationResult = result.data as Map<String, dynamic>?;
+      if (validationResult == null) {
+        debugPrint('❌ GOOGLE PLAY SUBSCRIPTION: No validation result returned');
+        return;
+      }
 
       if (validationResult['isValid'] == true) {
         debugPrint('✅ GOOGLE PLAY SUBSCRIPTION: Purchase validated successfully');
@@ -235,7 +241,12 @@ class IAPService {
         return;
       }
 
-      final product = products.firstWhere((p) => p.id == _subscriptionId);
+      final product = products.where((p) => p.id == _subscriptionId).firstOrNull;
+      if (product == null) {
+        debugPrint('❌ SUBSCRIPTION: Product not found: $_subscriptionId');
+        onFailure();
+        return;
+      }
       final user = FirebaseAuth.instance.currentUser;
       if (user == null) {
         debugPrint('❌ SUBSCRIPTION: User not authenticated');
@@ -385,7 +396,7 @@ class IAPService {
   }
 
   void dispose() {
-    _subscription.cancel();
+    _subscription?.cancel();
     _pendingOnSuccess = _pendingOnFailure = _pendingOnComplete = null;
   }
 }

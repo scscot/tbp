@@ -1,6 +1,6 @@
 # Team Build Pro - Comprehensive Knowledge Base
 
-**Last Updated**: 2026-02-10 (CLAUDE.md Audit)
+**Last Updated**: 2026-02-11 (Codebase Audit)
 **Purpose**: Persistent knowledge base for AI assistants across sessions
 
 ---
@@ -173,7 +173,7 @@ The world's first AI-powered platform that lets **prospects pre-build their team
 ### Platform
 - **Frontend**: Flutter (Dart) for iOS and Android
 - **Backend**: Firebase (Firestore, Cloud Functions v2, Authentication, Remote Config)
-- **Functions**: 105 Cloud Functions handling real-time operations
+- **Functions**: 104 Cloud Functions handling real-time operations
 - **Hosting**: Firebase Hosting for web properties
 - **Email**: Mailgun API (news.teambuildpro.com) for campaign delivery
 
@@ -925,6 +925,22 @@ Automated 4-stage pipeline that discovers direct sales distributor URLs, scrapes
 - ✅ **Today Date Range** (Feb 5, 2026): Added "Today" option to date range selector
   - Backend: `fetchGA4Analytics('today')` support with startDate=endDate='today'
   - Frontend: New "Today" button in date range selector (to right of Yesterday)
+
+**Codebase Audit** (Feb 11, 2026)
+- ✅ **Comprehensive audit** of Flutter app, Cloud Functions, and all websites (EN, ES, PT, DE, Author)
+- ✅ **Deleted placeholder firebase_options**: Removed `lib/firebase/firebase_options.dart` (duplicate that returned null)
+- ✅ **Fixed IAP service crash risks** (`lib/services/iap_service.dart`):
+  - Changed `late StreamSubscription` to nullable `StreamSubscription?` to prevent race condition
+  - Added `.firstOrNull` with null check for product lookup (was crashing on missing product)
+  - Added null checks for type casting in Apple/Google subscription validation
+- ✅ **Fixed BuildContext async gap** (`lib/screens/edit_profile_screen.dart`):
+  - Captured ScaffoldMessenger before async operations to avoid invalid context access
+- ✅ **Removed duplicate Cloud Function**: Deleted `getUserByReferralCode` from `analytics-functions.js` (kept in `auth-functions.js`)
+- ✅ **Fixed broken blog links**:
+  - `ai-10x-your-mlm-recruiting-results-2025-field.html`: Fixed link to `30-day-pre-qualification-beats-traditional-mlm.html`
+  - `social-media-algorithm-apocalypse-mlm-recruiters.html`: Fixed `/download.html` link to `https://teambuildpro.com`
+- ✅ **Fixed PreIntake firebase.json**: Changed `cleanUrls: true` to `false` (was inconsistent with TBP sites)
+- ✅ **Fixed GitHub workflow**: Removed unused `MAILGUN_DOMAIN` env variable from `preintake-email-campaign.yml`
 
 ### Current System Status (Feb 2026)
 

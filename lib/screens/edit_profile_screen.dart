@@ -81,9 +81,12 @@ class EditProfileScreenState extends State<EditProfileScreen> {
 
   /// Complete the account deletion process using Cloud Function
   Future<void> _completeAccountDeletion() async {
+    // Capture ScaffoldMessenger before async operations to avoid BuildContext across async gaps
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+
     try {
       debugPrint('🗑️ EDIT_PROFILE: Completing incomplete account deletion via Cloud Function...');
-      
+
       // Call the cloud function to complete the deletion
       final FirebaseFunctions functions = FirebaseFunctions.instanceFor(region: 'us-central1');
       final callable = functions.httpsCallable('deleteUserAccount');
@@ -114,9 +117,8 @@ class EditProfileScreenState extends State<EditProfileScreen> {
         (route) => false,
       );
       
-      // Show completion message
-      final messenger = ScaffoldMessenger.of(navigatorKey.currentContext!);
-      messenger.showSnackBar(
+      // Show completion message using pre-captured ScaffoldMessenger
+      scaffoldMessenger.showSnackBar(
         const SnackBar(
           content: Text('Account deletion completed. Thank you for using Team Build Pro.'),
           backgroundColor: Colors.green,
@@ -126,15 +128,13 @@ class EditProfileScreenState extends State<EditProfileScreen> {
       
     } catch (e) {
       debugPrint('❌ EDIT_PROFILE: Error completing account deletion: $e');
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error completing account deletion: $e'),
-            backgroundColor: Colors.red,
-            duration: const Duration(seconds: 3),
-          ),
-        );
-      }
+      scaffoldMessenger.showSnackBar(
+        SnackBar(
+          content: Text('Error completing account deletion: $e'),
+          backgroundColor: Colors.red,
+          duration: const Duration(seconds: 3),
+        ),
+      );
     }
   }
 
