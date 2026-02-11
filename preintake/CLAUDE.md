@@ -1,7 +1,7 @@
 # PreIntake.ai: Comprehensive Project Documentation
 
 **Last Updated**: 2026-02-10
-**Version**: 5.7 (conditional header + demo notice banner)
+**Version**: 5.8 (comprehensive audit - added 7 Cloud Functions, fixed Firestore collections)
 
 ---
 
@@ -1729,10 +1729,16 @@ EOF
 | Function | Trigger | Purpose |
 |----------|---------|---------|
 | `submitDemoRequest` | HTTP | Handle demo request form submission |
+| `submitHostedDemoRequest` | HTTP | Handle hosted demo requests (bar profiles without websites) |
+| `submitPreIntakeContact` | HTTP | Handle contact form submissions |
+| `verifyDemoEmail` | HTTP | Verify email before demo starts |
 | `analyzePreIntakeLead` | Firestore onCreate | Analyze website, trigger deep research |
+| `analyzeAfterEmailVerification` | Firestore onUpdate | Trigger analysis after email verified |
 | `generatePreIntakeDemo` | Firestore onUpdate | Generate demo intake page |
 | `handleIntakeCompletion` | HTTP | Process completed intake, deliver lead |
+| `confirmPracticeAreas` | HTTP | Handle practice area confirmation from intake |
 | `getPreIntakeFirmStatus` | HTTP | Check subscription status for Demo/Live mode |
+| `trackDemoView` | HTTP | Track demo page visits and views |
 | `createCheckoutSession` | HTTP | Create Stripe checkout session |
 | `getStripeConfig` | HTTP | Return publishable key and pricing |
 | `stripeWebhook` | HTTP | Handle Stripe subscription events |
@@ -1740,6 +1746,7 @@ EOF
 | `serveDemo` | HTTP | Proxy demo HTML for CORS bypass |
 | `serveHostedIntake` | HTTP | Serve intake by bar number OR 6-digit short code |
 | `resendActivationEmail` | HTTP | Admin endpoint to resend activation emails |
+| `handlePreIntakeUnsubscribe` | HTTP | Handle email unsubscribe requests |
 | `getWidgetConfig` | HTTP | Return widget configuration |
 | `intakeChat` | HTTP | AI chat endpoint |
 | `sendAccountAccessLink` | HTTP | Send magic link email for account portal |
@@ -1753,8 +1760,13 @@ EOF
 | Endpoint | Method | Purpose |
 |----------|--------|---------|
 | `/submitDemoRequest` | POST | Submit demo request |
+| `/submitHostedDemoRequest` | POST | Submit hosted demo request (bar profiles) |
+| `/submitPreIntakeContact` | POST | Submit contact form |
+| `/verifyDemoEmail` | POST | Verify email before demo starts |
+| `/confirmPracticeAreas` | POST | Confirm practice area selection |
 | `/handleIntakeCompletion` | POST | Deliver completed intake |
 | `/getPreIntakeFirmStatus` | GET | Check firm subscription status |
+| `/trackDemoView` | GET | Track demo page visits and views |
 | `/createCheckoutSession` | POST | Create Stripe checkout |
 | `/getStripeConfig` | GET | Get Stripe public config |
 | `/stripeWebhook` | POST | Stripe webhook handler |
@@ -1763,6 +1775,7 @@ EOF
 | `/:intakeCode` | GET | Serve hosted intake by 6-digit short code (via serveHostedIntake) |
 | `/intake/:barNumber` | GET | Serve hosted intake by bar number (via serveHostedIntake) |
 | `/resendActivationEmail` | GET | Admin: resend activation email |
+| `/handlePreIntakeUnsubscribe` | GET | Handle email unsubscribe |
 | `/sendAccountAccessLink` | POST | Send magic link email for account portal |
 | `/verifyAccountToken` | GET | Verify magic link, return account data |
 | `/updateAccountSettings` | POST | Update account settings |
@@ -1773,13 +1786,12 @@ EOF
 
 | Collection | Purpose |
 |------------|---------|
-| `preintake_leads` | Lead records with status, analysis, delivery config |
+| `preintake_leads` | Lead records with status, analysis, delivery config (includes `intakeCode` field for short URLs) |
 | `preintake_emails` | Attorney contacts for email campaigns (scraped from bar associations) |
-| `preintake_intake_codes` | Short code → leadId lookup table |
 | `intake_dedup` | Deduplication records (leadId_email_phone) |
-| `preintake_rate_limits` | IP rate limiting records |
 | `account_tokens` | Magic link tokens for account portal authentication |
 | `account_portal_rate_limits` | Rate limiting for magic link requests |
+| `account_deletion_logs` | Audit log for account deletion requests |
 | `scraper_progress/*` | Per-scraper progress tracking (practice areas completed, counts) |
 
 ### Firebase Storage
