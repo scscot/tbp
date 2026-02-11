@@ -707,20 +707,19 @@ When you're spending $300-500 per lead, even small conversion improvements mean 
   - Cloud Function: `handlePreIntakeUnsubscribe` (updates Firestore status)
   - Unsubscribe page: `preintake.ai/unsubscribe.html`
   - Email footer includes personalized unsubscribe link
-- [x] **SPF Authentication** - Fixed email deliverability
-  - Added `include:relay.mailchannels.net` to SPF TXT record for legal.preintake.ai
-  - Dreamhost routes through MailChannels relay servers
-  - All three checks passing: SPF, DKIM, DMARC
+- [x] **Email Deliverability** - Using Mailgun for law.preintake.ai
+  - SPF, DKIM, DMARC configured via Mailgun DNS records
+  - All authentication checks passing
 - [x] **GitHub Secrets Configured**
-  - `PREINTAKE_SMTP_USER`: scott@legal.preintake.ai
-  - `PREINTAKE_SMTP_PASS`: Dreamhost SMTP password
+  - `MAILGUN_API_KEY`: Mailgun API key for law.preintake.ai domain
+  - `FIREBASE_SERVICE_ACCOUNT`: For Firestore access
 
-**Email Template (v4-generic):**
-- Subject: "A smarter way to screen intake inquiries before staff review"
-- From: Stephen Scott <scott@legal.preintake.ai>
+**Email Templates:**
+- From: Stephen Scott <stephen@law.preintake.ai>
+- **Bar profile contacts**: Subject "I built you a personalized intake demo" (v7-bar-profile-demo)
+- **Website contacts**: Subject "Pre-screen every inquiry before it reaches your team" (v6-personalized-demo)
 - Personalization: `${firmName}` in pre-CTA paragraph
-- CTA: "Generate a Demo" → preintake.ai with UTM tracking
-- Preview text: "How law firms reduce unqualified consultations without hiring more staff."
+- CTA: "View Your Demo" → preintake.ai/demo with UTM tracking
 
 **Firestore Collection:** `preintake_emails` (in `preintake` database)
 | Field | Description |
