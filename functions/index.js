@@ -139,6 +139,14 @@ const {
 } = require('./email-campaign-contacts');
 
 // ==============================
+// Import Email Campaign for Purchased Leads
+// ==============================
+const {
+  sendPurchasedLeadsCampaign,
+  getPurchasedLeadsAnalytics,
+} = require('./email-campaign-purchased');
+
+// ==============================
 // Import Email Tracking Functions (SMTP Migration)
 // ==============================
 const {
@@ -389,6 +397,10 @@ module.exports = {
   // Email campaign for direct sales contacts (scheduled)
   sendHourlyContactsCampaign,
   syncContactsMailgunEvents,
+
+  // Email campaign for purchased leads (scheduled)
+  sendPurchasedLeadsCampaign,
+  getPurchasedLeadsAnalytics,
 
   // Email tracking endpoints (SMTP migration)
   trackEmailOpen,

@@ -14,7 +14,7 @@ Disallow: /faq-test.html
 Disallow: /claim-google.html
 Disallow: /unsubscribe.html
 
-# Block legacy landing pages
+# Block audience-specific landing pages (accessed via ?new= and ?ref= links)
 Disallow: /professionals.html
 Disallow: /prospects.html
 

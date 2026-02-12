@@ -259,10 +259,12 @@ The world's first AI-powered platform that lets **prospects pre-build their team
 - Helper vs Trigger modes (environment variable controlled)
 
 **4. Referral System**
-- All referral handling consolidated on `index.html` (no separate prospect/professional pages)
-- `?new=ABC` = Prospect view: "Invited by" bar, hides professionals section, TBP_Prospects.mp4 video
-- `?ref=ABC` = Professional view: "Recommended by" bar, full page content, TBP_Professionals.mp4 video
-- No params = Default view: full page content, TBP_Professionals.mp4 video
+- **Dedicated landing pages**: `prospects.html` and `professionals.html` exist in all 4 languages
+  - These pages are blocked from search indexing via robots.txt (NOT in sitemaps)
+  - NEVER delete these files - they are critical for referral flows
+- `?new=ABC` = Prospect view: Routes to prospects.html or index.html with prospect-specific content
+- `?ref=ABC` = Professional view: Routes to professionals.html or index.html with professional-specific content
+- `index.html` also handles both views dynamically when accessed with query params
 - Referral codes map to Firebase UIDs via `referralCodes` collection
 - Language-specific domains: es.teambuildpro.com (Spanish), pt.teambuildpro.com (Portuguese), de.teambuildpro.com (German)
 - Share screen uses language selection to route to appropriate domain
@@ -776,6 +778,13 @@ Automated 4-stage pipeline that discovers direct sales distributor URLs, scrapes
    - Redirect rules like `/faq` → `/faq.html` are intentional for SEO
    - Changing this setting breaks the entire website with "too many redirects" errors
 
+8. **NEVER delete prospects.html or professionals.html**
+   - These are critical landing pages for referral flows (exist in all 4 languages: EN, ES, PT, DE)
+   - They are intentionally blocked from search indexing via robots.txt
+   - They must NEVER be added to sitemap.xml files
+   - They must NEVER be removed from robots.txt Disallow rules
+   - Deleting these files causes 404 errors that negatively impact Google Search Console
+
 ---
 
 ## 🎓 Learning Resources
@@ -910,11 +919,11 @@ Automated 4-stage pipeline that discovers direct sales distributor URLs, scrapes
 - ✅ **PreIntake.ai Workflows**: Bar scrapers + email campaign + analytics (see `preintake/CLAUDE.md`)
 
 **Website Enhancements**
-- ✅ **Prospect/Referral Page Consolidation** (Feb 6, 2026): All user types now handled on `index.html`
-  - Deleted: `prospects.html` and `professionals.html` (all 4 languages)
-  - `?new=` users: "Invited by" bar, hidden professionals section, TBP_Prospects.mp4, prospect headline
-  - `?ref=` users: "Recommended by" bar, full page content, TBP_Professionals.mp4
-  - Updated `components.js` logo links to route `?new=` to `/?new=` instead of `/prospects.html?new=`
+- ✅ **Prospect/Professional Pages Restored** (Feb 12, 2026): Critical landing pages restored after GSC 404 errors
+  - `prospects.html` and `professionals.html` restored in all 4 languages (EN, ES, PT, DE)
+  - These pages are blocked from indexing via robots.txt (intentional - not for SEO)
+  - Must NEVER be deleted or added to sitemaps
+  - `index.html` also handles `?new=` and `?ref=` dynamically as fallback
 - ✅ **Referral Tracking**: Cross-page tracking with sessionStorage, invite bar on all pages
 - ✅ **Testimonial Section**: 5-star review from "Arya N." on all homepage variants
 - ✅ **App Store URLs Standardized**: Simplified format `apps.apple.com/us/app/id6751211622` across 328 files
