@@ -690,6 +690,11 @@
             color: #155724;
         }
 
+        .campaign-label.purchased {
+            background: #fff3cd;
+            color: #856404;
+        }
+
         .source-label {
             display: inline-block;
             font-size: 0.7rem;
@@ -1299,6 +1304,9 @@
                     <div class="campaign-tab" onclick="switchEmailTab('contacts')">
                         Contacts Campaign <span class="tab-badge" id="emailContactsTabBadge">-</span>
                     </div>
+                    <div class="campaign-tab" onclick="switchEmailTab('purchased')">
+                        Purchased Leads <span class="tab-badge" id="emailPurchasedTabBadge">-</span>
+                    </div>
                 </div>
 
                 <!-- Main Campaign Sub-Tab Content -->
@@ -1478,6 +1486,95 @@
                     </div>
                 </div>
 
+                <!-- Purchased Leads Sub-Tab Content -->
+                <div id="emailPurchasedTab" class="campaign-content">
+                    <!-- Campaign Progress -->
+                    <h2 class="section-title">Campaign Progress <span class="campaign-label purchased">Purchased</span></h2>
+                    <div class="section-card" style="margin-bottom: 30px;">
+                        <h3>Overall Send Progress</h3>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar" id="emailPurchasedProgressBar" style="width: 0%;">0%</div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+                            <span><strong id="emailPurchasedTotalSent">0</strong> sent</span>
+                            <span><strong id="emailPurchasedTotalRemaining">0</strong> remaining</span>
+                            <span><strong id="emailPurchasedTotalContacts">0</strong> total</span>
+                        </div>
+                    </div>
+
+                    <!-- Sending Activity -->
+                    <h2 class="section-title">Sending Activity</h2>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <h3>Sent Today</h3>
+                            <div class="stat-value green" id="emailPurchasedSentToday">-</div>
+                            <div class="stat-label">Since midnight PT</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Sent (24h)</h3>
+                            <div class="stat-value" id="emailPurchasedSent24h">-</div>
+                            <div class="stat-label">Last 24 hours</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Failed</h3>
+                            <div class="stat-value red" id="emailPurchasedFailed">-</div>
+                            <div class="stat-label">Delivery failures (all time)</div>
+                        </div>
+                    </div>
+
+                    <!-- Click Performance -->
+                    <h2 class="section-title">Click Performance <span class="source-label">Firestore</span></h2>
+                    <div class="stats-grid">
+                        <div class="stat-card success">
+                            <h3>Total Clicks</h3>
+                            <div class="stat-value green" id="emailPurchasedTotalClicked">-</div>
+                            <div class="stat-label">Unique contacts who clicked</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Click Rate</h3>
+                            <div class="stat-value" id="emailPurchasedClickRate">-</div>
+                            <div class="stat-label">Clicked / Sent</div>
+                        </div>
+                    </div>
+
+                    <!-- A/B Test Performance -->
+                    <h2 class="section-title">A/B Test Performance <span class="source-label">Firestore</span></h2>
+                    <div class="section-card">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Subject Line</th>
+                                    <th>Sent</th>
+                                    <th>Clicked</th>
+                                    <th>Click Rate</th>
+                                </tr>
+                            </thead>
+                            <tbody id="emailPurchasedAbTestBody">
+                                <tr><td colspan="4" class="no-data-message">Loading...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Recent Sends (includes Company column) -->
+                    <h2 class="section-title">Recent Sends</h2>
+                    <div class="section-card">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Time (PT)</th>
+                                    <th>Email</th>
+                                    <th>Company</th>
+                                    <th>Variant</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="emailPurchasedRecentSendsBody">
+                                <tr><td colspan="5" class="no-data-message">Loading...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
                 <!-- GA4 Email Campaign Traffic (shared between both) -->
                 <div class="section-card" id="emailGa4TrafficDetailed" style="margin-top: 30px;">
                     <h3>Website Traffic from Email <span class="source-label">GA4 &middot; Last 24 Hours</span></h3>
@@ -1508,7 +1605,13 @@
             'mobile_first_v5': 'V5: "Using AI to Build Your Direct Sales Team"',
             'mobile_first_v6': 'V6: "Using AI to Build Your Direct Sales Team"',
             'mobile_first_v7': 'V7: "The future of direct sales is here"',
-            'mobile_first_v8': 'V8: "Not an opportunity. Just a tool."'
+            'mobile_first_v8': 'V8: "Not an opportunity. Just a tool."',
+            'purchased_v7': 'V7: "The future of direct sales is here"',
+            'purchased_v8': 'V8: "Not an opportunity. Just a tool."',
+            'purchased_v9a': 'V9: "Not an opportunity. Just a tool."',
+            'purchased_v9b': 'V9: "AI is changing how teams grow"',
+            'purchased_v10a': 'V10: "Not an opportunity. Just a tool."',
+            'purchased_v10b': 'V10: "AI is changing how teams grow"'
         };
 
         // Authentication
@@ -1973,6 +2076,7 @@
                 // No email stats data available
                 document.getElementById('emailMainTabBadge').textContent = '-';
                 document.getElementById('emailContactsTabBadge').textContent = '-';
+                document.getElementById('emailPurchasedTabBadge').textContent = '-';
                 return;
             }
 
@@ -2130,6 +2234,88 @@
                 } else {
                     contactsTbody.innerHTML = '<tr><td colspan="5" class="no-data-message">No recent sends</td></tr>';
                 }
+            }
+
+            // ==================== PURCHASED LEADS CAMPAIGN ====================
+            if (emailStatsData.purchasedCampaign) {
+                const pc = emailStatsData.purchasedCampaign;
+
+                // Campaign progress
+                const pcTotal = pc.campaign?.total || 1;
+                const pcSent = pc.campaign?.sent || 0;
+                const pcProgress = (pcSent / pcTotal * 100);
+
+                document.getElementById('emailPurchasedProgressBar').style.width = pcProgress + '%';
+                document.getElementById('emailPurchasedProgressBar').textContent = pcProgress.toFixed(1) + '%';
+                document.getElementById('emailPurchasedTotalSent').textContent = formatNumber(pcSent);
+                document.getElementById('emailPurchasedTotalRemaining').textContent = formatNumber(pc.campaign?.remaining || 0);
+                document.getElementById('emailPurchasedTotalContacts').textContent = formatNumber(pc.campaign?.total || 0);
+
+                // Sending activity
+                document.getElementById('emailPurchasedSentToday').textContent = formatNumber(pc.today?.sent || 0);
+                document.getElementById('emailPurchasedSent24h').textContent = formatNumber(pc.last24h?.sent || 0);
+
+                // Click performance
+                if (pc.tracking) {
+                    document.getElementById('emailPurchasedFailed').textContent = formatNumber(pc.tracking.failed || 0);
+                    document.getElementById('emailPurchasedTotalClicked').textContent = formatNumber(pc.tracking.clicked || 0);
+                    document.getElementById('emailPurchasedClickRate').textContent = pc.tracking.clickRate || '0%';
+                }
+
+                // A/B test performance
+                const purchasedAbBody = document.getElementById('emailPurchasedAbTestBody');
+                const purchasedSubjectLines = (pc.subjectLines || []).filter(sl =>
+                    sl.subjectTag === 'purchased_v10a' || sl.subjectTag === 'purchased_v10b' ||
+                    sl.subjectTag === 'purchased_v9a' || sl.subjectTag === 'purchased_v9b' ||
+                    sl.subjectTag === 'purchased_v7' || sl.subjectTag === 'purchased_v8'
+                );
+                if (purchasedSubjectLines.length > 0) {
+                    const sorted = [...purchasedSubjectLines].sort((a, b) => {
+                        return parseFloat(b.clickRate) - parseFloat(a.clickRate);
+                    });
+                    const winnerTag = sorted[0].subjectTag;
+
+                    purchasedAbBody.innerHTML = purchasedSubjectLines.map(sl => {
+                        const label = SUBJECT_LABELS[sl.subjectTag] || sl.subjectTag;
+                        const isWinner = sl.subjectTag === winnerTag && purchasedSubjectLines.length > 1;
+                        const badgeClass = getBadgeClass(sl.subjectTag);
+                        return `
+                            <tr class="${isWinner ? 'ab-winner' : ''}">
+                                <td>${escapeHtml(label)} ${isWinner ? '<span class="badge badge-clicked">LEADING</span>' : ''}</td>
+                                <td>${formatNumber(sl.sent)}</td>
+                                <td>${formatNumber(sl.clicked)}</td>
+                                <td><span class="badge ${badgeClass}">${sl.clickRate}</span></td>
+                            </tr>
+                        `;
+                    }).join('');
+                } else {
+                    purchasedAbBody.innerHTML = '<tr><td colspan="4" class="no-data-message">No A/B test data</td></tr>';
+                }
+
+                // Recent sends (includes company column)
+                const purchasedTbody = document.getElementById('emailPurchasedRecentSendsBody');
+                if (pc.recentSends && pc.recentSends.length > 0) {
+                    purchasedTbody.innerHTML = pc.recentSends.map(send => {
+                        const variantBadge = getVariantBadge(send.subjectTag);
+                        const statusBadge = send.clicked
+                            ? '<span class="badge badge-clicked">Clicked</span>'
+                            : '<span class="badge badge-sent">Sent</span>';
+                        return `
+                            <tr>
+                                <td>${escapeHtml(send.time || '')}</td>
+                                <td>${escapeHtml(send.email || '')}</td>
+                                <td>${escapeHtml(send.company || '-')}</td>
+                                <td>${variantBadge}</td>
+                                <td>${statusBadge}</td>
+                            </tr>
+                        `;
+                    }).join('');
+                } else {
+                    purchasedTbody.innerHTML = '<tr><td colspan="5" class="no-data-message">No recent sends</td></tr>';
+                }
+
+                // Update tab badge
+                document.getElementById('emailPurchasedTabBadge').textContent = formatNumber(pcSent) + ' sent';
             }
 
             // ==================== GA4 EMAIL TRAFFIC ====================

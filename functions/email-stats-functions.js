@@ -15,6 +15,7 @@ const ga4ServiceAccount = defineSecret('GA4_SERVICE_ACCOUNT');
 // Constants
 const MAIN_CAMPAIGN_COLLECTION = 'emailCampaigns/master/contacts';
 const CONTACTS_CAMPAIGN_COLLECTION = 'direct_sales_contacts';
+const PURCHASED_CAMPAIGN_COLLECTION = 'purchased_leads';
 const MONITORING_PASSWORD = process.env.MONITORING_PASSWORD || 'TeamBuildPro2024!';
 const GA4_PROPERTY_ID = '485651473';
 
@@ -300,10 +301,11 @@ const getEmailCampaignStats = onRequest({
     // Convert back to UTC for Firestore query
     const startOfTodayUTC = new Date(startOfTodayPT.getTime() - (ptOffset + now.getTimezoneOffset()) * 60 * 1000);
 
-    // Fetch stats for both campaigns in parallel
-    const [mainCampaignStats, contactsCampaignStats] = await Promise.all([
+    // Fetch stats for all campaigns in parallel
+    const [mainCampaignStats, contactsCampaignStats, purchasedCampaignStats] = await Promise.all([
       fetchCampaignStats(MAIN_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC),
-      fetchCampaignStats(CONTACTS_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC, { isContactsCampaign: true })
+      fetchCampaignStats(CONTACTS_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC, { isContactsCampaign: true }),
+      fetchCampaignStats(PURCHASED_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC, { isPurchasedCampaign: true })
     ]);
 
     // Get GA4 stats (shared across campaigns)
@@ -328,7 +330,7 @@ const getEmailCampaignStats = onRequest({
       subjectLines: mainCampaignStats.subjectLines,
       recentSends: mainCampaignStats.recentSends,
 
-      // Contacts campaign data (new)
+      // Contacts campaign data
       contactsCampaign: {
         campaign: contactsCampaignStats.campaign,
         last24h: contactsCampaignStats.last24h,
@@ -336,6 +338,16 @@ const getEmailCampaignStats = onRequest({
         tracking: contactsCampaignStats.tracking,
         subjectLines: contactsCampaignStats.subjectLines,
         recentSends: contactsCampaignStats.recentSends
+      },
+
+      // Purchased leads campaign data
+      purchasedCampaign: {
+        campaign: purchasedCampaignStats.campaign,
+        last24h: purchasedCampaignStats.last24h,
+        today: purchasedCampaignStats.today,
+        tracking: purchasedCampaignStats.tracking,
+        subjectLines: purchasedCampaignStats.subjectLines,
+        recentSends: purchasedCampaignStats.recentSends
       },
 
       // GA4 stats (shared)

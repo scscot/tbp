@@ -30,23 +30,35 @@ const SEND_DELAY_MS = 1000;
 const TRACKING_BASE_URL = 'https://us-central1-teambuilder-plus-fe74d.cloudfunctions.net';
 const LANDING_PAGE_URL = 'https://teambuildpro.com';
 
-// A/B Test Variants (same as main campaign)
+// A/B Test Variants - V9 vs V10 template with subject line testing (4 combinations)
 const AB_TEST_VARIANTS = {
-  v7: {
-    templateVersion: 'v7',
-    subject: 'The future of direct sales is here',
-    subjectTag: 'purchased_v7',
-    description: 'Pattern interrupt - future-focused positioning'
-  },
-  v8: {
-    templateVersion: 'v8',
+  v9a: {
+    templateVersion: 'v9',
     subject: 'Not an opportunity. Just a tool.',
-    subjectTag: 'purchased_v8',
-    description: 'Direct value proposition - tool focus'
+    subjectTag: 'purchased_v9a',
+    description: 'V9 (no bullets) + Pattern interrupt'
+  },
+  v9b: {
+    templateVersion: 'v9',
+    subject: 'AI is changing how teams grow',
+    subjectTag: 'purchased_v9b',
+    description: 'V9 (no bullets) + AI curiosity'
+  },
+  v10a: {
+    templateVersion: 'v10',
+    subject: 'Not an opportunity. Just a tool.',
+    subjectTag: 'purchased_v10a',
+    description: 'V10 (with bullets) + Pattern interrupt'
+  },
+  v10b: {
+    templateVersion: 'v10',
+    subject: 'AI is changing how teams grow',
+    subjectTag: 'purchased_v10b',
+    description: 'V10 (with bullets) + AI curiosity'
   }
 };
 
-const ACTIVE_VARIANTS = ['v7', 'v8'];
+const ACTIVE_VARIANTS = ['v9a', 'v9b', 'v10a', 'v10b'];
 
 // =============================================================================
 // HELPER FUNCTIONS
