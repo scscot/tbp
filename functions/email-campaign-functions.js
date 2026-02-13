@@ -87,8 +87,8 @@ const CAMPAIGN_CONFIGS = {
     logPrefix: '📧',
     batchIdPrefix: 'mailgun_batch',
     sentField: 'sent',
-    utmCampaign: 'tbp_mailgun_campaign',
-    campaignTag: 'tbp_campaign'
+    utmCampaign: 'tbp_outreach_feb',
+    campaignTag: 'new_campaign'
   }
 };
 
