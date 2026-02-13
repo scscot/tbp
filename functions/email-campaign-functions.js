@@ -2,15 +2,18 @@
  * Team Build Pro Email Campaign Functions (Mailgun Templates Version)
  *
  * Scheduled email campaigns using Mailgun API with template versioning.
- * A/B tests between active template versions with paired subject lines.
+ * A/B tests between template versions and subject lines (4 combinations).
  *
  * Templates stored in Mailgun under 'mailer' template:
- * - v3: "This isn't another opportunity email" (legacy)
- * - v4: "Not an opportunity. Just a tool." (legacy)
- * - v5: "Using AI to Build Your Direct Sales Team" (legacy)
- * - v6: "Using AI to Build Your Direct Sales Team" (legacy)
- * - v7: "The future of direct sales is here" (active)
- * - v8: "Not an opportunity. Just a tool." (active)
+ * - v3-v8: Legacy versions (deprecated)
+ * - v9: Minimal version without bullet points (active)
+ * - v10: Version with specific value prop bullets (active)
+ *
+ * Current A/B Test (4-way):
+ * - v9a: V9 template + "Not an opportunity. Just a tool."
+ * - v9b: V9 template + "AI is changing how teams grow"
+ * - v10a: V10 template + "Not an opportunity. Just a tool."
+ * - v10b: V10 template + "AI is changing how teams grow"
  */
 
 const { onSchedule } = require("firebase-functions/v2/scheduler");
@@ -43,47 +46,36 @@ const LANDING_PAGE_URL = 'https://teambuildpro.com';
 // A/B TEST CONFIGURATIONS
 // =============================================================================
 
+// A/B Test Variants - V9 vs V10 template with subject line testing (4 combinations)
 const AB_TEST_VARIANTS = {
-  v3: {
-    templateVersion: 'v3',
-    subject: "This isn't another opportunity email",
-    subjectTag: 'mobile_first_v3',
-    description: 'Pattern interrupt - anti-pitch positioning (legacy)'
-  },
-  v4: {
-    templateVersion: 'v4',
+  v9a: {
+    templateVersion: 'v9',
     subject: 'Not an opportunity. Just a tool.',
-    subjectTag: 'mobile_first_v4',
-    description: 'Flip the script - confidence before joining (legacy)'
+    subjectTag: 'main_v9a',
+    description: 'V9 (no bullets) + Pattern interrupt'
   },
-  v5: {
-    templateVersion: 'v5',
-    subject: 'Using AI to Build Your Direct Sales Team',
-    subjectTag: 'mobile_first_v5',
-    description: 'AI focus - direct sales team building (legacy)'
+  v9b: {
+    templateVersion: 'v9',
+    subject: 'AI is changing how teams grow',
+    subjectTag: 'main_v9b',
+    description: 'V9 (no bullets) + AI curiosity'
   },
-  v6: {
-    templateVersion: 'v6',
-    subject: 'Using AI to Build Your Direct Sales Team',
-    subjectTag: 'mobile_first_v6',
-    description: 'AI focus - direct sales team building (legacy)'
-  },
-  v7: {
-    templateVersion: 'v7',
-    subject: 'The future of direct sales is here',
-    subjectTag: 'mobile_first_v7',
-    description: 'Pattern interrupt - future-focused positioning'
-  },
-  v8: {
-    templateVersion: 'v8',
+  v10a: {
+    templateVersion: 'v10',
     subject: 'Not an opportunity. Just a tool.',
-    subjectTag: 'mobile_first_v8',
-    description: 'Direct value proposition - tool focus'
+    subjectTag: 'main_v10a',
+    description: 'V10 (with bullets) + Pattern interrupt'
+  },
+  v10b: {
+    templateVersion: 'v10',
+    subject: 'AI is changing how teams grow',
+    subjectTag: 'main_v10b',
+    description: 'V10 (with bullets) + AI curiosity'
   }
 };
 
 // Active variants for A/B testing (rotate through these)
-const ACTIVE_VARIANTS = ['v7', 'v8'];
+const ACTIVE_VARIANTS = ['v9a', 'v9b', 'v10a', 'v10b'];
 
 // =============================================================================
 // CAMPAIGN CONFIGURATIONS

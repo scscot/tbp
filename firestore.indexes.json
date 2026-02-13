@@ -121,8 +121,7 @@
       "queryScope": "COLLECTION",
       "fields": [
         { "fieldPath": "sent", "order": "ASCENDING" },
-        { "fieldPath": "source", "order": "ASCENDING" },
-        { "fieldPath": "createdAt", "order": "ASCENDING" }
+        { "fieldPath": "randomIndex", "order": "ASCENDING" }
       ]
     },
     {

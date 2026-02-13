@@ -1600,18 +1600,25 @@
 
         // Subject line labels
         const SUBJECT_LABELS = {
+            // Main campaign (current: V9/V10 4-way A/B test)
+            'main_v9a': 'V9a: "Not an opportunity. Just a tool."',
+            'main_v9b': 'V9b: "AI is changing how teams grow"',
+            'main_v10a': 'V10a: "Not an opportunity. Just a tool."',
+            'main_v10b': 'V10b: "AI is changing how teams grow"',
+            // Main campaign (legacy)
             'mobile_first_v3': 'V3: "This isn\'t another opportunity email"',
             'mobile_first_v4': 'V4: "Not an opportunity. Just a tool."',
             'mobile_first_v5': 'V5: "Using AI to Build Your Direct Sales Team"',
             'mobile_first_v6': 'V6: "Using AI to Build Your Direct Sales Team"',
             'mobile_first_v7': 'V7: "The future of direct sales is here"',
             'mobile_first_v8': 'V8: "Not an opportunity. Just a tool."',
+            // Purchased leads campaign
             'purchased_v7': 'V7: "The future of direct sales is here"',
             'purchased_v8': 'V8: "Not an opportunity. Just a tool."',
-            'purchased_v9a': 'V9: "Not an opportunity. Just a tool."',
-            'purchased_v9b': 'V9: "AI is changing how teams grow"',
-            'purchased_v10a': 'V10: "Not an opportunity. Just a tool."',
-            'purchased_v10b': 'V10: "AI is changing how teams grow"'
+            'purchased_v9a': 'V9a: "Not an opportunity. Just a tool."',
+            'purchased_v9b': 'V9b: "AI is changing how teams grow"',
+            'purchased_v10a': 'V10a: "Not an opportunity. Just a tool."',
+            'purchased_v10b': 'V10b: "AI is changing how teams grow"'
         };
 
         // Authentication
@@ -1985,8 +1992,10 @@
                 document.getElementById('emailClickRate').textContent = emailStats.clickRate || '0%';
                 document.getElementById('emailProgress').textContent = `of ${formatNumber(emailStats.total || 0)} total`;
 
-                // A/B Test Results
+                // A/B Test Results (current V9/V10 4-way test + legacy V7/V8)
                 const subjectLines = (emailStats.subjectLines || []).filter(s =>
+                    s.subjectTag === 'main_v9a' || s.subjectTag === 'main_v9b' ||
+                    s.subjectTag === 'main_v10a' || s.subjectTag === 'main_v10b' ||
                     s.subjectTag === 'mobile_first_v7' || s.subjectTag === 'mobile_first_v8'
                 );
                 const abTestBody = document.getElementById('emailAbTestBody');
@@ -2110,9 +2119,11 @@
                 document.getElementById('emailMainClickRate').textContent = emailStatsData.tracking.clickRate || '0%';
             }
 
-            // A/B test performance
+            // A/B test performance (current V9/V10 4-way test + legacy V7/V8)
             const abBody = document.getElementById('emailMainAbTestBody');
             const mainSubjectLines = (emailStatsData.subjectLines || []).filter(sl =>
+                sl.subjectTag === 'main_v9a' || sl.subjectTag === 'main_v9b' ||
+                sl.subjectTag === 'main_v10a' || sl.subjectTag === 'main_v10b' ||
                 sl.subjectTag === 'mobile_first_v7' || sl.subjectTag === 'mobile_first_v8'
             );
             if (mainSubjectLines.length > 0) {

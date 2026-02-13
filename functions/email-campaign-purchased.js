@@ -276,11 +276,10 @@ const sendPurchasedLeadsCampaign = onSchedule({
     const batchId = `purchased_batch_${Date.now()}`;
     const leadsRef = db.collection('purchased_leads');
 
-    // Get unsent leads, ordered by source to distribute evenly
+    // Get unsent leads, ordered by randomIndex for even A/B distribution
     const unsentSnapshot = await leadsRef
       .where('sent', '==', false)
-      .orderBy('source')
-      .orderBy('createdAt')
+      .orderBy('randomIndex')
       .limit(batchSize)
       .get();
 

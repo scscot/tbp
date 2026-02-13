@@ -489,7 +489,7 @@ All four main sites have identical structure:
 - **Data sources**: Firestore (`emailCampaigns/master/contacts`) + GA4 (filtered by `sessionMedium: 'email'`)
 - **Tracking**: Click tracking via `trackEmailClick` Cloud Function; open tracking disabled for deliverability
 - **Metrics**: Campaign progress (sent/remaining/failed), click tracking, A/B test subject line breakdown
-- **A/B test tags**: `mobile_first_v7` (V7) and `mobile_first_v8` (V8); legacy tags `mobile_first_v3`, `mobile_first_v4`, `not_opportunity`, `prebuild_advantage` supported for historical data
+- **A/B test tags**: Main campaign: `main_v9a`, `main_v9b`, `main_v10a`, `main_v10b` (4-way V9/V10 test); Contacts: `mobile_first_v7`, `mobile_first_v8`; legacy tags supported for historical data
 - Backend: `getEmailCampaignStats` Cloud Function
 
 ### Core Analytics Scripts
@@ -577,13 +577,17 @@ The email campaign system consists of two parallel campaigns targeting different
 **Email Configuration:**
 - **Sending Domain**: `news.teambuildpro.com`
 - **From**: `Stephen Scott <stephen@news.teambuildpro.com>`
-- **Template**: Mailgun-hosted 'mailer' template with v1-v8 versions (personal note style)
-- **Subject A/B Test**: V7/V8 active (`mobile_first_v7` / `mobile_first_v8`)
-  - V7: "The future of direct sales is here"
-  - V8: "Not an opportunity. Just a tool."
+- **Template**: Mailgun-hosted 'mailer' template with v1-v10 versions (personal note style)
+- **Main Campaign A/B Test** (4-way): V9/V10 templates × 2 subject lines
+  - V9a: V9 template + "Not an opportunity. Just a tool."
+  - V9b: V9 template + "AI is changing how teams grow"
+  - V10a: V10 template + "Not an opportunity. Just a tool."
+  - V10b: V10 template + "AI is changing how teams grow"
+  - Tags: `main_v9a`, `main_v9b`, `main_v10a`, `main_v10b`
+- **Contacts Campaign A/B Test**: V7/V8 (legacy - `mobile_first_v7` / `mobile_first_v8`)
 - **Tracking**: Click tracking via `trackEmailClick` Cloud Function endpoint; open tracking disabled (pixel removed for deliverability)
 - **DNS**: SPF + DKIM + DMARC configured for 10/10 mail-tester.com score
-- **SMTP Credentials**: `functions/.env.teambuilder-plus-fe74d` (TBP_SMTP_* variables)
+- **Mailgun Credentials**: `functions/.env.teambuilder-plus-fe74d` (TBP_MAILGUN_* variables)
 
 ### Main Campaign (Mailgun API - Automated)
 - **Function**: `sendHourlyEmailCampaign` in `functions/email-campaign-functions.js`
@@ -601,9 +605,9 @@ The email campaign system consists of two parallel campaigns targeting different
 - **Data Source**: Firestore `direct_sales_contacts` collection
 - **Control Variable**: CONTACTS_CAMPAIGN_ENABLED (separate from Main)
 - **Batch Size**: Dynamic via Firestore `config/emailCampaign.batchSize` (shares with Main)
-- **Subject**: V7/V8 A/B test (same as Main Campaign)
+- **Subject**: V7/V8 A/B test (legacy `mobile_first_v7` / `mobile_first_v8`)
 - **Template Variables**: `first_name`, `company`, `tracked_cta_url`, `unsubscribe_url`
-- **A/B Test**: v7/v8 template rotation
+- **A/B Test**: v7/v8 template rotation (legacy)
 
 ### Yahoo Campaign (REMOVED - Jan 2026)
 - **Status**: REMOVED - File and function deleted
@@ -639,7 +643,7 @@ The email campaign system consists of two parallel campaigns targeting different
 - **Click Tracking**: Firestore `clickedAt` timestamp via `trackEmailClick` Cloud Function endpoint
 - **Open Tracking**: Disabled (tracking pixel removed for deliverability)
 - **GA4 Campaign Traffic**: Filtered by `sessionMedium: 'email'` (UTM parameters in email links)
-- **A/B Test Breakdown**: By `subjectTag` field (`mobile_first_v3`, `mobile_first_v4`); legacy tags (`not_opportunity`, `prebuild_advantage`) supported
+- **A/B Test Breakdown**: By `subjectTag` field - Main: `main_v9a`, `main_v9b`, `main_v10a`, `main_v10b`; Contacts: `mobile_first_v7`, `mobile_first_v8`
 - **Dashboards**: `email-stats.html` (email-focused) and `TBP-analytics.html` (unified analytics)
 
 ### Android Launch Campaign (REMOVED - Jan 2026)
@@ -872,13 +876,18 @@ Automated 4-stage pipeline that discovers direct sales distributor URLs, scrapes
   - Sending domain: `news.teambuildpro.com` with 10/10 mail-tester.com score (SPF/DKIM/DMARC configured)
   - Open tracking disabled for deliverability; click tracking via Firestore `trackEmailClick` endpoint
   - SMTP sender utility (`email-smtp-sender.js`) exists but is used only for blog notifications, not campaigns
-- ✅ **A/B Testing Active**: V7/V8 strict alternation with `mobile_first_v7`/`mobile_first_v8` tags
-  - V7: "The future of direct sales is here"
-  - V8: "Not an opportunity. Just a tool."
+- ✅ **A/B Testing Active**: Main campaign uses 4-way V9/V10 test (Feb 12, 2026)
+  - V9a: V9 template + "Not an opportunity. Just a tool." (`main_v9a`)
+  - V9b: V9 template + "AI is changing how teams grow" (`main_v9b`)
+  - V10a: V10 template + "Not an opportunity. Just a tool." (`main_v10a`)
+  - V10b: V10 template + "AI is changing how teams grow" (`main_v10b`)
+  - Contacts campaign still uses V7/V8 (`mobile_first_v7`/`mobile_first_v8`)
 - ✅ **A/B Test Template Update** (Feb 11, 2026): Migrated from v3/v4 to v7/v8 Mailgun templates
   - Simplified HTML template with text link CTA (improved inbox placement vs Promotions/Spam)
   - Fixed From address typo in templates v4-v8 (was missing "t" in teambuildpro)
-  - Dashboards updated to track V7/V8 subject lines
+- ✅ **4-Way A/B Test Deployed** (Feb 12, 2026): Main campaign upgraded to V9/V10 × 2 subject lines
+  - Matches purchased leads campaign A/B test configuration
+  - Dashboards updated to track new `main_v9a/v9b/v10a/v10b` subject lines
 - ✅ **Yahoo Campaign Removed** (Jan 31, 2026): File and function deleted
 - ✅ **Android Launch Campaign Removed** (Jan 31, 2026): Function deleted from `email-campaign-functions.js`
 - ✅ **Contacts Campaign Added** (Jan 31, 2026): New campaign targeting `direct_sales_contacts` collection with company-specific subject lines
@@ -966,7 +975,7 @@ Active development paused to allow automated systems to run and collect meaningf
 | Main Campaign | Active | 8am, 11am, 2pm, 5pm PT (4 runs/day) |
 | Contacts Campaign | Active | 9am, 12pm, 3pm, 6pm PT (4 runs/day) |
 | Email Sending | Mailgun API | Via Mailgun, news.teambuildpro.com |
-| Email A/B Testing | Active | V7/V8 strict alternation (simplified HTML, text link CTA) |
+| Email A/B Testing | Active | Main: 4-way V9/V10 × 2 subjects; Contacts: V7/V8 |
 | Yahoo Campaign | Removed | File and function deleted (Jan 31) |
 | Android Campaign | Removed | Function and all references deleted |
 | Email Tracking | Firestore | Clicks via trackEmailClick; opens disabled |
