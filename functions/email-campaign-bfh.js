@@ -2,20 +2,25 @@
  * Team Build Pro Email Campaign for BFH (Business For Home) Contacts
  *
  * Sends emails to scraped bfh_contacts (distributors from Business For Home website).
- * Uses Mailgun API with template versioning.
+ * Uses Mailgun API with template versioning and AI personalization.
  *
  * Templates stored in Mailgun under 'mailer' template:
- * - v9: Minimal version without bullet points (active)
- * - v10: Version with specific value prop bullets (active)
+ * - v9: Minimal version without bullet points
+ * - v10: Version with specific value prop bullets
+ * - v11: V9 + personalized_intro support (AI personalization)
+ * - v12: V10 + personalized_intro support (AI personalization)
  *
- * Current A/B Test (4-way):
- * - v9a: V9 template + "Not an opportunity. Just a tool."
- * - v9b: V9 template + "AI is changing how teams grow"
- * - v10a: V10 template + "Not an opportunity. Just a tool."
- * - v10b: V10 template + "AI is changing how teams grow"
+ * Hybrid Send Strategy:
+ * - English contacts with AI personalization → V11/V12 with personalized_intro variable
+ * - Non-English contacts (ES/PT/DE) with AI personalization → Raw HTML email
+ * - Contacts without personalization → Standard V9/V10 templates
+ *
+ * Current A/B Test (4-way for non-personalized, 2-way for personalized):
+ * - v9a/v9b/v10a/v10b: Standard templates (no personalization)
+ * - v11a/v12a: Personalized templates (English only)
  *
  * Collection: bfh_contacts
- * Query: bfhScraped == true, email != null, sent == false
+ * Query: personalizationApproved == true OR (bfhScraped == true, email != null), sent == false
  * Schedule: 10am, 1pm, 4pm, 7pm PT (staggered from Main and Contacts campaigns)
  */
 
@@ -48,8 +53,8 @@ const LANDING_PAGE_URL = 'https://teambuildpro.com';
 // A/B TEST CONFIGURATIONS
 // =============================================================================
 
-// A/B Test Variants - V9 vs V10 template with subject line testing (4 combinations)
-const AB_TEST_VARIANTS = {
+// A/B Test Variants - Standard (no personalization)
+const STANDARD_VARIANTS = {
   v9a: {
     templateVersion: 'v9',
     subject: 'Not an opportunity. Just a tool.',
@@ -76,8 +81,37 @@ const AB_TEST_VARIANTS = {
   }
 };
 
-// Active variants for A/B testing (rotate through these)
-const ACTIVE_VARIANTS = ['v9a', 'v9b', 'v10a', 'v10b'];
+// A/B Test Variants - Personalized (English only)
+const PERSONALIZED_VARIANTS = {
+  v11a: {
+    templateVersion: 'v11',
+    subject: 'Not an opportunity. Just a tool.',
+    subjectTag: 'bfh_v11a_personalized',
+    description: 'V11 (personalized) + Pattern interrupt'
+  },
+  v12a: {
+    templateVersion: 'v12',
+    subject: 'Not an opportunity. Just a tool.',
+    subjectTag: 'bfh_v12a_personalized',
+    description: 'V12 (personalized) + Pattern interrupt'
+  }
+};
+
+// Active variants for A/B testing
+const ACTIVE_STANDARD_VARIANTS = ['v9a', 'v9b', 'v10a', 'v10b'];
+const ACTIVE_PERSONALIZED_VARIANTS = ['v11a', 'v12a'];
+
+// Language-specific CTA domains
+const CTA_DOMAINS = {
+  en: 'teambuildpro.com',
+  es: 'es.teambuildpro.com',
+  pt: 'pt.teambuildpro.com',
+  de: 'de.teambuildpro.com'
+};
+
+// For backwards compatibility
+const AB_TEST_VARIANTS = { ...STANDARD_VARIANTS, ...PERSONALIZED_VARIANTS };
+const ACTIVE_VARIANTS = ACTIVE_STANDARD_VARIANTS;
 
 // =============================================================================
 // CAMPAIGN CONFIGURATION
@@ -139,16 +173,18 @@ function buildClickUrl(trackingId, destinationUrl) {
 }
 
 /**
- * Build destination URL with UTM parameters
+ * Build destination URL with UTM parameters and language-specific domain
  */
-function buildLandingPageUrl(utmCampaign, utmContent) {
+function buildLandingPageUrl(utmCampaign, utmContent, language = 'en') {
+  const domain = CTA_DOMAINS[language] || CTA_DOMAINS.en;
+  const baseUrl = `https://${domain}`;
   const params = new URLSearchParams({
     utm_source: 'mailgun',
     utm_medium: 'email',
     utm_campaign: utmCampaign,
     utm_content: utmContent
   });
-  return `${LANDING_PAGE_URL}?${params.toString()}`;
+  return `${baseUrl}?${params.toString()}`;
 }
 
 // =============================================================================
@@ -156,9 +192,31 @@ function buildLandingPageUrl(utmCampaign, utmContent) {
 // =============================================================================
 
 /**
+ * Determine send strategy based on contact personalization status
+ */
+function determineSendStrategy(contact) {
+  const hasPersonalization = contact.personalizationApproved === true;
+  const language = contact.detectedLanguage || 'en';
+  const isEnglish = language === 'en';
+
+  if (hasPersonalization && isEnglish && contact.personalizedIntro) {
+    return { type: 'personalized_template', language };
+  } else if (hasPersonalization && !isEnglish && contact.personalizedHtml) {
+    return { type: 'raw_html', language };
+  } else {
+    return { type: 'standard_template', language };
+  }
+}
+
+/**
  * Send email via Mailgun API using templates with A/B testing
  *
- * @param {object} contact - Contact data { firstName, lastName, email }
+ * Supports three modes:
+ * 1. personalized_template: V11/V12 with personalized_intro variable (English)
+ * 2. raw_html: Full AI-generated HTML email (non-English)
+ * 3. standard_template: Standard V9/V10 templates (fallback)
+ *
+ * @param {object} contact - Contact data { firstName, lastName, email, ... }
  * @param {string} docId - Firestore document ID (used as tracking ID)
  * @param {object} config - Campaign configuration
  * @param {number} index - Batch index for strict A/B alternation
@@ -172,22 +230,92 @@ async function sendEmailViaMailgun(contact, docId, config, index) {
     throw new Error('TBP_MAILGUN_API_KEY not configured');
   }
 
-  // A/B Test: Strict alternation between active variants
-  const templateVariant = ACTIVE_VARIANTS[index % ACTIVE_VARIANTS.length];
-  const variant = AB_TEST_VARIANTS[templateVariant];
+  const strategy = determineSendStrategy(contact);
+  const language = strategy.language;
 
-  // Build tracking URLs
-  const landingPageUrl = buildLandingPageUrl(config.utmCampaign, variant.subjectTag);
-  const trackedCtaUrl = buildClickUrl(docId, landingPageUrl);
-  const unsubscribeUrl = `${LANDING_PAGE_URL}/unsubscribe.html?email=${encodeURIComponent(contact.email)}`;
+  // Build tracking URLs with language-specific domain
+  const ctaDomain = CTA_DOMAINS[language] || CTA_DOMAINS.en;
+  const unsubscribeUrl = `https://${ctaDomain}/unsubscribe.html?email=${encodeURIComponent(contact.email)}`;
 
   // Build form data for Mailgun API
   const form = new FormData();
   form.append('from', FROM_ADDRESS);
   form.append('to', `${contact.firstName} ${contact.lastName || ''} <${contact.email}>`);
-  form.append('subject', variant.subject);
-  form.append('template', TEMPLATE_NAME);
-  form.append('t:version', variant.templateVersion);
+
+  let templateVariant, variant, subjectTag;
+
+  if (strategy.type === 'personalized_template') {
+    // English with personalized_intro → V11/V12 template
+    templateVariant = ACTIVE_PERSONALIZED_VARIANTS[index % ACTIVE_PERSONALIZED_VARIANTS.length];
+    variant = PERSONALIZED_VARIANTS[templateVariant];
+    subjectTag = variant.subjectTag;
+
+    const landingPageUrl = buildLandingPageUrl(config.utmCampaign, subjectTag, language);
+    const trackedCtaUrl = buildClickUrl(docId, landingPageUrl);
+
+    form.append('subject', variant.subject);
+    form.append('template', TEMPLATE_NAME);
+    form.append('t:version', variant.templateVersion);
+
+    // Template variables with personalized_intro
+    const templateVars = {
+      first_name: contact.firstName,
+      personalized_intro: contact.personalizedIntro,
+      tracked_cta_url: trackedCtaUrl,
+      unsubscribe_url: unsubscribeUrl
+    };
+    form.append('h:X-Mailgun-Variables', JSON.stringify(templateVars));
+
+    console.log(`   Mode: PERSONALIZED | Template: ${templateVariant.toUpperCase()} | Lang: ${language.toUpperCase()}`);
+
+  } else if (strategy.type === 'raw_html') {
+    // Non-English with full HTML → Raw email send
+    templateVariant = `raw_${language}`;
+    subjectTag = `bfh_personalized_${language}`;
+
+    const landingPageUrl = buildLandingPageUrl(config.utmCampaign, subjectTag, language);
+    const trackedCtaUrl = buildClickUrl(docId, landingPageUrl);
+
+    // Replace placeholders in the HTML
+    let html = contact.personalizedHtml;
+    html = html.replace(/\{\{tracked_cta_url\}\}/g, trackedCtaUrl);
+    html = html.replace(/\{\{unsubscribe_url\}\}/g, unsubscribeUrl);
+    html = html.replace(/\{\{first_name\}\}/g, contact.firstName);
+
+    // Subject line in recipient's language
+    const localizedSubjects = {
+      es: 'Una herramienta para tu equipo, no una oportunidad.',
+      pt: 'Uma ferramenta para sua equipe, não uma oportunidade.',
+      de: 'Ein Werkzeug für Ihr Team, keine Gelegenheit.'
+    };
+    form.append('subject', localizedSubjects[language] || variant?.subject || 'Not an opportunity. Just a tool.');
+    form.append('html', html);
+
+    console.log(`   Mode: RAW HTML | Lang: ${language.toUpperCase()} | CTA: ${ctaDomain}`);
+
+  } else {
+    // Standard template (no personalization)
+    templateVariant = ACTIVE_STANDARD_VARIANTS[index % ACTIVE_STANDARD_VARIANTS.length];
+    variant = STANDARD_VARIANTS[templateVariant];
+    subjectTag = variant.subjectTag;
+
+    const landingPageUrl = buildLandingPageUrl(config.utmCampaign, subjectTag, language);
+    const trackedCtaUrl = buildClickUrl(docId, landingPageUrl);
+
+    form.append('subject', variant.subject);
+    form.append('template', TEMPLATE_NAME);
+    form.append('t:version', variant.templateVersion);
+
+    // Template variables
+    const templateVars = {
+      first_name: contact.firstName,
+      tracked_cta_url: trackedCtaUrl,
+      unsubscribe_url: unsubscribeUrl
+    };
+    form.append('h:X-Mailgun-Variables', JSON.stringify(templateVars));
+
+    console.log(`   Mode: STANDARD | Template: ${templateVariant.toUpperCase()} | Subject: "${variant.subject}"`);
+  }
 
   // Tracking disabled — using Firestore-based tracking via trackEmailClick Cloud Function
   form.append('o:tracking', 'no');
@@ -196,24 +324,15 @@ async function sendEmailViaMailgun(contact, docId, config, index) {
 
   // Tags for analytics
   form.append('o:tag', config.campaignTag);
-  form.append('o:tag', variant.templateVersion);
-  form.append('o:tag', variant.subjectTag);
+  form.append('o:tag', strategy.type);
+  form.append('o:tag', subjectTag);
+  form.append('o:tag', `lang_${language}`);
   form.append('o:tag', 'tracked');
 
   // List-Unsubscribe headers (required by Gmail for bulk senders)
   const unsubscribeEmail = 'unsubscribe@news.teambuildpro.com';
   form.append('h:List-Unsubscribe', `<mailto:${unsubscribeEmail}?subject=Unsubscribe>, <${unsubscribeUrl}>`);
   form.append('h:List-Unsubscribe-Post', 'List-Unsubscribe=One-Click');
-
-  // Template variables
-  const templateVars = {
-    first_name: contact.firstName,
-    tracked_cta_url: trackedCtaUrl,
-    unsubscribe_url: unsubscribeUrl
-  };
-  form.append('h:X-Mailgun-Variables', JSON.stringify(templateVars));
-
-  console.log(`   Template: ${templateVariant.toUpperCase()} | Subject: "${variant.subject}"`);
 
   // Send via Mailgun API
   const mailgunBaseUrl = `https://api.mailgun.net/v3/${domain}`;
@@ -228,8 +347,10 @@ async function sendEmailViaMailgun(contact, docId, config, index) {
     success: true,
     messageId: response.data.id,
     response: response.data.message,
-    subjectTag: variant.subjectTag,
-    templateVariant: templateVariant
+    subjectTag: subjectTag,
+    templateVariant: templateVariant,
+    sendStrategy: strategy.type,
+    language: language
   };
 }
 
@@ -262,32 +383,51 @@ async function processBfhCampaignBatch(batchSize) {
     const batchId = `${batchIdPrefix}_${Date.now()}`;
     const contactsRef = db.collection('bfh_contacts');
 
-    // Query: scraped contacts with email that haven't been sent
-    const unsentSnapshot = await contactsRef
-      .where('bfhScraped', '==', true)
-      .where('emailSearched', '==', true)
+    // Query strategy: Prioritize personalized contacts, then standard
+    // First, get approved personalized contacts
+    const personalizedSnapshot = await contactsRef
+      .where('personalizationApproved', '==', true)
       .where(sentField, '==', false)
-      .orderBy('randomIndex')
       .limit(batchSize)
       .get();
 
-    if (unsentSnapshot.empty) {
-      console.log(`✅ ${name}: No unsent emails found. Campaign complete!`);
-      return { status: 'complete', sent: 0 };
-    }
-
-    // Filter out contacts without email (can't do != null in compound query)
-    const docsWithEmail = unsentSnapshot.docs.filter(doc => {
+    let docsWithEmail = personalizedSnapshot.docs.filter(doc => {
       const data = doc.data();
       return data.email && data.email.trim() !== '';
     });
 
+    // If we have room, fill with non-personalized contacts
+    const remainingSlots = batchSize - docsWithEmail.length;
+    if (remainingSlots > 0) {
+      const standardSnapshot = await contactsRef
+        .where('bfhScraped', '==', true)
+        .where('emailSearched', '==', true)
+        .where(sentField, '==', false)
+        .orderBy('randomIndex')
+        .limit(remainingSlots * 2)  // Fetch extra to filter
+        .get();
+
+      // Filter: has email AND not already in personalized list
+      const personalizedIds = new Set(docsWithEmail.map(d => d.id));
+      const additionalDocs = standardSnapshot.docs.filter(doc => {
+        const data = doc.data();
+        return data.email &&
+          data.email.trim() !== '' &&
+          !personalizedIds.has(doc.id) &&
+          data.personalizationApproved !== true;  // Avoid duplicates
+      }).slice(0, remainingSlots);
+
+      docsWithEmail = [...docsWithEmail, ...additionalDocs];
+    }
+
     if (docsWithEmail.length === 0) {
-      console.log(`✅ ${name}: No contacts with emails found.`);
+      console.log(`✅ ${name}: No unsent emails found. Campaign complete!`);
       return { status: 'complete', sent: 0 };
     }
 
+    const personalizedCount = docsWithEmail.filter(d => d.data().personalizationApproved === true).length;
     console.log(`${logPrefix} ${name}: Processing ${docsWithEmail.length} emails in ${batchId}`);
+    console.log(`   Personalized: ${personalizedCount} | Standard: ${docsWithEmail.length - personalizedCount}`);
 
     let sent = 0;
     let failed = 0;
@@ -311,12 +451,16 @@ async function processBfhCampaignBatch(batchSize) {
             mailgunId: result.messageId || '',
             subjectTag: result.subjectTag,
             templateVariant: result.templateVariant,
-            mailgunResponse: result.response || ''
+            mailgunResponse: result.response || '',
+            sendStrategy: result.sendStrategy || 'standard_template',
+            sentLanguage: result.language || 'en'
           };
 
           await doc.ref.update(updateData);
 
-          console.log(`✅ Sent to ${contact.email} (${result.templateVariant}): ${result.messageId}`);
+          const strategyLabel = result.sendStrategy === 'personalized_template' ? '🎯' :
+            result.sendStrategy === 'raw_html' ? '🌐' : '📋';
+          console.log(`✅ ${strategyLabel} Sent to ${contact.email} (${result.templateVariant}): ${result.messageId}`);
           sent++;
         } else {
           throw new Error(result.error || 'Unknown Mailgun error');
@@ -342,6 +486,15 @@ async function processBfhCampaignBatch(batchSize) {
       }
     }
 
+    // Count send strategies
+    const strategyCounts = { personalized_template: 0, raw_html: 0, standard_template: 0 };
+    for (const doc of docsWithEmail) {
+      const data = doc.data();
+      if (data.sent && data.sendStrategy) {
+        strategyCounts[data.sendStrategy] = (strategyCounts[data.sendStrategy] || 0) + 1;
+      }
+    }
+
     console.log(`\n📊 ${batchId} Complete:`);
     console.log(`   Total processed: ${docsWithEmail.length}`);
     console.log(`   Successfully sent: ${sent}`);
@@ -349,13 +502,19 @@ async function processBfhCampaignBatch(batchSize) {
     if (sent > 0) {
       console.log(`   Success rate: ${((sent / (sent + failed)) * 100).toFixed(1)}%`);
     }
+    console.log(`   By strategy:`);
+    console.log(`     🎯 Personalized (EN): ${personalizedCount}`);
+    console.log(`     🌐 Raw HTML (non-EN): ${strategyCounts.raw_html || 0}`);
+    console.log(`     📋 Standard: ${docsWithEmail.length - personalizedCount}`);
 
     return {
       status: 'success',
       sent,
       failed,
       total: docsWithEmail.length,
-      batchId
+      batchId,
+      personalizedCount,
+      strategies: strategyCounts
     };
 
   } catch (error) {

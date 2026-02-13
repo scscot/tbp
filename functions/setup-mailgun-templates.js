@@ -152,6 +152,204 @@ const V2_HTML = `<!DOCTYPE html>
 </body>
 </html>`;
 
+/**
+ * V11 Template: Personal Disarm with Personalized Intro
+ * (V1 with {{personalized_intro}} support)
+ *
+ * Variables expected:
+ * - first_name: Recipient's first name
+ * - personalized_intro: AI-generated personalized paragraph (optional)
+ * - tracked_cta_url: Click-tracked URL to landing page
+ * - unsubscribe_url: Unsubscribe page URL
+ */
+const V11_HTML = `<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin:0; padding:0; background-color:#ffffff;">
+  <div style="max-width:600px; padding:20px; font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size:16px; line-height:1.6; color:#1a1a1a;">
+
+    <p style="margin:0 0 16px 0;">
+      Hello {{first_name}},
+    </p>
+
+    {{#if personalized_intro}}
+    <p style="margin:0 0 16px 0;">
+      {{personalized_intro}}
+    </p>
+    {{/if}}
+
+    <p style="margin:0 0 16px 0;">
+      I'm not recruiting you, and this isn't an opportunity.
+    </p>
+
+    <p style="margin:0 0 16px 0;">
+      I built something for people already in direct sales who want a better way to support their existing team.
+    </p>
+
+    <p style="margin:0 0 16px 0;">
+      It's meant to help with things like:
+    </p>
+
+    <ul style="margin:0 0 16px 10px;">
+      <li style="margin-bottom:6px;">knowing what to say without overthinking it</li>
+      <li style="margin-bottom:6px;">giving new people structure instead of starting from zero</li>
+      <li style="margin-bottom:0;">letting prospects build confidence before joining anything</li>
+    </ul>
+
+    <p style="margin:0 0 16px 0;">
+      It works alongside whatever company you're already with.
+    </p>
+
+    <p style="margin:0 0 16px 0;">
+      If you're curious, you can take a look here: <a href="{{tracked_cta_url}}" style="color:#1a73e8; text-decoration:underline;">teambuildpro.com</a>
+    </p>
+
+    <p style="margin:0 0 16px 0;">
+      Best,<br>
+      Stephen Scott
+    </p>
+
+    <!-- Footer -->
+    <div style="margin-top:24px; padding-top:16px; border-top:1px solid #eeeeee; font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size:12px; line-height:1.5; color:#777777;">
+      <a href="{{tracked_cta_url}}" style="color:#1a73e8; text-decoration:underline;">teambuildpro.com</a>
+      &nbsp;·&nbsp;
+      <a href="{{unsubscribe_url}}" style="color:#777777; text-decoration:underline;">Unsubscribe</a>
+    </div>
+
+  </div>
+</body>
+</html>`;
+
+/**
+ * V12 Template: Pre-Build Advantage with Personalized Intro
+ * (V2 with {{personalized_intro}} support)
+ *
+ * Variables expected:
+ * - first_name: Recipient's first name
+ * - personalized_intro: AI-generated personalized paragraph (optional)
+ * - tracked_cta_url: Click-tracked URL to landing page
+ * - unsubscribe_url: Unsubscribe page URL
+ */
+const V12_HTML = `<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin:0; padding:0; background-color:#ffffff;">
+  <div style="max-width:600px; padding:20px; font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size:16px; line-height:1.6; color:#1a1a1a;">
+
+    <p style="margin:0 0 16px 0;">
+      Hi {{first_name}},
+    </p>
+
+    {{#if personalized_intro}}
+    <p style="margin:0 0 16px 0;">
+      {{personalized_intro}}
+    </p>
+    {{/if}}
+
+    <p style="margin:0 0 16px 0;">
+      What if your next recruit joined with <strong>20 people already lined up?</strong>
+    </p>
+
+    <p style="margin:0 0 16px 0;">
+      That's what Team Build Pro does — it lets prospects pre-build their downline BEFORE they sign up. Day 1 momentum instead of Day 1 doubt.
+    </p>
+
+    <p style="margin:0 0 16px 0;">
+      For you, that means:
+    </p>
+
+    <ul style="margin:0 0 16px 20px; padding:0; color:#1a1a1a;">
+      <li style="margin-bottom:8px;">Recruits who stick (not quit in 90 days)</li>
+      <li style="margin-bottom:8px;">A tool you hand off that does the heavy lifting</li>
+      <li style="margin-bottom:0;">Growth that compounds while you focus elsewhere</li>
+    </ul>
+
+    <p style="margin:0 0 16px 0;">
+      Works with any company. Fuels the one you already have.
+    </p>
+
+    <p style="margin:0 0 24px 0;">
+      <a href="{{tracked_cta_url}}" style="color:#7c3aed; font-weight:600; text-decoration:none; font-size:17px;">&#8594; See how it works</a>
+    </p>
+
+    <p style="margin:0 0 16px 0;">
+      Best,<br>
+      Stephen Scott
+    </p>
+
+    <!-- Footer -->
+    <div style="margin-top:32px; padding-top:16px; border-top:1px solid #eeeeee; font-size:12px; line-height:1.5; color:#777777;">
+      <a href="{{tracked_cta_url}}" style="color:#1a73e8; text-decoration:underline;">teambuildpro.com</a>
+      &nbsp;&middot;&nbsp;
+      <a href="{{unsubscribe_url}}" style="color:#777777; text-decoration:underline;">Unsubscribe</a>
+    </div>
+
+  </div>
+</body>
+</html>`;
+
+// Plain text versions (with personalized_intro support)
+const V11_TEXT = `Hello {{first_name}},
+
+{{#if personalized_intro}}
+{{personalized_intro}}
+
+{{/if}}
+I'm not recruiting you, and this isn't an opportunity.
+
+I built something for people already in direct sales who want a better way to support their existing team.
+
+It's meant to help with things like:
+
+* knowing what to say without overthinking it
+* giving new people structure instead of starting from zero
+* letting prospects build confidence before joining anything
+
+It works alongside whatever company you're already with.
+
+If you're curious, you can take a look here:
+{{tracked_cta_url}}
+
+Best,
+Stephen Scott
+
+---
+teambuildpro.com
+Unsubscribe: {{unsubscribe_url}}`;
+
+const V12_TEXT = `Hi {{first_name}},
+
+{{#if personalized_intro}}
+{{personalized_intro}}
+
+{{/if}}
+What if your next recruit joined with 20 people already lined up?
+
+That's what Team Build Pro does — it lets prospects pre-build their downline BEFORE they sign up. Day 1 momentum instead of Day 1 doubt.
+
+For you, that means:
+
+* Recruits who stick (not quit in 90 days)
+* A tool you hand off that does the heavy lifting
+* Growth that compounds while you focus elsewhere
+
+Works with any company. Fuels the one you already have.
+
+-> See how it works: {{tracked_cta_url}}
+
+Best,
+Stephen Scott
+
+---
+teambuildpro.com
+Unsubscribe: {{unsubscribe_url}}`;
+
 // Plain text versions
 const V1_TEXT = `Hello {{first_name}},
 
@@ -317,6 +515,14 @@ async function main() {
     console.log('\n--- V2: Pre-Build Advantage ---');
     await createOrUpdateVersion('v2', V2_HTML, V2_TEXT, 'V2: Pre-Build Advantage - Unique differentiator hook');
 
+    // Create/update V11 version (V1 + personalized_intro)
+    console.log('\n--- V11: Personal Disarm + AI Personalization ---');
+    await createOrUpdateVersion('v11', V11_HTML, V11_TEXT, 'V11: V1 with personalized_intro support for BFH AI campaign');
+
+    // Create/update V12 version (V2 + personalized_intro)
+    console.log('\n--- V12: Pre-Build Advantage + AI Personalization ---');
+    await createOrUpdateVersion('v12', V12_HTML, V12_TEXT, 'V12: V2 with personalized_intro support for BFH AI campaign');
+
     console.log('\n' + '='.repeat(60));
     console.log('✅ Template setup complete!');
     console.log('='.repeat(60));
@@ -324,9 +530,12 @@ async function main() {
     console.log('  - first_name: Recipient first name');
     console.log('  - tracked_cta_url: Click-tracked landing page URL');
     console.log('  - unsubscribe_url: Unsubscribe page URL');
+    console.log('  - personalized_intro: AI-generated intro (V11/V12 only, optional)');
     console.log('\nVersions created:');
     console.log('  - v1: "Not an opportunity. Just a tool."');
     console.log('  - v2: "What if your next recruit already had a team?"');
+    console.log('  - v11: V1 + personalized_intro support (BFH AI campaign)');
+    console.log('  - v12: V2 + personalized_intro support (BFH AI campaign)');
 
   } catch (error) {
     console.error('\n❌ Setup failed:', error.response?.data || error.message);

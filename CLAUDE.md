@@ -812,14 +812,44 @@ Automated 4-stage pipeline that discovers direct sales distributor URLs, scrapes
   bfhScrapedAt: timestamp,
   emailSearched: boolean,      // Google search performed
   emailSearchedAt: timestamp,
-  emailSource: string,         // 'google' or null
+  emailSource: string,         // 'serpapi' or null
+
+  // Profile enrichment fields (Phase 1)
+  profileBio: string | null,        // Bio/description from profile
+  reviewSnippets: string[],         // Up to 3 review excerpts
+  reviewCount: number,              // Total reviews on profile
+  starRating: number | null,        // 1-5 star rating
+  detectedLanguage: string,         // 'en', 'es', 'pt', 'de'
+  profileEnriched: boolean,
+  profileEnrichedAt: timestamp,
+
+  // AI personalization fields (Phase 2)
+  personalizedIntro: string | null,      // For English: 2-3 sentence intro
+  personalizedHtml: string | null,       // For non-English: Full HTML email
+  personalizationModel: string,          // e.g., 'claude-sonnet-4-20250514'
+  personalizationGenerated: boolean,
+  personalizationGeneratedAt: timestamp,
+
+  // Self-validation fields (two-pass approach)
+  selfValidationPassed: boolean,         // Did content pass Claude's self-review?
+  selfValidationScore: number,           // 1-10 quality score
+  selfValidationScores: object,          // { tone, cultural, accuracy, brandSafety, personalization }
+  selfValidationIssues: string[],        // Any issues found
+
+  // Approval workflow
+  personalizationApproved: boolean,      // Auto-approved if score >= 8
+  manualReviewRequired: boolean,
+  manualReviewedAt: timestamp,
+  ctaDomain: string,                     // 'teambuildpro.com', 'es.teambuildpro.com', etc.
 
   // Email campaign fields
   sent: boolean,
   sentTimestamp: timestamp,
   status: string,              // 'sent', 'failed'
-  subjectTag: string,          // 'bfh_v9a', 'bfh_v9b', etc.
+  subjectTag: string,          // 'bfh_v9a', 'bfh_v11a_personalized', etc.
   templateVariant: string,
+  sendStrategy: string,        // 'standard_template', 'personalized_template', 'raw_html'
+  sentLanguage: string,        // Language used for send (en/es/pt/de)
   randomIndex: number,
   clickedAt: timestamp,
 
@@ -835,7 +865,139 @@ Automated 4-stage pipeline that discovers direct sales distributor URLs, scrapes
 | Script | Purpose | Usage |
 |--------|---------|-------|
 | `bfh-scraper.js` | Scrape BFH recommended distributors | `--seed` (URLs), `--scrape` (profiles), `--stats` |
-| `bfh-email-search.js` | Google search for public emails | `--search`, `--max=N`, `--stats` |
+| `bfh-email-search.js` | SerpAPI Google search for emails | `--search`, `--max=N`, `--stats` |
+| `bfh-profile-enricher.js` | Enrich profiles (bio, reviews, language) | `--enrich`, `--max=N`, `--stats`, `--sample=URL` |
+| `bfh-personalization-generator.js` | Generate AI personalized content | `--generate`, `--max=N`, `--force-review`, `--export-review`, `--approve --ids=...` |
+
+### BFH Personalization Pipeline
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                         BFH ENRICHMENT PIPELINE                             │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  Phase 1: Profile Enrichment     Phase 2: AI Personalization               │
+│  ─────────────────────────       ────────────────────────────               │
+│  bfh-profile-enricher.js         bfh-personalization-generator.js          │
+│  ├─ Scrape BFH profile page      ├─ Pass 1: Generate content               │
+│  ├─ Extract bio/description      │   ├─ English → 2-3 sentence intro       │
+│  ├─ Extract review snippets      │   └─ Non-English → Full HTML email      │
+│  ├─ Extract star rating          ├─ Pass 2: Self-validate                  │
+│  └─ Detect language (en/es/pt/de)│   ├─ Score 8-10 → Auto-approve          │
+│                                  │   ├─ Score 5-7 → Manual review          │
+│                                  │   └─ Score 1-4 → Regenerate             │
+│                                                                             │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                         HYBRID SEND STRATEGY                                │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  email-campaign-bfh.js:                                                     │
+│  ├─ English + personalizedIntro → V11/V12 template with variable           │
+│  ├─ Non-English + personalizedHtml → Raw HTML via Mailgun                  │
+│  └─ No personalization → Standard V9/V10 template                          │
+│                                                                             │
+│  Language-specific CTA domains:                                             │
+│  ├─ en → teambuildpro.com                                                  │
+│  ├─ es → es.teambuildpro.com                                               │
+│  ├─ pt → pt.teambuildpro.com                                               │
+│  └─ de → de.teambuildpro.com                                               │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+### Purchased Leads Data Pipeline
+
+The `purchased_leads` collection consolidates contacts from multiple sources for email campaigns. This collection uses the existing campaign infrastructure (`sendHourlyPurchasedLeadsCampaign`).
+
+```
+┌──────────────────────────────────────────────────────────────────────────┐
+│  Source 1: Apollo Contacts with Personal Emails                          │
+│  scripts/analyze-apollo-personal-emails.js                               │
+│  Extracts contacts with personal emails from Apollo CSV Secondary Email  │
+│  ~709 contacts with gmail/yahoo/hotmail/etc                              │
+├──────────────────────────────────────────────────────────────────────────┤
+│  Source 2: Apollo SerpAPI Search                                         │
+│  scripts/apollo-email-search.js                                          │
+│  Google search for remaining contacts without personal emails            │
+│  ~1,663 contacts → ~22% yield expected                                   │
+├──────────────────────────────────────────────────────────────────────────┤
+│  Migration: apollo-import-personal-emails.js                             │
+│  Import to apollo_contacts collection                                    │
+│  migrate-apollo-to-purchased-leads.js                                    │
+│  Migrate to purchased_leads for campaign use                             │
+├──────────────────────────────────────────────────────────────────────────┤
+│  Cleanup: cleanup-purchased-leads.js                                     │
+│  Remove corporate MLM domain emails (bounce risk)                        │
+│  youngliving.com, herbalife.com, amway.com, etc.                         │
+└──────────────────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+              Purchased Leads Campaign (scheduled hourly)
+              Schedule: 8am, 11am, 2pm, 5pm PT (when enabled)
+              V9/V10 A/B test rotation
+```
+
+### Purchased Leads Collection Schema: `purchased_leads`
+
+```javascript
+{
+  // Core fields
+  firstName: string,
+  lastName: string,
+  fullName: string,
+  email: string,
+  company: string | null,
+  title: string | null,
+
+  // Source tracking
+  source: string,              // 'apollo', 'apollo_secondary', 'apollo_serpapi', 'data_axle'
+  originalSource: string,      // Original source from migration
+  batchId: string,             // Import batch identifier
+  migratedFrom: string | null, // 'apollo_contacts' if migrated
+  originalDocId: string | null,// Original document ID if migrated
+
+  // Email campaign fields
+  sent: boolean,
+  sentTimestamp: timestamp,
+  status: string,              // 'pending', 'sent', 'failed'
+  subjectTag: string,          // 'purchased_v9a', etc.
+  randomIndex: number,         // For A/B test distribution
+  clickedAt: timestamp,
+
+  // Metadata
+  createdAt: timestamp,
+  importedAt: timestamp
+}
+```
+
+### Purchased Leads Scripts
+
+| Script | Purpose | Usage |
+|--------|---------|-------|
+| `analyze-apollo-personal-emails.js` | Extract contacts with personal emails from Apollo CSV | `--analyze` (audit CSV), `--export` (create JSON files) |
+| `apollo-email-search.js` | SerpAPI Google search for Apollo contacts | `--search`, `--max=N`, `--stats`, `--resume` |
+| `apollo-import-personal-emails.js` | Import Apollo personal emails to Firestore | `--dry-run`, `--import`, `--stats` |
+| `migrate-apollo-to-purchased-leads.js` | Migrate apollo_contacts to purchased_leads | `--dry-run`, `--migrate`, `--stats` |
+| `cleanup-purchased-leads.js` | Remove corporate MLM domain emails | `--audit`, `--delete`, `--dry-run` |
+| `audit-contact-duplicates.js` | Cross-collection duplicate detection | (runs audit across all contact collections) |
+
+### Corporate MLM Domains (Excluded)
+
+The following corporate domains are excluded from purchased_leads campaigns (high bounce risk):
+
+```javascript
+// Major MLM/Direct Sales companies
+'youngliving.com', 'itworks.com', 'herbalife.com', 'avon.com', 'lifevantage.com',
+'stelladot.com', 'shaklee.com', 'senegence.com', 'partylite.com', 'pamperedchef.com',
+'myitworks.com', '4life.com', 'nuskin.com', 'origamiowl.com', 'beachbody.com',
+'rodanandfields.com', 'arbonne.com', 'monat.com', 'melaleuca.com', 'marykay.com',
+'tupperware.com', 'primerica.com', 'amway.com', 'isagenix.com', 'plexus.com',
+'doterra.com', 'usana.com', 'advocare.com', 'nerium.com', 'neora.com',
+'younique.com', 'youniqueproducts.com', 'worldventures.com', 'zurvita.com',
+'pureromance.com', 'tranont.com', 'monatglobal.com', 'lularoe.com', 'colorstreet.com',
+'scentsy.com', 'thirtyone.com', 'enagic.com', 'xyngular.com', 'foreverliving.com'
+// Full list: ~70 domains in cleanup-purchased-leads.js
+```
 
 ---
 
@@ -916,7 +1078,9 @@ Automated 4-stage pipeline that discovers direct sales distributor URLs, scrapes
 - `scripts/seed-contacts-urls.js` - Multi-source URL seeder (CC + Wayback + crt.sh → Firestore)
 - `scripts/contacts-scraper.js` - Puppeteer contact scraper (Firestore → emails/phones)
 - `scripts/bfh-scraper.js` - BFH profile scraper (Business For Home → bfh_contacts)
-- `scripts/bfh-email-search.js` - Google search email discovery for BFH contacts
+- `scripts/bfh-email-search.js` - SerpAPI email discovery for BFH contacts
+- `scripts/bfh-profile-enricher.js` - BFH profile enrichment (bio, reviews, language detection)
+- `scripts/bfh-personalization-generator.js` - Claude AI personalization with two-pass validation
 
 ### Utility Scripts (functions/)
 - `count-todays-emails.js` - Query Firestore for daily email send counts
@@ -935,6 +1099,36 @@ Automated 4-stage pipeline that discovers direct sales distributor URLs, scrapes
   - `--notify-email=EMAIL` - Recipient for notification emails
   - Generates 4 language versions: English, Spanish, Portuguese, German
 - `generate-blog.js` - Legacy blog generation (static template approach)
+
+**Contact Data Management:**
+- `analyze-apollo-personal-emails.js` - Extract contacts with personal emails from Apollo CSV
+  - `--analyze` - Audit CSV and categorize contacts (personal email vs needs search)
+  - `--export` - Export to JSON files for import
+  - Input: `purchased-emails/apollo-export.csv`
+  - Output: `apollo-personal-emails.json` (~709), `apollo-needs-serpapi.json` (~1,663)
+- `apollo-email-search.js` - SerpAPI Google search for Apollo contacts
+  - `--search` - Run searches (resumes from progress file)
+  - `--max=N` - Limit searches
+  - `--stats` - Show progress statistics
+  - Rate limit: 4s delay (900/hour, Developer plan)
+  - Saves progress to `apollo-serpapi-progress.json`
+- `apollo-import-personal-emails.js` - Import Apollo personal emails to Firestore
+  - `--dry-run` - Preview import
+  - `--import` - Execute import to `apollo_contacts` collection
+  - `--stats` - Show collection stats
+- `migrate-apollo-to-purchased-leads.js` - Migrate apollo_contacts to purchased_leads
+  - `--dry-run` - Preview migration
+  - `--migrate` - Execute migration
+  - `--stats` - Show collection stats
+- `cleanup-purchased-leads.js` - Remove corporate MLM domain emails (bounce risk)
+  - `--audit` - Analyze and categorize by domain type
+  - `--delete` - Delete corporate email contacts
+  - `--dry-run` - Preview deletions
+  - Excludes: ~70 corporate MLM domains (youngliving.com, herbalife.com, etc.)
+- `audit-contact-duplicates.js` - Cross-collection duplicate detection
+  - Audits: bfh_contacts, direct_sales_contacts, emailCampaigns/master/contacts, purchased_leads, apollo_contacts
+
+**BFH Data Pipeline:**
 - `scrape-bfh-companies.js` - Scrape BusinessForHome.org sitemap for MLM company URLs
   - Fetches company-sitemap.xml (~710 companies), extracts website URLs from detail pages
   - Appends new URLs to `base_urls.txt` (grew 462 → 1,082)
@@ -1058,6 +1252,23 @@ Automated 4-stage pipeline that discovers direct sales distributor URLs, scrapes
 - ✅ **Fixed PreIntake firebase.json**: Changed `cleanUrls: true` to `false` (was inconsistent with TBP sites)
 - ✅ **Fixed GitHub workflow**: Removed unused `MAILGUN_DOMAIN` env variable from `preintake-email-campaign.yml`
 
+**Contact Data Pipeline (Feb 13, 2026)**
+- ✅ **Apollo Contact Recovery**: Salvaged $99 Apollo purchase by extracting personal emails from Secondary Email field
+  - 709 contacts with personal emails (gmail, yahoo, hotmail) imported directly
+  - 1,663 contacts queued for SerpAPI search (~22% yield expected)
+- ✅ **BFH Profile Enrichment**: Completed enrichment of 387 BFH contacts
+  - Language detection: EN=373, ES=12, PT=1, DE=1
+  - Ready for AI-personalized email generation
+- ✅ **purchased_leads Cleanup**: Removed 2,036 corporate MLM domain emails
+  - Corporate domains (youngliving.com, herbalife.com, etc.) would bounce
+  - 966 valid contacts remaining after cleanup
+- ✅ **Cross-collection Deduplication Audit**: Verified minimal overlap across all contact sources
+  - 0 duplicates between BFH ↔ Direct Sales, 0 BFH ↔ Email Campaign
+  - Only 2 duplicates between Direct Sales ↔ Email Campaign
+- ✅ **Apollo SerpAPI Pipeline**: Scripts created for batch email discovery
+  - `apollo-email-search.js` with progress saving and resume capability
+  - Rate limited at 4s delay (900 searches/hour, Developer plan)
+
 ### Current System Status (Feb 2026)
 
 **PROJECT STATUS: MONITORING PHASE (as of Jan 31, 2026)**
@@ -1067,6 +1278,8 @@ Active development paused to allow automated systems to run and collect meaningf
 |-----------|--------|-------|
 | Main Campaign | Active | 8am, 11am, 2pm, 5pm PT (4 runs/day) |
 | Contacts Campaign | Active | 9am, 12pm, 3pm, 6pm PT (4 runs/day) |
+| BFH Campaign | Active | 10am, 1pm, 4pm, 7pm PT (4 runs/day) |
+| Purchased Leads Campaign | Pending | 966 contacts ready, awaiting Apollo SerpAPI completion |
 | Email Sending | Mailgun API | Via Mailgun, news.teambuildpro.com |
 | Email A/B Testing | Active | Main: 4-way V9/V10 × 2 subjects; Contacts: V7/V8 |
 | Yahoo Campaign | Removed | File and function deleted (Jan 31) |
@@ -1080,6 +1293,8 @@ Active development paused to allow automated systems to run and collect meaningf
 | URL Discovery | Active | Every 2h, 120 companies/batch (processing 1,082 companies) |
 | Contacts Seeder | Active | Every 4h, 3 sources (Common Crawl + Wayback + crt.sh) |
 | Contacts Scraper | Active | Hourly, 400 URLs/batch, 12 blocked platforms |
+| BFH Profile Enrichment | Complete | 387 profiles enriched (EN:373, ES:12, PT:1, DE:1) |
+| Apollo SerpAPI Search | In Progress | ~1,575 remaining, ~22% yield rate |
 | PreIntake.ai | Autonomous | See `preintake/CLAUDE.md` for details |
 
 **Monitoring Checklist (Weekly):**

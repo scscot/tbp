@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 /**
- * Business For Home Email Search
+ * Business For Home Email Search (SerpAPI Version)
  *
- * Searches Google for publicly available email addresses of BFH contacts.
+ * Searches Google via SerpAPI for publicly available email addresses of BFH contacts.
  * Uses the "{name}" "{company}" email search pattern.
  *
  * Usage:
@@ -11,40 +11,38 @@
  *   node scripts/bfh-email-search.js --stats      # Show stats
  *   node scripts/bfh-email-search.js --max=50     # Limit searches
  *
- * Rate Limiting:
- *   - 3-5 seconds between searches to avoid Google blocking
- *   - If blocked, wait and retry with exponential backoff
+ * SerpAPI:
+ *   - Uses SerpAPI for reliable Google search results
+ *   - API key loaded from secrets/SerpAPI-Key
+ *   - Developer plan: 5,000 searches/month, 1,000/hour throughput
  */
 
 const axios = require('axios');
-const cheerio = require('cheerio');
 const admin = require('firebase-admin');
 const path = require('path');
+const fs = require('fs');
 
 // ============================================================================
 // CONFIGURATION
 // ============================================================================
 
+// Load SerpAPI key
+const SERPAPI_KEY = fs.readFileSync(
+  path.join(__dirname, '../secrets/SerpAPI-Key'),
+  'utf8'
+).trim();
+
 const CONFIG = {
   // Firestore
   COLLECTION: 'bfh_contacts',
 
-  // Google Search
-  GOOGLE_SEARCH_URL: 'https://www.google.com/search',
+  // SerpAPI
+  SERPAPI_URL: 'https://serpapi.com/search',
 
-  // Rate limiting (conservative to avoid blocking)
-  DELAY_BETWEEN_SEARCHES: 4000,  // 4 seconds base
-  JITTER_MS: 2000,               // 0-2 seconds random jitter
-  MAX_RETRIES: 3,
-  BACKOFF_MULTIPLIER: 2,
-
-  // User agents (rotate to avoid detection)
-  USER_AGENTS: [
-    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15',
-    'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:121.0) Gecko/20100101 Firefox/121.0',
-  ],
+  // Rate limiting - SerpAPI Developer plan: 1,000 searches/hour
+  // 1,000 searches / 60 minutes = 16.67/min, so ~3.6 seconds between searches
+  DELAY_BETWEEN_SEARCHES: 4000,  // 4 seconds = ~900 searches/hour (under 1,000 limit)
+  JITTER_MS: 500,
 
   // Email regex pattern
   EMAIL_REGEX: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g,
@@ -102,10 +100,7 @@ function randomDelay() {
   return CONFIG.DELAY_BETWEEN_SEARCHES + jitter;
 }
 
-function getRandomUserAgent() {
-  const index = Math.floor(Math.random() * CONFIG.USER_AGENTS.length);
-  return CONFIG.USER_AGENTS[index];
-}
+// User agent rotation removed - SerpAPI handles this
 
 function isValidEmail(email) {
   if (!email) return false;
@@ -169,39 +164,30 @@ function scoreEmail(email, fullName, company) {
 }
 
 // ============================================================================
-// GOOGLE SEARCH
+// SERPAPI SEARCH
 // ============================================================================
 
-async function searchGoogle(query, retryCount = 0) {
+async function searchSerpAPI(query) {
   try {
-    const response = await axios.get(CONFIG.GOOGLE_SEARCH_URL, {
+    const response = await axios.get(CONFIG.SERPAPI_URL, {
       params: {
         q: query,
+        api_key: SERPAPI_KEY,
+        engine: 'google',
         num: 10,
       },
-      headers: {
-        'User-Agent': getRandomUserAgent(),
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-        'Accept-Language': 'en-US,en;q=0.5',
-        'Accept-Encoding': 'gzip, deflate',
-        'Connection': 'keep-alive',
-        'Upgrade-Insecure-Requests': '1',
-      },
-      timeout: 15000,
+      timeout: 30000,
     });
 
     return response.data;
   } catch (error) {
-    if (error.response?.status === 429 || error.response?.status === 503) {
-      // Rate limited - backoff and retry
-      if (retryCount < CONFIG.MAX_RETRIES) {
-        const backoffMs = CONFIG.DELAY_BETWEEN_SEARCHES * Math.pow(CONFIG.BACKOFF_MULTIPLIER, retryCount + 1);
-        console.log(`  Rate limited, waiting ${backoffMs / 1000}s before retry ${retryCount + 1}...`);
-        await sleep(backoffMs);
-        return searchGoogle(query, retryCount + 1);
-      }
+    if (error.response?.status === 401) {
+      console.error('  SerpAPI authentication failed - check API key');
+    } else if (error.response?.status === 429) {
+      console.error('  SerpAPI hourly throughput limit (200/hr) - wait and retry');
+    } else {
+      console.error(`  SerpAPI search failed: ${error.message}`);
     }
-    console.error(`  Search failed: ${error.message}`);
     return null;
   }
 }
@@ -213,60 +199,59 @@ async function findEmailForContact(contact) {
     return { email: null, source: null };
   }
 
-  // Build search queries
-  const queries = [];
-
-  // Primary query: name + company + email
-  if (company) {
-    queries.push(`"${fullName}" "${company}" email`);
-    queries.push(`"${fullName}" "${company}" contact`);
+  // Build search query - use one optimized query to conserve API credits
+  let query;
+  if (company && company !== 'Companies') {
+    // Include company if it's valid (not the nav link artifact)
+    query = `"${fullName}" "${company}" email`;
+  } else {
+    query = `"${fullName}" email contact`;
   }
 
-  // Fallback: just name + email
-  queries.push(`"${fullName}" email contact`);
+  console.log(`  Query: ${query}`);
+
+  const result = await searchSerpAPI(query);
+  if (!result) {
+    return { email: null, source: null };
+  }
+
+  // Check for API errors
+  if (result.error) {
+    console.log(`  SerpAPI error: ${result.error}`);
+    return { email: null, source: 'error' };
+  }
 
   const allEmails = [];
 
-  for (const query of queries) {
-    console.log(`  Query: ${query}`);
+  // Extract emails from organic search results
+  if (result.organic_results) {
+    for (const item of result.organic_results) {
+      // Check title, snippet, and link
+      const texts = [
+        item.title || '',
+        item.snippet || '',
+        item.link || '',
+      ];
 
-    const html = await searchGoogle(query);
-    if (!html) {
-      await sleep(randomDelay());
-      continue;
+      for (const text of texts) {
+        const emails = extractEmailsFromText(text);
+        allEmails.push(...emails);
+      }
     }
+  }
 
-    // Parse search results
-    const $ = cheerio.load(html);
+  // Also check knowledge graph if present
+  if (result.knowledge_graph) {
+    const kgText = JSON.stringify(result.knowledge_graph);
+    const emails = extractEmailsFromText(kgText);
+    allEmails.push(...emails);
+  }
 
-    // Check for CAPTCHA/blocking
-    if (html.includes('unusual traffic') || html.includes('not a robot')) {
-      console.log('  WARNING: Google CAPTCHA detected, stopping search');
-      return { email: null, source: 'blocked' };
-    }
-
-    // Extract text from search result snippets
-    const snippetText = [];
-    $('div.g').each((_, el) => {
-      const snippet = $(el).text();
-      snippetText.push(snippet);
-    });
-
-    // Also check the whole page
-    snippetText.push($('body').text());
-
-    // Find emails in snippets
-    for (const text of snippetText) {
-      const emails = extractEmailsFromText(text);
-      allEmails.push(...emails);
-    }
-
-    // If we found emails, no need to try more queries
-    if (allEmails.length > 0) {
-      break;
-    }
-
-    await sleep(randomDelay());
+  // Check answer box if present
+  if (result.answer_box) {
+    const abText = JSON.stringify(result.answer_box);
+    const emails = extractEmailsFromText(abText);
+    allEmails.push(...emails);
   }
 
   if (allEmails.length === 0) {
@@ -286,7 +271,7 @@ async function findEmailForContact(contact) {
     }
   }
 
-  return { email: bestEmail, source: 'google', score: bestScore };
+  return { email: bestEmail, source: 'serpapi', score: bestScore };
 }
 
 // ============================================================================
@@ -423,9 +408,9 @@ async function main() {
     console.log('  node scripts/bfh-email-search.js --max=N      # Max contacts to search');
     console.log('');
     console.log('Notes:');
-    console.log('  - Uses 4-6 second delays between searches to avoid Google blocking');
-    console.log('  - Expected email yield: 10-30% of contacts');
-    console.log('  - If blocked, script will stop and can be resumed later');
+    console.log('  - Rate limited to ~900 searches/hour (SerpAPI Developer plan: 1,000/hr)');
+    console.log('  - 100 contacts @ 4s each = ~7 minutes to complete');
+    console.log('  - Expected email yield: 29% high-quality emails');
     process.exit(1);
   }
 
