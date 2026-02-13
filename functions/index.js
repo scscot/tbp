@@ -147,6 +147,13 @@ const {
 } = require('./email-campaign-purchased');
 
 // ==============================
+// Import Email Campaign for BFH (Business For Home) Contacts
+// ==============================
+const {
+  sendHourlyBfhCampaign,
+} = require('./email-campaign-bfh');
+
+// ==============================
 // Import Email Tracking Functions (SMTP Migration)
 // ==============================
 const {
@@ -401,6 +408,9 @@ module.exports = {
   // Email campaign for purchased leads (scheduled)
   sendPurchasedLeadsCampaign,
   getPurchasedLeadsAnalytics,
+
+  // Email campaign for BFH contacts (scheduled)
+  sendHourlyBfhCampaign,
 
   // Email tracking endpoints (SMTP migration)
   trackEmailOpen,

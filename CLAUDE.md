@@ -614,6 +614,20 @@ The email campaign system consists of two parallel campaigns targeting different
 - **Purpose**: Was separate campaign for Yahoo/AOL email addresses
 - **Data Source**: Was Firestore `emailCampaigns/master/contacts_yahoo` collection
 
+### BFH Campaign (Mailgun API - Automated)
+- **Function**: `sendHourlyBfhCampaign` in `functions/email-campaign-bfh.js`
+- **Tags**: `bfh_campaign`, `tracked`
+- **Schedule**: 10am, 1pm, 4pm, 7pm PT (4 runs/day, staggered from Main and Contacts)
+- **Data Source**: Firestore `bfh_contacts` collection
+- **Control Variable**: BFH_CAMPAIGN_ENABLED
+- **Batch Size**: Dynamic via Firestore `config/emailCampaign.batchSizeBfh` (or falls back to shared `batchSize`)
+- **Subject**: V9/V10 A/B test with 4-way rotation (`bfh_v9a`, `bfh_v9b`, `bfh_v10a`, `bfh_v10b`)
+- **Query**: `bfhScraped == true && emailSearched == true && email != null && sent == false`
+- **Template Variables**: `first_name`, `tracked_cta_url`, `unsubscribe_url`
+- **Scripts**:
+  - `scripts/bfh-scraper.js` - Phase 1: Scrape BFH profile pages (name, company, country, Facebook/website URLs)
+  - `scripts/bfh-email-search.js` - Phase 2: Google search for public email addresses
+
 ### Automated Domain Warming System
 - **Workflow**: `.github/workflows/domain-warming-update.yml`
 - **Config**: `.github/warming-config.json`
@@ -747,6 +761,82 @@ Automated 4-stage pipeline that discovers direct sales distributor URLs, scrapes
 2. **Wayback Machine CDX API** — Internet Archive historical URLs, free, no key required
 3. **Certificate Transparency (crt.sh)** — SSL cert logs for subdomain discovery, free
 
+### BFH (Business For Home) Data Pipeline
+
+```
+┌──────────────────────────────────────────────────────────────────────┐
+│  Stage 1: Profile URL Seeding                                        │
+│  scripts/bfh-scraper.js --seed                                       │
+│  Source: businessforhome.org/momentum-ranks/recommended-distributors │
+│  ~709 distributors across 36 pages → Firestore bfh_contacts          │
+├──────────────────────────────────────────────────────────────────────┤
+│  Stage 2: Profile Scraping                                           │
+│  scripts/bfh-scraper.js --scrape                                     │
+│  Extracts: name, company, country, Facebook URL, website URL         │
+│  Updates bfh_contacts with bfhScraped: true                          │
+├──────────────────────────────────────────────────────────────────────┤
+│  Stage 3: Email Discovery (Google Search)                            │
+│  scripts/bfh-email-search.js --search                                │
+│  Query: "{name}" "{company}" email                                   │
+│  Rate limited: 4-6 seconds between searches                          │
+│  Expected yield: 10-30% of contacts                                  │
+│  Updates bfh_contacts with email, emailSearched: true                │
+└──────────────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+              BFH Campaign (email-campaign-bfh.js)
+              Schedule: 10am, 1pm, 4pm, 7pm PT
+              V9/V10 A/B test with 4-way rotation
+```
+
+### BFH Collection Schema: `bfh_contacts`
+
+```javascript
+{
+  // Core fields
+  firstName: string,
+  lastName: string,
+  fullName: string,
+  email: string | null,        // Found via Google search
+  company: string,
+  country: string,
+
+  // Source URLs
+  bfhProfileUrl: string,       // Business For Home profile
+  facebookUrl: string | null,  // Facebook profile link
+  websiteUrl: string | null,   // Personal/company website
+  slug: string,                // URL slug from BFH profile
+
+  // Scraping status
+  bfhScraped: boolean,         // BFH profile scraped
+  bfhScrapedAt: timestamp,
+  emailSearched: boolean,      // Google search performed
+  emailSearchedAt: timestamp,
+  emailSource: string,         // 'google' or null
+
+  // Email campaign fields
+  sent: boolean,
+  sentTimestamp: timestamp,
+  status: string,              // 'sent', 'failed'
+  subjectTag: string,          // 'bfh_v9a', 'bfh_v9b', etc.
+  templateVariant: string,
+  randomIndex: number,
+  clickedAt: timestamp,
+
+  // Metadata
+  source: 'bfh',
+  createdAt: timestamp,
+  updatedAt: timestamp
+}
+```
+
+### BFH Scripts
+
+| Script | Purpose | Usage |
+|--------|---------|-------|
+| `bfh-scraper.js` | Scrape BFH recommended distributors | `--seed` (URLs), `--scrape` (profiles), `--stats` |
+| `bfh-email-search.js` | Google search for public emails | `--search`, `--max=N`, `--stats` |
+
 ---
 
 ## 🚨 Critical Don'ts
@@ -812,6 +902,7 @@ Automated 4-stage pipeline that discovers direct sales distributor URLs, scrapes
 - `functions/index.js` - All Cloud Functions
 - `functions/email-campaign-functions.js` - Main Campaign (emailCampaigns/master/contacts)
 - `functions/email-campaign-contacts.js` - Contacts Campaign (direct_sales_contacts)
+- `functions/email-campaign-bfh.js` - BFH Campaign (bfh_contacts)
 - `functions/email-stats-functions.js` - Email campaign stats API (Firestore + GA4)
 - `functions/analytics-dashboard-functions.js` - TBP analytics dashboard API (GA4 + iOS + Android + Firestore)
 - `functions/email-smtp-sender.js` - SMTP transporter with connection pooling
@@ -824,6 +915,8 @@ Automated 4-stage pipeline that discovers direct sales distributor URLs, scrapes
 - `scripts/base_url_discovery.js` - URL pattern discovery (Common Crawl → patterns.json)
 - `scripts/seed-contacts-urls.js` - Multi-source URL seeder (CC + Wayback + crt.sh → Firestore)
 - `scripts/contacts-scraper.js` - Puppeteer contact scraper (Firestore → emails/phones)
+- `scripts/bfh-scraper.js` - BFH profile scraper (Business For Home → bfh_contacts)
+- `scripts/bfh-email-search.js` - Google search email discovery for BFH contacts
 
 ### Utility Scripts (functions/)
 - `count-todays-emails.js` - Query Firestore for daily email send counts
