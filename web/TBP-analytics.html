@@ -547,6 +547,21 @@
             margin-top: 20px;
         }
 
+        .benchmark-badge {
+            text-align: center;
+            background: linear-gradient(135deg, #34c759 0%, #30d158 100%);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 12px rgba(52, 199, 89, 0.3);
+        }
+
+        .benchmark-badge strong {
+            font-weight: 700;
+        }
+
         .no-data-message {
             text-align: center;
             color: #999;
@@ -661,6 +676,22 @@
         .campaign-tab.active .tab-badge {
             background: #cce5ff;
             color: #004085;
+        }
+
+        .campaign-tab.comparison {
+            background: linear-gradient(135deg, #007aff 0%, #5856d6 100%);
+            color: white;
+            border-color: #007aff;
+        }
+
+        .campaign-tab.comparison:hover {
+            background: linear-gradient(135deg, #0056b3 0%, #4a4ab8 100%);
+        }
+
+        .campaign-tab.comparison.active {
+            background: linear-gradient(135deg, #007aff 0%, #5856d6 100%);
+            color: white;
+            border-bottom: 2px solid #007aff;
         }
 
         .campaign-content {
@@ -821,6 +852,377 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        /* Executive Summary Section */
+        .executive-summary {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .exec-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .exec-header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .exec-header .period {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            background: rgba(255,255,255,0.1);
+            padding: 5px 12px;
+            border-radius: 20px;
+        }
+
+        .performance-score {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .score-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: conic-gradient(#34c759 calc(var(--score) * 3.6deg), rgba(255,255,255,0.2) 0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .score-inner {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: #1a1a2e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .score-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .score-label {
+            font-size: 0.65rem;
+            opacity: 0.8;
+            text-transform: uppercase;
+        }
+
+        .exec-metrics {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .exec-metric {
+            background: rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .exec-metric-icon {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .exec-metric-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .exec-metric-label {
+            font-size: 0.8rem;
+            opacity: 0.8;
+            margin-bottom: 5px;
+        }
+
+        .exec-metric-sub {
+            font-size: 0.75rem;
+            opacity: 0.6;
+        }
+
+        .exec-metric.good .exec-metric-value { color: #34c759; }
+        .exec-metric.warning .exec-metric-value { color: #ff9500; }
+        .exec-metric.neutral .exec-metric-value { color: #007aff; }
+
+        .exec-insights {
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .exec-insights h4 {
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+            opacity: 0.9;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .insight-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .insight-item:last-child {
+            border-bottom: none;
+        }
+
+        .insight-badge {
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            flex-shrink: 0;
+        }
+
+        .insight-badge.working { background: #34c759; color: white; }
+        .insight-badge.warning { background: #ff9500; color: white; }
+        .insight-badge.action { background: #007aff; color: white; }
+
+        .insight-text {
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        @media (max-width: 768px) {
+            .exec-metrics {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .exec-header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .exec-metrics {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Conversion Funnel Styles */
+        .conversion-funnel {
+            background: white;
+            border: 2px solid #e1e5e9;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .funnel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .funnel-header h3 {
+            font-size: 1.3rem;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .funnel-stages {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .funnel-stage {
+            flex: 1;
+            min-width: 150px;
+            text-align: center;
+            padding: 20px 15px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            position: relative;
+        }
+
+        .funnel-stage.good {
+            background: linear-gradient(135deg, rgba(52,199,89,0.1) 0%, rgba(52,199,89,0.2) 100%);
+            border: 2px solid #34c759;
+        }
+
+        .funnel-stage.warning {
+            background: linear-gradient(135deg, rgba(255,149,0,0.1) 0%, rgba(255,149,0,0.2) 100%);
+            border: 2px solid #ff9500;
+        }
+
+        .funnel-stage-name {
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .funnel-stage-count {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .funnel-stage-rate {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .funnel-stage.good .funnel-stage-rate { color: #34c759; }
+        .funnel-stage.warning .funnel-stage-rate { color: #ff9500; }
+
+        .funnel-stage-target {
+            font-size: 0.75rem;
+            color: #999;
+            margin-top: 5px;
+        }
+
+        .funnel-arrow {
+            font-size: 1.5rem;
+            color: #ccc;
+        }
+
+        @media (max-width: 768px) {
+            .funnel-stages {
+                flex-direction: column;
+            }
+            .funnel-arrow {
+                transform: rotate(90deg);
+            }
+        }
+
+        /* Strategic Insights Section */
+        .strategic-insights {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border: 2px solid #dee2e6;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .strategic-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .strategic-header h3 {
+            font-size: 1.3rem;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .strategic-header .ai-badge {
+            background: linear-gradient(135deg, #007aff 0%, #5856d6 100%);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .insights-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .insights-column {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .insights-column h4 {
+            font-size: 1rem;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e1e5e9;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .insights-column.working h4 { color: #34c759; border-color: #34c759; }
+        .insights-column.attention h4 { color: #ff9500; border-color: #ff9500; }
+        .insights-column.actions h4 { color: #007aff; border-color: #007aff; }
+
+        .insight-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .insight-list li {
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: #555;
+        }
+
+        .insight-list li:last-child {
+            border-bottom: none;
+        }
+
+        .insight-metric {
+            display: block;
+            font-size: 0.8rem;
+            color: #999;
+            margin-top: 5px;
+        }
+
+        .insight-priority {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-right: 8px;
+        }
+
+        .insight-priority.high { background: #ff3b30; color: white; }
+        .insight-priority.medium { background: #ff9500; color: white; }
+        .insight-priority.low { background: #34c759; color: white; }
+
+        @media (max-width: 992px) {
+            .insights-grid {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 <body>
@@ -849,6 +1251,90 @@
                     </label>
                 </div>
                 <button class="refresh-btn" style="background: #ff3b30;" onclick="logout()">Logout</button>
+            </div>
+
+            <!-- Executive Summary Section -->
+            <div id="executiveSummary" class="executive-summary" style="display: none;">
+                <div class="exec-header">
+                    <h2>&#128202; Executive Summary</h2>
+                    <span class="period">7-Day Performance</span>
+                </div>
+                <div class="performance-score">
+                    <div class="score-circle" style="--score: 0;">
+                        <div class="score-inner">
+                            <span class="score-value" id="execScoreValue">--</span>
+                            <span class="score-label">Score</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="exec-metrics">
+                    <div class="exec-metric neutral" id="execEmailMetric">
+                        <div class="exec-metric-icon">&#9993;</div>
+                        <div class="exec-metric-value">--</div>
+                        <div class="exec-metric-label">Emails Sent</div>
+                        <div class="exec-metric-sub">Click Rate: --</div>
+                    </div>
+                    <div class="exec-metric neutral" id="execWebsiteMetric">
+                        <div class="exec-metric-icon">&#127760;</div>
+                        <div class="exec-metric-value">--</div>
+                        <div class="exec-metric-label">Website Users</div>
+                        <div class="exec-metric-sub">Engagement: --</div>
+                    </div>
+                    <div class="exec-metric neutral" id="execIOSMetric">
+                        <div class="exec-metric-icon">&#63743;</div>
+                        <div class="exec-metric-value">--</div>
+                        <div class="exec-metric-label">iOS Downloads</div>
+                        <div class="exec-metric-sub">Conversion: --</div>
+                    </div>
+                    <div class="exec-metric neutral" id="execAndroidMetric">
+                        <div class="exec-metric-icon">&#9679;</div>
+                        <div class="exec-metric-value">--</div>
+                        <div class="exec-metric-label">Android Installs</div>
+                        <div class="exec-metric-sub">Active: --</div>
+                    </div>
+                </div>
+                <div class="exec-insights" id="execKeyInsights">
+                    <h4>&#128161; Key Insights</h4>
+                    <div class="insight-item">
+                        <span class="insight-badge working">Loading</span>
+                        <span class="insight-text">Fetching AI-generated insights...</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Conversion Funnel Section -->
+            <div id="conversionFunnel" class="conversion-funnel" style="display: none;">
+                <div class="funnel-header">
+                    <h3>&#128200; Conversion Funnel</h3>
+                </div>
+                <div class="funnel-stages" id="funnelStages">
+                    <div class="funnel-stage">
+                        <div class="funnel-stage-name">Email Sent</div>
+                        <div class="funnel-stage-count" id="funnelEmailSent">--</div>
+                        <div class="funnel-stage-rate">100%</div>
+                    </div>
+                    <span class="funnel-arrow">&#8594;</span>
+                    <div class="funnel-stage" id="funnelWebsiteStage">
+                        <div class="funnel-stage-name">Website Visit</div>
+                        <div class="funnel-stage-count" id="funnelWebsite">--</div>
+                        <div class="funnel-stage-rate" id="funnelWebsiteRate">--%</div>
+                        <div class="funnel-stage-target">Target: 15%</div>
+                    </div>
+                    <span class="funnel-arrow">&#8594;</span>
+                    <div class="funnel-stage" id="funnelAppStoreStage">
+                        <div class="funnel-stage-name">App Store View</div>
+                        <div class="funnel-stage-count" id="funnelAppStore">--</div>
+                        <div class="funnel-stage-rate" id="funnelAppStoreRate">--%</div>
+                        <div class="funnel-stage-target">Target: 20%</div>
+                    </div>
+                    <span class="funnel-arrow">&#8594;</span>
+                    <div class="funnel-stage" id="funnelDownloadStage">
+                        <div class="funnel-stage-name">Download</div>
+                        <div class="funnel-stage-count" id="funnelDownload">--</div>
+                        <div class="funnel-stage-rate" id="funnelDownloadRate">--%</div>
+                        <div class="funnel-stage-target">Target: 40%</div>
+                    </div>
+                </div>
             </div>
 
             <!-- Tab Navigation -->
@@ -1000,47 +1486,82 @@
                     </table>
                 </div>
 
-                <!-- Email Campaign Performance (Firestore + GA4) -->
+                <!-- Email Campaign Performance by Campaign -->
                 <div class="section-card" id="emailCampaignSection">
-                    <h3>Email Campaign Performance <span style="font-size: 0.7rem; color: #999; background: #f0f0f0; padding: 2px 8px; border-radius: 4px; margin-left: 8px; font-weight: 400;">Firestore &middot; All Time</span></h3>
-                    <!-- Firestore Stats -->
-                    <div class="stats-grid" id="emailCampaignStats">
-                        <div class="stat-card">
-                            <h3>SENT</h3>
-                            <div class="stat-value green" id="emailSent">-</div>
-                            <div class="stat-label" id="emailProgress">of 0 total</div>
+                    <h3>Email Campaign Performance <span style="font-size: 0.7rem; color: #999; background: #f0f0f0; padding: 2px 8px; border-radius: 4px; margin-left: 8px; font-weight: 400;">Firestore &middot; Since Benchmark</span></h3>
+
+                    <!-- Three Campaign Cards -->
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 15px;">
+                        <!-- Main Campaign -->
+                        <div style="background: #f8f9fa; border-radius: 12px; padding: 15px; border-left: 4px solid #007AFF;">
+                            <h4 style="margin: 0 0 12px 0; color: #007AFF; font-size: 0.9rem;">MAIN CAMPAIGN</h4>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                <div>
+                                    <div style="font-size: 0.7rem; color: #666; text-transform: uppercase;">Sent</div>
+                                    <div style="font-size: 1.3rem; font-weight: 600; color: #34c759;" id="execMainSent">-</div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 0.7rem; color: #666; text-transform: uppercase;">Remaining</div>
+                                    <div style="font-size: 1.3rem; font-weight: 600; color: #007AFF;" id="execMainRemaining">-</div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 0.7rem; color: #666; text-transform: uppercase;">Clicked</div>
+                                    <div style="font-size: 1.3rem; font-weight: 600; color: #34c759;" id="execMainClicked">-</div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 0.7rem; color: #666; text-transform: uppercase;">Click Rate</div>
+                                    <div style="font-size: 1.3rem; font-weight: 600;" id="execMainClickRate">-</div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="stat-card">
-                            <h3>REMAINING</h3>
-                            <div class="stat-value" id="emailRemaining">-</div>
-                            <div class="stat-label">Not yet sent</div>
+
+                        <!-- Purchased Campaign -->
+                        <div style="background: #f8f9fa; border-radius: 12px; padding: 15px; border-left: 4px solid #FF9500;">
+                            <h4 style="margin: 0 0 12px 0; color: #FF9500; font-size: 0.9rem;">PURCHASED LEADS</h4>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                <div>
+                                    <div style="font-size: 0.7rem; color: #666; text-transform: uppercase;">Sent</div>
+                                    <div style="font-size: 1.3rem; font-weight: 600; color: #34c759;" id="execPurchasedSent">-</div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 0.7rem; color: #666; text-transform: uppercase;">Remaining</div>
+                                    <div style="font-size: 1.3rem; font-weight: 600; color: #FF9500;" id="execPurchasedRemaining">-</div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 0.7rem; color: #666; text-transform: uppercase;">Clicked</div>
+                                    <div style="font-size: 1.3rem; font-weight: 600; color: #34c759;" id="execPurchasedClicked">-</div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 0.7rem; color: #666; text-transform: uppercase;">Click Rate</div>
+                                    <div style="font-size: 1.3rem; font-weight: 600;" id="execPurchasedClickRate">-</div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="stat-card">
-                            <h3>FAILED</h3>
-                            <div class="stat-value red" id="emailFailed">-</div>
-                            <div class="stat-label">Delivery failures</div>
-                        </div>
-                        <div class="stat-card">
-                            <h3>CLICKED</h3>
-                            <div class="stat-value green" id="emailClicked">-</div>
-                            <div class="stat-label" id="emailClickRate">-</div>
+
+                        <!-- BFH Campaign -->
+                        <div style="background: #f8f9fa; border-radius: 12px; padding: 15px; border-left: 4px solid #AF52DE;">
+                            <h4 style="margin: 0 0 12px 0; color: #AF52DE; font-size: 0.9rem;">BFH CAMPAIGN</h4>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                <div>
+                                    <div style="font-size: 0.7rem; color: #666; text-transform: uppercase;">Sent</div>
+                                    <div style="font-size: 1.3rem; font-weight: 600; color: #34c759;" id="execBfhSent">-</div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 0.7rem; color: #666; text-transform: uppercase;">Remaining</div>
+                                    <div style="font-size: 1.3rem; font-weight: 600; color: #AF52DE;" id="execBfhRemaining">-</div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 0.7rem; color: #666; text-transform: uppercase;">Clicked</div>
+                                    <div style="font-size: 1.3rem; font-weight: 600; color: #34c759;" id="execBfhClicked">-</div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 0.7rem; color: #666; text-transform: uppercase;">Click Rate</div>
+                                    <div style="font-size: 1.3rem; font-weight: 600;" id="execBfhClickRate">-</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <!-- A/B Test Results -->
-                    <div id="emailAbTestSection" style="margin-top: 20px; display: none;">
-                        <h4 style="margin-bottom: 10px; color: #666;">A/B Test Results</h4>
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th>Subject Line</th>
-                                    <th>Sent</th>
-                                    <th>Clicked</th>
-                                    <th>Click Rate</th>
-                                </tr>
-                            </thead>
-                            <tbody id="emailAbTestBody"></tbody>
-                        </table>
-                    </div>
+
                     <!-- GA4 Campaign Traffic -->
                     <div id="emailGa4Traffic" style="margin-top: 20px; display: none;">
                         <h4 style="margin-bottom: 10px; color: #666;">Website Traffic from Email <span style="font-size: 0.7rem; color: #999; background: #f0f0f0; padding: 2px 8px; border-radius: 4px; margin-left: 4px; font-weight: 400;">GA4</span></h4>
@@ -1306,14 +1827,14 @@
                     <div class="campaign-tab active" onclick="switchEmailTab('main')">
                         Main Campaign <span class="tab-badge" id="emailMainTabBadge">-</span>
                     </div>
-                    <div class="campaign-tab" onclick="switchEmailTab('contacts')">
-                        Contacts Campaign <span class="tab-badge" id="emailContactsTabBadge">-</span>
-                    </div>
                     <div class="campaign-tab" onclick="switchEmailTab('purchased')">
                         Purchased Leads <span class="tab-badge" id="emailPurchasedTabBadge">-</span>
                     </div>
                     <div class="campaign-tab" onclick="switchEmailTab('bfh')">
                         BFH Campaign <span class="tab-badge" id="emailBfhTabBadge">-</span>
+                    </div>
+                    <div class="campaign-tab comparison" onclick="switchEmailTab('comparison')">
+                        &#128202; Comparison
                     </div>
                 </div>
 
@@ -1400,95 +1921,6 @@
                             </thead>
                             <tbody id="emailMainRecentSendsBody">
                                 <tr><td colspan="4" class="no-data-message">Loading...</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- Contacts Campaign Sub-Tab Content -->
-                <div id="emailContactsTab" class="campaign-content">
-                    <!-- Campaign Progress -->
-                    <h2 class="section-title">Campaign Progress <span class="campaign-label contacts">Contacts</span></h2>
-                    <div class="section-card" style="margin-bottom: 30px;">
-                        <h3>Overall Send Progress</h3>
-                        <div class="progress-bar-container">
-                            <div class="progress-bar" id="emailContactsProgressBar" style="width: 0%;">0%</div>
-                        </div>
-                        <div style="display: flex; justify-content: space-between; margin-top: 10px;">
-                            <span><strong id="emailContactsTotalSent">0</strong> sent</span>
-                            <span><strong id="emailContactsTotalRemaining">0</strong> remaining</span>
-                            <span><strong id="emailContactsTotalContacts">0</strong> total</span>
-                        </div>
-                    </div>
-
-                    <!-- Sending Activity -->
-                    <h2 class="section-title">Sending Activity</h2>
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <h3>Sent Today</h3>
-                            <div class="stat-value green" id="emailContactsSentToday">-</div>
-                            <div class="stat-label">Since midnight PT</div>
-                        </div>
-                        <div class="stat-card">
-                            <h3>Sent (24h)</h3>
-                            <div class="stat-value" id="emailContactsSent24h">-</div>
-                            <div class="stat-label">Last 24 hours</div>
-                        </div>
-                        <div class="stat-card">
-                            <h3>Failed</h3>
-                            <div class="stat-value red" id="emailContactsFailed">-</div>
-                            <div class="stat-label">Delivery failures (all time)</div>
-                        </div>
-                    </div>
-
-                    <!-- Click Performance -->
-                    <h2 class="section-title">Click Performance <span class="source-label">Firestore</span></h2>
-                    <div class="stats-grid">
-                        <div class="stat-card success">
-                            <h3>Total Clicks</h3>
-                            <div class="stat-value green" id="emailContactsTotalClicked">-</div>
-                            <div class="stat-label">Unique contacts who clicked</div>
-                        </div>
-                        <div class="stat-card">
-                            <h3>Click Rate</h3>
-                            <div class="stat-value" id="emailContactsClickRate">-</div>
-                            <div class="stat-label">Clicked / Sent</div>
-                        </div>
-                    </div>
-
-                    <!-- A/B Test Performance -->
-                    <h2 class="section-title">A/B Test Performance <span class="source-label">Firestore</span></h2>
-                    <div class="section-card">
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th>Subject Line</th>
-                                    <th>Sent</th>
-                                    <th>Clicked</th>
-                                    <th>Click Rate</th>
-                                </tr>
-                            </thead>
-                            <tbody id="emailContactsAbTestBody">
-                                <tr><td colspan="4" class="no-data-message">Loading...</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!-- Recent Sends (includes Company column) -->
-                    <h2 class="section-title">Recent Sends</h2>
-                    <div class="section-card">
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th>Time (PT)</th>
-                                    <th>Email</th>
-                                    <th>Company</th>
-                                    <th>Variant</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody id="emailContactsRecentSendsBody">
-                                <tr><td colspan="5" class="no-data-message">Loading...</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -1663,6 +2095,71 @@
                     </div>
                 </div>
 
+                <!-- Campaign Comparison Tab Content -->
+                <div id="emailComparisonTab" class="campaign-content">
+                    <h2 class="section-title">&#128202; Campaign Performance Comparison</h2>
+
+                    <!-- All Campaigns Summary Table -->
+                    <div class="section-card" style="margin-bottom: 30px;">
+                        <h3>All Campaigns Side-by-Side</h3>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Campaign</th>
+                                    <th>Total</th>
+                                    <th>Sent</th>
+                                    <th>Clicked</th>
+                                    <th>Click Rate</th>
+                                    <th>Best Variant</th>
+                                </tr>
+                            </thead>
+                            <tbody id="campaignComparisonTable">
+                                <tr><td colspan="6" class="no-data-message">Loading...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- A/B Test Winners -->
+                    <div class="section-card" style="margin-bottom: 30px;">
+                        <h3>&#127942; A/B Test Winners</h3>
+                        <div id="abTestWinners" class="stats-grid">
+                            <div class="stat-card">
+                                <h3>Best Overall Variant</h3>
+                                <div class="stat-value green" id="bestOverallVariant">-</div>
+                                <div class="stat-label" id="bestOverallVariantRate">-</div>
+                            </div>
+                            <div class="stat-card">
+                                <h3>Best Campaign</h3>
+                                <div class="stat-value" id="bestCampaign">-</div>
+                                <div class="stat-label" id="bestCampaignRate">-</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Purchased Leads ROI -->
+                    <div class="section-card" style="margin-bottom: 30px;">
+                        <h3>&#128176; Purchased Leads ROI by Source</h3>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Source</th>
+                                    <th>Total Leads</th>
+                                    <th>Sent</th>
+                                    <th>Clicked</th>
+                                    <th>Click Rate</th>
+                                    <th>Cost/Click</th>
+                                </tr>
+                            </thead>
+                            <tbody id="purchasedLeadsRoiTable">
+                                <tr><td colspan="6" class="no-data-message">Loading...</td></tr>
+                            </tbody>
+                        </table>
+                        <div id="bestSourceHighlight" style="margin-top: 15px; padding: 15px; background: #f8f9fa; border-radius: 8px; display: none;">
+                            <strong>&#127775; Best ROI Source:</strong> <span id="bestSourceName">-</span>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- GA4 Email Campaign Traffic (shared between both) -->
                 <div class="section-card" id="emailGa4TrafficDetailed" style="margin-top: 30px;">
                     <h3>Website Traffic from Email <span class="source-label">GA4 &middot; Last 24 Hours</span></h3>
@@ -1672,8 +2169,23 @@
                 </div>
             </div>
 
+            <!-- Strategic Insights Section (After all tabs) -->
+            <div id="strategicInsightsSection" class="strategic-insights" style="display: none;">
+                <div class="strategic-header">
+                    <h3>&#128161; Strategic Insights</h3>
+                    <span class="ai-badge">AI Generated</span>
+                </div>
+                <div id="strategicInsightsContent">
+                    <p class="no-data-message">Loading strategic insights...</p>
+                </div>
+            </div>
+
             <!-- Timestamp -->
             <div class="timestamp" id="lastUpdate"></div>
+            <!-- Benchmark Date Badge -->
+            <div class="benchmark-badge" id="benchmarkBadge" style="display: none;">
+                📊 <strong>Fresh Start Mode</strong> — Data filtered from <span id="benchmarkDateDisplay"></span>
+            </div>
         </div>
     </div>
 
@@ -1700,7 +2212,10 @@
             'mobile_first_v6': 'V6: "Using AI to Build Your Direct Sales Team"',
             'mobile_first_v7': 'V7: "The future of direct sales is here"',
             'mobile_first_v8': 'V8: "Not an opportunity. Just a tool."',
-            // Purchased leads campaign
+            // Purchased leads campaign (current: v11a/v12a)
+            'purchased_v11a': 'V11a: "Not an opportunity. Just a tool."',
+            'purchased_v12a': 'V12a: "AI is changing how teams grow"',
+            // Purchased leads campaign (legacy)
             'purchased_v7': 'V7: "The future of direct sales is here"',
             'purchased_v8': 'V8: "Not an opportunity. Just a tool."',
             'purchased_v9a': 'V9a: "Not an opportunity. Just a tool."',
@@ -1840,6 +2355,13 @@
 
         // Display Functions
         function displayData() {
+            // Display new unified sections first
+            displayExecutiveSummary();
+            displayConversionFunnel();
+            displayStrategicInsights();
+            displayCampaignComparison();
+
+            // Then display tab-specific data
             displayWebsiteData();
             displayEmailData();
             displayIOSData();
@@ -1847,6 +2369,17 @@
 
             const timestamp = new Date(analyticsData.generatedAt);
             document.getElementById('lastUpdate').textContent = `Last updated: ${timestamp.toLocaleString()}`;
+
+            // Display benchmark date badge if active
+            const benchmarkBadge = document.getElementById('benchmarkBadge');
+            if (analyticsData.benchmarkActive && analyticsData.benchmarkDate) {
+                const benchmarkDate = new Date(analyticsData.benchmarkDate + 'T00:00:00');
+                const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                document.getElementById('benchmarkDateDisplay').textContent = benchmarkDate.toLocaleDateString('en-US', options);
+                benchmarkBadge.style.display = 'block';
+            } else {
+                benchmarkBadge.style.display = 'none';
+            }
         }
 
         function displayWebsiteData() {
@@ -2070,37 +2603,29 @@
                 eventsSection.style.display = 'none';
             }
 
-            // Email Campaign - Firestore stats (top-level) + GA4 traffic (date-range)
-            const emailStats = analyticsData.emailCampaign;
-            if (emailStats) {
-                document.getElementById('emailSent').textContent = formatNumber(emailStats.sent || 0);
-                document.getElementById('emailRemaining').textContent = formatNumber(emailStats.remaining || 0);
-                document.getElementById('emailFailed').textContent = formatNumber(emailStats.failed || 0);
-                document.getElementById('emailClicked').textContent = formatNumber(emailStats.clicked || 0);
-                document.getElementById('emailClickRate').textContent = emailStats.clickRate || '0%';
-                document.getElementById('emailProgress').textContent = `of ${formatNumber(emailStats.total || 0)} total`;
+            // Email Campaign Performance - Individual campaign stats from emailCampaigns.campaigns
+            const campaigns = analyticsData?.emailCampaigns?.campaigns;
+            if (campaigns) {
+                // Main Campaign
+                const main = campaigns.main || {};
+                document.getElementById('execMainSent').textContent = formatNumber(main.sent || 0);
+                document.getElementById('execMainRemaining').textContent = formatNumber(main.remaining || 0);
+                document.getElementById('execMainClicked').textContent = formatNumber(main.clicked || 0);
+                document.getElementById('execMainClickRate').textContent = main.clickRate || '0%';
 
-                // A/B Test Results (current V9/V10 4-way test + legacy V7/V8)
-                const subjectLines = (emailStats.subjectLines || []).filter(s =>
-                    s.subjectTag === 'main_v9a' || s.subjectTag === 'main_v9b' ||
-                    s.subjectTag === 'main_v10a' || s.subjectTag === 'main_v10b' ||
-                    s.subjectTag === 'mobile_first_v7' || s.subjectTag === 'mobile_first_v8'
-                );
-                const abTestBody = document.getElementById('emailAbTestBody');
-                const abTestSection = document.getElementById('emailAbTestSection');
-                if (subjectLines.length > 0) {
-                    abTestSection.style.display = 'block';
-                    abTestBody.innerHTML = subjectLines.map(s => `
-                        <tr>
-                            <td>${escapeHtml(SUBJECT_LABELS[s.subjectTag] || s.subjectTag)}</td>
-                            <td>${formatNumber(s.sent)}</td>
-                            <td>${formatNumber(s.clicked)}</td>
-                            <td>${s.clickRate}</td>
-                        </tr>
-                    `).join('');
-                } else {
-                    abTestSection.style.display = 'none';
-                }
+                // Purchased Campaign
+                const purchased = campaigns.purchased || {};
+                document.getElementById('execPurchasedSent').textContent = formatNumber(purchased.sent || 0);
+                document.getElementById('execPurchasedRemaining').textContent = formatNumber(purchased.remaining || 0);
+                document.getElementById('execPurchasedClicked').textContent = formatNumber(purchased.clicked || 0);
+                document.getElementById('execPurchasedClickRate').textContent = purchased.clickRate || '0%';
+
+                // BFH Campaign
+                const bfh = campaigns.bfh || {};
+                document.getElementById('execBfhSent').textContent = formatNumber(bfh.sent || 0);
+                document.getElementById('execBfhRemaining').textContent = formatNumber(bfh.remaining || 0);
+                document.getElementById('execBfhClicked').textContent = formatNumber(bfh.clicked || 0);
+                document.getElementById('execBfhClickRate').textContent = bfh.clickRate || '0%';
             }
 
             // GA4 Campaign Traffic (from date-range website data)
@@ -2172,7 +2697,6 @@
             if (!emailStatsData) {
                 // No email stats data available
                 document.getElementById('emailMainTabBadge').textContent = '-';
-                document.getElementById('emailContactsTabBadge').textContent = '-';
                 document.getElementById('emailPurchasedTabBadge').textContent = '-';
                 document.getElementById('emailBfhTabBadge').textContent = '-';
                 return;
@@ -2180,22 +2704,21 @@
 
             // Update tab badges
             document.getElementById('emailMainTabBadge').textContent = formatNumber(emailStatsData.campaign?.sent || 0) + ' sent';
-            if (emailStatsData.contactsCampaign) {
-                document.getElementById('emailContactsTabBadge').textContent = formatNumber(emailStatsData.contactsCampaign.campaign?.sent || 0) + ' sent';
-            }
 
             // ==================== MAIN CAMPAIGN ====================
-            // Campaign progress
-            const total = emailStatsData.campaign?.total || 1;
+            // Campaign progress - In benchmark mode, show progress relative to remaining emails
+            // The "total" shown is remaining emails (5.9K), not historical total (17.9K)
             const sent = emailStatsData.campaign?.sent || 0;
             const remaining = emailStatsData.campaign?.remaining || 0;
-            const progress = (sent / total * 100);
+            const benchmarkTotal = sent + remaining; // Total = sent since benchmark + remaining
+            const progress = benchmarkTotal > 0 ? (sent / benchmarkTotal * 100) : 0;
 
             document.getElementById('emailMainProgressBar').style.width = progress + '%';
             document.getElementById('emailMainProgressBar').textContent = progress.toFixed(1) + '%';
             document.getElementById('emailMainTotalSent').textContent = formatNumber(sent);
             document.getElementById('emailMainTotalRemaining').textContent = formatNumber(remaining);
-            document.getElementById('emailMainTotalContacts').textContent = formatNumber(emailStatsData.campaign?.total || 0);
+            // Show benchmarkTotal (sent + remaining) as the total, not historical total
+            document.getElementById('emailMainTotalContacts').textContent = formatNumber(benchmarkTotal);
 
             // Sending activity
             document.getElementById('emailMainSentToday').textContent = formatNumber(emailStatsData.today?.sent || 0);
@@ -2259,83 +2782,6 @@
                 tbody.innerHTML = '<tr><td colspan="4" class="no-data-message">No recent sends</td></tr>';
             }
 
-            // ==================== CONTACTS CAMPAIGN ====================
-            if (emailStatsData.contactsCampaign) {
-                const cc = emailStatsData.contactsCampaign;
-
-                // Campaign progress
-                const ccTotal = cc.campaign?.total || 1;
-                const ccSent = cc.campaign?.sent || 0;
-                const ccProgress = (ccSent / ccTotal * 100);
-
-                document.getElementById('emailContactsProgressBar').style.width = ccProgress + '%';
-                document.getElementById('emailContactsProgressBar').textContent = ccProgress.toFixed(1) + '%';
-                document.getElementById('emailContactsTotalSent').textContent = formatNumber(ccSent);
-                document.getElementById('emailContactsTotalRemaining').textContent = formatNumber(cc.campaign?.remaining || 0);
-                document.getElementById('emailContactsTotalContacts').textContent = formatNumber(cc.campaign?.total || 0);
-
-                // Sending activity
-                document.getElementById('emailContactsSentToday').textContent = formatNumber(cc.today?.sent || 0);
-                document.getElementById('emailContactsSent24h').textContent = formatNumber(cc.last24h?.sent || 0);
-
-                // Click performance
-                if (cc.tracking) {
-                    document.getElementById('emailContactsFailed').textContent = formatNumber(cc.tracking.failed || 0);
-                    document.getElementById('emailContactsTotalClicked').textContent = formatNumber(cc.tracking.clicked || 0);
-                    document.getElementById('emailContactsClickRate').textContent = cc.tracking.clickRate || '0%';
-                }
-
-                // A/B test performance
-                const contactsAbBody = document.getElementById('emailContactsAbTestBody');
-                const contactsSubjectLines = (cc.subjectLines || []).filter(sl =>
-                    sl.subjectTag === 'mobile_first_v7' || sl.subjectTag === 'mobile_first_v8'
-                );
-                if (contactsSubjectLines.length > 0) {
-                    const sorted = [...contactsSubjectLines].sort((a, b) => {
-                        return parseFloat(b.clickRate) - parseFloat(a.clickRate);
-                    });
-                    const winnerTag = sorted[0].subjectTag;
-
-                    contactsAbBody.innerHTML = contactsSubjectLines.map(sl => {
-                        const label = SUBJECT_LABELS[sl.subjectTag] || sl.subjectTag;
-                        const isWinner = sl.subjectTag === winnerTag && contactsSubjectLines.length > 1;
-                        const badgeClass = getBadgeClass(sl.subjectTag);
-                        return `
-                            <tr class="${isWinner ? 'ab-winner' : ''}">
-                                <td>${escapeHtml(label)} ${isWinner ? '<span class="badge badge-clicked">LEADING</span>' : ''}</td>
-                                <td>${formatNumber(sl.sent)}</td>
-                                <td>${formatNumber(sl.clicked)}</td>
-                                <td><span class="badge ${badgeClass}">${sl.clickRate}</span></td>
-                            </tr>
-                        `;
-                    }).join('');
-                } else {
-                    contactsAbBody.innerHTML = '<tr><td colspan="4" class="no-data-message">No A/B test data</td></tr>';
-                }
-
-                // Recent sends (includes company column)
-                const contactsTbody = document.getElementById('emailContactsRecentSendsBody');
-                if (cc.recentSends && cc.recentSends.length > 0) {
-                    contactsTbody.innerHTML = cc.recentSends.map(send => {
-                        const variantBadge = getVariantBadge(send.subjectTag);
-                        const statusBadge = send.clicked
-                            ? '<span class="badge badge-clicked">Clicked</span>'
-                            : '<span class="badge badge-sent">Sent</span>';
-                        return `
-                            <tr>
-                                <td>${escapeHtml(send.time || '')}</td>
-                                <td>${escapeHtml(send.email || '')}</td>
-                                <td>${escapeHtml(send.company || '-')}</td>
-                                <td>${variantBadge}</td>
-                                <td>${statusBadge}</td>
-                            </tr>
-                        `;
-                    }).join('');
-                } else {
-                    contactsTbody.innerHTML = '<tr><td colspan="5" class="no-data-message">No recent sends</td></tr>';
-                }
-            }
-
             // ==================== PURCHASED LEADS CAMPAIGN ====================
             if (emailStatsData.purchasedCampaign) {
                 const pc = emailStatsData.purchasedCampaign;
@@ -2365,6 +2811,7 @@
                 // A/B test performance
                 const purchasedAbBody = document.getElementById('emailPurchasedAbTestBody');
                 const purchasedSubjectLines = (pc.subjectLines || []).filter(sl =>
+                    sl.subjectTag === 'purchased_v11a' || sl.subjectTag === 'purchased_v12a' ||
                     sl.subjectTag === 'purchased_v10a' || sl.subjectTag === 'purchased_v10b' ||
                     sl.subjectTag === 'purchased_v9a' || sl.subjectTag === 'purchased_v9b' ||
                     sl.subjectTag === 'purchased_v7' || sl.subjectTag === 'purchased_v8'
@@ -2646,6 +3093,102 @@
                 return 'badge-v1';
             }
             return 'badge-v2';
+        }
+
+        // Campaign Comparison Display
+        function displayCampaignComparison() {
+            const campaigns = analyticsData?.emailCampaigns?.campaigns;
+            const totals = analyticsData?.emailCampaigns?.totals;
+            const bestCampaign = analyticsData?.emailCampaigns?.bestCampaign;
+            const bestVariant = analyticsData?.emailCampaigns?.bestOverallVariant;
+            const purchasedROI = analyticsData?.purchasedLeadsROI;
+
+            // Campaign Comparison Table
+            const compTable = document.getElementById('campaignComparisonTable');
+            if (campaigns) {
+                let html = '';
+                const campaignList = [
+                    { key: 'main', name: 'Main', data: campaigns.main },
+                    { key: 'purchased', name: 'Purchased', data: campaigns.purchased },
+                    { key: 'bfh', name: 'BFH', data: campaigns.bfh }
+                ];
+
+                campaignList.forEach(c => {
+                    const d = c.data || {};
+                    const bestVar = d.bestVariant ? `${d.bestVariant.subjectTag} (${d.bestVariant.clickRate}%)` : '-';
+                    const isBest = bestCampaign?.name === c.name;
+                    html += `
+                        <tr${isBest ? ' style="background: rgba(52,199,89,0.1);"' : ''}>
+                            <td><strong>${c.name}</strong>${isBest ? ' &#127942;' : ''}</td>
+                            <td>${formatNumber(d.total || 0)}</td>
+                            <td>${formatNumber(d.sent || 0)}</td>
+                            <td>${formatNumber(d.clicked || 0)}</td>
+                            <td><strong>${d.clickRate || '0%'}</strong></td>
+                            <td>${bestVar}</td>
+                        </tr>
+                    `;
+                });
+
+                // Add totals row
+                if (totals) {
+                    html += `
+                        <tr style="background: #f0f0f0; font-weight: bold;">
+                            <td>TOTAL</td>
+                            <td>-</td>
+                            <td>${formatNumber(totals.totalSent || 0)}</td>
+                            <td>${formatNumber(totals.totalClicked || 0)}</td>
+                            <td>${totals.overallClickRate || '0%'}</td>
+                            <td>-</td>
+                        </tr>
+                    `;
+                }
+
+                compTable.innerHTML = html;
+            } else {
+                compTable.innerHTML = '<tr><td colspan="6" class="no-data-message">No campaign data available</td></tr>';
+            }
+
+            // Best Variant and Campaign
+            if (bestVariant) {
+                document.getElementById('bestOverallVariant').textContent = bestVariant.subjectTag || '-';
+                document.getElementById('bestOverallVariantRate').textContent = `${bestVariant.clickRate || '0'}% click rate (${bestVariant.campaign || ''})`;
+            }
+            if (bestCampaign) {
+                document.getElementById('bestCampaign').textContent = bestCampaign.name || '-';
+                document.getElementById('bestCampaignRate').textContent = bestCampaign.clickRate || '-';
+            }
+
+            // Purchased Leads ROI Table
+            const roiTable = document.getElementById('purchasedLeadsRoiTable');
+            if (purchasedROI && purchasedROI.bySource && Object.keys(purchasedROI.bySource).length > 0) {
+                let roiHtml = '';
+                const sources = Object.entries(purchasedROI.bySource);
+
+                sources.forEach(([source, data]) => {
+                    const isBest = purchasedROI.bestSource === source;
+                    roiHtml += `
+                        <tr${isBest ? ' style="background: rgba(52,199,89,0.1);"' : ''}>
+                            <td><strong>${source}</strong>${isBest ? ' &#127775;' : ''}</td>
+                            <td>${formatNumber(data.liveTotal || data.totalLeads || 0)}</td>
+                            <td>${formatNumber(data.liveSent || data.totalSent || 0)}</td>
+                            <td>${formatNumber(data.liveClicked || data.totalClicked || 0)}</td>
+                            <td><strong>${data.liveClickRate || data.clickRate || '0%'}</strong></td>
+                            <td>${data.costPerClick || 'N/A'}</td>
+                        </tr>
+                    `;
+                });
+
+                roiTable.innerHTML = roiHtml;
+
+                // Best source highlight
+                if (purchasedROI.bestSource) {
+                    document.getElementById('bestSourceHighlight').style.display = 'block';
+                    document.getElementById('bestSourceName').textContent = purchasedROI.bestSource;
+                }
+            } else {
+                roiTable.innerHTML = '<tr><td colspan="6" class="no-data-message">No purchased leads ROI data available</td></tr>';
+                document.getElementById('bestSourceHighlight').style.display = 'none';
+            }
         }
 
         function displayIOSData() {
@@ -3213,6 +3756,223 @@
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
+        }
+
+        // ==============================
+        // Executive Summary & Funnel Display
+        // ==============================
+
+        function displayExecutiveSummary() {
+            const summary = analyticsData?.executiveSummary;
+            if (!summary) {
+                document.getElementById('executiveSummary').style.display = 'none';
+                return;
+            }
+
+            document.getElementById('executiveSummary').style.display = 'block';
+
+            // Performance Score
+            const score = summary.performanceScore || 0;
+            const scoreCircle = document.querySelector('.score-circle');
+            if (scoreCircle) {
+                scoreCircle.style.setProperty('--score', score);
+            }
+            document.getElementById('execScoreValue').textContent = score;
+
+            // Email Metrics
+            const emailMetric = document.getElementById('execEmailMetric');
+            const emailData = summary.email || {};
+            emailMetric.querySelector('.exec-metric-value').textContent = formatNumber(emailData.totalSent || 0);
+            emailMetric.querySelector('.exec-metric-sub').textContent = `Click Rate: ${emailData.overallClickRate || '0%'}`;
+            const emailClickRate = parseFloat(emailData.overallClickRate || '0');
+            emailMetric.className = 'exec-metric ' + (emailClickRate >= 3.5 ? 'good' : emailClickRate >= 2 ? 'neutral' : 'warning');
+
+            // Website Metrics
+            const websiteMetric = document.getElementById('execWebsiteMetric');
+            const websiteData = summary.website || {};
+            websiteMetric.querySelector('.exec-metric-value').textContent = formatNumber(websiteData.users || 0);
+            websiteMetric.querySelector('.exec-metric-sub').textContent = `Engagement: ${websiteData.engagementRate || 0}%`;
+            const engagement = websiteData.engagementRate || 0;
+            websiteMetric.className = 'exec-metric ' + (engagement >= 40 ? 'good' : engagement >= 25 ? 'neutral' : 'warning');
+
+            // iOS Metrics
+            const iosMetric = document.getElementById('execIOSMetric');
+            const iosData = summary.ios || {};
+            iosMetric.querySelector('.exec-metric-value').textContent = formatNumber(iosData.downloads || 0);
+            iosMetric.querySelector('.exec-metric-sub').textContent = `Conversion: ${iosData.conversion || 'N/A'}`;
+            const iosConv = parseFloat(iosData.conversion || '0');
+            iosMetric.className = 'exec-metric ' + (iosConv >= 4 ? 'good' : iosConv >= 2 ? 'neutral' : 'warning');
+
+            // Android Metrics
+            const androidMetric = document.getElementById('execAndroidMetric');
+            const androidData = summary.android || {};
+            androidMetric.querySelector('.exec-metric-value').textContent = formatNumber(androidData.recentInstalls || 0);
+            androidMetric.querySelector('.exec-metric-sub').textContent = `Active: ${formatNumber(androidData.activeInstalls || 0)}`;
+            const androidInstalls = androidData.recentInstalls || 0;
+            androidMetric.className = 'exec-metric ' + (androidInstalls >= 30 ? 'good' : androidInstalls >= 10 ? 'neutral' : 'warning');
+
+            // Key Insights - use strategic insights if available
+            displayExecKeyInsights();
+        }
+
+        function displayExecKeyInsights() {
+            const insights = analyticsData?.strategicInsights?.insights;
+            const container = document.getElementById('execKeyInsights');
+
+            if (!insights) {
+                container.innerHTML = `
+                    <h4>&#128161; Key Insights</h4>
+                    <div class="insight-item">
+                        <span class="insight-badge warning">Loading</span>
+                        <span class="insight-text">AI-generated insights not available</span>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '<h4>&#128161; Key Insights</h4>';
+
+            // Show top working item
+            if (insights.whatsWorking && insights.whatsWorking.length > 0) {
+                const working = insights.whatsWorking[0];
+                html += `
+                    <div class="insight-item">
+                        <span class="insight-badge working">Working</span>
+                        <span class="insight-text">${working.insight || working}</span>
+                    </div>
+                `;
+            }
+
+            // Show top attention item
+            if (insights.needsAttention && insights.needsAttention.length > 0) {
+                const attention = insights.needsAttention[0];
+                html += `
+                    <div class="insight-item">
+                        <span class="insight-badge warning">Attention</span>
+                        <span class="insight-text">${attention.issue || attention}</span>
+                    </div>
+                `;
+            }
+
+            // Show top action item
+            if (insights.recommendedActions && insights.recommendedActions.length > 0) {
+                const action = insights.recommendedActions[0];
+                html += `
+                    <div class="insight-item">
+                        <span class="insight-badge action">Action</span>
+                        <span class="insight-text">${action.action || action}</span>
+                    </div>
+                `;
+            }
+
+            container.innerHTML = html;
+        }
+
+        function displayConversionFunnel() {
+            const funnel = analyticsData?.conversionFunnel;
+            if (!funnel || !funnel.stages) {
+                document.getElementById('conversionFunnel').style.display = 'none';
+                return;
+            }
+
+            document.getElementById('conversionFunnel').style.display = 'block';
+
+            const stages = funnel.stages;
+
+            // Email Sent
+            document.getElementById('funnelEmailSent').textContent = formatNumber(stages[0]?.count || 0);
+
+            // Website Visit
+            const websiteStage = document.getElementById('funnelWebsiteStage');
+            document.getElementById('funnelWebsite').textContent = formatNumber(stages[1]?.count || 0);
+            document.getElementById('funnelWebsiteRate').textContent = stages[1]?.percentage || '--%';
+            websiteStage.className = 'funnel-stage ' + (stages[1]?.status || 'neutral');
+
+            // App Store View
+            const appStoreStage = document.getElementById('funnelAppStoreStage');
+            document.getElementById('funnelAppStore').textContent = formatNumber(stages[2]?.count || 0);
+            document.getElementById('funnelAppStoreRate').textContent = stages[2]?.percentage || '--%';
+            appStoreStage.className = 'funnel-stage ' + (stages[2]?.status || 'neutral');
+
+            // Download
+            const downloadStage = document.getElementById('funnelDownloadStage');
+            document.getElementById('funnelDownload').textContent = formatNumber(stages[3]?.count || 0);
+            document.getElementById('funnelDownloadRate').textContent = stages[3]?.percentage || '--%';
+            downloadStage.className = 'funnel-stage ' + (stages[3]?.status || 'neutral');
+        }
+
+        function displayStrategicInsights() {
+            // This will be called to populate the full Strategic Insights section
+            const insights = analyticsData?.strategicInsights?.insights;
+            const container = document.getElementById('strategicInsightsContent');
+
+            if (!container) return;
+            if (!insights) {
+                container.innerHTML = '<p class="no-data-message">Strategic insights not available</p>';
+                return;
+            }
+
+            let html = '<div class="insights-grid">';
+
+            // What's Working column
+            html += `
+                <div class="insights-column working">
+                    <h4>&#10004; What's Working</h4>
+                    <ul class="insight-list">
+            `;
+            if (insights.whatsWorking && insights.whatsWorking.length > 0) {
+                insights.whatsWorking.forEach(item => {
+                    const text = typeof item === 'string' ? item : item.insight;
+                    const metric = typeof item === 'object' ? item.metric : '';
+                    html += `<li>${text}${metric ? `<span class="insight-metric">${metric}</span>` : ''}</li>`;
+                });
+            } else {
+                html += '<li>No data available</li>';
+            }
+            html += '</ul></div>';
+
+            // Needs Attention column
+            html += `
+                <div class="insights-column attention">
+                    <h4>&#9888; Needs Attention</h4>
+                    <ul class="insight-list">
+            `;
+            if (insights.needsAttention && insights.needsAttention.length > 0) {
+                insights.needsAttention.forEach(item => {
+                    const text = typeof item === 'string' ? item : item.issue;
+                    const metric = typeof item === 'object' ? item.metric : '';
+                    html += `<li>${text}${metric ? `<span class="insight-metric">${metric}</span>` : ''}</li>`;
+                });
+            } else {
+                html += '<li>No issues identified</li>';
+            }
+            html += '</ul></div>';
+
+            // Recommended Actions column
+            html += `
+                <div class="insights-column actions">
+                    <h4>&#128640; Recommended Actions</h4>
+                    <ul class="insight-list">
+            `;
+            if (insights.recommendedActions && insights.recommendedActions.length > 0) {
+                insights.recommendedActions.forEach(item => {
+                    const priority = typeof item === 'object' ? item.priority : 'MEDIUM';
+                    const action = typeof item === 'string' ? item : item.action;
+                    const impact = typeof item === 'object' ? item.expectedImpact : '';
+                    const priorityClass = (priority || 'medium').toLowerCase();
+                    html += `<li><span class="insight-priority ${priorityClass}">${priority}</span>${action}${impact ? `<span class="insight-metric">${impact}</span>` : ''}</li>`;
+                });
+            } else {
+                html += '<li>No actions recommended</li>';
+            }
+            html += '</ul></div>';
+
+            html += '</div>';
+            container.innerHTML = html;
+
+            // Show the section
+            const section = document.getElementById('strategicInsightsSection');
+            if (section) section.style.display = 'block';
         }
 
         function toggleAutoRefresh() {

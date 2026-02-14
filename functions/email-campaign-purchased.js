@@ -298,7 +298,7 @@ const sendPurchasedLeadsCampaign = onSchedule({
         if (result.success) {
           await doc.ref.update({
             sent: true,
-            sentAt: FieldValue.serverTimestamp(),
+            sentTimestamp: FieldValue.serverTimestamp(),
             status: 'sent',
             templateVersion: result.templateVariant,
             subjectTag: result.subjectTag,

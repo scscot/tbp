@@ -1,0 +1,5686 @@
+{
+  "generatedAt": "2026-02-13T19:13:22.939Z",
+  "totalContacts": 710,
+  "contacts": [
+    {
+      "firstName": "Erinn",
+      "lastName": "Norris",
+      "company": "Young Living Essential Oils",
+      "email": "erinn005@hotmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Tracy",
+      "lastName": "Robbins",
+      "company": "Rodan + Fields",
+      "email": "tracymrobbins@att.net",
+      "title": "Level V Executive Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Ophelia",
+      "lastName": "Woodfork",
+      "company": "Avon",
+      "email": "owoodfork@att.net",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Kyra",
+      "lastName": "Valadie",
+      "company": "Young Living Essential Oils",
+      "email": "kyravaladie@aol.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Kay",
+      "lastName": "Chiappetta",
+      "company": "Pampered Chef",
+      "email": "kay_chiappetta@yahoo.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Louise",
+      "lastName": "Bishopp",
+      "company": "Shaklee Corporation",
+      "email": "louisebishopp@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Melody",
+      "lastName": "Lindell",
+      "company": "Young Living Essential Oils",
+      "email": "melody.lindell@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Amanda",
+      "lastName": "Huner",
+      "company": "Shaklee Corporation",
+      "email": "manda_panda73@hotmail.com",
+      "title": "Independent Distributor, RN II, BSN",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Debbie",
+      "lastName": "Rang",
+      "company": "Young Living Essential Oils",
+      "email": "dglusk@hotmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Deborah",
+      "lastName": "Gruver",
+      "company": "PartyLite",
+      "email": "shudupdog2@aol.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Dianne",
+      "lastName": "Kalil",
+      "company": "Modere",
+      "email": "ladydiy@comcast.net",
+      "title": "Network Marketer",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Tammy",
+      "lastName": "Connelly",
+      "company": "LifeVantage Corporation",
+      "email": "tamconnelly3@sbcglobal.net",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Rachel",
+      "lastName": "Eastin",
+      "company": "Young Living Essential Oils",
+      "email": "rachel.eastin@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Sarh",
+      "lastName": "Snarski",
+      "company": "Avon",
+      "email": "jedilynn106@yahoo.com",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Lacie",
+      "lastName": "Hartlieb",
+      "company": "Young Living Essential Oils",
+      "email": "rlbdh04@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Jim",
+      "lastName": "Hargrove",
+      "company": "LifeVantage Corporation",
+      "email": "jimsing45@aol.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Diane",
+      "lastName": "Gatliff",
+      "company": "PartyLite",
+      "email": "gatliff86@yahoo.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Matthew",
+      "lastName": "Winkelman",
+      "company": "Young Living Essential Oils",
+      "email": "mattwinkdce@msn.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Jamie",
+      "lastName": "Watkins",
+      "company": "Tranont",
+      "email": "watkinshome@cox.net",
+      "title": "Associate",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Erika",
+      "lastName": "Davis",
+      "company": "It Works! Global",
+      "email": "erae711@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Stephany",
+      "lastName": "Russell",
+      "company": "Herbalife",
+      "email": "ronstepfred@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Judy",
+      "lastName": "Duhamel",
+      "company": "Avon",
+      "email": "ronjudedu@yahoo.com",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Kelvin",
+      "lastName": "Findlay",
+      "company": "LifeVantage Corporation",
+      "email": "kgfindlay6@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Autumn",
+      "lastName": "Cymbor",
+      "company": "Young Living Essential Oils",
+      "email": "autumnlc@comcast.net",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Joan",
+      "lastName": "Andersen",
+      "company": "Avon",
+      "email": "packerbackerjka@sbcglobal.net",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Mary",
+      "lastName": "Richard",
+      "company": "LifeVantage Corporation",
+      "email": "christophererichard@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Jane",
+      "lastName": "Kuter",
+      "company": "Shaklee Corporation",
+      "email": "janeku707@aol.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Monica",
+      "lastName": "Missner",
+      "company": "Young Living Essential Oils",
+      "email": "momis95@sbcglobal.net",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Deanna",
+      "lastName": "Board",
+      "company": "Young Living Essential Oils",
+      "email": "deanna.board@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Jen",
+      "lastName": "Nevil",
+      "company": "Young Living Essential Oils",
+      "email": "jetstudio@comcast.net",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Ivi",
+      "lastName": "Reyes",
+      "company": "Young Living Essential Oils",
+      "email": "ivireyes@aol.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Lucas",
+      "lastName": "Devaughn",
+      "company": "Young Living Essential Oils",
+      "email": "htcevo4g404@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Emily",
+      "lastName": "Lukk",
+      "company": "Herbalife",
+      "email": "emilylukk@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Tim",
+      "lastName": "Hicks",
+      "company": "Jeunesse Global",
+      "email": "golfmiester1@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Daniel",
+      "lastName": "Sakilayan",
+      "company": "Seacret Direct",
+      "email": "dsakilayan@gmail.com",
+      "title": "Skin Care Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Kerry",
+      "lastName": "Kornacki",
+      "company": "PartyLite",
+      "email": "kold75@aol.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Michael",
+      "lastName": "White",
+      "company": "Zurvita, Inc",
+      "email": "exceltobewell@gmail.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Susan",
+      "lastName": "Greig",
+      "company": "It Works! Global",
+      "email": "srgreig921@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Melodye",
+      "lastName": "Boldt",
+      "company": "Avon",
+      "email": "mbnutty@comcast.net",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Susan",
+      "lastName": "Fant",
+      "company": "Young Living Essential Oils",
+      "email": "susan.fant@verizon.net",
+      "title": "Health & Wellness Educator",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "David",
+      "lastName": "Munguia",
+      "company": "Herbalife",
+      "email": "munguiadavid26@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Demetra",
+      "lastName": "Howard",
+      "company": "It Works! Global",
+      "email": "demetrahoward85@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Kimberly",
+      "lastName": "Scholz",
+      "company": "Young Living Essential Oils",
+      "email": "austinpta@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Janet",
+      "lastName": "Perise",
+      "company": "Avon",
+      "email": "floydandflossy@yahoo.com",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Charlotte",
+      "lastName": "Parker",
+      "company": "Shaklee Corporation",
+      "email": "parkersleepyholo@aol.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Rose",
+      "lastName": "Hope",
+      "company": "Young Living Essential Oils",
+      "email": "rhope1225@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Jose",
+      "lastName": "Arcibar",
+      "company": "Herbalife",
+      "email": "damianarcibar@hotmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Jodi",
+      "lastName": "Skartvedt",
+      "company": "LifeVantage Corporation",
+      "email": "djskartvedt@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Regina",
+      "lastName": "Otun",
+      "company": "Young Living Essential Oils",
+      "email": "reginaotun@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Katrina",
+      "lastName": "Marowski",
+      "company": "SeneGence International",
+      "email": "joshjazzgrandma@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Sherry",
+      "lastName": "Carr",
+      "company": "Yoli",
+      "email": "sherry_carr@hotmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Greeley",
+      "lastName": "Fairo",
+      "company": "Market America, Inc.",
+      "email": "greeleyfairo@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Rhonda",
+      "lastName": "Dittfurth",
+      "company": "Young Living Essential Oils",
+      "email": "rbditt78@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Twana",
+      "lastName": "McCarroll-Tatum",
+      "company": "Avon",
+      "email": "twanamccarroll@yahoo.com",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Tatiana",
+      "lastName": "Lee",
+      "company": "Stella & Dot",
+      "email": "tatiana.lee@hotmail.com",
+      "title": "Stylist",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Crystal",
+      "lastName": "Macias",
+      "company": "Avon",
+      "email": "lovekm24@gmail.com",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Robin",
+      "lastName": "Gephart",
+      "company": "Shaklee Corporation",
+      "email": "drgephart@gmail.com",
+      "title": "Associate",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Nena",
+      "lastName": "Sledge",
+      "company": "Young Living Essential Oils",
+      "email": "nenasledge@hotmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Rhonda",
+      "lastName": "Ruffin",
+      "company": "Young Living Essential Oils",
+      "email": "brookeruffin@hotmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Arie",
+      "lastName": "Jeter",
+      "company": "Shaklee Corporation",
+      "email": "abjeter@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Rhiannon",
+      "lastName": "Cook",
+      "company": "SeneGence International",
+      "email": "rhiannonkendrick@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Renee",
+      "lastName": "Patterson",
+      "company": "Young Living Essential Oils",
+      "email": "nyreneemarie@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Alison",
+      "lastName": "Burns",
+      "company": "Rodan + Fields",
+      "email": "alison.ajw@gmail.com",
+      "title": "Independent Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Tina",
+      "lastName": "Abbott",
+      "company": "Young Living Essential Oils",
+      "email": "abbott0917tina@comcast.net",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Alanca",
+      "lastName": "Boedigheimer",
+      "company": "It Works! Global",
+      "email": "alancadb@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Edith",
+      "lastName": "Mikell-Dechabert",
+      "company": "Origami Owl",
+      "email": "carmeldelight728@aol.com",
+      "title": "Independent Designer",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Christy",
+      "lastName": "Trantham",
+      "company": "It Works! Global",
+      "email": "trantham.christy@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Youravon",
+      "lastName": "Amberleahy",
+      "company": "Avon",
+      "email": "youravon.amberleahy@gmail.com",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Mary",
+      "lastName": "Giangregorio",
+      "company": "Avon",
+      "email": "marygian57@yahoo.com",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Candice",
+      "lastName": "Deboer",
+      "company": "Young Living Essential Oils",
+      "email": "clarkcd119@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Hollie",
+      "lastName": "Tenberge",
+      "company": "PartyLite",
+      "email": "reeses_n_snow@hotmail.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Alice",
+      "lastName": "Cerqueira",
+      "company": "Young Living Essential Oils",
+      "email": "alice.cerqueira@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Tonya",
+      "lastName": "Swanson",
+      "company": "Young Living Essential Oils",
+      "email": "trswanson772@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Kristen",
+      "lastName": "Glenn",
+      "company": "Avon",
+      "email": "kristen.glenn1@yahoo.com",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Murielle",
+      "lastName": "Montione",
+      "company": "LifeVantage Corporation",
+      "email": "muriellemontione@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Taya",
+      "lastName": "Rose",
+      "company": "Stella & Dot",
+      "email": "tayarose@gmail.com",
+      "title": "Stylist",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Afton",
+      "lastName": "Henderson",
+      "company": "Young Living Essential Oils",
+      "email": "halfton08@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Mary",
+      "lastName": "Spadaro",
+      "company": "Shaklee Corporation",
+      "email": "mspadaro7@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Luisa",
+      "lastName": "Colarusso",
+      "company": "Rodan + Fields",
+      "email": "frankiecolarusso@aol.com",
+      "title": "Executive Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Jessi",
+      "lastName": "Duke",
+      "company": "Stella & Dot",
+      "email": "exprsgirl@gmail.com",
+      "title": "Stylist",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Tim",
+      "lastName": "Scott",
+      "company": "Total Life Changes, LLC",
+      "email": "tjscott29203@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Fernando",
+      "lastName": "Castillo",
+      "company": "Herbalife",
+      "email": "fercaspe@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Brian",
+      "lastName": "Taft",
+      "company": "4Life Research",
+      "email": "bandbtaft1200@sbcglobal.net",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Adina",
+      "lastName": "Belenko",
+      "company": "MONAT Global",
+      "email": "adina.belenko@aol.com",
+      "title": "Network Marketer",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Lindy",
+      "lastName": "Nevi",
+      "company": "Young Living Essential Oils",
+      "email": "linojoy@aol.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Sue",
+      "lastName": "Cusick",
+      "company": "Pampered Chef",
+      "email": "susancusick@comcast.net",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Chuck",
+      "lastName": "Crisell",
+      "company": "Young Living Essential Oils",
+      "email": "chuckcrisell@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Consuella",
+      "lastName": "Wilson",
+      "company": "Zurvita, Inc",
+      "email": "pampered4aka@yahoo.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Candy",
+      "lastName": "Harris",
+      "company": "PartyLite",
+      "email": "candy.harris86@yahoo.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Ellea",
+      "lastName": "Rubinstein",
+      "company": "Stella & Dot",
+      "email": "ellearubinstein@gmail.com",
+      "title": "Stylist",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Debie",
+      "lastName": "Lowe",
+      "company": "PartyLite",
+      "email": "debielowe@yahoo.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Nancy",
+      "lastName": "Nuccitelli",
+      "company": "Shaklee Corporation",
+      "email": "nancy.nuccitelli@gmail.com",
+      "title": "Ambassador",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Lynne",
+      "lastName": "Green",
+      "company": "Rodan + Fields",
+      "email": "green.lynne@sbcglobal.net",
+      "title": "LV Executive Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Laura",
+      "lastName": "Overstreet",
+      "company": "Avon",
+      "email": "loverstreet67@gmail.com",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Montel",
+      "lastName": "Olive",
+      "company": "Primerica",
+      "email": "lamont.olive@gmail.com",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Gwen",
+      "lastName": "Dahl",
+      "company": "Pampered Chef",
+      "email": "whitsscp827@aol.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Brenda",
+      "lastName": "Dempsey",
+      "company": "Stella & Dot",
+      "email": "annclark777@aol.com",
+      "title": "Stylist",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Kelly",
+      "lastName": "Gartner",
+      "company": "Stella & Dot",
+      "email": "ckgartner@yahoo.com",
+      "title": "Stylist",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Kimberly",
+      "lastName": "Basler",
+      "company": "Origami Owl",
+      "email": "kimberlylittlejohn@hotmail.com",
+      "title": "Independent Designer",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Keri",
+      "lastName": "Bankston",
+      "company": "Avon",
+      "email": "keri213@yahoo.com",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Sara",
+      "lastName": "Wallace",
+      "company": "Young Living Essential Oils",
+      "email": "saraelizabethwallace@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Laura",
+      "lastName": "Hamilton",
+      "company": "Seacret Direct",
+      "email": "lhamilton63@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Bill",
+      "lastName": "Becker",
+      "company": "LifeVantage Corporation",
+      "email": "skippy_horawitz@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Nicole",
+      "lastName": "Lynn",
+      "company": "It Works! Global",
+      "email": "nagraham2@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Terri",
+      "lastName": "Giles",
+      "company": "Young Living Essential Oils",
+      "email": "terrigileshomes@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Adam",
+      "lastName": "Halliburton",
+      "company": "LifeVantage Corporation",
+      "email": "halliburton35@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Kelly",
+      "lastName": "Bradley",
+      "company": "Avon",
+      "email": "no1liver@yahoo.com",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Andrew",
+      "lastName": "Beals",
+      "company": "Young Living Essential Oils",
+      "email": "andrewbealsmusic@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Carole",
+      "lastName": "Gottlieb",
+      "company": "Shaklee Corporation",
+      "email": "carole.gottlieb@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Susan",
+      "lastName": "Melillo",
+      "company": "Young Living Essential Oils",
+      "email": "sm1225866@aol.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Deanna",
+      "lastName": "Hendrickson",
+      "company": "Pure Romance",
+      "email": "prbydeanna@gmail.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Tiara",
+      "lastName": "Yoder",
+      "company": "Pink Zebra Home",
+      "email": "tiarayoder1@gmail.com",
+      "title": "Office Manager",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Kelly",
+      "lastName": "Lafferty",
+      "company": "Avon",
+      "email": "kellylafferty1980@yahoo.com",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Gina",
+      "lastName": "Shubert",
+      "company": "Avon",
+      "email": "outofcontrol_wi@yahoo.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Terri",
+      "lastName": "Obert",
+      "company": "Young Living Essential Oils",
+      "email": "tdo68@hotmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Sofia",
+      "lastName": "Kangas",
+      "company": "Young Living Essential Oils",
+      "email": "sisfia@hotmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "David",
+      "lastName": "Goodwyn",
+      "company": "Legal Shield & I.D. Shield",
+      "email": "davidgoodwyn@hotmail.com",
+      "title": "Independent Associate",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Jeannie",
+      "lastName": "Otterness",
+      "company": "Shaklee Corporation",
+      "email": "sanfordo11@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Sabrina",
+      "lastName": "Yvette",
+      "company": "Young Living Essential Oils",
+      "email": "sabrinaoneal@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Iwona",
+      "lastName": "Majewska",
+      "company": "Herbalife",
+      "email": "iwonamajewska5@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Lindi",
+      "lastName": "Ince",
+      "company": "Herbalife",
+      "email": "lindibarbell@cox.net",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Heather",
+      "lastName": "Noskowiak",
+      "company": "Tupperware",
+      "email": "hmbrandt@hotmail.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Debbie",
+      "lastName": "Dehner",
+      "company": "Avon",
+      "email": "debbiedehner@hotmail.com",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Julie",
+      "lastName": "Rose",
+      "company": "Shaklee Corporation",
+      "email": "jmrose560@msn.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Cindy",
+      "lastName": "Fernandez",
+      "company": "Avon",
+      "email": "cindyfernandez3@verizon.net",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Amy",
+      "lastName": "Young",
+      "company": "MONAT Global",
+      "email": "amy_g_young@yahoo.com",
+      "title": "Associate",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Jocelyn",
+      "lastName": "Roy",
+      "company": "Herbalife",
+      "email": "jocelyn.roy@aol.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Anna",
+      "lastName": "Neher",
+      "company": "Young Living Essential Oils",
+      "email": "annareedneher@aol.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Mindy",
+      "lastName": "Shannon",
+      "company": "Pure Romance",
+      "email": "mndysu16@comcast.net",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Brianne",
+      "lastName": "Balchune",
+      "company": "Pampered Chef",
+      "email": "sinnamon75@aol.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Trey",
+      "lastName": "Winfrey",
+      "company": "Herbalife",
+      "email": "treyl3var@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Lori",
+      "lastName": "Hickey",
+      "company": "Avon",
+      "email": "loris7672@yahoo.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Leon",
+      "lastName": "Thiessen",
+      "company": "4Life Research",
+      "email": "lthiessen@sbcglobal.net",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Miguel",
+      "lastName": "Tomola",
+      "company": "Forever Living Products (UK) Ltd",
+      "email": "mtomola@hotmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Margorie",
+      "lastName": "Jarvis",
+      "company": "Avon",
+      "email": "mcj6945@aol.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Michelle",
+      "lastName": "Valpredo",
+      "company": "Stella & Dot",
+      "email": "michelle_noward@yahoo.com",
+      "title": "Stylist",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Jean",
+      "lastName": "Raymond",
+      "company": "SeneGence International",
+      "email": "singinagain@comcast.net",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Carol",
+      "lastName": "Mondy",
+      "company": "Young Living Essential Oils",
+      "email": "mondy1952@hotmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Judy",
+      "lastName": "Ortiz",
+      "company": "Nu Skin",
+      "email": "jortiz7174@aol.com",
+      "title": "Independent Business Owner",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Melissa",
+      "lastName": "Echols",
+      "company": "LifeVantage Corporation",
+      "email": "missi715@gmail.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Nicole",
+      "lastName": "McKenna",
+      "company": "Traveling Vineyard",
+      "email": "nicole120966@yahoo.com",
+      "title": "Wine Consultant, Team Leader",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Erica",
+      "lastName": "Gentry",
+      "company": "Rodan + Fields",
+      "email": "pitmane@hotmail.com",
+      "title": "Independent Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Steve",
+      "lastName": "Garrett",
+      "company": "LifeVantage Corporation",
+      "email": "tvee@verizon.net",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Cecilia",
+      "lastName": "Hurlbut",
+      "company": "Young Living Essential Oils",
+      "email": "ceciliaexpress@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Jean",
+      "lastName": "Landry",
+      "company": "Mannatech Incorporated",
+      "email": "jland77@comcast.net",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "David",
+      "lastName": "Fields",
+      "company": "Market America, Inc.",
+      "email": "d.fields18@hotmail.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Tamara",
+      "lastName": "Kepner",
+      "company": "Young Living Essential Oils",
+      "email": "tamara.kepner@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Annie",
+      "lastName": "Wapelhorst",
+      "company": "Young Living Essential Oils",
+      "email": "abonesweetbone@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Linda",
+      "lastName": "Fulmer",
+      "company": "Rodan + Fields",
+      "email": "lindatc231@hotmail.com",
+      "title": "Independent Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Sylvia",
+      "lastName": "Santana",
+      "company": "It Works! Global",
+      "email": "travelchoice4u@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Shana",
+      "lastName": "Huff",
+      "company": "Herbalife",
+      "email": "shana-boo21@hotmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Lolita",
+      "lastName": "Sanon",
+      "company": "Avon",
+      "email": "dieurel@bellsouth.net",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Vernice",
+      "lastName": "Barmore",
+      "company": "Avon",
+      "email": "vdbarmore59@yahoo.com",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Joyce",
+      "lastName": "Feezor",
+      "company": "Avon",
+      "email": "tjfeez@sbcglobal.net",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Lisa",
+      "lastName": "Crispi",
+      "company": "Young Living Essential Oils",
+      "email": "stampinlane1@sbcglobal.net",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Amy",
+      "lastName": "Kirmer",
+      "company": "Herbalife",
+      "email": "kirmeram@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Sue",
+      "lastName": "Ashley",
+      "company": "Avon",
+      "email": "fusssue@aol.com",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Sara",
+      "lastName": "Vandemark",
+      "company": "Young Living Essential Oils",
+      "email": "saral910@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Kristi",
+      "lastName": "Jordan",
+      "company": "LifeVantage Corporation",
+      "email": "razorcitydiva@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "PR",
+      "lastName": "Beck",
+      "company": "Pure Romance",
+      "email": "prbymichelle@yahoo.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Gloria",
+      "lastName": "Williams",
+      "company": "Pampered Chef",
+      "email": "glothejack@gmail.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Michelle",
+      "lastName": "Bortolin",
+      "company": "Stella & Dot",
+      "email": "michelle.bortolin@comcast.net",
+      "title": "Stylist",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Denni",
+      "lastName": "Eisen",
+      "company": "Pine Forest Camp",
+      "email": "dennicamp@aol.com",
+      "title": "Assistant Camp Director",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Marluan",
+      "lastName": "Figueroa",
+      "company": "It Works! Global",
+      "email": "marluan.career@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Wendy",
+      "lastName": "Watson",
+      "company": "Avon",
+      "email": "lucylou147@yahoo.com",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Diana",
+      "lastName": "Gordon",
+      "company": "It Works! Global",
+      "email": "ldybird67@aol.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Danielle",
+      "lastName": "Downes",
+      "company": "It Works! Global",
+      "email": "ariete0416@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Jerry",
+      "lastName": "Hassler",
+      "company": "Avon",
+      "email": "jerry.hassler@gmail.com",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Sue",
+      "lastName": "Krista",
+      "company": "PartyLite",
+      "email": "waxandwix@verizon.net",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Sharon",
+      "lastName": "Whoolery",
+      "company": "Avon",
+      "email": "cafeteria012@yahoo.com",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Ryan",
+      "lastName": "Babe",
+      "company": "Herbalife",
+      "email": "ryancbabe@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Jeanette",
+      "lastName": "Peters",
+      "company": "Mary Kay Global",
+      "email": "pooh_girl76@yahoo.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Carol",
+      "lastName": "McDermit",
+      "company": "Avon",
+      "email": "carolmcdermit@yahoo.com",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Chasity",
+      "lastName": "Sanchez",
+      "company": "Young Living Essential Oils",
+      "email": "nicknchasitysanchez@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Carol",
+      "lastName": "Goldstein",
+      "company": "Sunrider International",
+      "email": "caroljoyandco@yahoo.com",
+      "title": "Independent Business Owner",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Gale",
+      "lastName": "Kuhenbeaker",
+      "company": "Shaklee Corporation",
+      "email": "blueladi@mail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Lynda",
+      "lastName": "Selby",
+      "company": "LifeVantage Corporation",
+      "email": "l.selby@juno.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Donnette",
+      "lastName": "Martin",
+      "company": "PartyLite",
+      "email": "likosink@comcast.net",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Alberto",
+      "lastName": "Siri",
+      "company": "4Life Research",
+      "email": "serious.fitness@live.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Jessica",
+      "lastName": "Marks",
+      "company": "Stella & Dot",
+      "email": "jessmarks77@yahoo.com",
+      "title": "Stylist",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Amy",
+      "lastName": "Vandervoort",
+      "company": "Rodan + Fields",
+      "email": "amy.vandervoort@att.net",
+      "title": "Executive Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Caryl",
+      "lastName": "Schmidt",
+      "company": "Stella & Dot",
+      "email": "barmaud@aol.com",
+      "title": "Stylist",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Tiffany",
+      "lastName": "Long",
+      "company": "Young Living Essential Oils",
+      "email": "tlongscoupons@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Elsie",
+      "lastName": "Hill",
+      "company": "Avon",
+      "email": "emhgrand@att.net",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Jie",
+      "lastName": "Dong",
+      "company": "Herbalife",
+      "email": "jiedong2012d@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Elif",
+      "lastName": "Myzyri",
+      "company": "It Works! Global",
+      "email": "emyzyri@hotmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Amanda",
+      "lastName": "Ball",
+      "company": "It Works! Global",
+      "email": "brunettebabe9787@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Natalie",
+      "lastName": "Velez",
+      "company": "Pure Romance",
+      "email": "nat101600@hotmail.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Christel",
+      "lastName": "Birky",
+      "company": "Avon",
+      "email": "cbirky1@msn.com",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Chelsea",
+      "lastName": "Schulz",
+      "company": "It Works! Global",
+      "email": "healthychic.itworks@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Velva",
+      "lastName": "Saenz",
+      "company": "Pure Romance",
+      "email": "velvasaenz@aol.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Vance",
+      "lastName": "Wilson",
+      "company": "World Financial Group (WFG)",
+      "email": "vance_wilson@hotmail.com",
+      "title": "Senior Associate",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Eric",
+      "lastName": "Mealey",
+      "company": "Vivint",
+      "email": "nmealey@hotmail.com",
+      "title": "Partner",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Melinda",
+      "lastName": "Mochau",
+      "company": "Young Living Essential Oils",
+      "email": "melmochau06@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Diana",
+      "lastName": "Shepherd",
+      "company": "LifeVantage Corporation",
+      "email": "diana.m.shepherd@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Courtney",
+      "lastName": "Andrade",
+      "company": "Young Living Essential Oils",
+      "email": "ffcandrade88@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Ashley",
+      "lastName": "Laudermit",
+      "company": "Avon",
+      "email": "dolphins_blues821@yahoo.com",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Stephanie",
+      "lastName": "Vanwagner",
+      "company": "Young Living Essential Oils",
+      "email": "svanwagner@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Shirelle",
+      "lastName": "Stadel",
+      "company": "Herbalife",
+      "email": "astadel@msn.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Melissa",
+      "lastName": "Peirce",
+      "company": "Shaklee Corporation",
+      "email": "melissapeirce@aol.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Kiley",
+      "lastName": "Knight",
+      "company": "It Works! Global",
+      "email": "kileyknight27@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Susan",
+      "lastName": "Travel",
+      "company": "LifeVantage Corporation",
+      "email": "susanthanson@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Sarah",
+      "lastName": "Eagar",
+      "company": "Young Living Essential Oils",
+      "email": "smills07@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Alicia",
+      "lastName": "Boyce",
+      "company": "PartyLite",
+      "email": "aliciaboyce666@yahoo.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Lisa",
+      "lastName": "Harrell",
+      "company": "LifeVantage Corporation",
+      "email": "lisa.jeremiah2911@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Rebecca",
+      "lastName": "Luft",
+      "company": "Young Living Essential Oils",
+      "email": "uscamom0508@hotmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Elaine",
+      "lastName": "Anderson",
+      "company": "Avon",
+      "email": "elaine.anderson10@gmail.com",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Jeannie",
+      "lastName": "Ramos",
+      "company": "Tranont",
+      "email": "jramos2858@sbcglobal.net",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Priscilla",
+      "lastName": "Olsen",
+      "company": "Young Living Essential Oils",
+      "email": "polsen7905@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Donalee",
+      "lastName": "Arroyo",
+      "company": "SeneGence International",
+      "email": "donalee.chantry@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Lora",
+      "lastName": "Templin",
+      "company": "Young Living Essential Oils",
+      "email": "lora.templin@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Shamika",
+      "lastName": "Rodgers",
+      "company": "It Works! Global",
+      "email": "mzzesbrown@ymail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Lori",
+      "lastName": "Stearns",
+      "company": "Avon",
+      "email": "stearnsx3@sbcglobal.net",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Bret",
+      "lastName": "Carlson",
+      "company": "Primerica",
+      "email": "bret.carlson@gmail.com",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Melissa",
+      "lastName": "Bess",
+      "company": "Young Living Essential Oils",
+      "email": "melissadawnbess@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Anne",
+      "lastName": "Mohd",
+      "company": "Avon",
+      "email": "anne80mohd@yahoo.com",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Maryann",
+      "lastName": "Zlotnik",
+      "company": "Avon",
+      "email": "vze2sffb@verizon.net",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Sharika",
+      "lastName": "Smith",
+      "company": "It Works! Global",
+      "email": "loveyourhair19@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Kathy",
+      "lastName": "Hartmeier",
+      "company": "Jeunesse Global",
+      "email": "thegreathealthychocolate@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Lisa",
+      "lastName": "Burbach",
+      "company": "Shaklee Corporation",
+      "email": "lgesford@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Dori",
+      "lastName": "Tompkins",
+      "company": "LifeVantage Corporation",
+      "email": "dori_phil47@hotmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Apryl",
+      "lastName": "Blackburn",
+      "company": "It Works! Global",
+      "email": "ablackburn20@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Elizabeth",
+      "lastName": "McKnight",
+      "company": "Young Living Essential Oils",
+      "email": "mcknightem@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Misty",
+      "lastName": "Bourgeois",
+      "company": "It Works! Global",
+      "email": "mistybourgeois@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Barbara",
+      "lastName": "Norris",
+      "company": "Market America, Inc.",
+      "email": "barbaranorris@comcast.net",
+      "title": "Associate",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Karen",
+      "lastName": "Hochwalt",
+      "company": "Nu Skin",
+      "email": "kkh54@aol.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Leah",
+      "lastName": "Badgerow",
+      "company": "Young Living Essential Oils",
+      "email": "billandleah@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Leslie",
+      "lastName": "Lyon",
+      "company": "Herbalife",
+      "email": "ljlyon541@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Nicole",
+      "lastName": "Dunmeyer",
+      "company": "It Works! Global",
+      "email": "ndunmeyer@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Amanda",
+      "lastName": "Younger",
+      "company": "It Works! Global",
+      "email": "younger_amanda@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Loretta",
+      "lastName": "Gallegos",
+      "company": "Herbalife",
+      "email": "albodiesel@aol.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Rhonda",
+      "lastName": "Faulkner",
+      "company": "It Works! Global",
+      "email": "burtonfaulkner@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Sharon",
+      "lastName": "Madden",
+      "company": "It Works! Global",
+      "email": "rsmadden2003@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Terece",
+      "lastName": "Nanakornpanom",
+      "company": "Tranont",
+      "email": "steveterece@comcast.net",
+      "title": "Network Marketer",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Denise",
+      "lastName": "Bernard",
+      "company": "Stella & Dot",
+      "email": "denisekhbernard@hotmail.com",
+      "title": "Stylist",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Kim",
+      "lastName": "Anucinski",
+      "company": "It Works! Global",
+      "email": "goblue1111@comcast.net",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Rosario",
+      "lastName": "Trigueros",
+      "company": "Herbalife",
+      "email": "prettyrose325@hotmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Simon",
+      "lastName": "Kessler",
+      "company": "LifeVantage Corporation",
+      "email": "coachsimon@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Judy",
+      "lastName": "Lees",
+      "company": "It Works! Global",
+      "email": "angeljblue@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Abigail",
+      "lastName": "Pennington",
+      "company": "Avon",
+      "email": "abipenn@yahoo.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Laura",
+      "lastName": "Shumaker",
+      "company": "Rodan + Fields",
+      "email": "lambchopw@aol.com",
+      "title": "Executive Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Ruthie",
+      "lastName": "Grizzle",
+      "company": "Young Living Essential Oils",
+      "email": "jasmine76@cox.net",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Heather",
+      "lastName": "Wolgamott",
+      "company": "Young Living Essential Oils",
+      "email": "vvskincare@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Arlene",
+      "lastName": "Gaw",
+      "company": "Pampered Chef",
+      "email": "arlene.gaw@comcast.net",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Renee",
+      "lastName": "Pierron",
+      "company": "LifeVantage Corporation",
+      "email": "r3pierron@comcast.net",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Tricia",
+      "lastName": "Lauritzen",
+      "company": "LuLaRoe",
+      "email": "tricltzn@yahoo.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Blu",
+      "lastName": "McCoy",
+      "company": "Seacret Direct",
+      "email": "blumccoy1@gmail.com",
+      "title": "Customer Care Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Ryan",
+      "lastName": "Allen",
+      "company": "World Financial Group (WFG)",
+      "email": "rallen33@hotmail.com",
+      "title": "Associate",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Jessica",
+      "lastName": "Gordon",
+      "company": "SeneGence International",
+      "email": "jeslynngordon@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Amanda",
+      "lastName": "Jansch",
+      "company": "Avon",
+      "email": "xcutiepie420x@sbcglobal.net",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Kimberly",
+      "lastName": "Roberts",
+      "company": "It Works! Global",
+      "email": "neveah458@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Meghan",
+      "lastName": "Zayac",
+      "company": "It Works! Global",
+      "email": "megkilkenny@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Samatha",
+      "lastName": "Cipolla",
+      "company": "Young Living Essential Oils",
+      "email": "samantha_cipolla@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Donna",
+      "lastName": "Mackie",
+      "company": "Avon",
+      "email": "donnalmackie@msn.com",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Courtney",
+      "lastName": "Davis",
+      "company": "Young Living Essential Oils",
+      "email": "courtneycolleendavis@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Luke",
+      "lastName": "Pham",
+      "company": "Nu Skin",
+      "email": "lpham_1@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Deanna",
+      "lastName": "Hoffman",
+      "company": "Avon",
+      "email": "hoffman9159@gmail.com",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Karma",
+      "lastName": "Steffens",
+      "company": "Young Living Essential Oils",
+      "email": "karma23greenly@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Charolette",
+      "lastName": "Dodge",
+      "company": "Shaklee Corporation",
+      "email": "cdodge_life@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Sheila",
+      "lastName": "Atkinson",
+      "company": "Young Living Essential Oils",
+      "email": "shecar62@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Rosalina",
+      "lastName": "Crespo",
+      "company": "Herbalife",
+      "email": "rosy.crespo@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Felicia",
+      "lastName": "Luibl",
+      "company": "Shaklee Corporation",
+      "email": "healthworks@comcast.net",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Harriette",
+      "lastName": "Cooper",
+      "company": "LifeVantage Corporation",
+      "email": "mrshc55@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Leah",
+      "lastName": "Carter",
+      "company": "Stella & Dot",
+      "email": "leahbrook@hotmail.com",
+      "title": "Stylist",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Carrie",
+      "lastName": "Duryea",
+      "company": "Young Living Essential Oils",
+      "email": "carrieduryea@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Ann",
+      "lastName": "Vitello",
+      "company": "It Works! Global",
+      "email": "annakittee@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Ashley",
+      "lastName": "Leatham",
+      "company": "It Works! Global",
+      "email": "leatham2007@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Joselyn",
+      "lastName": "Shmaeff",
+      "company": "Young Living Essential Oils",
+      "email": "jbshmaeff@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Lisa",
+      "lastName": "Goldberg",
+      "company": "Rodan + Fields",
+      "email": "lbgoldbergesq@aol.com",
+      "title": "Executive Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Patricia",
+      "lastName": "Gallagher",
+      "company": "Avon",
+      "email": "pggirls@yahoo.com",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Bente",
+      "lastName": "Rasmussen",
+      "company": "World Financial Group (WFG)",
+      "email": "benterasmussen1@aol.com",
+      "title": "Senior Associate",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Christina",
+      "lastName": "Underwood",
+      "company": "Rodan + Fields",
+      "email": "tinamoxie@icloud.com",
+      "title": "Executive Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Angela",
+      "lastName": "Franklin",
+      "company": "Young Living Essential Oils",
+      "email": "amfranklin26@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Bonnie",
+      "lastName": "Wilson",
+      "company": "Young Living Essential Oils",
+      "email": "bw9854@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Connie",
+      "lastName": "Allen",
+      "company": "Young Living Essential Oils",
+      "email": "allenkca@aol.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Barbara",
+      "lastName": "Smith",
+      "company": "Young Living Essential Oils",
+      "email": "barbtsmith@aol.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Deanna",
+      "lastName": "Honafius",
+      "company": "Plexus Worldwide",
+      "email": "snugglerz618@yahoo.com",
+      "title": "Ambassador",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Blanca",
+      "lastName": "Bau",
+      "company": "Shaklee Corporation",
+      "email": "blancabau1958@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Misty",
+      "lastName": "Sposato",
+      "company": "Rodan + Fields",
+      "email": "mistysposato@att.net",
+      "title": "Executive Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Gloria",
+      "lastName": "Haines",
+      "company": "Herbalife",
+      "email": "gloriaah@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Kim",
+      "lastName": "Fontaine",
+      "company": "It Works! Global",
+      "email": "hrslvr1970@hotmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Denise",
+      "lastName": "Guidry",
+      "company": "Young Living Essential Oils",
+      "email": "dg633@hotmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Gabriella",
+      "lastName": "Gaspar",
+      "company": "Forever Living Products (UK) Ltd",
+      "email": "gabriellaflpnj@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Georgeann",
+      "lastName": "Corrigan",
+      "company": "PartyLite",
+      "email": "gac781@aol.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Jay",
+      "lastName": "McDowell",
+      "company": "Young Living Essential Oils",
+      "email": "jmcdow26@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Stephanie",
+      "lastName": "Fitzpatrick",
+      "company": "Origami Owl",
+      "email": "stoleyline@gmail.com",
+      "title": "Independent Designer",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Kristy",
+      "lastName": "Clampitt",
+      "company": "Young Living Essential Oils",
+      "email": "clampitt.kristy@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Angela",
+      "lastName": "Fruck",
+      "company": "It Works! Global",
+      "email": "angela.fruck16@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Cara",
+      "lastName": "Ledoux",
+      "company": "Rodan + Fields",
+      "email": "cara.ledoux@yahoo.com",
+      "title": "Independent Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Yashica",
+      "lastName": "Howard",
+      "company": "Herbalife",
+      "email": "how_yas@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Janie",
+      "lastName": "Walton",
+      "company": "Young Living Essential Oils",
+      "email": "janie_walton@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Christa",
+      "lastName": "Sanders",
+      "company": "Young Living Essential Oils",
+      "email": "sistercl4him@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Carol",
+      "lastName": "Edwards",
+      "company": "Pampered Chef",
+      "email": "csered@sbcglobal.net",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Gregory",
+      "lastName": "Barnes",
+      "company": "Shaklee Corporation",
+      "email": "facety@aol.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Amanda",
+      "lastName": "Snader",
+      "company": "Young Living Essential Oils",
+      "email": "amdsnad@aol.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Bethany",
+      "lastName": "Aultman",
+      "company": "Young Living Essential Oils",
+      "email": "bamaultman@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Cindy",
+      "lastName": "Huang",
+      "company": "Market America, Inc.",
+      "email": "cinthea28@hotmail.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Grace",
+      "lastName": "Park",
+      "company": "Herbalife",
+      "email": "letsbuildtogether2118@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Karen",
+      "lastName": "Autry",
+      "company": "PartyLite",
+      "email": "photospice@comcast.net",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Ileen",
+      "lastName": "Campana",
+      "company": "Jeunesse Global",
+      "email": "campanatravel@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Patricia",
+      "lastName": "Swisher",
+      "company": "Avon",
+      "email": "lovemaelynn@live.com",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Sara",
+      "lastName": "Pasquarello",
+      "company": "Young Living Essential Oils",
+      "email": "sarantom@comcast.net",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Beth",
+      "lastName": "Widdowson",
+      "company": "Shaklee Corporation",
+      "email": "got2bhealthy@hotmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Alysha",
+      "lastName": "Forrest",
+      "company": "Herbalife",
+      "email": "alysha_13807@hotmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Melissa",
+      "lastName": "Ponce",
+      "company": "PartyLite",
+      "email": "mlponce79@yahoo.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Susan",
+      "lastName": "Applin",
+      "company": "It Works! Global",
+      "email": "smapplin@aol.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Martha",
+      "lastName": "Decker",
+      "company": "LifeVantage Corporation",
+      "email": "authormarthadecker@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Ada",
+      "lastName": "Labrador",
+      "company": "Avon",
+      "email": "beautymujer@msn.com",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Destinee",
+      "lastName": "Frazier",
+      "company": "Stella & Dot",
+      "email": "xdestineeex@yahoo.com",
+      "title": "Stylist",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Kimberly",
+      "lastName": "Hawes",
+      "company": "Young Living Essential Oils",
+      "email": "sassydragonkls@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Ann",
+      "lastName": "Kerr",
+      "company": "LifeVantage Corporation",
+      "email": "annkerr@aol.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Jennnifer",
+      "lastName": "Rohrbaugh",
+      "company": "It Works! Global",
+      "email": "rednckgirl15@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Sandy",
+      "lastName": "Hartman",
+      "company": "Jeunesse Global",
+      "email": "hartman_sandra@ymail.com",
+      "title": "Network Marketer",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Sara",
+      "lastName": "McCutcheon",
+      "company": "Young Living Essential Oils",
+      "email": "senoritasayra@aol.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Barbara",
+      "lastName": "Kitlinski",
+      "company": "Herbalife",
+      "email": "bdkitlinski@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Wendy",
+      "lastName": "Wilson",
+      "company": "PartyLite",
+      "email": "wilsons74@earthlink.net",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Lisa",
+      "lastName": "Bell",
+      "company": "SeneGence International",
+      "email": "lilaxi@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Kathleen",
+      "lastName": "Caesar",
+      "company": "It Works! Global",
+      "email": "caesar1285@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Vicki",
+      "lastName": "Bailey",
+      "company": "Pure Romance",
+      "email": "dragonflyphotos@charter.net",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Rhonda",
+      "lastName": "Jones",
+      "company": "Young Living Essential Oils",
+      "email": "rjonesdec4@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Tran",
+      "lastName": "Vuong",
+      "company": "Herbalife",
+      "email": "tranvuong.herbalife@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Barbara",
+      "lastName": "Gretter",
+      "company": "Norwex USA",
+      "email": "philgretter@gmail.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Holly",
+      "lastName": "Carfrae",
+      "company": "Stella & Dot",
+      "email": "hollycarfrae@gmail.com",
+      "title": "Stylist",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Anna",
+      "lastName": "Gautreaux",
+      "company": "Young Living Essential Oils",
+      "email": "yournewelement@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Carmi",
+      "lastName": "Daniels",
+      "company": "SeneGence International",
+      "email": "cjdaniels11@bellsouth.net",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Chris",
+      "lastName": "Probst",
+      "company": "Plexus Worldwide",
+      "email": "auroradream@earthlink.net",
+      "title": "Ambassador",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Linda",
+      "lastName": "Masters",
+      "company": "Young Living Essential Oils",
+      "email": "masterslinda@hotmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Jim",
+      "lastName": "Ryckman",
+      "company": "LifeVantage Corporation",
+      "email": "jimjoryck@aol.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Beth",
+      "lastName": "Beall",
+      "company": "It Works! Global",
+      "email": "bbeal@earthlink.net",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Mary",
+      "lastName": "Pacyniak",
+      "company": "PartyLite",
+      "email": "tootsie0929@comcast.net",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Sharman",
+      "lastName": "Mitchell",
+      "company": "Modere",
+      "email": "readwiththem@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Terri",
+      "lastName": "Basile",
+      "company": "Jeunesse Global",
+      "email": "terristravel@aol.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Bob",
+      "lastName": "Lowman",
+      "company": "LifeVantage Corporation",
+      "email": "bob_lowman@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Dan",
+      "lastName": "Roser",
+      "company": "Young Living Essential Oils",
+      "email": "danroser@msn.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Ashley",
+      "lastName": "Baum",
+      "company": "QSciences",
+      "email": "ashley_hegge@hotmail.com",
+      "title": "Ambassador",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Queenie",
+      "lastName": "Nguyen",
+      "company": "It Works! Global",
+      "email": "qhncoffee@aol.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Catherine",
+      "lastName": "Caccavallo",
+      "company": "Shaklee Corporation",
+      "email": "ccaccavallo@hotmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Jeanine",
+      "lastName": "Jahelka",
+      "company": "World Financial Group (WFG)",
+      "email": "kwikk9@earthlink.net",
+      "title": "Senior Associate",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Carrie",
+      "lastName": "Mothershead",
+      "company": "Young Living Essential Oils",
+      "email": "carriemothershead@msn.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Diane",
+      "lastName": "Leonard",
+      "company": "Avon",
+      "email": "leonarddw99@yahoo.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Vivian",
+      "lastName": "Fernandez",
+      "company": "Avon",
+      "email": "vmfernandez@bellsouth.net",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Debra",
+      "lastName": "Farley",
+      "company": "It Works! Global",
+      "email": "inparadise8@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Kate",
+      "lastName": "Zywicki",
+      "company": "Mary Kay Global",
+      "email": "kate.zywicki@gmail.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Rebecca",
+      "lastName": "Strong",
+      "company": "Rodan + Fields",
+      "email": "rj_strong@hotmail.com",
+      "title": "Executive Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Marla",
+      "lastName": "Matthias",
+      "company": "LifeVantage Corporation",
+      "email": "marla.mm822@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Lisa",
+      "lastName": "Tilbe",
+      "company": "Pure Romance",
+      "email": "lisatilbe@yahoo.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Jennifer",
+      "lastName": "Jackson",
+      "company": "Young Living Essential Oils",
+      "email": "jrs13@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Ticia",
+      "lastName": "Boyer",
+      "company": "Young Living Essential Oils",
+      "email": "t.boyer@comcast.net",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Nancy",
+      "lastName": "Garrett",
+      "company": "SeneGence International",
+      "email": "nancy02@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Idy",
+      "lastName": "Work",
+      "company": "Avon",
+      "email": "andres242006@yahoo.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Portia",
+      "lastName": "Love",
+      "company": "Young Living Essential Oils",
+      "email": "portialove777@sbcglobal.net",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Stephanie",
+      "lastName": "Chew",
+      "company": "Young Living Essential Oils",
+      "email": "slwchew@hotmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Anne-Maria",
+      "lastName": "Lassiter",
+      "company": "Herbalife",
+      "email": "marialass90@bellsouth.net",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Nicci",
+      "lastName": "Brown-Richardson",
+      "company": "Avon",
+      "email": "nicci4avon@yahoo.com",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Sandra",
+      "lastName": "Simons",
+      "company": "LifeVantage Corporation",
+      "email": "gloin2@verizon.net",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Linda",
+      "lastName": "Goldbeck",
+      "company": "Young Living Essential Oils",
+      "email": "lgoldbeck62@msn.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Dianne",
+      "lastName": "Rombach",
+      "company": "Young Living Essential Oils",
+      "email": "dianne.avon@cox.net",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Ramona",
+      "lastName": "Grant",
+      "company": "Avon",
+      "email": "ramonagrant@live.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Ronda",
+      "lastName": "Rothchild",
+      "company": "Avon",
+      "email": "rrothchild@juno.com",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Bu",
+      "lastName": "Wapelhorst",
+      "company": "Young Living Essential Oils",
+      "email": "abonesweetbone@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Lisa",
+      "lastName": "Vance",
+      "company": "Nu Skin",
+      "email": "lisak720@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Barbara",
+      "lastName": "Norman",
+      "company": "Young Living Essential Oils",
+      "email": "bar47nor@hotmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Angela",
+      "lastName": "Cook",
+      "company": "Pampered Chef",
+      "email": "angelacookpc@yahoo.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Carla",
+      "lastName": "McBride",
+      "company": "Avon",
+      "email": "makesmemoney@yahoo.com",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Rachel",
+      "lastName": "Miller",
+      "company": "Rodan + Fields",
+      "email": "rachelmiller1975@yahoo.com",
+      "title": "Executive Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Chrys",
+      "lastName": "Snider",
+      "company": "It Works! Global",
+      "email": "chrys.snider@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Alison",
+      "lastName": "Kerins",
+      "company": "Stella & Dot",
+      "email": "alisonoiseau@verizon.net",
+      "title": "Stylist",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Marla",
+      "lastName": "O'Steen",
+      "company": "Pampered Chef",
+      "email": "desertcat1955@yahoo.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Brandie",
+      "lastName": "Jahn",
+      "company": "Herbalife",
+      "email": "bevilen@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Antoine",
+      "lastName": "Armstrong",
+      "company": "Primerica",
+      "email": "a_armstrong96@yahoo.com",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Kandi",
+      "lastName": "Stewart",
+      "company": "Avon",
+      "email": "stewart_kandi@yahoo.com",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Graham",
+      "lastName": "Gonzalez",
+      "company": "LifeVantage Corporation",
+      "email": "gamalielgonzalez526@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Patty",
+      "lastName": "Jesters",
+      "company": "Avon",
+      "email": "pajklg@yahoo.com",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Katie",
+      "lastName": "Kastan",
+      "company": "Young Living Essential Oils",
+      "email": "katiekastan@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Zoanne",
+      "lastName": "Weaver",
+      "company": "SeneGence International",
+      "email": "zoannew@cox.net",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Carlos",
+      "lastName": "Concheso",
+      "company": "Jeunesse Global",
+      "email": "carlos.concheso@me.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Debbie",
+      "lastName": "Diaz",
+      "company": "Jeunesse Global",
+      "email": "oxydeb@hotmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Karen",
+      "lastName": "Monterosa",
+      "company": "Tranont",
+      "email": "kmonterosa@comcast.net",
+      "title": "Associate",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Cristel",
+      "lastName": "Reeves",
+      "company": "Stella & Dot",
+      "email": "cristel7@verizon.net",
+      "title": "Stylist",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Niena",
+      "lastName": "King",
+      "company": "Young Living Essential Oils",
+      "email": "nienaking@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Susan",
+      "lastName": "Atchison",
+      "company": "Young Living Essential Oils",
+      "email": "susanatchison@earthlink.net",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Betsy",
+      "lastName": "Plante",
+      "company": "Nu Skin",
+      "email": "lockyourage@aol.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Lisa",
+      "lastName": "Moore",
+      "company": "Young Living Essential Oils",
+      "email": "lcmooredc@sbcglobal.net",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Heather",
+      "lastName": "Labelle-Spillman",
+      "company": "PartyLite",
+      "email": "hlabellspill@yahoo.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Carolyn",
+      "lastName": "Sand",
+      "company": "Valentus",
+      "email": "cnotesand@me.com",
+      "title": "Network Marketer",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Adrena",
+      "lastName": "Brooks",
+      "company": "It Works! Global",
+      "email": "rose2171@verizon.net",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Victoria",
+      "lastName": "Willoughby",
+      "company": "LifeVantage Corporation",
+      "email": "vaw4beacon@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Lisa",
+      "lastName": "Gentles",
+      "company": "Shaklee Corporation",
+      "email": "lisagentles@gmail.com",
+      "title": "Ambassador",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Jennifer",
+      "lastName": "Bragdon",
+      "company": "Origami Owl",
+      "email": "jswinters@charter.net",
+      "title": "Independent Designer",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Linda",
+      "lastName": "Sciacca",
+      "company": "Pampered Chef",
+      "email": "jmsciacca@aol.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Tiffany",
+      "lastName": "Bunnell",
+      "company": "Young Living Essential Oils",
+      "email": "tiffany.deak@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Dot",
+      "lastName": "Hedrick",
+      "company": "Avon",
+      "email": "dotsieb@charter.net",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Dacresha",
+      "lastName": "Foster",
+      "company": "It Works! Global",
+      "email": "dna093009@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Ann",
+      "lastName": "McKenzie",
+      "company": "Arbonne",
+      "email": "annmckenzie01@yahoo.com",
+      "title": "Independent Consultant, District Manager",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Melissa",
+      "lastName": "Schroll",
+      "company": "PartyLite",
+      "email": "schrollytrolly@hotmail.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Tracey",
+      "lastName": "Christensen",
+      "company": "Jeunesse Global",
+      "email": "tchrist901@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Kathy",
+      "lastName": "Williamson",
+      "company": "LifeVantage Corporation",
+      "email": "scubazebra@aol.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Jo-Anne",
+      "lastName": "O'Brien",
+      "company": "Origami Owl",
+      "email": "lunchladie@yahoo.com",
+      "title": "Independent Designer",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Annie",
+      "lastName": "Cohen",
+      "company": "Shaklee Corporation",
+      "email": "yewliancohen@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Donna",
+      "lastName": "Hansen",
+      "company": "Shaklee Corporation",
+      "email": "dleehansen@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Sheri",
+      "lastName": "Smoak",
+      "company": "Young Living Essential Oils",
+      "email": "sheri_sloan@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Eduardo",
+      "lastName": "Leon",
+      "company": "Herbalife",
+      "email": "leon.herbalife@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Jorge",
+      "lastName": "Matos",
+      "company": "4Life Research",
+      "email": "jormat@bellsouth.net",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Sandy",
+      "lastName": "Padilla",
+      "company": "4Life Research",
+      "email": "sandy89_schz@hotmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Marie",
+      "lastName": "Doyle",
+      "company": "It Works! Global",
+      "email": "mikmar91303@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Brad",
+      "lastName": "Disbennett",
+      "company": "Herbalife",
+      "email": "bedisbennett@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Tauris",
+      "lastName": "Johns",
+      "company": "Herbalife",
+      "email": "taurisjohns@gmail.com",
+      "title": "At",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Janet",
+      "lastName": "Herpel",
+      "company": "Avon",
+      "email": "janetrose8@yahoo.com",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Isabel",
+      "lastName": "Perkins",
+      "company": "Young Living Essential Oils",
+      "email": "girl4god78@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Michelle",
+      "lastName": "Korkoleo",
+      "company": "It Works! Global",
+      "email": "korkymom@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Debora",
+      "lastName": "Rankin",
+      "company": "Young Living Essential Oils",
+      "email": "dstarstuf@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Katherine",
+      "lastName": "Demasi",
+      "company": "Stella & Dot",
+      "email": "katdemasi@hotmail.com",
+      "title": "Stylist",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Sheila",
+      "lastName": "Dakin",
+      "company": "Stella & Dot",
+      "email": "sheiladakin79@yahoo.com",
+      "title": "Stylist",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Heather",
+      "lastName": "Craver",
+      "company": "Arbonne",
+      "email": "hsoftb123@msn.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Donnell",
+      "lastName": "Hensley",
+      "company": "PartyLite",
+      "email": "tdhensley2000@yahoo.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Belkis",
+      "lastName": "Telfo",
+      "company": "4Life Research",
+      "email": "belkis4life@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Karen",
+      "lastName": "Beassie",
+      "company": "Stella & Dot",
+      "email": "karenbeassie@gmail.com",
+      "title": "Stylist",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Linda",
+      "lastName": "McGinn",
+      "company": "Shaklee Corporation",
+      "email": "mcginn.linda@gmail.com",
+      "title": "Associate",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Irene",
+      "lastName": "Lemus",
+      "company": "4Life Research",
+      "email": "irene_lemus@hotmail.com",
+      "title": "Network Marketing Professional",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Erica",
+      "lastName": "Halabicky",
+      "company": "PartyLite",
+      "email": "ericahalabicky@yahoo.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Ashley",
+      "lastName": "Kobe",
+      "company": "Rodan + Fields",
+      "email": "ashley.kobe@yahoo.com",
+      "title": "Independent Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Tina",
+      "lastName": "McNeill",
+      "company": "It Works! Global",
+      "email": "mcneilltina@hotmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Marilyn",
+      "lastName": "Appner",
+      "company": "Mary Kay Global",
+      "email": "mafcosgt@yahoo.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Fred",
+      "lastName": "Manuta",
+      "company": "Seacret Direct",
+      "email": "fmanuta@comcast.net",
+      "title": "Associate",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Lori",
+      "lastName": "Davison-Murphy",
+      "company": "It Works! Global",
+      "email": "lori.davison@verizon.net",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Odell",
+      "lastName": "Cobb",
+      "company": "Avon",
+      "email": "odellcobb@bellsouth.net",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Nancy",
+      "lastName": "Hinman",
+      "company": "Shaklee Corporation",
+      "email": "njhinman@msn.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Lisa",
+      "lastName": "Walters",
+      "company": "It Works! Global",
+      "email": "jayleeze@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Kate",
+      "lastName": "Aiton",
+      "company": "It Works! Global",
+      "email": "kate.aiton@me.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Victor",
+      "lastName": "Ramirez",
+      "company": "Herbalife",
+      "email": "neto_257@hotmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Tasha",
+      "lastName": "Miracle",
+      "company": "Pure Romance",
+      "email": "prbynatasha27@gmail.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Jennifer",
+      "lastName": "Thorpe",
+      "company": "It Works! Global",
+      "email": "ms.jthorpe@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Valerie",
+      "lastName": "Borntrager",
+      "company": "It Works! Global",
+      "email": "val.bornt.129@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Lynn",
+      "lastName": "Warren",
+      "company": "Mannatech Incorporated",
+      "email": "lynnwarren54@yahoo.com",
+      "title": "Associate",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Tabatha",
+      "lastName": "Fuller",
+      "company": "Pure Romance",
+      "email": "tabathalj@yahoo.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Debbie",
+      "lastName": "Row",
+      "company": "Stella & Dot",
+      "email": "debbie.row@att.net",
+      "title": "Stylist",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Kathy",
+      "lastName": "Littlejohn",
+      "company": "LifeVantage Corporation",
+      "email": "kathy.acn@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Angie",
+      "lastName": "Orellano-Fisher",
+      "company": "Mannatech Incorporated",
+      "email": "angierun@sbcglobal.net",
+      "title": "Associate",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Jennifer",
+      "lastName": "Killgo",
+      "company": "Young Living Essential Oils",
+      "email": "jennikillgo@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Tiffanie",
+      "lastName": "Gulley",
+      "company": "Avon",
+      "email": "tgulley25@gmail.com",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Jamie",
+      "lastName": "Wiggington",
+      "company": "Young Living Essential Oils",
+      "email": "jkwigg@aol.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Adrian",
+      "lastName": "Valle",
+      "company": "4Life Research",
+      "email": "adrianvalle48@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Fred",
+      "lastName": "Lonsdale",
+      "company": "LifeVantage Corporation",
+      "email": "fred.lonsdale@gmail.com",
+      "title": "President",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Ruth",
+      "lastName": "Blount",
+      "company": "Young Living Essential Oils",
+      "email": "ruthblount7@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Susie",
+      "lastName": "Correia",
+      "company": "Nu Skin",
+      "email": "correiaeaston@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Kristen",
+      "lastName": "Allgood",
+      "company": "PartyLite",
+      "email": "allgoodjk85@ymail.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Anna",
+      "lastName": "Worley",
+      "company": "Young Living Essential Oils",
+      "email": "abelveal@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Anne",
+      "lastName": "Pearson",
+      "company": "Total Life Changes, LLC",
+      "email": "mzannedenette@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Steve",
+      "lastName": "Schwartz",
+      "company": "VoxxLife",
+      "email": "stevejs@yahoo.com",
+      "title": "Associate",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Monique",
+      "lastName": "Santiago",
+      "company": "Herbalife",
+      "email": "monique_das@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Terence",
+      "lastName": "Harrison",
+      "company": "World Financial Group (WFG)",
+      "email": "limitlessvisionfilms@gmail.com",
+      "title": "Associate",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Kristy",
+      "lastName": "Hendley-Spring",
+      "company": "LifeVantage Corporation",
+      "email": "kristyhspring@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Stephanie",
+      "lastName": "Fischer",
+      "company": "Young Living Essential Oils",
+      "email": "officestephie@bellsouth.net",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Carla",
+      "lastName": "Rickert",
+      "company": "Origami Owl",
+      "email": "smokieblu1840@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Linda",
+      "lastName": "Blankenship",
+      "company": "Rodan + Fields",
+      "email": "linda_joy_b@hotmail.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Cyndi",
+      "lastName": "Mahon",
+      "company": "Avon",
+      "email": "robertmahon@sbcglobal.net",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Jocelyn",
+      "lastName": "Billups",
+      "company": "World Financial Group (WFG)",
+      "email": "jbussey03@yahoo.com",
+      "title": "Senior Associate",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Jamie",
+      "lastName": "Tilton",
+      "company": "Rodan + Fields",
+      "email": "jmetilton@yahoo.com",
+      "title": "Independent Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Chrystal",
+      "lastName": "Archuleta",
+      "company": "Avon",
+      "email": "chryrachal@att.net",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Tam",
+      "lastName": "Johnson",
+      "company": "PartyLite",
+      "email": "sasmaster@juno.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Rachael",
+      "lastName": "Burmeister",
+      "company": "Young Living Essential Oils",
+      "email": "rachael_elizabeth04@yahoo.com",
+      "title": "Associate",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Lisa",
+      "lastName": "Corbaley",
+      "company": "LifeVantage Corporation",
+      "email": "flcorbaley@cox.net",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Jennie",
+      "lastName": "Crunk",
+      "company": "LifeVantage Corporation",
+      "email": "jmcrunk18532@comcast.net",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Jodelle",
+      "lastName": "Sparks",
+      "company": "It Works! Global",
+      "email": "jodymsparks@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Rebekah",
+      "lastName": "Dove",
+      "company": "Young Living Essential Oils",
+      "email": "r_n_dunn@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Betty",
+      "lastName": "Wynne",
+      "company": "Avon",
+      "email": "bgailw40220@yahoo.com",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Michelle",
+      "lastName": "Koonce",
+      "company": "Young Living Essential Oils",
+      "email": "r.michelleleigh@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Diana",
+      "lastName": "Scott",
+      "company": "Stella & Dot",
+      "email": "dscott1980@aol.com",
+      "title": "Stylist",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Amy",
+      "lastName": "Dunyon",
+      "company": "Shaklee Corporation",
+      "email": "jumpernoodle@aol.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Pure",
+      "lastName": "Kartina",
+      "company": "Pure Romance",
+      "email": "katrinalynnmartin@yahoo.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Sam",
+      "lastName": "Foresti",
+      "company": "Market America, Inc.",
+      "email": "sandk4st@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Aileen",
+      "lastName": "Bogert",
+      "company": "Rodan + Fields",
+      "email": "bogerta@bellsouth.net",
+      "title": "Executive Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Lori",
+      "lastName": "Woiwode",
+      "company": "Market America, Inc.",
+      "email": "law6206@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Michelle",
+      "lastName": "Ashley",
+      "company": "Young Living Essential Oils",
+      "email": "curtisandmichelle@verizon.net",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Sonja",
+      "lastName": "Delong",
+      "company": "Avon",
+      "email": "sonja.delong@att.net",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Heather",
+      "lastName": "Spergel",
+      "company": "Young Living Essential Oils",
+      "email": "seurat1@aol.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Mandi",
+      "lastName": "Wehe",
+      "company": "Young Living Essential Oils",
+      "email": "sundaecupcake@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Beverly",
+      "lastName": "Graham",
+      "company": "Avon",
+      "email": "bpg7250@sbcglobal.net",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Katie",
+      "lastName": "Phelps",
+      "company": "Young Living Essential Oils",
+      "email": "katiecook1623@hotmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Lukasz",
+      "lastName": "Sokolowski",
+      "company": "Jeunesse Global",
+      "email": "sokolhasan@gmail.com",
+      "title": "Network Marketer",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Amanda",
+      "lastName": "Miller",
+      "company": "It Works! Global",
+      "email": "adm78@cox.net",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Londa",
+      "lastName": "Hamilton",
+      "company": "Young Living Essential Oils",
+      "email": "londa.hamilton@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Jerry",
+      "lastName": "Breshers",
+      "company": "Herbalife",
+      "email": "jcbresh01@hotmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Ruth",
+      "lastName": "Raym",
+      "company": "Pampered Chef",
+      "email": "ruthieannie428@aol.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Kim",
+      "lastName": "McDonald",
+      "company": "Stella & Dot",
+      "email": "paigekim@aol.com",
+      "title": "Stylist",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Betsy",
+      "lastName": "Lively",
+      "company": "Tupperware",
+      "email": "betsy2564@msn.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Audrey",
+      "lastName": "Eckenrode",
+      "company": "Shaklee Corporation",
+      "email": "greenworld.audrey@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Melissa",
+      "lastName": "Blaske",
+      "company": "Young Living Essential Oils",
+      "email": "melissafuncke@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Alicia",
+      "lastName": "Olson",
+      "company": "Herbalife",
+      "email": "amolson71@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Lindsay",
+      "lastName": "Caron",
+      "company": "Avon",
+      "email": "tupperwarebylindsay@yahoo.com",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Cynthia",
+      "lastName": "Garcia",
+      "company": "It Works! Global",
+      "email": "prdiva.fla@hotmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Bonnie",
+      "lastName": "Clemmer",
+      "company": "Zurvita, Inc",
+      "email": "bclemmer1@comcast.net",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Bryan",
+      "lastName": "Trotter",
+      "company": "It Works! Global",
+      "email": "artistdepoet@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Vinh",
+      "lastName": "Le",
+      "company": "Nu Skin",
+      "email": "vinh_le@bellsouth.net",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Barb",
+      "lastName": "Dougherty",
+      "company": "PartyLite",
+      "email": "barbied000@aol.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Monica",
+      "lastName": "Cagle",
+      "company": "Young Living Essential Oils",
+      "email": "lilmoonica@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Kathleen",
+      "lastName": "Poole",
+      "company": "Young Living Essential Oils",
+      "email": "kathleenpoole@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Melissa",
+      "lastName": "Wilson",
+      "company": "Tupperware",
+      "email": "mwilson1129@yahoo.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Abel",
+      "lastName": "Aparicio",
+      "company": "Herbalife",
+      "email": "lokoaparicio@hotmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Hannah",
+      "lastName": "Forster",
+      "company": "It Works! Global",
+      "email": "onelifeunwritten@aol.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Sandra",
+      "lastName": "Scott",
+      "company": "Total Life Changes, LLC",
+      "email": "hottstarr1@yahoo.com",
+      "title": "Independent Business Owner",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Jamie",
+      "lastName": "Rayburn",
+      "company": "Origami Owl",
+      "email": "jamieingles@hotmail.com",
+      "title": "Independent Designer",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Dawn",
+      "lastName": "McGroarty",
+      "company": "Herbalife",
+      "email": "dawnmmcgroarty@hotmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Danita",
+      "lastName": "Banko",
+      "company": "Young Living Essential Oils",
+      "email": "danita.banko@gmail.com",
+      "title": "Owner-Operator",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Tricia",
+      "lastName": "Allen",
+      "company": "It Works! Global",
+      "email": "dtkmballen@live.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Brandon",
+      "lastName": "Williams",
+      "company": "LifeVantage Corporation",
+      "email": "bbw1308@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Mary",
+      "lastName": "Karleskint",
+      "company": "Avon",
+      "email": "mjkzr2@yahoo.com",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Pattye",
+      "lastName": "Lassiter",
+      "company": "Rodan + Fields",
+      "email": "pattye.lassiter@gmail.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Susan",
+      "lastName": "Wasserott",
+      "company": "Young Living Essential Oils",
+      "email": "swasserott@me.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Amy",
+      "lastName": "Gaiski",
+      "company": "It Works! Global",
+      "email": "agaiski@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Brandy",
+      "lastName": "Dunsing",
+      "company": "Stella & Dot",
+      "email": "studiob34@msn.com",
+      "title": "Stylist",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Cathy",
+      "lastName": "Hauck",
+      "company": "Shaklee Corporation",
+      "email": "djhauck@charter.net",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Barbara",
+      "lastName": "Lessard",
+      "company": "It Works! Global",
+      "email": "barbaralessard@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Lori",
+      "lastName": "Miller",
+      "company": "Stella & Dot",
+      "email": "lorimiller.ns@gmail.com",
+      "title": "Stylist",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Brock",
+      "lastName": "Anderson",
+      "company": "Unicity International",
+      "email": "identity.brock@gmail.com",
+      "title": "Operations Specialist",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Vickie",
+      "lastName": "Poet",
+      "company": "Plexus Worldwide",
+      "email": "vickiepoet@yahoo.com",
+      "title": "Ambassador",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Michael",
+      "lastName": "Shuler",
+      "company": "World Financial Group (WFG)",
+      "email": "lorenzo221@yahoo.com",
+      "title": "Associate",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Jean",
+      "lastName": "Dudley",
+      "company": "Herbalife",
+      "email": "jeandudley@charter.net",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Shelby",
+      "lastName": "Evenson",
+      "company": "LifeVantage Corporation",
+      "email": "evenson5az@aol.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Amanda",
+      "lastName": "Olsan",
+      "company": "Rodan + Fields",
+      "email": "mandieb@aol.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Tammie",
+      "lastName": "Dot",
+      "company": "Stella & Dot",
+      "email": "tammiesdot@gmail.com",
+      "title": "Stylist",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Paula",
+      "lastName": "Fairfield",
+      "company": "Rodan + Fields",
+      "email": "pfairfield@cox.net",
+      "title": "Level V Executive Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Cynthia",
+      "lastName": "Damaskos",
+      "company": "LifeVantage Corporation",
+      "email": "cdamaskos@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Jose",
+      "lastName": "Luna",
+      "company": "Unicity International",
+      "email": "jose.luna5507@yahoo.com",
+      "title": "Franchise Partner",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Becky",
+      "lastName": "Wilson",
+      "company": "Pampered Chef",
+      "email": "wilsons_3@bellsouth.net",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Audrey",
+      "lastName": "Bell",
+      "company": "Avon",
+      "email": "audrey.louise@hotmail.com",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Brenda",
+      "lastName": "Baillargeon",
+      "company": "Young Living Essential Oils",
+      "email": "bbaillargeon37@cox.net",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Kae",
+      "lastName": "Stroud",
+      "company": "Avon",
+      "email": "bakinbs@aol.com",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Debbie",
+      "lastName": "Hulbert",
+      "company": "PartyLite",
+      "email": "lvcandlelady@earthlink.net",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Terry",
+      "lastName": "Falcone",
+      "company": "Young Living Essential Oils",
+      "email": "taf443@cox.net",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Jeff",
+      "lastName": "Larzelere",
+      "company": "Young Living Essential Oils",
+      "email": "jeffpattylarzelere@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Stephanie",
+      "lastName": "Sydow",
+      "company": "Pampered Chef",
+      "email": "4anazmom@gmail.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Erin",
+      "lastName": "Lagreco",
+      "company": "Mary Kay Global",
+      "email": "erin.lagreco@yahoo.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Linda",
+      "lastName": "Trueba",
+      "company": "It Works! Global",
+      "email": "browneyedgirlz@msn.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Sarah",
+      "lastName": "Leemhuis",
+      "company": "Rodan + Fields",
+      "email": "s.leemhuis@yahoo.com",
+      "title": "Executive Consultant and Business Owner",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Lori",
+      "lastName": "Fedie",
+      "company": "Market America, Inc.",
+      "email": "lori.fedie@charter.net",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Shana",
+      "lastName": "Davis",
+      "company": "MONAT Global",
+      "email": "shanad04@yahoo.com",
+      "title": "Network Marketer",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Shar",
+      "lastName": "Hromada",
+      "company": "Young Living Essential Oils",
+      "email": "swhromada@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Yolima",
+      "lastName": "Suarez",
+      "company": "4Life Research",
+      "email": "ypadillasuarez@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Elissa",
+      "lastName": "Pompey",
+      "company": "Young Living Essential Oils",
+      "email": "epomp@verizon.net",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Kelly",
+      "lastName": "Vizzini",
+      "company": "Young Living Essential Oils",
+      "email": "kellyrenee_427@icloud.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Susan",
+      "lastName": "Cox",
+      "company": "It Works! Global",
+      "email": "susansc135@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Stephanie",
+      "lastName": "Smith",
+      "company": "Young Living Essential Oils",
+      "email": "findserenity1013@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Josh",
+      "lastName": "Silva",
+      "company": "Herbalife",
+      "email": "workoutcoach22@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Andrea",
+      "lastName": "Hayes",
+      "company": "Young Living Essential Oils",
+      "email": "renaudandrea@hotmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Marilou",
+      "lastName": "Briglin",
+      "company": "PartyLite",
+      "email": "getcandlesfrom_partylite@cox.net",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Teresa",
+      "lastName": "Maique",
+      "company": "It Works! Global",
+      "email": "iaq4mold@aol.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Margie",
+      "lastName": "Pareja-Suico",
+      "company": "World Financial Group (WFG)",
+      "email": "suicomj@yahoo.com",
+      "title": "Associate",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Ashley",
+      "lastName": "Digby",
+      "company": "Stella & Dot",
+      "email": "ashleam1@comcast.net",
+      "title": "Stylist",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Kimberly",
+      "lastName": "Fulgum",
+      "company": "Young Living Essential Oils",
+      "email": "bkp1005@hotmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Tori",
+      "lastName": "Danielson",
+      "company": "Herbalife",
+      "email": "danielson.tori@aol.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Deena",
+      "lastName": "Shy",
+      "company": "SeneGence International",
+      "email": "ttr775@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Colleen",
+      "lastName": "Hutchison",
+      "company": "Herbalife",
+      "email": "mghutch1@comcast.net",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Judy",
+      "lastName": "Arx",
+      "company": "PartyLite",
+      "email": "judyvonarx@yahoo.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Donna",
+      "lastName": "Brimhall",
+      "company": "Avon",
+      "email": "deejo3867@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Chip",
+      "lastName": "Pritchard",
+      "company": "Jeunesse Global",
+      "email": "chipritchard1@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Monty",
+      "lastName": "Monett",
+      "company": "Avon",
+      "email": "mlmonett@hotmail.com",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Mema",
+      "lastName": "Ginny",
+      "company": "Avon",
+      "email": "flamemaa@aol.com",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Cora",
+      "lastName": "Belk",
+      "company": "Young Living Essential Oils",
+      "email": "corabelk40@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Melissia",
+      "lastName": "Janke",
+      "company": "Herbalife",
+      "email": "mtjanke@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Michael",
+      "lastName": "Lemon",
+      "company": "Jeunesse Global",
+      "email": "futureofplenty@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Karen",
+      "lastName": "Sellers",
+      "company": "Young Living Essential Oils",
+      "email": "karensell@aol.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Britta",
+      "lastName": "Vracko",
+      "company": "Stella & Dot",
+      "email": "bvracko@hotmail.com",
+      "title": "Stylist",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Teri",
+      "lastName": "Patterson",
+      "company": "Young Living Essential Oils",
+      "email": "kupcake1978@aol.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Tina",
+      "lastName": "Garner",
+      "company": "Seacret Direct",
+      "email": "oandwinvestment@gmail.com",
+      "title": "Independent Associate",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Lara",
+      "lastName": "Henry",
+      "company": "Avon",
+      "email": "la.rosario@hotmail.com",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Adrienne",
+      "lastName": "Smith",
+      "company": "Market America, Inc.",
+      "email": "adrienne.smith29@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Deborah",
+      "lastName": "Peterson",
+      "company": "Young Living Essential Oils",
+      "email": "dthma75@hotmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Misty",
+      "lastName": "Lowe",
+      "company": "Shaklee Corporation",
+      "email": "pixiedust1127200@aol.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Lisa",
+      "lastName": "Rule",
+      "company": "It Works! Global",
+      "email": "lisabrule@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Debbie",
+      "lastName": "Parker",
+      "company": "Young Living Essential Oils",
+      "email": "mz_debra@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Linda",
+      "lastName": "Erforth",
+      "company": "PartyLite",
+      "email": "ler4th@aol.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Truc",
+      "lastName": "Nguyen",
+      "company": "Market America, Inc.",
+      "email": "ngoctruc83@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Laura",
+      "lastName": "Kessler",
+      "company": "Young Living Essential Oils",
+      "email": "misslaurapoff@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Janet",
+      "lastName": "Janzen",
+      "company": "It Works! Global",
+      "email": "janetlynn77@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Karen",
+      "lastName": "Kuhl",
+      "company": "Avon",
+      "email": "uniquerose0310@aol.com",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Niccole",
+      "lastName": "Olsen",
+      "company": "Nu Skin",
+      "email": "niccole_15@hotmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Jay",
+      "lastName": "O'Hern",
+      "company": "LifeVantage Corporation",
+      "email": "jayohern@aol.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Tracie",
+      "lastName": "Staisiowski",
+      "company": "PartyLite",
+      "email": "gardeningcrafts@yahoo.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Tammy",
+      "lastName": "Berry",
+      "company": "Avon",
+      "email": "berry377@yahoo.com",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Debbi",
+      "lastName": "Lofton",
+      "company": "Young Living Essential Oils",
+      "email": "dhltau@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Kim",
+      "lastName": "Lepper",
+      "company": "Shaklee Corporation",
+      "email": "kimlepper@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Amber",
+      "lastName": "Matthews",
+      "company": "Young Living Essential Oils",
+      "email": "laedee@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Mindy",
+      "lastName": "Kain",
+      "company": "Xyngular Corporation",
+      "email": "mlk_13@hotmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Sonja",
+      "lastName": "Luxford",
+      "company": "Tupperware",
+      "email": "caribbou@gmail.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Mari",
+      "lastName": "Whittelsey",
+      "company": "Arbonne",
+      "email": "whittelseym@aol.com",
+      "title": "District Manager and Independent Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Sandy",
+      "lastName": "Hunter",
+      "company": "Young Living Essential Oils",
+      "email": "s.e.hunter@cox.net",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Tracey",
+      "lastName": "Gardner",
+      "company": "Young Living Essential Oils",
+      "email": "thescholls1995@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Norma",
+      "lastName": "Sandoval",
+      "company": "It Works! Global",
+      "email": "normasandoval@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Valerie",
+      "lastName": "Penna",
+      "company": "Young Living Essential Oils",
+      "email": "grossv@hotmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Michele",
+      "lastName": "Mason",
+      "company": "Avon",
+      "email": "hopewellkittiy@yahoo.com",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Erin",
+      "lastName": "Daniel",
+      "company": "SeneGence International",
+      "email": "erinborsheim@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Rodney",
+      "lastName": "Juneau",
+      "company": "Young Living Essential Oils",
+      "email": "rodneyjuneau@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Wendy",
+      "lastName": "Labranche",
+      "company": "Ardyss International",
+      "email": "wlabranche@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Eric",
+      "lastName": "Schoenhardt",
+      "company": "LifeVantage Corporation",
+      "email": "ericschoenhardt@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Laura",
+      "lastName": "Patterson",
+      "company": "Stella & Dot",
+      "email": "lauramichellep@gmail.com",
+      "title": "Stylist",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Wilma",
+      "lastName": "Osterhoudt",
+      "company": "Mary Kay Global",
+      "email": "wilmaformaryk@bellsouth.net",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Suzanne",
+      "lastName": "Mikula",
+      "company": "Young Living Essential Oils",
+      "email": "suzannemikula@gmail.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Debra",
+      "lastName": "Petty",
+      "company": "Young Living Essential Oils",
+      "email": "debraother1@gmail.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Lourdes",
+      "lastName": "Longoria",
+      "company": "LifeVantage Corporation",
+      "email": "lourdeslongoria@hotmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Roger",
+      "lastName": "Sanders",
+      "company": "LifeVantage Corporation",
+      "email": "lifetimesolutions@rocketmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Bessie",
+      "lastName": "Miranda-Lopez",
+      "company": "Avon",
+      "email": "twlsjoy@yahoo.com",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Paige",
+      "lastName": "Lawson",
+      "company": "It Works! Global",
+      "email": "themasterplanx@aol.com",
+      "title": "IT Works! Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Krisha",
+      "lastName": "Hewitt",
+      "company": "Mary Kay Global",
+      "email": "krisha1226@yahoo.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Janet",
+      "lastName": "Raulston",
+      "company": "Young Living Essential Oils",
+      "email": "gemini.belle@sbcglobal.net",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Trent",
+      "lastName": "Wiggins",
+      "company": "LifeVantage Corporation",
+      "email": "trentwiggins@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Dorit",
+      "lastName": "Kahn",
+      "company": "World Financial Group (WFG)",
+      "email": "doritzohar@yahoo.com",
+      "title": "Senior Account Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Jenny",
+      "lastName": "Krauklis",
+      "company": "It Works! Global",
+      "email": "jennommy@hotmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Rusty",
+      "lastName": "Ost",
+      "company": "Shaklee Corporation",
+      "email": "rustyost@aol.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Natasha",
+      "lastName": "Riley",
+      "company": "It Works! Global",
+      "email": "natasha_rly@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Wayne",
+      "lastName": "Helmstedter",
+      "company": "4Life Research",
+      "email": "agelessways@aol.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Mary",
+      "lastName": "Mathewes",
+      "company": "Herbalife",
+      "email": "m.mathewes@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Rosalind",
+      "lastName": "Salbenblatt",
+      "company": "Young Living Essential Oils",
+      "email": "trueheartbernese@comcast.net",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Pamela",
+      "lastName": "Cushman-Caswell",
+      "company": "Young Living Essential Oils",
+      "email": "pmccapecod@yahoo.com",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Tamiko",
+      "lastName": "Tatum",
+      "company": "It Works! Global",
+      "email": "koko_tatum80@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Sara",
+      "lastName": "Wear",
+      "company": "Rodan + Fields",
+      "email": "sara.wear@gmail.com",
+      "title": "Executive Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Jaci",
+      "lastName": "Schlosser",
+      "company": "Young Living Essential Oils",
+      "email": "justjac56354@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Nadine",
+      "lastName": "Baxter",
+      "company": "PartyLite",
+      "email": "renisance@msn.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Joseph",
+      "lastName": "Marchese",
+      "company": "Rodan + Fields",
+      "email": "jcj60561@yahoo.com",
+      "title": "Independent Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Heidi",
+      "lastName": "Sherbert",
+      "company": "It Works! Global",
+      "email": "ssheidi771@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Sheila",
+      "lastName": "Sklar",
+      "company": "Avon",
+      "email": "sheilas9@aol.com",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Latasha",
+      "lastName": "Blackwell",
+      "company": "It Works! Global",
+      "email": "latashablackwell@hotmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Rhonda",
+      "lastName": "Schriver",
+      "company": "Avon",
+      "email": "alkmom@msn.com",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Bill",
+      "lastName": "Vandeven",
+      "company": "Herbalife",
+      "email": "firechief1150@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Antonette",
+      "lastName": "Hines",
+      "company": "Total Life Changes, LLC",
+      "email": "antonetteh1019@aol.com",
+      "title": "Independent Business Owner",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Meredith",
+      "lastName": "Hodges",
+      "company": "Stella & Dot",
+      "email": "mereh7@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Lorraine",
+      "lastName": "Nixon",
+      "company": "PartyLite",
+      "email": "rainlonix@yahoo.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Vicky",
+      "lastName": "Watkins",
+      "company": "Young Living Essential Oils",
+      "email": "vickyleewatkins@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Jenny",
+      "lastName": "Levine",
+      "company": "Rodan + Fields",
+      "email": "jenny.photo@gmail.com",
+      "title": "Executive Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Angel",
+      "lastName": "Lepley",
+      "company": "Young Living Essential Oils",
+      "email": "killianangel@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Jia",
+      "lastName": "Liu",
+      "company": "Jeunesse Global",
+      "email": "liujiaus@hotmail.com",
+      "title": "Partner",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Charlene",
+      "lastName": "Nelson",
+      "company": "Young Living Essential Oils",
+      "email": "chardean535@msn.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Sylvia",
+      "lastName": "Alvarez",
+      "company": "Avon",
+      "email": "jsalvarez@charter.net",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Laci",
+      "lastName": "Yarbor",
+      "company": "It Works! Global",
+      "email": "lacijo1977@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Kathy",
+      "lastName": "Bonnett",
+      "company": "Rodan + Fields",
+      "email": "katherinebonnett@yahoo.com",
+      "title": "Level 5 Executive Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Margaret",
+      "lastName": "Zea",
+      "company": "Herbalife",
+      "email": "margie16@msn.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Joy",
+      "lastName": "Linsley",
+      "company": "Young Living Essential Oils",
+      "email": "jlinsley@earthlink.net",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Yadira",
+      "lastName": "Toro",
+      "company": "Stella & Dot",
+      "email": "yadiradeltoro@ymail.com",
+      "title": "Stylist",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Caroline",
+      "lastName": "Brazzel",
+      "company": "Modere",
+      "email": "george.brazzel@yahoo.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Elizabeth",
+      "lastName": "Zyglocke",
+      "company": "Rodan + Fields",
+      "email": "elizabeth.zyglocke@gmail.com",
+      "title": "Independent Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Kylie",
+      "lastName": "Steines",
+      "company": "Young Living Essential Oils",
+      "email": "kmonan04@hotmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Heather",
+      "lastName": "Reimnitz",
+      "company": "Avon",
+      "email": "hmreimnitz@aol.com",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Edith",
+      "lastName": "Evans",
+      "company": "Shaklee Corporation",
+      "email": "edithyevans@aol.com",
+      "title": "Associate",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Rachel",
+      "lastName": "Stoehr",
+      "company": "It Works! Global",
+      "email": "rmlong06@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Shawn",
+      "lastName": "Williams",
+      "company": "4Life Research",
+      "email": "shaner1074@hotmail.com",
+      "title": "Network Marketer",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Rose",
+      "lastName": "Roland",
+      "company": "Avon",
+      "email": "rosemships@yahoo.com",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Richelle",
+      "lastName": "Garner",
+      "company": "Rodan + Fields",
+      "email": "arogarner@hotmail.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Kathleen",
+      "lastName": "Moder",
+      "company": "Young Living Essential Oils",
+      "email": "sweeney727moder@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Sandi",
+      "lastName": "Rund",
+      "company": "Young Living Essential Oils",
+      "email": "rundamok@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Anna",
+      "lastName": "Kyle",
+      "company": "Herbalife",
+      "email": "akyle45@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Nichole",
+      "lastName": "Nickens",
+      "company": "It Works! Global",
+      "email": "lilcutie04@verizon.net",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Francine",
+      "lastName": "Cetta",
+      "company": "Origami Owl",
+      "email": "francine.cetta@msn.com",
+      "title": "Independent Designer",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Bethany",
+      "lastName": "Mill",
+      "company": "Young Living Essential Oils",
+      "email": "embracechange@sbcglobal.net",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Steve",
+      "lastName": "Cain",
+      "company": "Univera Healthcare",
+      "email": "steveccain@hotmail.com",
+      "title": "Associate",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Cristina",
+      "lastName": "Martinez",
+      "company": "Stella & Dot",
+      "email": "cris.mart@live.com",
+      "title": "Stylist",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Angie",
+      "lastName": "Decamp",
+      "company": "Avon",
+      "email": "angie_decamp@yahoo.com",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Cindy",
+      "lastName": "Presley",
+      "company": "Young Living Essential Oils",
+      "email": "cindylou.presley@gmail.com",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Rina",
+      "lastName": "Chanchanian",
+      "company": "Avon",
+      "email": "anirchan@yahoo.com",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Diana",
+      "lastName": "Shook",
+      "company": "Origami Owl",
+      "email": "diananicky@gmail.com",
+      "title": "Independent Designer",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Tomika",
+      "lastName": "Corwin",
+      "company": "Young Living Essential Oils",
+      "email": "purelbri@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Jessica",
+      "lastName": "Thiboutot",
+      "company": "Avon",
+      "email": "jessicathiboutot@yahoo.com",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Ann",
+      "lastName": "Nice",
+      "company": "Shaklee Corporation",
+      "email": "cavn753@earthlink.net",
+      "title": "Independent Contractor and Distributor With Shaklee Corporation",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Dennis",
+      "lastName": "Lutz",
+      "company": "Young Living Essential Oils",
+      "email": "lutzville8@aol.com",
+      "title": "Affiliate",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Christine",
+      "lastName": "Baggette",
+      "company": "Young Living Essential Oils",
+      "email": "cbaggette@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Erica",
+      "lastName": "Arcadipane",
+      "company": "LifeVantage Corporation",
+      "email": "icabeanage@comcast.net",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Susan",
+      "lastName": "Rish",
+      "company": "It Works! Global",
+      "email": "thegoodlife.itworks@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Trent",
+      "lastName": "Lv",
+      "company": "LifeVantage Corporation",
+      "email": "trent.lv@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Tina",
+      "lastName": "Kinsman",
+      "company": "Shaklee Corporation",
+      "email": "sekinsman@comcast.net",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Cheryl",
+      "lastName": "Nespor",
+      "company": "Young Living Essential Oils",
+      "email": "cnesporoaks@comcast.net",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Abigail",
+      "lastName": "Kelso",
+      "company": "Young Living Essential Oils",
+      "email": "abigail.kelso@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Dan",
+      "lastName": "Putonti",
+      "company": "Herbalife",
+      "email": "dputonti@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Brandy",
+      "lastName": "Krivoruchka",
+      "company": "Young Living Essential Oils",
+      "email": "brandy1225@live.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Marie",
+      "lastName": "Peralta",
+      "company": "Young Living Essential Oils",
+      "email": "udontnome_2@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Liliana",
+      "lastName": "Chan",
+      "company": "Nu Skin",
+      "email": "lchan210@hotmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Ardena",
+      "lastName": "Lennon",
+      "company": "Avon",
+      "email": "ardenarose@charter.net",
+      "title": "Representative",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Pam",
+      "lastName": "Persson",
+      "company": "Young Living Essential Oils",
+      "email": "ptilden56@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Nancy",
+      "lastName": "Alvarez",
+      "company": "Herbalife",
+      "email": "nancyea7@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Wendy",
+      "lastName": "Clayton",
+      "company": "Young Living Essential Oils",
+      "email": "wencla2007@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Lori",
+      "lastName": "Harris",
+      "company": "It Works! Global",
+      "email": "lori2219@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Joanne",
+      "lastName": "Mitchell",
+      "company": "It Works! Global",
+      "email": "jmitchell2115@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Madeleine",
+      "lastName": "Tavares",
+      "company": "LifeVantage Corporation",
+      "email": "tav6000@bellsouth.net",
+      "title": "Independent Business Owner",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Gwendolyn",
+      "lastName": "McMillan",
+      "company": "Young Living Essential Oils",
+      "email": "gmcmillan7@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Lisa",
+      "lastName": "Hensley",
+      "company": "Mary Kay Global",
+      "email": "lisamhensley@gmail.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Jan",
+      "lastName": "Warfield",
+      "company": "PartyLite",
+      "email": "no1wickclipper@charter.net",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Veronica",
+      "lastName": "Egurrola",
+      "company": "It Works! Global",
+      "email": "egurrolav@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Janice",
+      "lastName": "Knowles",
+      "company": "4Life Research",
+      "email": "janicek4life@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Rachel",
+      "lastName": "Dominessy",
+      "company": "Pampered Chef",
+      "email": "racheldnc48@yahoo.com",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Jessica",
+      "lastName": "Illes",
+      "company": "Nu Skin",
+      "email": "jjilles10@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Monna",
+      "lastName": "Shaner",
+      "company": "PartyLite",
+      "email": "candlelady3@comcast.net",
+      "title": "Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Thomas",
+      "lastName": "Drennan",
+      "company": "World Financial Group (WFG)",
+      "email": "tomdrennan1@yahoo.com",
+      "title": "Senior Associate",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Glen",
+      "lastName": "Hubbard",
+      "company": "Univera Healthcare",
+      "email": "atmbigdaddy@gmail.com",
+      "title": "Associate",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Laurie",
+      "lastName": "Dunn",
+      "company": "Young Living Essential Oils",
+      "email": "surflaurie@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Christy",
+      "lastName": "Darin",
+      "company": "LifeVantage Corporation",
+      "email": "cdarin@hotmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Julie",
+      "lastName": "Lassiter",
+      "company": "Reliv International",
+      "email": "julie.r.lassiter@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Anna",
+      "lastName": "Consalvo",
+      "company": "It Works! Global",
+      "email": "updoqueen11@comcast.net",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Debra",
+      "lastName": "Martell",
+      "company": "Young Living Essential Oils",
+      "email": "martelld@aol.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Sharon",
+      "lastName": "Robichaux",
+      "company": "Mannatech Incorporated",
+      "email": "smrt@charter.net",
+      "title": "Associate",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Kristin",
+      "lastName": "Woodcock",
+      "company": "It Works! Global",
+      "email": "kristicarol@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Rose",
+      "lastName": "Underwood",
+      "company": "Nu Skin",
+      "email": "galenu@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Amy",
+      "lastName": "Jagmin",
+      "company": "Rodan + Fields",
+      "email": "ajagmin08@gmail.com",
+      "title": "Independent Consultant",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Cristy",
+      "lastName": "Doering",
+      "company": "Stella & Dot",
+      "email": "cristyannd@hotmail.com",
+      "title": "Stylist",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Mischlane",
+      "lastName": "Melton",
+      "company": "Stella & Dot",
+      "email": "ps37n4@aol.com",
+      "title": "Stylist",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Bree",
+      "lastName": "Lumb",
+      "company": "Young Living Essential Oils",
+      "email": "bittybphotography@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Brenda",
+      "lastName": "Ellis",
+      "company": "Young Living Essential Oils",
+      "email": "bkellis_63@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Wendy",
+      "lastName": "Snead",
+      "company": "Herbalife",
+      "email": "wvsnead@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Abby",
+      "lastName": "Klodowski",
+      "company": "Young Living Essential Oils",
+      "email": "abbyjade@hotmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Corinne",
+      "lastName": "McBride",
+      "company": "Rodan + Fields",
+      "email": "corinne.mcbride@gmail.com",
+      "title": "Business Owner",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Dave",
+      "lastName": "Lindsey",
+      "company": "Herbalife",
+      "email": "grizz_bear6@yahoo.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Grecia",
+      "lastName": "Lopez",
+      "company": "It Works! Global",
+      "email": "toningmiracleco@gmail.com",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    },
+    {
+      "firstName": "Teresa",
+      "lastName": "Lowery",
+      "company": "Young Living Essential Oils",
+      "email": "don.lowery@comcast.net",
+      "title": "Independent Distributor",
+      "source": "apollo_secondary"
+    }
+  ]
+}

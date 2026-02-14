@@ -383,8 +383,13 @@ async function ascRequest(endpoint, token, method = 'GET', data = null, params =
 
 /**
  * Fetch iOS App Store metrics
+ * @param {string} keyId - ASC Key ID
+ * @param {string} issuerId - ASC Issuer ID
+ * @param {string} privateKey - ASC Private Key
+ * @param {string} openaiKey - OpenAI API Key for observations
+ * @param {string|null} benchmarkDate - Optional benchmark date (YYYY-MM-DD format)
  */
-async function fetchAppStoreMetrics(keyId, issuerId, privateKey, openaiKey) {
+async function fetchAppStoreMetrics(keyId, issuerId, privateKey, openaiKey, benchmarkDate = null) {
   const token = generateASCToken(keyId, issuerId, privateKey);
 
   try {
@@ -472,8 +477,8 @@ async function fetchAppStoreMetrics(keyId, issuerId, privateKey, openaiKey) {
           reportTypes
         };
 
-        // Try to fetch actual metrics
-        actualMetrics = await fetchActualAppStoreMetrics(requestId, reportTypes, token);
+        // Try to fetch actual metrics (filtered by benchmark if set)
+        actualMetrics = await fetchActualAppStoreMetrics(requestId, reportTypes, token, benchmarkDate);
       }
     } catch (analyticsError) {
       logger.warn('Could not fetch analytics reports:', analyticsError.message);
@@ -515,8 +520,12 @@ async function fetchAppStoreMetrics(keyId, issuerId, privateKey, openaiKey) {
 
 /**
  * Fetch actual metrics from App Store analytics reports
+ * @param {string} reportRequestId - The analytics report request ID
+ * @param {Array} reportTypes - Available report types
+ * @param {string} token - ASC API token
+ * @param {string|null} benchmarkDate - Optional benchmark date (YYYY-MM-DD format)
  */
-async function fetchActualAppStoreMetrics(reportRequestId, reportTypes, token) {
+async function fetchActualAppStoreMetrics(reportRequestId, reportTypes, token, benchmarkDate = null) {
   const metrics = {
     downloads: { total: 0, byTerritory: {} },
     engagement: { totalImpressions: 0, totalPageViews: 0, byTerritory: {}, pageViewsByTerritory: {} },
@@ -574,11 +583,16 @@ async function fetchActualAppStoreMetrics(reportRequestId, reportTypes, token) {
 
       // Deduplicate by date - only keep one instance per date (the most recent one)
       // Also exclude today's date since App Store Connect doesn't show current day
+      // And exclude dates before benchmark if set
       const seenDates = new Set();
       const uniqueInstances = sortedInstances.filter(instance => {
         const date = instance.attributes?.processingDate;
         if (date === today) {
           return false; // Skip today's incomplete data
+        }
+        // Filter by benchmark date if set
+        if (benchmarkDate && date < benchmarkDate) {
+          return false; // Skip data before benchmark
         }
         if (seenDates.has(date)) {
           return false;
@@ -1023,8 +1037,9 @@ function parseCSV(buffer) {
 
 /**
  * Fetch Google Play Store analytics data from GCS bucket
+ * @param {string|null} benchmarkDate - Optional benchmark date (YYYY-MM-DD format)
  */
-async function fetchGooglePlayMetrics() {
+async function fetchGooglePlayMetrics(benchmarkDate = null) {
   try {
     const storage = getStorageClient();
     const bucket = storage.bucket(PLAY_STORE_GCS_BUCKET);
@@ -1093,6 +1108,12 @@ async function fetchGooglePlayMetrics() {
           data.forEach(row => {
             // Field names match actual Play Console CSV export
             const date = row['Date'] || '';
+
+            // Skip data before benchmark if set
+            if (benchmarkDate && date < benchmarkDate) {
+              return;
+            }
+
             const dailyInstalls = parseInt(row['Daily Device Installs'] || '0', 10);
             const dailyUninstalls = parseInt(row['Daily Device Uninstalls'] || '0', 10);
             const activeDeviceInstalls = parseInt(row['Active Device Installs'] || '0', 10);
@@ -1127,6 +1148,12 @@ async function fetchGooglePlayMetrics() {
         const data = parseCSV(buffer);
 
         data.forEach(row => {
+          const date = row['Date'] || '';
+          // Skip data before benchmark if set
+          if (benchmarkDate && date && date < benchmarkDate) {
+            return;
+          }
+
           const country = row['Country'] || '';
           const dailyInstalls = parseInt(row['Daily Device Installs'] || '0', 10);
 
@@ -1208,7 +1235,36 @@ async function fetchGooglePlayMetrics() {
 // Firestore Email Campaign Stats
 // ==============================
 
+/**
+ * Get analytics benchmark date from Firestore config
+ * Returns null if no benchmark is set (show all data)
+ */
+async function getBenchmarkDate() {
+  try {
+    const configDoc = await db.collection('config').doc('analytics').get();
+    if (configDoc.exists && configDoc.data().benchmarkDate) {
+      return configDoc.data().benchmarkDate; // Format: 'YYYY-MM-DD'
+    }
+  } catch (error) {
+    logger.warn('Could not read benchmark date config:', error.message);
+  }
+  return null;
+}
+
+/**
+ * Convert YYYY-MM-DD string to Firestore Timestamp for filtering
+ */
+function benchmarkToTimestamp(benchmarkDate) {
+  if (!benchmarkDate) return null;
+  // Parse as start of day in UTC
+  const date = new Date(benchmarkDate + 'T00:00:00Z');
+  return date;
+}
+
 const CONTACTS_COLLECTION = 'emailCampaigns/master/contacts';
+const CONTACTS_CAMPAIGN_COLLECTION = 'direct_sales_contacts';
+const PURCHASED_CAMPAIGN_COLLECTION = 'purchased_leads';
+const BFH_CAMPAIGN_COLLECTION = 'bfh_contacts';
 
 /**
  * Fetch email campaign stats from Firestore
@@ -1272,6 +1328,562 @@ async function fetchFirestoreEmailStats() {
 }
 
 // ==============================
+// Multi-Campaign Email Stats Aggregation
+// ==============================
+
+/**
+ * Fetch stats for a single email campaign collection
+ * @param {string} collectionPath - Firestore collection path
+ * @param {string} campaignName - Display name for the campaign
+ * @param {Date|null} benchmarkTimestamp - Optional benchmark date to filter from
+ */
+async function fetchSingleCampaignStats(collectionPath, campaignName, benchmarkTimestamp = null) {
+  try {
+    const contactsRef = db.collection(collectionPath);
+
+    let sent = 0, failed = 0, clicked = 0, total = 0, remaining = 0;
+
+    if (benchmarkTimestamp) {
+      // Filter by benchmark date - need to query differently
+      // For sent: sentTimestamp >= benchmark
+      // For clicked: clickedAt >= benchmark
+      const sentDocs = await contactsRef
+        .where('sent', '==', true)
+        .where('sentTimestamp', '>=', benchmarkTimestamp)
+        .select('subjectTag', 'clickedAt', 'status')
+        .get();
+
+      sent = sentDocs.size;
+      sentDocs.forEach(doc => {
+        const data = doc.data();
+        if (data.clickedAt && data.clickedAt.toDate() >= benchmarkTimestamp) {
+          clicked++;
+        }
+        if (data.status === 'failed') failed++;
+      });
+
+      // Get actual remaining count (unsent emails) - NOT total minus benchmark sent
+      const [totalSnap, remainingSnap] = await Promise.all([
+        contactsRef.count().get(),
+        contactsRef.where('sent', '==', false).count().get()
+      ]);
+      total = totalSnap.data().count;
+      remaining = remainingSnap.data().count;
+    } else {
+      // No benchmark - use original fast count queries
+      const [sentSnap, failedSnap, clickedSnap, totalSnap, remainingSnap] = await Promise.all([
+        contactsRef.where('sent', '==', true).count().get(),
+        contactsRef.where('status', '==', 'failed').count().get(),
+        contactsRef.where('clickedAt', '!=', null).count().get(),
+        contactsRef.count().get(),
+        contactsRef.where('sent', '==', false).count().get()
+      ]);
+
+      sent = sentSnap.data().count;
+      failed = failedSnap.data().count;
+      clicked = clickedSnap.data().count;
+      total = totalSnap.data().count;
+      remaining = remainingSnap.data().count;
+    }
+
+    const clickRate = sent > 0 ? ((clicked / sent) * 100).toFixed(2) : '0.00';
+
+    // A/B test breakdown (also filtered by benchmark if set)
+    const EXCLUDED_TAGS = new Set(['subject_recruiting_app', 'unknown']);
+    let sentDocsQuery = contactsRef.where('sent', '==', true);
+    if (benchmarkTimestamp) {
+      sentDocsQuery = sentDocsQuery.where('sentTimestamp', '>=', benchmarkTimestamp);
+    }
+    const sentDocs = await sentDocsQuery.select('subjectTag', 'clickedAt').get();
+
+    const subjectStats = {};
+    sentDocs.docs.forEach(doc => {
+      const data = doc.data();
+      const tag = data.subjectTag || 'unknown';
+      if (EXCLUDED_TAGS.has(tag)) return;
+      if (!subjectStats[tag]) subjectStats[tag] = { sent: 0, clicked: 0 };
+      subjectStats[tag].sent++;
+      // For benchmark mode, only count clicks after benchmark
+      if (data.clickedAt) {
+        if (benchmarkTimestamp) {
+          const clickTime = data.clickedAt.toDate ? data.clickedAt.toDate() : new Date(data.clickedAt);
+          if (clickTime >= benchmarkTimestamp) {
+            subjectStats[tag].clicked++;
+          }
+        } else {
+          subjectStats[tag].clicked++;
+        }
+      }
+    });
+
+    const subjectLines = Object.entries(subjectStats).map(([tag, stats]) => ({
+      subjectTag: tag,
+      sent: stats.sent,
+      clicked: stats.clicked,
+      clickRate: stats.sent > 0 ? ((stats.clicked / stats.sent) * 100).toFixed(2) : '0.00'
+    }));
+
+    // Find best performing variant
+    let bestVariant = null;
+    if (subjectLines.length > 0) {
+      bestVariant = subjectLines.reduce((best, current) => {
+        return parseFloat(current.clickRate) > parseFloat(best.clickRate) ? current : best;
+      }, subjectLines[0]);
+    }
+
+    return {
+      campaign: campaignName,
+      collection: collectionPath,
+      total,
+      sent,
+      remaining,
+      failed,
+      clicked,
+      clickRate: clickRate + '%',
+      clickRateNum: parseFloat(clickRate),
+      subjectLines,
+      bestVariant
+    };
+  } catch (error) {
+    logger.error(`Error fetching ${campaignName} stats:`, error.message);
+    return {
+      campaign: campaignName,
+      collection: collectionPath,
+      error: error.message,
+      total: 0,
+      sent: 0,
+      remaining: 0,
+      failed: 0,
+      clicked: 0,
+      clickRate: '0.00%',
+      clickRateNum: 0,
+      subjectLines: [],
+      bestVariant: null
+    };
+  }
+}
+
+/**
+ * Fetch all email campaign stats across all 4 campaigns
+ * @param {Date|null} benchmarkTimestamp - Optional benchmark date to filter from
+ */
+async function fetchAllEmailCampaignStats(benchmarkTimestamp = null) {
+  try {
+    const [mainStats, contactsStats, purchasedStats, bfhStats] = await Promise.all([
+      fetchSingleCampaignStats(CONTACTS_COLLECTION, 'Main', benchmarkTimestamp),
+      fetchSingleCampaignStats(CONTACTS_CAMPAIGN_COLLECTION, 'Contacts', benchmarkTimestamp),
+      fetchSingleCampaignStats(PURCHASED_CAMPAIGN_COLLECTION, 'Purchased', benchmarkTimestamp),
+      fetchSingleCampaignStats(BFH_CAMPAIGN_COLLECTION, 'BFH', benchmarkTimestamp)
+    ]);
+
+    // Calculate totals across all campaigns
+    const campaigns = [mainStats, contactsStats, purchasedStats, bfhStats];
+    const totals = {
+      totalSent: campaigns.reduce((sum, c) => sum + c.sent, 0),
+      totalClicked: campaigns.reduce((sum, c) => sum + c.clicked, 0),
+      totalRemaining: campaigns.reduce((sum, c) => sum + c.remaining, 0),
+      totalFailed: campaigns.reduce((sum, c) => sum + c.failed, 0)
+    };
+    totals.overallClickRate = totals.totalSent > 0
+      ? ((totals.totalClicked / totals.totalSent) * 100).toFixed(2) + '%'
+      : '0.00%';
+
+    // Find best performing campaign
+    const bestCampaign = campaigns.reduce((best, current) => {
+      return current.clickRateNum > best.clickRateNum ? current : best;
+    }, campaigns[0]);
+
+    // Find best overall variant across all campaigns
+    let bestOverallVariant = null;
+    campaigns.forEach(c => {
+      if (c.bestVariant) {
+        if (!bestOverallVariant || parseFloat(c.bestVariant.clickRate) > parseFloat(bestOverallVariant.clickRate)) {
+          bestOverallVariant = { ...c.bestVariant, campaign: c.campaign };
+        }
+      }
+    });
+
+    return {
+      campaigns: {
+        main: mainStats,
+        contacts: contactsStats,
+        purchased: purchasedStats,
+        bfh: bfhStats
+      },
+      totals,
+      bestCampaign: {
+        name: bestCampaign.campaign,
+        clickRate: bestCampaign.clickRate
+      },
+      bestOverallVariant
+    };
+  } catch (error) {
+    logger.error('Error fetching all campaign stats:', error.message);
+    return null;
+  }
+}
+
+/**
+ * Fetch purchased leads ROI data by source
+ */
+async function fetchPurchasedLeadsROI() {
+  try {
+    // Get source stats from purchased_leads_stats collection
+    const statsSnapshot = await db.collection('purchased_leads_stats').get();
+    const sourceStats = {};
+
+    statsSnapshot.forEach(doc => {
+      const data = doc.data();
+      sourceStats[doc.id] = {
+        source: doc.id,
+        totalLeads: data.totalLeads || 0,
+        totalCost: data.totalCost || 0,
+        totalSent: data.totalSent || 0,
+        totalClicked: data.totalClicked || 0,
+        totalBounced: data.totalBounced || 0,
+        clickRate: data.totalSent > 0
+          ? ((data.totalClicked / data.totalSent) * 100).toFixed(2) + '%'
+          : '0.00%',
+        costPerClick: data.totalClicked > 0 && data.totalCost > 0
+          ? '$' + (data.totalCost / data.totalClicked).toFixed(2)
+          : 'N/A'
+      };
+    });
+
+    // Get live counts from purchased_leads collection for real-time data
+    const purchasedRef = db.collection(PURCHASED_CAMPAIGN_COLLECTION);
+    const leadsSnapshot = await purchasedRef.get();
+
+    const liveBySource = {};
+    leadsSnapshot.forEach(doc => {
+      const lead = doc.data();
+      const source = lead.source || 'unknown';
+      if (!liveBySource[source]) {
+        liveBySource[source] = { total: 0, sent: 0, clicked: 0 };
+      }
+      liveBySource[source].total++;
+      if (lead.sent) liveBySource[source].sent++;
+      if (lead.clickedAt) liveBySource[source].clicked++;
+    });
+
+    // Merge live data with stats
+    Object.keys(liveBySource).forEach(source => {
+      if (!sourceStats[source]) {
+        sourceStats[source] = {
+          source,
+          totalLeads: 0,
+          totalCost: 0,
+          totalSent: 0,
+          totalClicked: 0
+        };
+      }
+      sourceStats[source].liveTotal = liveBySource[source].total;
+      sourceStats[source].liveSent = liveBySource[source].sent;
+      sourceStats[source].liveClicked = liveBySource[source].clicked;
+      sourceStats[source].liveClickRate = liveBySource[source].sent > 0
+        ? ((liveBySource[source].clicked / liveBySource[source].sent) * 100).toFixed(2) + '%'
+        : '0.00%';
+    });
+
+    // Find best ROI source
+    let bestSource = null;
+    Object.values(sourceStats).forEach(s => {
+      const clickRate = parseFloat(s.liveClickRate || s.clickRate || '0');
+      if (!bestSource || clickRate > parseFloat(bestSource.liveClickRate || bestSource.clickRate || '0')) {
+        bestSource = s;
+      }
+    });
+
+    return {
+      bySource: sourceStats,
+      bestSource: bestSource ? bestSource.source : null,
+      totalSources: Object.keys(sourceStats).length
+    };
+  } catch (error) {
+    logger.error('Error fetching purchased leads ROI:', error.message);
+    return null;
+  }
+}
+
+/**
+ * Build executive summary aggregating all data sources
+ */
+function buildExecutiveSummary(ga4Data, iosData, androidData, emailStats) {
+  const overview = ga4Data?.overview || {};
+  const iosMetrics = iosData?.actualMetrics || {};
+  const androidMetrics = androidData?.metrics || {};
+
+  // Calculate email metrics
+  const emailTotals = emailStats?.totals || {};
+
+  // Calculate iOS conversion rate (downloads / impressions)
+  const iosDownloads = iosMetrics.downloads?.total || 0;
+  const iosImpressions = iosMetrics.engagement?.totalImpressions || 0;
+  const iosConversion = iosImpressions > 0
+    ? ((iosDownloads / iosImpressions) * 100).toFixed(1) + '%'
+    : 'N/A';
+
+  // Calculate performance score (0-100)
+  // Based on: email click rate, website engagement, iOS conversion, Android growth
+  let score = 50; // Base score
+
+  const emailClickRate = parseFloat(emailTotals.overallClickRate || '0');
+  if (emailClickRate >= 4) score += 15;
+  else if (emailClickRate >= 3) score += 10;
+  else if (emailClickRate >= 2) score += 5;
+
+  const engagementRate = overview.engagementRate || 0;
+  if (engagementRate >= 50) score += 15;
+  else if (engagementRate >= 30) score += 10;
+  else if (engagementRate >= 20) score += 5;
+
+  const iosConvNum = parseFloat(iosConversion) || 0;
+  if (iosConvNum >= 5) score += 15;
+  else if (iosConvNum >= 3) score += 10;
+  else if (iosConvNum >= 2) score += 5;
+
+  const recentAndroidInstalls = androidMetrics.recentInstalls || 0;
+  if (recentAndroidInstalls >= 50) score += 5;
+  else if (recentAndroidInstalls >= 20) score += 3;
+
+  score = Math.min(100, Math.max(0, score));
+
+  return {
+    performanceScore: score,
+    email: {
+      totalSent: emailTotals.totalSent || 0,
+      totalClicked: emailTotals.totalClicked || 0,
+      overallClickRate: emailTotals.overallClickRate || '0.00%',
+      bestCampaign: emailStats?.bestCampaign || null,
+      bestVariant: emailStats?.bestOverallVariant || null
+    },
+    website: {
+      users: overview.activeUsers || 0,
+      sessions: overview.sessions || 0,
+      engagementRate: overview.engagementRate || 0,
+      pageViews: overview.pageViews || 0
+    },
+    ios: {
+      downloads: iosDownloads,
+      impressions: iosImpressions,
+      conversion: iosConversion,
+      rating: iosData?.reviews?.averageRating || 'N/A'
+    },
+    android: {
+      activeInstalls: androidMetrics.activeInstalls || 0,
+      recentInstalls: androidMetrics.recentInstalls || 0,
+      totalInstalls: androidMetrics.totalInstalls || 0
+    }
+  };
+}
+
+/**
+ * Build conversion funnel visualization data
+ */
+function buildConversionFunnel(emailStats, ga4Data, iosData, androidData) {
+  const emailSent = emailStats?.totals?.totalSent || 0;
+
+  // Website visits from email (smtp medium)
+  const emailCampaignData = ga4Data?.emailCampaign?.data || [];
+  const websiteFromEmail = emailCampaignData.reduce((sum, c) => sum + (c.activeUsers || 0), 0);
+
+  // App Store page views
+  const iosPageViews = iosData?.actualMetrics?.engagement?.totalPageViews || 0;
+
+  // Downloads (iOS + Android combined)
+  const iosDownloads = iosData?.actualMetrics?.downloads?.total || 0;
+  const androidDownloads = androidData?.metrics?.recentInstalls || 0;
+  const totalDownloads = iosDownloads + androidDownloads;
+
+  // Calculate conversion rates between stages
+  const emailToWebsite = emailSent > 0 ? ((websiteFromEmail / emailSent) * 100).toFixed(1) : '0.0';
+  const websiteToAppStore = websiteFromEmail > 0 ? ((iosPageViews / websiteFromEmail) * 100).toFixed(1) : '0.0';
+  const appStoreToDownload = iosPageViews > 0 ? ((totalDownloads / iosPageViews) * 100).toFixed(1) : '0.0';
+
+  // Target benchmarks
+  const targets = {
+    emailToWebsite: 15, // 15% target
+    websiteToAppStore: 20, // 20% target
+    appStoreToDownload: 40 // 40% target
+  };
+
+  return {
+    stages: [
+      {
+        name: 'Email Sent',
+        count: emailSent,
+        percentage: '100%',
+        status: 'neutral'
+      },
+      {
+        name: 'Website Visit',
+        count: websiteFromEmail,
+        percentage: emailToWebsite + '%',
+        target: targets.emailToWebsite + '%',
+        status: parseFloat(emailToWebsite) >= targets.emailToWebsite ? 'good' : 'warning'
+      },
+      {
+        name: 'App Store View',
+        count: iosPageViews,
+        percentage: websiteToAppStore + '%',
+        target: targets.websiteToAppStore + '%',
+        status: parseFloat(websiteToAppStore) >= targets.websiteToAppStore ? 'good' : 'warning'
+      },
+      {
+        name: 'Download',
+        count: totalDownloads,
+        percentage: appStoreToDownload + '%',
+        target: targets.appStoreToDownload + '%',
+        status: parseFloat(appStoreToDownload) >= targets.appStoreToDownload ? 'good' : 'warning'
+      }
+    ],
+    rates: {
+      emailToWebsite: parseFloat(emailToWebsite),
+      websiteToAppStore: parseFloat(websiteToAppStore),
+      appStoreToDownload: parseFloat(appStoreToDownload)
+    },
+    targets
+  };
+}
+
+/**
+ * Generate strategic AI insights combining all data sources
+ */
+async function generateStrategicInsights(data, openaiKey) {
+  try {
+    const openai = new OpenAI({ apiKey: openaiKey });
+
+    const exec = data.executiveSummary || {};
+    const funnel = data.conversionFunnel || {};
+    const campaigns = data.allCampaignStats?.campaigns || {};
+    const roi = data.purchasedLeadsROI || {};
+
+    // Build comprehensive context
+    const context = `
+TEAM BUILD PRO - STRATEGIC ANALYTICS SUMMARY
+
+=== EXECUTIVE SUMMARY ===
+Performance Score: ${exec.performanceScore}/100
+
+Email Campaigns (All 4):
+- Total Sent: ${exec.email?.totalSent || 0}
+- Total Clicked: ${exec.email?.totalClicked || 0}
+- Overall Click Rate: ${exec.email?.overallClickRate || '0%'}
+- Best Campaign: ${exec.email?.bestCampaign?.name || 'N/A'} (${exec.email?.bestCampaign?.clickRate || 'N/A'})
+- Best Variant: ${exec.email?.bestVariant?.subjectTag || 'N/A'} (${exec.email?.bestVariant?.clickRate || 'N/A'}%)
+
+Website (7-day):
+- Users: ${exec.website?.users || 0}
+- Sessions: ${exec.website?.sessions || 0}
+- Engagement Rate: ${exec.website?.engagementRate || 0}%
+- Page Views: ${exec.website?.pageViews || 0}
+
+iOS App Store (7-day):
+- Downloads: ${exec.ios?.downloads || 0}
+- Impressions: ${exec.ios?.impressions || 0}
+- Store Conversion: ${exec.ios?.conversion || 'N/A'}
+- Rating: ${exec.ios?.rating || 'N/A'}/5
+
+Android (7-day):
+- Active Installs: ${exec.android?.activeInstalls || 0}
+- Recent Installs: ${exec.android?.recentInstalls || 0}
+
+=== CONVERSION FUNNEL ===
+Email Sent → Website: ${funnel.rates?.emailToWebsite || 0}% (target: ${funnel.targets?.emailToWebsite || 15}%)
+Website → App Store: ${funnel.rates?.websiteToAppStore || 0}% (target: ${funnel.targets?.websiteToAppStore || 20}%)
+App Store → Download: ${funnel.rates?.appStoreToDownload || 0}% (target: ${funnel.targets?.appStoreToDownload || 40}%)
+
+=== CAMPAIGN BREAKDOWN ===
+Main Campaign: ${campaigns.main?.clickRate || 'N/A'} click rate, ${campaigns.main?.sent || 0} sent
+Contacts Campaign: ${campaigns.contacts?.clickRate || 'N/A'} click rate, ${campaigns.contacts?.sent || 0} sent
+Purchased Leads: ${campaigns.purchased?.clickRate || 'N/A'} click rate, ${campaigns.purchased?.sent || 0} sent
+BFH Campaign: ${campaigns.bfh?.clickRate || 'N/A'} click rate, ${campaigns.bfh?.sent || 0} sent
+
+=== PURCHASED LEADS ROI (by source) ===
+${Object.entries(roi.bySource || {}).map(([source, data]) =>
+  `${source}: ${data.liveClickRate || data.clickRate || 'N/A'} click rate, Cost/Click: ${data.costPerClick || 'N/A'}`
+).join('\n')}
+Best Source: ${roi.bestSource || 'N/A'}
+`;
+
+    const prompt = `${context}
+
+Based on this comprehensive Team Build Pro analytics data, provide strategic insights. Team Build Pro is an AI-powered downline builder app for direct sales professionals. The goal is to maximize app downloads and subscriptions.
+
+Return a JSON object with these exact keys:
+{
+  "whatsWorking": [
+    {"insight": "specific thing working well", "metric": "supporting metric", "impact": "high/medium/low"}
+  ],
+  "needsAttention": [
+    {"issue": "specific issue", "metric": "supporting metric", "severity": "high/medium/low"}
+  ],
+  "recommendedActions": [
+    {"priority": "HIGH/MEDIUM/LOW", "action": "specific actionable recommendation", "expectedImpact": "what improvement to expect"}
+  ]
+}
+
+Provide 2-4 items in each category. Be specific with metrics. Focus on:
+1. A/B test winners that should be scaled
+2. Underperforming campaigns/variants to fix
+3. Conversion funnel bottlenecks
+4. Lead source ROI optimization
+5. Cross-channel insights
+
+Keep insights actionable and data-driven.`;
+
+    const completion = await openai.chat.completions.create({
+      model: 'gpt-4o-mini',
+      messages: [
+        {
+          role: 'system',
+          content: 'You are a strategic marketing analytics expert specializing in app growth and conversion optimization. Always respond with valid JSON only.'
+        },
+        { role: 'user', content: prompt }
+      ],
+      response_format: { type: "json_object" },
+      max_tokens: 1000,
+      temperature: 0.7
+    });
+
+    const content = completion.choices[0]?.message?.content;
+
+    try {
+      const analysis = JSON.parse(content);
+      return {
+        generatedAt: new Date().toISOString(),
+        insights: analysis,
+        dataContext: {
+          performanceScore: exec.performanceScore,
+          totalEmailsSent: exec.email?.totalSent,
+          overallClickRate: exec.email?.overallClickRate,
+          iosDownloads: exec.ios?.downloads,
+          funnelHealth: funnel.rates
+        }
+      };
+    } catch (parseError) {
+      logger.warn('Failed to parse strategic insights JSON:', parseError);
+      return {
+        generatedAt: new Date().toISOString(),
+        insights: {
+          whatsWorking: [{ insight: 'AI analysis temporarily unavailable', metric: '-', impact: 'low' }],
+          needsAttention: [],
+          recommendedActions: []
+        }
+      };
+    }
+
+  } catch (error) {
+    logger.error('Error generating strategic insights:', error);
+    return {
+      generatedAt: new Date().toISOString(),
+      error: error.message,
+      insights: null
+    };
+  }
+}
+
+// ==============================
 // Main Unified Analytics Endpoint
 // ==============================
 
@@ -1300,8 +1912,13 @@ const getTBPAnalytics = onRequest({
     // Determine date ranges
     const _ga4DateRange = dateRange === '7days' ? '7daysAgo' : '30daysAgo';
 
-    // Fetch all data sources in parallel
-    const [ga4Data30, ga4Data7, ga4DataYesterday, ga4DataToday, iosData, androidData, emailStats] = await Promise.all([
+    // Get benchmark date from config
+    const benchmarkDate = await getBenchmarkDate();
+    const benchmarkTimestamp = benchmarkToTimestamp(benchmarkDate);
+    logger.info(`Benchmark date: ${benchmarkDate || 'None (showing all data)'}`);
+
+    // Fetch all data sources in parallel (with benchmark filtering where applicable)
+    const [ga4Data30, ga4Data7, ga4DataYesterday, ga4DataToday, iosData, androidData, allCampaignStats, purchasedROI] = await Promise.all([
       fetchGA4Analytics('30daysAgo'),
       fetchGA4Analytics('7daysAgo'),
       fetchGA4Analytics('yesterday'),
@@ -1310,11 +1927,17 @@ const getTBPAnalytics = onRequest({
         ascKeyId.value(),
         ascIssuerId.value(),
         ascPrivateKey.value(),
-        openaiApiKey.value()
+        openaiApiKey.value(),
+        benchmarkDate  // Pass benchmark date
       ),
-      fetchGooglePlayMetrics(),
-      fetchFirestoreEmailStats()
+      fetchGooglePlayMetrics(benchmarkDate),  // Pass benchmark date
+      fetchAllEmailCampaignStats(benchmarkTimestamp),  // Pass benchmark timestamp
+      fetchPurchasedLeadsROI()
     ]);
+
+    // Build executive summary and conversion funnel using 7-day data
+    const executiveSummary = buildExecutiveSummary(ga4Data7, iosData, androidData, allCampaignStats);
+    const conversionFunnel = buildConversionFunnel(allCampaignStats, ga4Data7, iosData, androidData);
 
     // Generate AI observations for GA4 data (use 30-day data for more comprehensive analysis)
     let ga4Observations = null;
@@ -1325,8 +1948,31 @@ const getTBPAnalytics = onRequest({
       logger.warn('Failed to generate GA4 observations:', obsError.message);
     }
 
+    // Generate strategic insights combining all data
+    let strategicInsights = null;
+    try {
+      strategicInsights = await generateStrategicInsights({
+        executiveSummary,
+        conversionFunnel,
+        allCampaignStats,
+        purchasedLeadsROI: purchasedROI
+      }, openaiApiKey.value());
+      logger.info('Strategic AI insights generated successfully');
+    } catch (insightsError) {
+      logger.warn('Failed to generate strategic insights:', insightsError.message);
+    }
+
     const response = {
       generatedAt: new Date().toISOString(),
+      // Benchmark date for filtering (null = show all data)
+      benchmarkDate: benchmarkDate,
+      benchmarkActive: !!benchmarkDate,
+      // NEW: Executive summary at top level
+      executiveSummary,
+      // NEW: Conversion funnel visualization data
+      conversionFunnel,
+      // NEW: Strategic AI insights
+      strategicInsights,
       website: {
         thirtyDay: ga4Data30,
         sevenDay: ga4Data7,
@@ -1336,7 +1982,12 @@ const getTBPAnalytics = onRequest({
       },
       ios: iosData,
       android: androidData,
-      emailCampaign: emailStats
+      // Enhanced: All campaign stats (replacing single emailCampaign)
+      emailCampaigns: allCampaignStats,
+      // NEW: Purchased leads ROI by source
+      purchasedLeadsROI: purchasedROI,
+      // Legacy: Keep single campaign for backward compatibility
+      emailCampaign: allCampaignStats?.campaigns?.main || null
     };
 
     logger.info('TBP Analytics Dashboard data fetched successfully');

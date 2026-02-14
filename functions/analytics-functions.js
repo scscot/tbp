@@ -20,6 +20,9 @@ const { getTimezoneFromLocation } = require('./timezone_mapping');
 const { defineSecret } = require('firebase-functions/params');
 const jwt = require('jsonwebtoken');
 const axios = require('axios');
+const zlib = require('zlib');
+const { promisify } = require('util');
+const gunzip = promisify(zlib.gunzip);
 
 // App Store Connect API secrets
 const ascKeyId = defineSecret('ASC_KEY_ID');
@@ -782,7 +785,7 @@ const getAppStoreMetrics = onRequest({
 
       const now = Math.floor(Date.now() / 1000);
       const payload = {
-        iss: ascIssuerId.value(),
+        iss: ascIssuerId.value().trim(),
         iat: now,
         exp: now + (20 * 60), // 20 minutes (Apple max)
         aud: 'appstoreconnect-v1'
@@ -792,7 +795,7 @@ const getAppStoreMetrics = onRequest({
         algorithm: 'ES256',
         header: {
           alg: 'ES256',
-          kid: ascKeyId.value(),
+          kid: ascKeyId.value().trim(),
           typ: 'JWT'
         }
       });
@@ -909,8 +912,21 @@ const getAppStoreMetrics = onRequest({
         );
 
         if (existingRequests.data && existingRequests.data.length > 0) {
-          // Use existing request
-          requestId = existingRequests.data[0].id;
+          // Log all existing requests
+          logger.info(`Found ${existingRequests.data.length} existing report requests`);
+          for (const req of existingRequests.data) {
+            logger.info(`Report request: id=${req.id}, stoppedDueToInactivity=${req.attributes?.stoppedDueToInactivity}`);
+          }
+
+          // Find an active request (not stopped due to inactivity)
+          const activeRequest = existingRequests.data.find(req => !req.attributes?.stoppedDueToInactivity);
+          if (activeRequest) {
+            requestId = activeRequest.id;
+          } else {
+            // All requests are inactive, use the first one but log warning
+            logger.warn('All report requests are stopped due to inactivity');
+            requestId = existingRequests.data[0].id;
+          }
         }
       } catch (error) {
         // If the filter doesn't work, try without filter
@@ -1032,30 +1048,81 @@ const getAppStoreMetrics = onRequest({
           const instances = instancesResponse.data;
           const reportData = [];
 
+          // Log instance dates to understand the data range
+          if (instances.length > 0) {
+            const dates = instances.map(i => i.attributes?.processingDate).filter(Boolean);
+            logger.info(`${reportName} instance dates: ${dates.slice(0, 5).join(', ')} ... ${dates.slice(-3).join(', ')} (${instances.length} total)`);
+
+            // Sort by date descending (most recent first)
+            instances.sort((a, b) => {
+              const dateA = a.attributes?.processingDate || '';
+              const dateB = b.attributes?.processingDate || '';
+              return dateB.localeCompare(dateA);
+            });
+            logger.info(`${reportName} after sort - newest: ${instances[0].attributes?.processingDate}, oldest: ${instances[instances.length - 1].attributes?.processingDate}`);
+          }
+
+          // Use instances sorted by date (most recent first if sorted by API)
           for (const instance of instances.slice(0, 7)) { // Last 7 days
             try {
-              // Get the download URL for this instance
-              // Correct endpoint: /analyticsReportInstances/{id}/segments
+              // Use the segments link from the instance if available
+              let segmentsPath;
+              if (instance.relationships?.segments?.links?.related) {
+                // Extract path from full URL
+                const relatedUrl = instance.relationships.segments.links.related;
+                segmentsPath = relatedUrl.replace('https://api.appstoreconnect.apple.com/v1', '');
+                logger.info(`Using segments link: ${segmentsPath}`);
+              } else {
+                segmentsPath = `/analyticsReportInstances/${instance.id}/segments`;
+              }
+
               const segmentsResponse = await ascRequest(
-                `/analyticsReportInstances/${instance.id}/segments`,
+                segmentsPath,
                 'GET',
                 null,
                 { limit: 10 }
               );
 
+              // Log segments response for debugging
+              const segmentCount = segmentsResponse.data?.length || 0;
+              if (segmentCount === 0) {
+                logger.info(`${reportName} ${instance.attributes?.processingDate}: No segments`);
+              }
+
               if (segmentsResponse.data && segmentsResponse.data.length > 0) {
                 for (const segment of segmentsResponse.data) {
+                  const url = segment.attributes?.url;
+                  const checksum = segment.attributes?.checksum;
+                  logger.info(`${reportName} segment: url=${url ? 'YES' : 'NO'}, checksum=${checksum || 'none'}`);
+
                   if (segment.attributes && segment.attributes.url) {
-                    // Download the actual data
+                    // Download the actual data (gzip compressed)
                     const dataResponse = await axios.get(segment.attributes.url, {
-                      responseType: 'text',
-                      decompress: true
+                      responseType: 'arraybuffer'
                     });
+                    logger.info(`${reportName} data response size: ${dataResponse.data?.length || 0}`);
+
+                    // Decompress gzip data
+                    let tsvData;
+                    try {
+                      const decompressed = await gunzip(Buffer.from(dataResponse.data));
+                      tsvData = decompressed.toString('utf-8');
+                    } catch (decompressError) {
+                      // Data might not be compressed, try using as-is
+                      tsvData = dataResponse.data.toString('utf-8');
+                    }
 
                     // Parse TSV data
-                    const lines = dataResponse.data.split('\n');
+                    const lines = tsvData.split('\n');
                     if (lines.length > 1) {
                       const headers = lines[0].split('\t');
+                      // Log headers and first data row for debugging
+                      if (reportData.length === 0) {
+                        logger.info(`${reportName} headers: ${headers.join(' | ')}`);
+                        if (lines.length > 1 && lines[1].trim()) {
+                          logger.info(`${reportName} sample row: ${lines[1]}`);
+                        }
+                      }
                       for (let i = 1; i < lines.length; i++) {
                         if (lines[i].trim()) {
                           const values = lines[i].split('\t');
@@ -1090,7 +1157,7 @@ const getAppStoreMetrics = onRequest({
           metrics.dataAvailable = true;
 
           downloadData.forEach(row => {
-            const count = parseInt(row['Total Downloads'] || row['Downloads'] || row['First Time Downloads'] || '0', 10);
+            const count = parseInt(row['Counts'] || row['Total Downloads'] || row['Downloads'] || row['First Time Downloads'] || '0', 10);
             metrics.downloads.total += count;
 
             // By territory
@@ -1121,15 +1188,17 @@ const getAppStoreMetrics = onRequest({
           metrics.dataAvailable = true;
 
           engagementData.forEach(row => {
-            const impressions = parseInt(row['Impressions'] || row['Total Impressions'] || '0', 10);
-            const pageViews = parseInt(row['Product Page Views'] || row['Page Views'] || '0', 10);
-
-            metrics.engagement.totalImpressions += impressions;
-            metrics.engagement.totalPageViews += pageViews;
-
+            const event = row['Event'] || '';
+            const count = parseInt(row['Counts'] || row['Impressions'] || row['Product Page Views'] || '0', 10);
             const territory = row['Territory'] || row['Storefront'] || 'Unknown';
-            metrics.engagement.byTerritory[territory] = (metrics.engagement.byTerritory[territory] || 0) + impressions;
-            metrics.engagement.pageViewsByTerritory[territory] = (metrics.engagement.pageViewsByTerritory[territory] || 0) + pageViews;
+
+            if (event.includes('Impression')) {
+              metrics.engagement.totalImpressions += count;
+              metrics.engagement.byTerritory[territory] = (metrics.engagement.byTerritory[territory] || 0) + count;
+            } else if (event.includes('Product Page') || event.includes('Page View')) {
+              metrics.engagement.totalPageViews += count;
+              metrics.engagement.pageViewsByTerritory[territory] = (metrics.engagement.pageViewsByTerritory[territory] || 0) + count;
+            }
           });
 
           // Calculate conversion rate

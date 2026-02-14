@@ -6,10 +6,15 @@
  * Uses the "{name}" "{company}" email search pattern.
  *
  * Usage:
- *   node scripts/bfh-email-search.js --search     # Search for emails
- *   node scripts/bfh-email-search.js --dry-run    # Preview only
- *   node scripts/bfh-email-search.js --stats      # Show stats
- *   node scripts/bfh-email-search.js --max=50     # Limit searches
+ *   node scripts/bfh-email-search.js --search                        # Search bfh_contacts
+ *   node scripts/bfh-email-search.js --search --collection=mlm500_staging  # Search mlm500_staging
+ *   node scripts/bfh-email-search.js --dry-run                       # Preview only
+ *   node scripts/bfh-email-search.js --stats                         # Show stats
+ *   node scripts/bfh-email-search.js --max=50                        # Limit searches
+ *
+ * Collections:
+ *   - bfh_contacts (default): Requires bfhScraped=true before search
+ *   - mlm500_staging: Searches all contacts with emailSearched=false
  *
  * SerpAPI:
  *   - Uses SerpAPI for reliable Google search results
@@ -33,8 +38,8 @@ const SERPAPI_KEY = fs.readFileSync(
 ).trim();
 
 const CONFIG = {
-  // Firestore
-  COLLECTION: 'bfh_contacts',
+  // Firestore (can be overridden via --collection flag)
+  DEFAULT_COLLECTION: 'bfh_contacts',
 
   // SerpAPI
   SERPAPI_URL: 'https://serpapi.com/search',
@@ -278,14 +283,25 @@ async function findEmailForContact(contact) {
 // MAIN SEARCH FUNCTION
 // ============================================================================
 
-async function searchEmails(maxContacts = 50, dryRun = false) {
-  console.log('\n=== Searching Google for BFH Contact Emails ===\n');
+async function searchEmails(maxContacts = 50, dryRun = false, collectionName = null) {
+  const collection = collectionName || CONFIG.DEFAULT_COLLECTION;
+  console.log(`\n=== Searching Google for Emails (${collection}) ===\n`);
 
-  // Get scraped contacts without email search
-  const query = db.collection(CONFIG.COLLECTION)
-    .where('bfhScraped', '==', true)
-    .where('emailSearched', '==', false)
-    .limit(maxContacts);
+  // Build query based on collection
+  // - bfh_contacts: requires bfhScraped=true
+  // - mlm500_staging: no scrape requirement (no profile pages)
+  let query;
+  if (collection === 'bfh_contacts') {
+    query = db.collection(collection)
+      .where('bfhScraped', '==', true)
+      .where('emailSearched', '==', false)
+      .limit(maxContacts);
+  } else {
+    // For other collections (mlm500_staging, etc.), just check emailSearched
+    query = db.collection(collection)
+      .where('emailSearched', '==', false)
+      .limit(maxContacts);
+  }
 
   const snapshot = await query.get();
   console.log(`Found ${snapshot.size} contacts to search\n`);
@@ -327,6 +343,7 @@ async function searchEmails(maxContacts = 50, dryRun = false) {
     if (result.email) {
       updateData.email = result.email;
       updateData.emailSource = result.source;
+      updateData.emailScore = result.score || 0;
       console.log(`  Found: ${result.email} (score: ${result.score})`);
       found++;
     } else {
@@ -356,23 +373,31 @@ async function searchEmails(maxContacts = 50, dryRun = false) {
 // STATS
 // ============================================================================
 
-async function showStats() {
-  const collection = db.collection(CONFIG.COLLECTION);
+async function showStats(collectionName = null) {
+  const colName = collectionName || CONFIG.DEFAULT_COLLECTION;
+  const collection = db.collection(colName);
 
-  const [total, scraped, searched, withEmail, sent] = await Promise.all([
+  console.log(`\n=== ${colName} Stats ===`);
+
+  const [total, searched, withEmail] = await Promise.all([
     collection.count().get(),
-    collection.where('bfhScraped', '==', true).count().get(),
     collection.where('emailSearched', '==', true).count().get(),
     collection.where('email', '!=', null).count().get(),
-    collection.where('sent', '==', true).count().get(),
   ]);
 
-  console.log('\n=== BFH Contacts Stats ===');
   console.log(`Total contacts: ${total.data().count}`);
-  console.log(`BFH scraped: ${scraped.data().count}`);
   console.log(`Email searched: ${searched.data().count}`);
   console.log(`With email: ${withEmail.data().count}`);
-  console.log(`Emails sent: ${sent.data().count}`);
+
+  // Collection-specific stats
+  if (colName === 'bfh_contacts') {
+    const [scraped, sent] = await Promise.all([
+      collection.where('bfhScraped', '==', true).count().get(),
+      collection.where('sent', '==', true).count().get(),
+    ]);
+    console.log(`BFH scraped: ${scraped.data().count}`);
+    console.log(`Emails sent: ${sent.data().count}`);
+  }
 
   // Calculate yield rate
   const searchedCount = searched.data().count;
@@ -400,32 +425,45 @@ async function main() {
     maxContacts = parseInt(maxArg.split('=')[1]) || 50;
   }
 
+  // Parse --collection=name
+  let collectionName = null;
+  const collectionArg = args.find(a => a.startsWith('--collection='));
+  if (collectionArg) {
+    collectionName = collectionArg.split('=')[1];
+  }
+
   if (!search && !stats) {
     console.log('Usage:');
-    console.log('  node scripts/bfh-email-search.js --search     # Search for emails');
-    console.log('  node scripts/bfh-email-search.js --stats      # Show stats');
-    console.log('  node scripts/bfh-email-search.js --dry-run    # Preview only');
-    console.log('  node scripts/bfh-email-search.js --max=N      # Max contacts to search');
+    console.log('  node scripts/bfh-email-search.js --search                        # Search bfh_contacts');
+    console.log('  node scripts/bfh-email-search.js --search --collection=mlm500_staging  # Search mlm500_staging');
+    console.log('  node scripts/bfh-email-search.js --stats                         # Show stats');
+    console.log('  node scripts/bfh-email-search.js --stats --collection=mlm500_staging');
+    console.log('  node scripts/bfh-email-search.js --dry-run                       # Preview only');
+    console.log('  node scripts/bfh-email-search.js --max=N                         # Max contacts to search');
+    console.log('');
+    console.log('Collections:');
+    console.log('  - bfh_contacts (default): Requires bfhScraped=true');
+    console.log('  - mlm500_staging: MLM 500 Top Earners (no scrape requirement)');
     console.log('');
     console.log('Notes:');
     console.log('  - Rate limited to ~900 searches/hour (SerpAPI Developer plan: 1,000/hr)');
     console.log('  - 100 contacts @ 4s each = ~7 minutes to complete');
-    console.log('  - Expected email yield: 29% high-quality emails');
+    console.log('  - Expected email yield: ~37% for BFH contacts');
     process.exit(1);
   }
 
   initFirebase();
 
   if (stats) {
-    await showStats();
+    await showStats(collectionName);
     process.exit(0);
   }
 
   if (search) {
-    await searchEmails(maxContacts, dryRun);
+    await searchEmails(maxContacts, dryRun, collectionName);
   }
 
-  await showStats();
+  await showStats(collectionName);
   process.exit(0);
 }
 

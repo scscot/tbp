@@ -1,6 +1,6 @@
 # Team Build Pro - Comprehensive Knowledge Base
 
-**Last Updated**: 2026-02-11 (Codebase Audit)
+**Last Updated**: 2026-02-14
 **Purpose**: Persistent knowledge base for AI assistants across sessions
 
 ---
@@ -42,7 +42,7 @@ The Team Build Pro ecosystem is a comprehensive, interconnected network of digit
 │    114 Company            Localized              Localized             │
 │    Landing Pages       Content (ES/PT/DE)     Content (ES/PT/DE)      │
 │         │                      │                        │               │
-│    Blog (23 posts)        Blog (22-23 each)     Blog (22-23 each)     │
+│    Blog (24 posts)        Blog (23-24 each)     Blog (23-24 each)     │
 │         │                      │                        │               │
 │    FAQ/Books              FAQ/Books              FAQ/Books             │
 └─────────────────────────────────────────────────────────────────────────┘
@@ -99,7 +99,7 @@ The Team Build Pro ecosystem is a comprehensive, interconnected network of digit
 - Each post includes app download CTAs
 
 **6. Email Campaign Integration**
-- Cold email to 17,900+ direct sales professionals
+- Three active campaigns: Main (5.9K remaining), Purchased (1.3K), BFH (900)
 - Mailgun API via news.teambuildpro.com with Firestore tracking
 - Click tracking via trackEmailClick endpoint; open tracking disabled for deliverability
 - Drives traffic to landing page → app downloads
@@ -116,7 +116,7 @@ The Team Build Pro ecosystem is a comprehensive, interconnected network of digit
 | Email Click Rate | Tracked via Firestore | 3%+ |
 | Email Open Rate | N/A (disabled for deliverability) | - |
 | Website Languages | 4 (EN, ES, PT, DE) | 4 |
-| Blog Posts (per language) | 22-23 | 25+ |
+| Blog Posts (per language) | 23-24 | 25+ |
 | Company Landing Pages | 114 (EN/ES) | 150+ |
 | App Languages | 4 (EN, ES, PT, DE) | 4 |
 
@@ -201,26 +201,26 @@ The world's first AI-powered platform that lets **prospects pre-build their team
 │   ├── faq.html          # FAQ with dynamic filtering
 │   ├── books.html        # Books landing page
 │   ├── companies/        # Company-specific recruiting guides (114 pages)
-│   └── blog/             # Blog posts (23 articles)
+│   └── blog/             # Blog posts (24 articles)
 ├── web-es/                # Spanish website (es.teambuildpro.com)
 │   ├── index.html        # Spanish homepage
 │   ├── faq.html          # Spanish FAQ
 │   ├── books.html        # Spanish books page
-│   ├── blog/             # Spanish blog (23 translated posts)
+│   ├── blog/             # Spanish blog (24 translated posts)
 │   ├── sitemap.xml       # Spanish sitemap
 │   └── robots.txt        # Spanish search engine directives
 ├── web-pt/                # Portuguese website (pt.teambuildpro.com)
 │   ├── index.html        # Portuguese homepage
 │   ├── faq.html          # Portuguese FAQ
 │   ├── books.html        # Portuguese books page
-│   ├── blog/             # Portuguese blog (23 translated posts)
+│   ├── blog/             # Portuguese blog (24 translated posts)
 │   ├── sitemap.xml       # Portuguese sitemap
 │   └── robots.txt        # Portuguese search engine directives
 ├── web-de/                # German website (de.teambuildpro.com)
 │   ├── index.html        # German homepage (3x2 screenshot grid)
 │   ├── faq.html          # German FAQ
 │   ├── books.html        # German books page
-│   ├── blog/             # German blog (22 translated posts)
+│   ├── blog/             # German blog (23 translated posts)
 │   ├── sitemap.xml       # German sitemap
 │   └── robots.txt        # German search engine directives
 ├── sscott/                # Stephen Scott author website (stephenscott.us)
@@ -230,7 +230,7 @@ The world's first AI-powered platform that lets **prospects pre-build their team
 │   │   ├── books/       # 13 individual book pages
 │   │   ├── podcasts.html # Podcast listings
 │   │   ├── blog.html    # Author blog index
-│   │   └── blog/        # 18 blog posts (auto-generated weekly)
+│   │   └── blog/        # 19 blog posts (auto-generated weekly)
 │   └── scripts/         # Build automation scripts
 ├── analytics/             # Analytics workspace (GA4)
 │   ├── fetch-combined-analytics.js  # Combined reporting
@@ -329,7 +329,7 @@ All four main sites have identical structure:
 - Homepage with hero animation
 - FAQ page (8 questions)
 - Books landing page with localized covers
-- Blog index with 22+ translated posts
+- Blog index with 23-24 translated posts
 - Privacy policy
 - Terms of service
 - Contact form
@@ -354,7 +354,7 @@ All four main sites have identical structure:
 - `/faq.html` - Dynamic FAQ (audience-aware, 8 questions)
 - `/books.html` - Books landing page with AI/MLM book covers
 - `/blog.html` - Blog index
-- `/blog/` - 23 blog posts (auto-generated twice weekly via GitHub Actions)
+- `/blog/` - 24 blog posts (auto-generated twice weekly via GitHub Actions)
 - `/companies.html` - 114 company-specific recruiting guides
 - `/companies/ai-recruiting-[company].html` - Individual company pages
 - `/contact_us.html` - Contact form
@@ -369,7 +369,7 @@ All four main sites have identical structure:
 - `/faq.html` - Spanish FAQ (8 questions with accordion)
 - `/books.html` - Spanish books page (MLM-Cover-ES.jpg)
 - `/blog.html` - Spanish blog index
-- `/blog/` - 23 translated blog posts (same titles as EN)
+- `/blog/` - 24 translated blog posts (same titles as EN)
 - `/companies.html` - Company recruiting guides index (114 companies with pagination)
 - `/companies/` - 114 company-specific recruiting guides in Spanish
 - `/contact_us.html` - Spanish contact form
@@ -383,7 +383,7 @@ All four main sites have identical structure:
 - `/faq.html` - Portuguese FAQ (8 questions with accordion)
 - `/books.html` - Portuguese books page (MLM-Cover-BR.jpg)
 - `/blog.html` - Portuguese blog index
-- `/blog/` - 23 translated blog posts (same titles as EN)
+- `/blog/` - 24 translated blog posts (same titles as EN)
 - `/companies.html` - Company recruiting guides index (39 companies with pagination)
 - `/companies/` - 39 company-specific recruiting guides in Portuguese
 - `/contact_us.html` - Portuguese contact form
@@ -397,7 +397,7 @@ All four main sites have identical structure:
 - `/faq.html` - German FAQ (8 questions with accordion)
 - `/books.html` - German books page (MLM-Cover-DE.jpg)
 - `/blog.html` - German blog index
-- `/blog/` - 22 translated blog posts (same titles as EN)
+- `/blog/` - 23 translated blog posts (same titles as EN)
 - `/companies.html` - Company recruiting guides index (20 companies with pagination)
 - `/companies/` - 20 company-specific recruiting guides in German
 - `/contact_us.html` - German contact form
@@ -477,8 +477,11 @@ All four main sites have identical structure:
 - Password-protected dashboard at `/TBP-analytics.html`
 - Three tabs: Website (GA4), iOS App Store, Android Play Store
 - **Website tab**: GA4 metrics (users, sessions, engagement, traffic sources, top pages, top countries, device/domain breakdown)
-- **Date range selector**: 30 Days, 7 Days, Yesterday options
-- **Email Campaign section**: Firestore stats (sent/remaining/failed/clicked, A/B test results) + GA4 campaign traffic
+- **Date range selector**: Today, Yesterday, 7 Days, 30 Days options
+- **Email Campaign section**: Three campaign cards (Main/Purchased/BFH) showing sent/remaining/clicked/click rate
+  - Removed Contacts Campaign from dashboard (Feb 14, 2026 - campaign complete)
+  - Each campaign card shows individual stats from Firestore
+  - Campaign comparison table with A/B test winners
 - **iOS tab**: App Store Connect metrics (downloads, impressions, reviews, versions)
 - **Android tab**: Google Play metrics from GCS bucket + CSV import fallback
 - AI-generated observations via OpenAI
@@ -598,16 +601,16 @@ The email campaign system consists of two parallel campaigns targeting different
 - **Batch Size**: Dynamic via Firestore `config/emailCampaign.batchSize` (automated by GitHub Actions)
 - **Domain Warming**: Automated via `.github/workflows/domain-warming-update.yml`
 
-### Contacts Campaign (Mailgun API - Automated)
+### Contacts Campaign (PAUSED - Complete)
 - **Function**: `sendHourlyContactsCampaign` in `functions/email-campaign-contacts.js`
+- **Status**: PAUSED - All 981 contacts sent (0 remaining as of Feb 14, 2026)
 - **Tags**: `contacts_campaign`, `tracked`
 - **Schedule**: 9am, 12pm, 3pm, 6pm PT (4 runs/day, staggered 1hr after Main)
 - **Data Source**: Firestore `direct_sales_contacts` collection
 - **Control Variable**: CONTACTS_CAMPAIGN_ENABLED (separate from Main)
-- **Batch Size**: Dynamic via Firestore `config/emailCampaign.batchSize` (shares with Main)
+- **Batch Size**: 0 (paused via `config/emailCampaign.batchSizeContacts`)
 - **Subject**: V7/V8 A/B test (legacy `mobile_first_v7` / `mobile_first_v8`)
 - **Template Variables**: `first_name`, `company`, `tracked_cta_url`, `unsubscribe_url`
-- **A/B Test**: v7/v8 template rotation (legacy)
 
 ### Yahoo Campaign (REMOVED - Jan 2026)
 - **Status**: REMOVED - File and function deleted
@@ -628,17 +631,22 @@ The email campaign system consists of two parallel campaigns targeting different
   - `scripts/bfh-scraper.js` - Phase 1: Scrape BFH profile pages (name, company, country, Facebook/website URLs)
   - `scripts/bfh-email-search.js` - Phase 2: Google search for public email addresses
 
+### Batch Size Configuration
+- **Firestore Config**: `config/emailCampaign` document stores batch sizes per campaign
+- **Current Settings** (optimized Feb 14, 2026 for ~30-day completion):
+  | Campaign | Batch Size | Runs/Day | Emails/Day | Remaining |
+  |----------|------------|----------|------------|-----------|
+  | Main (`batchSize`) | 50 | 4 | 200 | 5,944 |
+  | Purchased (`batchSizePurchased`) | 15 | 4 | 60 | 1,290 |
+  | BFH (`batchSizeBfh`) | 10 | 4 | 40 | 900 |
+  | Contacts (`batchSizeContacts`) | 0 | - | - | 0 (complete) |
+  | **Total** | - | 12 | **300** | 8,134 |
+
 ### Automated Domain Warming System
 - **Workflow**: `.github/workflows/domain-warming-update.yml`
 - **Config**: `.github/warming-config.json`
 - **Schedule**: Runs every Monday at 6am PT
 - **Mechanism**: GitHub Actions calculates current week, looks up batch size from config, updates Firestore
-- **Firestore Config**: `config/emailCampaign` document stores `batchSize`, `preintakeBatchSize`, `warmingWeek`
-- **TBP Warming Schedule** (reset 2026-02-09, 8 runs/day total):
-  | Week | Batch Size | Emails/Day |
-  |------|------------|------------|
-  | 1+ | 60 | 480 |
-  - TBP capped at 60/batch to stay within 50K Mailgun monthly limit (shared with PreIntake)
 - **PreIntake Warming Schedule** (reset 2026-02-09, 4 runs/day Mon-Fri):
   | Week | Batch Size | Emails/Day |
   |------|------------|------------|
@@ -646,10 +654,6 @@ The email campaign system consists of two parallel campaigns targeting different
   | 2 | 150 | 600 |
   | 3 | 225 | 900 |
   | 4+ | 300 | 1,200 |
-- **Monthly Projections** (at max batch sizes):
-  - TBP: 60 × 240 runs = 14,400/month (29%)
-  - PreIntake: 300 × 88 runs = 26,400/month (53%)
-  - Total: 40,800/month (82% of 50K Mailgun limit)
 - **Manual Override**: `workflow_dispatch` with `force_week` input to test specific week
 
 ### Campaign Tracking
@@ -763,12 +767,18 @@ Automated 4-stage pipeline that discovers direct sales distributor URLs, scrapes
 
 ### BFH (Business For Home) Data Pipeline
 
+**Current Collection**: 952 contacts (900 remaining as of Feb 14, 2026)
+
 ```
 ┌──────────────────────────────────────────────────────────────────────┐
 │  Stage 1: Profile URL Seeding                                        │
 │  scripts/bfh-scraper.js --seed                                       │
 │  Source: businessforhome.org/momentum-ranks/recommended-distributors │
 │  ~709 distributors across 36 pages → Firestore bfh_contacts          │
+│                                                                      │
+│  Additional Source: MLM500 Rankings                                  │
+│  scripts/mlm500-scraper.js --migrate-to-bfh                          │
+│  ~583 contacts migrated from mlm500_staging (Feb 14, 2026)           │
 ├──────────────────────────────────────────────────────────────────────┤
 │  Stage 2: Profile Scraping                                           │
 │  scripts/bfh-scraper.js --scrape                                     │
@@ -868,6 +878,7 @@ Automated 4-stage pipeline that discovers direct sales distributor URLs, scrapes
 | `bfh-email-search.js` | SerpAPI Google search for emails | `--search`, `--max=N`, `--stats` |
 | `bfh-profile-enricher.js` | Enrich profiles (bio, reviews, language) | `--enrich`, `--max=N`, `--stats`, `--sample=URL` |
 | `bfh-personalization-generator.js` | Generate AI personalized content | `--generate`, `--max=N`, `--force-review`, `--export-review`, `--approve --ids=...` |
+| `mlm500-scraper.js` | Scrape MLM500 rankings + migrate to BFH | `--scrape`, `--search`, `--migrate-to-bfh`, `--stats` |
 
 ### BFH Personalization Pipeline
 
@@ -932,9 +943,9 @@ The `purchased_leads` collection consolidates contacts from multiple sources for
 └──────────────────────────────────────────────────────────────────────────┘
                               │
                               ▼
-              Purchased Leads Campaign (scheduled hourly)
-              Schedule: 8am, 11am, 2pm, 5pm PT (when enabled)
-              V9/V10 A/B test rotation
+              Purchased Leads Campaign (email-campaign-purchased.js)
+              Schedule: 9:30am, 12:30pm, 3:30pm, 6:30pm PT
+              V11a/V12a A/B test rotation
 ```
 
 ### Purchased Leads Collection Schema: `purchased_leads`
@@ -1081,6 +1092,7 @@ The following corporate domains are excluded from purchased_leads campaigns (hig
 - `scripts/bfh-email-search.js` - SerpAPI email discovery for BFH contacts
 - `scripts/bfh-profile-enricher.js` - BFH profile enrichment (bio, reviews, language detection)
 - `scripts/bfh-personalization-generator.js` - Claude AI personalization with two-pass validation
+- `scripts/mlm500-scraper.js` - MLM500 rankings scraper with BFH migration
 
 ### Utility Scripts (functions/)
 - `count-todays-emails.js` - Query Firestore for daily email send counts
@@ -1145,6 +1157,11 @@ The following corporate domains are excluded from purchased_leads campaigns (hig
 - `contacts-scraper.js` - Puppeteer-based contact scraper for distributor pages
   - `--all --max=400` - Scrape up to 400 URLs across all companies
   - `--company="Monat"` - Scrape specific company
+- `mlm500-scraper.js` - MLM500 rankings scraper
+  - `--scrape` - Scrape MLM500 rankings pages
+  - `--search` - SerpAPI email search for contacts
+  - `--migrate-to-bfh` - Migrate contacts with emails to bfh_contacts
+  - `--stats` - Show collection statistics
 
 ---
 
@@ -1252,6 +1269,17 @@ The following corporate domains are excluded from purchased_leads campaigns (hig
 - ✅ **Fixed PreIntake firebase.json**: Changed `cleanUrls: true` to `false` (was inconsistent with TBP sites)
 - ✅ **Fixed GitHub workflow**: Removed unused `MAILGUN_DOMAIN` env variable from `preintake-email-campaign.yml`
 
+**Analytics Dashboard & Campaign Optimization (Feb 14, 2026)**
+- ✅ **Dashboard Restructured**: Removed Contacts Campaign (complete), broke out Email Campaign Performance into 3 separate cards (Main/Purchased/BFH)
+- ✅ **Remaining Count Fix**: Fixed incorrect remaining counts by querying actual `sent == false` count instead of calculating `total - sent`
+- ✅ **Firestore Indexes Added**: Composite indexes for `sent + sentTimestamp` on `bfh_contacts` and `direct_sales_contacts` for benchmark queries
+- ✅ **Batch Size Optimization**: Configured for ~30-day completion across all campaigns
+  - Main: 20 → 50 (200 emails/day)
+  - Purchased: 20 → 15 (60 emails/day)
+  - BFH: 20 → 10 (40 emails/day)
+  - Total: 300 emails/day
+- ✅ **MLM500 Migration**: Migrated 583 contacts from mlm500_staging to bfh_contacts (BFH grew from 369 to 952 contacts)
+
 **Contact Data Pipeline (Feb 13, 2026)**
 - ✅ **Apollo Contact Recovery**: Salvaged $99 Apollo purchase by extracting personal emails from Secondary Email field
   - 709 contacts with personal emails (gmail, yahoo, hotmail) imported directly
@@ -1269,32 +1297,30 @@ The following corporate domains are excluded from purchased_leads campaigns (hig
   - `apollo-email-search.js` with progress saving and resume capability
   - Rate limited at 4s delay (900 searches/hour, Developer plan)
 
-### Current System Status (Feb 2026)
+### Current System Status (Feb 14, 2026)
 
-**PROJECT STATUS: MONITORING PHASE (as of Jan 31, 2026)**
-Active development paused to allow automated systems to run and collect meaningful data. All infrastructure is self-sustaining. Revisit in 6-8 weeks (mid-March 2026) when domain warming completes and sufficient conversion data exists for optimization decisions.
+**PROJECT STATUS: ACTIVE CAMPAIGNS**
+Three email campaigns running with optimized batch sizes for ~30-day completion. Total 300 emails/day across 12 scheduled runs.
 
 | Component | Status | Notes |
 |-----------|--------|-------|
-| Main Campaign | Active | 8am, 11am, 2pm, 5pm PT (4 runs/day) |
-| Contacts Campaign | Active | 9am, 12pm, 3pm, 6pm PT (4 runs/day) |
-| BFH Campaign | Active | 10am, 1pm, 4pm, 7pm PT (4 runs/day) |
-| Purchased Leads Campaign | Pending | 966 contacts ready, awaiting Apollo SerpAPI completion |
+| Main Campaign | Active | 8am, 11am, 2pm, 5pm PT · 50/batch · 5,944 remaining |
+| Purchased Campaign | Active | 9:30am, 12:30pm, 3:30pm, 6:30pm PT · 15/batch · 1,290 remaining |
+| BFH Campaign | Active | 10am, 1pm, 4pm, 7pm PT · 10/batch · 900 remaining |
+| Contacts Campaign | Complete | 981 sent, 0 remaining (paused) |
 | Email Sending | Mailgun API | Via Mailgun, news.teambuildpro.com |
-| Email A/B Testing | Active | Main: 4-way V9/V10 × 2 subjects; Contacts: V7/V8 |
+| Email A/B Testing | Active | Main: V9/V10 × 2 subjects; Purchased: V11a/V12a; BFH: V11a/V12a |
 | Yahoo Campaign | Removed | File and function deleted (Jan 31) |
 | Android Campaign | Removed | Function and all references deleted |
 | Email Tracking | Firestore | Clicks via trackEmailClick; opens disabled |
-| Analytics Dashboards | Firestore + GA4 | Top Countries + Yesterday + Today date ranges |
+| Analytics Dashboard | Enhanced | 3 campaign cards, improved remaining counts |
 | Push Notifications | Working | profile_reminder, trial_expired verified |
-| Blog Automation | Running | Mon/Thu schedule, 4 languages, sitemap pings |
+| Blog Automation | Running | Mon/Thu schedule, 4 languages (24/24/24/23 posts) |
 | Sitemap Pings | Active | Google + Bing pinged after each blog deploy |
-| Domain Warming | Week 1 | TBP: 60/batch, PreIntake: 100/batch (reset 2026-02-09) |
 | URL Discovery | Active | Every 2h, 120 companies/batch (processing 1,082 companies) |
 | Contacts Seeder | Active | Every 4h, 3 sources (Common Crawl + Wayback + crt.sh) |
 | Contacts Scraper | Active | Hourly, 400 URLs/batch, 12 blocked platforms |
-| BFH Profile Enrichment | Complete | 387 profiles enriched (EN:373, ES:12, PT:1, DE:1) |
-| Apollo SerpAPI Search | In Progress | ~1,575 remaining, ~22% yield rate |
+| BFH Collection | 952 contacts | Includes 583 from MLM500 migration |
 | PreIntake.ai | Autonomous | See `preintake/CLAUDE.md` for details |
 
 **Monitoring Checklist (Weekly):**
