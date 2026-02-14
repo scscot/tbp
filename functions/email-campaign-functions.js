@@ -240,6 +240,12 @@ async function processCampaignBatch(config, enabledParam, batchSize) {
     return { status: 'disabled', sent: 0 };
   }
 
+  // Check if batch size is 0 (effectively paused)
+  if (batchSize === 0) {
+    console.log(`${logPrefix} ${name}: Paused (batchSize set to 0)`);
+    return { status: 'paused', sent: 0 };
+  }
+
   const apiKey = mailgunApiKey.value();
   if (!apiKey) {
     console.error(`❌ ${name}: TBP_MAILGUN_API_KEY not configured`);

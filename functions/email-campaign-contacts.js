@@ -108,24 +108,21 @@ const CAMPAIGN_CONFIGS = {
 // =============================================================================
 
 /**
- * Get batch size from Firestore config document, falling back to .env value
- * This allows GitHub Actions to update batch sizes without redeploying functions
+ * Get batch size from Firestore config document
+ * Uses batchSizeContacts for independent control of contacts campaign
  */
-async function getDynamicBatchSize(envFallback) {
+async function getDynamicBatchSize() {
   try {
     const configDoc = await db.collection('config').doc('emailCampaign').get();
-    if (configDoc.exists && configDoc.data().batchSize) {
-      const firestoreBatchSize = configDoc.data().batchSize;
-      console.log(`📊 Using Firestore batch size: ${firestoreBatchSize}`);
-      return firestoreBatchSize;
+    if (configDoc.exists && configDoc.data().batchSizeContacts !== undefined) {
+      const batchSize = configDoc.data().batchSizeContacts;
+      console.log(`📊 Using Firestore batchSizeContacts: ${batchSize}`);
+      return batchSize;
     }
   } catch (error) {
     console.log(`⚠️ Could not read Firestore config: ${error.message}`);
   }
-  // Fallback to environment variable
-  const fallbackSize = parseInt(envFallback);
-  console.log(`📊 Using .env fallback batch size: ${fallbackSize}`);
-  return fallbackSize;
+  return 0; // Default to paused
 }
 
 // =============================================================================
@@ -267,6 +264,12 @@ async function processCampaignBatch(config, enabledParam, batchSize) {
     return { status: 'disabled', sent: 0 };
   }
 
+  // Check if batch size is 0 (effectively paused)
+  if (batchSize === 0) {
+    console.log(`${logPrefix} ${name}: Paused (batchSizeContacts set to 0)`);
+    return { status: 'paused', sent: 0 };
+  }
+
   const apiKey = mailgunApiKey.value();
   if (!apiKey) {
     console.error(`❌ ${name}: TBP_MAILGUN_API_KEY not configured`);
@@ -386,8 +389,8 @@ const sendHourlyContactsCampaign = onSchedule({
   memory: "512MiB",
   timeoutSeconds: 120
 }, async () => {
-  // Get batch size from Firestore (updated by GitHub Actions) or fall back to .env
-  const batchSize = await getDynamicBatchSize(emailCampaignBatchSize.value());
+  // Get batch size from Firestore config (batchSizeContacts)
+  const batchSize = await getDynamicBatchSize();
 
   return processCampaignBatch(
     CAMPAIGN_CONFIGS.main,

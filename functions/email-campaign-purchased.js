@@ -30,35 +30,23 @@ const SEND_DELAY_MS = 1000;
 const TRACKING_BASE_URL = 'https://us-central1-teambuilder-plus-fe74d.cloudfunctions.net';
 const LANDING_PAGE_URL = 'https://teambuildpro.com';
 
-// A/B Test Variants - V9 vs V10 template with subject line testing (4 combinations)
+// A/B Test Variants - V11 vs V12 templates (improved messaging, subtle CTA)
 const AB_TEST_VARIANTS = {
-  v9a: {
-    templateVersion: 'v9',
+  v11a: {
+    templateVersion: 'v11',
     subject: 'Not an opportunity. Just a tool.',
-    subjectTag: 'purchased_v9a',
-    description: 'V9 (no bullets) + Pattern interrupt'
+    subjectTag: 'purchased_v11a',
+    description: 'V11 + Pattern interrupt subject'
   },
-  v9b: {
-    templateVersion: 'v9',
+  v12a: {
+    templateVersion: 'v12',
     subject: 'AI is changing how teams grow',
-    subjectTag: 'purchased_v9b',
-    description: 'V9 (no bullets) + AI curiosity'
-  },
-  v10a: {
-    templateVersion: 'v10',
-    subject: 'Not an opportunity. Just a tool.',
-    subjectTag: 'purchased_v10a',
-    description: 'V10 (with bullets) + Pattern interrupt'
-  },
-  v10b: {
-    templateVersion: 'v10',
-    subject: 'AI is changing how teams grow',
-    subjectTag: 'purchased_v10b',
-    description: 'V10 (with bullets) + AI curiosity'
+    subjectTag: 'purchased_v12a',
+    description: 'V12 + AI curiosity subject'
   }
 };
 
-const ACTIVE_VARIANTS = ['v9a', 'v9b', 'v10a', 'v10b'];
+const ACTIVE_VARIANTS = ['v11a', 'v12a'];
 
 // =============================================================================
 // HELPER FUNCTIONS
@@ -82,21 +70,25 @@ function buildLandingPageUrl(utmCampaign, utmContent, source) {
 
 async function getDynamicBatchSize() {
   try {
-    const configDoc = await db.collection('purchased_leads_config').doc('schema').get();
-    if (configDoc.exists && configDoc.data().batchSize) {
-      return configDoc.data().batchSize;
+    // Read from unified config/emailCampaign document (same as BFH)
+    const configDoc = await db.collection('config').doc('emailCampaign').get();
+    if (configDoc.exists && configDoc.data().batchSizePurchased !== undefined) {
+      return configDoc.data().batchSizePurchased;
     }
   } catch (error) {
     console.log(`⚠️ Could not read config: ${error.message}`);
   }
-  return 50; // Default batch size
+  return 8; // Default batch size
 }
 
 async function isCampaignEnabled() {
   try {
-    const configDoc = await db.collection('purchased_leads_config').doc('schema').get();
+    // Read from unified config/emailCampaign document
+    // Campaign is enabled if batchSizePurchased > 0 (same pattern as BFH)
+    const configDoc = await db.collection('config').doc('emailCampaign').get();
     if (configDoc.exists) {
-      return configDoc.data().campaignEnabled === true;
+      const batchSize = configDoc.data().batchSizePurchased;
+      return batchSize !== undefined && batchSize > 0;
     }
   } catch (error) {
     console.log(`⚠️ Could not read config: ${error.message}`);

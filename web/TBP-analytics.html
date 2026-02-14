@@ -695,6 +695,11 @@
             color: #856404;
         }
 
+        .campaign-label.bfh {
+            background: #e0f2fe;
+            color: #0369a1;
+        }
+
         .source-label {
             display: inline-block;
             font-size: 0.7rem;
@@ -1307,6 +1312,9 @@
                     <div class="campaign-tab" onclick="switchEmailTab('purchased')">
                         Purchased Leads <span class="tab-badge" id="emailPurchasedTabBadge">-</span>
                     </div>
+                    <div class="campaign-tab" onclick="switchEmailTab('bfh')">
+                        BFH Campaign <span class="tab-badge" id="emailBfhTabBadge">-</span>
+                    </div>
                 </div>
 
                 <!-- Main Campaign Sub-Tab Content -->
@@ -1569,6 +1577,86 @@
                                 </tr>
                             </thead>
                             <tbody id="emailPurchasedRecentSendsBody">
+                                <tr><td colspan="5" class="no-data-message">Loading...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- BFH Campaign Sub-Tab Content -->
+                <div id="emailBfhTab" class="campaign-content">
+                    <!-- Campaign Progress -->
+                    <h2 class="section-title">Campaign Progress <span class="campaign-label bfh">BFH</span></h2>
+                    <div class="section-card" style="margin-bottom: 30px;">
+                        <h3>Overall Send Progress</h3>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar" id="emailBfhProgressBar" style="width: 0%;">0%</div>
+                        </div>
+                        <div class="progress-stats">
+                            <span><strong id="emailBfhTotalSent">0</strong> sent</span>
+                            <span><strong id="emailBfhTotalRemaining">0</strong> remaining</span>
+                            <span><strong id="emailBfhTotalContacts">0</strong> total</span>
+                        </div>
+                    </div>
+
+                    <div class="section-card">
+                        <h3>Email Statistics</h3>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-value green" id="emailBfhSentToday">-</div>
+                                <div class="stat-label">Sent Today</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="emailBfhSent24h">-</div>
+                                <div class="stat-label">Last 24 Hours</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value red" id="emailBfhFailed">-</div>
+                                <div class="stat-label">Failed</div>
+                            </div>
+                        </div>
+                        <div class="stats-grid" style="margin-top: 15px;">
+                            <div class="stat-card">
+                                <div class="stat-value green" id="emailBfhTotalClicked">-</div>
+                                <div class="stat-label">Clicked</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="emailBfhClickRate">-</div>
+                                <div class="stat-label">Click Rate</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-card" style="margin-top: 30px;">
+                        <h3>A/B Test Performance</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Variant</th>
+                                    <th>Sent</th>
+                                    <th>Clicked</th>
+                                    <th>Rate</th>
+                                </tr>
+                            </thead>
+                            <tbody id="emailBfhAbTestBody">
+                                <tr><td colspan="4" class="no-data-message">Loading...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="section-card" style="margin-top: 30px;">
+                        <h3>Recent Sends</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Time (PT)</th>
+                                    <th>Email</th>
+                                    <th>Company</th>
+                                    <th>Variant</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="emailBfhRecentSendsBody">
                                 <tr><td colspan="5" class="no-data-message">Loading...</td></tr>
                             </tbody>
                         </table>
@@ -2086,6 +2174,7 @@
                 document.getElementById('emailMainTabBadge').textContent = '-';
                 document.getElementById('emailContactsTabBadge').textContent = '-';
                 document.getElementById('emailPurchasedTabBadge').textContent = '-';
+                document.getElementById('emailBfhTabBadge').textContent = '-';
                 return;
             }
 
@@ -2327,6 +2416,87 @@
 
                 // Update tab badge
                 document.getElementById('emailPurchasedTabBadge').textContent = formatNumber(pcSent) + ' sent';
+            }
+
+            // ==================== BFH CAMPAIGN ====================
+            if (emailStatsData.bfhCampaign) {
+                const bfh = emailStatsData.bfhCampaign;
+
+                // Campaign progress
+                const bfhTotal = bfh.campaign?.total || 1;
+                const bfhSent = bfh.campaign?.sent || 0;
+                const bfhProgress = (bfhSent / bfhTotal * 100);
+
+                document.getElementById('emailBfhProgressBar').style.width = bfhProgress + '%';
+                document.getElementById('emailBfhProgressBar').textContent = bfhProgress.toFixed(1) + '%';
+                document.getElementById('emailBfhTotalSent').textContent = formatNumber(bfhSent);
+                document.getElementById('emailBfhTotalRemaining').textContent = formatNumber(bfh.campaign?.remaining || 0);
+                document.getElementById('emailBfhTotalContacts').textContent = formatNumber(bfh.campaign?.total || 0);
+
+                // Sending activity
+                document.getElementById('emailBfhSentToday').textContent = formatNumber(bfh.today?.sent || 0);
+                document.getElementById('emailBfhSent24h').textContent = formatNumber(bfh.last24h?.sent || 0);
+
+                // Click performance
+                if (bfh.tracking) {
+                    document.getElementById('emailBfhFailed').textContent = formatNumber(bfh.tracking.failed || 0);
+                    document.getElementById('emailBfhTotalClicked').textContent = formatNumber(bfh.tracking.clicked || 0);
+                    document.getElementById('emailBfhClickRate').textContent = bfh.tracking.clickRate || '0%';
+                }
+
+                // A/B test performance (v11a/v12a for personalized)
+                const bfhAbBody = document.getElementById('emailBfhAbTestBody');
+                const bfhSubjectLines = (bfh.subjectLines || []).filter(sl =>
+                    sl.subjectTag?.startsWith('bfh_v11') || sl.subjectTag?.startsWith('bfh_v12') ||
+                    sl.subjectTag?.startsWith('bfh_v9') || sl.subjectTag?.startsWith('bfh_v10')
+                );
+                if (bfhSubjectLines.length > 0) {
+                    const sorted = [...bfhSubjectLines].sort((a, b) => {
+                        return parseFloat(b.clickRate) - parseFloat(a.clickRate);
+                    });
+                    const winnerTag = sorted[0].subjectTag;
+
+                    bfhAbBody.innerHTML = bfhSubjectLines.map(sl => {
+                        const label = sl.subjectTag || 'Unknown';
+                        const isWinner = sl.subjectTag === winnerTag && bfhSubjectLines.length > 1;
+                        const badgeClass = getBadgeClass(sl.subjectTag);
+                        return `
+                            <tr class="${isWinner ? 'ab-winner' : ''}">
+                                <td>${escapeHtml(label)} ${isWinner ? '<span class="badge badge-clicked">LEADING</span>' : ''}</td>
+                                <td>${formatNumber(sl.sent)}</td>
+                                <td>${formatNumber(sl.clicked)}</td>
+                                <td><span class="badge ${badgeClass}">${sl.clickRate}</span></td>
+                            </tr>
+                        `;
+                    }).join('');
+                } else {
+                    bfhAbBody.innerHTML = '<tr><td colspan="4" class="no-data-message">No A/B test data</td></tr>';
+                }
+
+                // Recent sends (includes company column)
+                const bfhTbody = document.getElementById('emailBfhRecentSendsBody');
+                if (bfh.recentSends && bfh.recentSends.length > 0) {
+                    bfhTbody.innerHTML = bfh.recentSends.map(send => {
+                        const variantBadge = getVariantBadge(send.subjectTag);
+                        const statusBadge = send.clicked
+                            ? '<span class="badge badge-clicked">Clicked</span>'
+                            : '<span class="badge badge-sent">Sent</span>';
+                        return `
+                            <tr>
+                                <td>${escapeHtml(send.time || '')}</td>
+                                <td>${escapeHtml(send.email || '')}</td>
+                                <td>${escapeHtml(send.company || '-')}</td>
+                                <td>${variantBadge}</td>
+                                <td>${statusBadge}</td>
+                            </tr>
+                        `;
+                    }).join('');
+                } else {
+                    bfhTbody.innerHTML = '<tr><td colspan="5" class="no-data-message">No recent sends</td></tr>';
+                }
+
+                // Update tab badge
+                document.getElementById('emailBfhTabBadge').textContent = formatNumber(bfhSent) + ' sent';
             }
 
             // ==================== GA4 EMAIL TRAFFIC ====================

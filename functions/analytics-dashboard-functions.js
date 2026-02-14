@@ -319,19 +319,24 @@ const ASC_BASE_URL = 'https://api.appstoreconnect.apple.com/v1';
  * Generate JWT token for App Store Connect API
  */
 function generateASCToken(keyId, issuerId, privateKey) {
+  // Trim whitespace/newlines from secret values (Firebase secrets may include trailing newlines)
+  const cleanKeyId = keyId.trim();
+  const cleanIssuerId = issuerId.trim();
+  const cleanPrivateKey = privateKey.trim();
+
   let decodedKey;
   try {
-    decodedKey = Buffer.from(privateKey, 'base64').toString('utf8');
+    decodedKey = Buffer.from(cleanPrivateKey, 'base64').toString('utf8');
     if (!decodedKey.includes('-----BEGIN PRIVATE KEY-----')) {
-      decodedKey = privateKey;
+      decodedKey = cleanPrivateKey;
     }
   } catch {
-    decodedKey = privateKey;
+    decodedKey = cleanPrivateKey;
   }
 
   const now = Math.floor(Date.now() / 1000);
   const payload = {
-    iss: issuerId,
+    iss: cleanIssuerId,
     iat: now,
     exp: now + (20 * 60),
     aud: 'appstoreconnect-v1'
@@ -339,7 +344,7 @@ function generateASCToken(keyId, issuerId, privateKey) {
 
   return jwt.sign(payload, decodedKey, {
     algorithm: 'ES256',
-    header: { alg: 'ES256', kid: keyId, typ: 'JWT' }
+    header: { alg: 'ES256', kid: cleanKeyId, typ: 'JWT' }
   });
 }
 

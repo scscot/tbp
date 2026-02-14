@@ -242,18 +242,22 @@ async function sendEmailViaMailgun(contact, docId, config, index) {
   form.append('from', FROM_ADDRESS);
   form.append('to', `${contact.firstName} ${contact.lastName || ''} <${contact.email}>`);
 
-  let templateVariant, variant, subjectTag;
+  let templateVariant, variant, subjectTag, usedSubject, hasPersonalizedSubject = false;
 
   if (strategy.type === 'personalized_template') {
     // English with personalized_intro → V11/V12 template
     templateVariant = ACTIVE_PERSONALIZED_VARIANTS[index % ACTIVE_PERSONALIZED_VARIANTS.length];
     variant = PERSONALIZED_VARIANTS[templateVariant];
-    subjectTag = variant.subjectTag;
+
+    // Use AI-generated personalized subject if available, otherwise fall back to A/B test subject
+    hasPersonalizedSubject = !!contact.personalizedSubject;
+    usedSubject = contact.personalizedSubject || variant.subject;
+    subjectTag = hasPersonalizedSubject ? `${variant.subjectTag}_ai_subject` : variant.subjectTag;
 
     const landingPageUrl = buildLandingPageUrl(config.utmCampaign, subjectTag, language);
     const trackedCtaUrl = buildClickUrl(docId, landingPageUrl);
 
-    form.append('subject', variant.subject);
+    form.append('subject', usedSubject);
     form.append('template', TEMPLATE_NAME);
     form.append('t:version', variant.templateVersion);
 
@@ -266,7 +270,8 @@ async function sendEmailViaMailgun(contact, docId, config, index) {
     };
     form.append('h:X-Mailgun-Variables', JSON.stringify(templateVars));
 
-    console.log(`   Mode: PERSONALIZED | Template: ${templateVariant.toUpperCase()} | Lang: ${language.toUpperCase()}`);
+    const subjectInfo = hasPersonalizedSubject ? `AI Subject: "${usedSubject.substring(0, 40)}..."` : `A/B Subject: "${variant.subject}"`;
+    console.log(`   Mode: PERSONALIZED | Template: ${templateVariant.toUpperCase()} | ${subjectInfo}`);
 
   } else if (strategy.type === 'raw_html') {
     // Non-English with full HTML → Raw email send
@@ -288,7 +293,8 @@ async function sendEmailViaMailgun(contact, docId, config, index) {
       pt: 'Uma ferramenta para sua equipe, não uma oportunidade.',
       de: 'Ein Werkzeug für Ihr Team, keine Gelegenheit.'
     };
-    form.append('subject', localizedSubjects[language] || variant?.subject || 'Not an opportunity. Just a tool.');
+    usedSubject = localizedSubjects[language] || 'Not an opportunity. Just a tool.';
+    form.append('subject', usedSubject);
     form.append('html', html);
 
     console.log(`   Mode: RAW HTML | Lang: ${language.toUpperCase()} | CTA: ${ctaDomain}`);
@@ -302,7 +308,8 @@ async function sendEmailViaMailgun(contact, docId, config, index) {
     const landingPageUrl = buildLandingPageUrl(config.utmCampaign, subjectTag, language);
     const trackedCtaUrl = buildClickUrl(docId, landingPageUrl);
 
-    form.append('subject', variant.subject);
+    usedSubject = variant.subject;
+    form.append('subject', usedSubject);
     form.append('template', TEMPLATE_NAME);
     form.append('t:version', variant.templateVersion);
 
@@ -314,7 +321,7 @@ async function sendEmailViaMailgun(contact, docId, config, index) {
     };
     form.append('h:X-Mailgun-Variables', JSON.stringify(templateVars));
 
-    console.log(`   Mode: STANDARD | Template: ${templateVariant.toUpperCase()} | Subject: "${variant.subject}"`);
+    console.log(`   Mode: STANDARD | Template: ${templateVariant.toUpperCase()} | Subject: "${usedSubject}"`);
   }
 
   // Tracking disabled — using Firestore-based tracking via trackEmailClick Cloud Function
@@ -350,7 +357,9 @@ async function sendEmailViaMailgun(contact, docId, config, index) {
     subjectTag: subjectTag,
     templateVariant: templateVariant,
     sendStrategy: strategy.type,
-    language: language
+    language: language,
+    usedSubject: usedSubject,
+    hasPersonalizedSubject: hasPersonalizedSubject
   };
 }
 
@@ -369,6 +378,12 @@ async function processBfhCampaignBatch(batchSize) {
   if (!campaignEnabled) {
     console.log(`${logPrefix} ${name}: Disabled via environment variable. Skipping.`);
     return { status: 'disabled', sent: 0 };
+  }
+
+  // Check if batch size is 0 (effectively paused)
+  if (batchSize === 0) {
+    console.log(`${logPrefix} ${name}: Paused (batchSizeBfh set to 0)`);
+    return { status: 'paused', sent: 0 };
   }
 
   const apiKey = mailgunApiKey.value();
@@ -453,7 +468,9 @@ async function processBfhCampaignBatch(batchSize) {
             templateVariant: result.templateVariant,
             mailgunResponse: result.response || '',
             sendStrategy: result.sendStrategy || 'standard_template',
-            sentLanguage: result.language || 'en'
+            sentLanguage: result.language || 'en',
+            sentSubject: result.usedSubject || '',
+            usedPersonalizedSubject: result.hasPersonalizedSubject || false
           };
 
           await doc.ref.update(updateData);

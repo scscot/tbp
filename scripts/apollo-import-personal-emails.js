@@ -20,8 +20,11 @@ const fs = require('fs');
 // ============================================================================
 
 const CONFIG = {
-  INPUT_FILE: path.join(__dirname, '../purchased-emails/apollo-personal-emails.json'),
-  COLLECTION: 'apollo_contacts',
+  // Two sources of personal emails
+  PERSONAL_EMAILS_FILE: path.join(__dirname, '../purchased-emails/apollo-personal-emails.json'),
+  SERPAPI_RESULTS_FILE: path.join(__dirname, '../purchased-emails/apollo-serpapi-results.json'),
+  // Target collection
+  COLLECTION: 'purchased_leads',
 };
 
 // ============================================================================
@@ -49,18 +52,49 @@ function initFirebase() {
 
 async function importContacts(dryRun = false) {
   console.log('\n=== Importing Apollo Personal Emails to Firestore ===\n');
+  console.log(`Target collection: ${CONFIG.COLLECTION}\n`);
 
-  // Load input data
-  if (!fs.existsSync(CONFIG.INPUT_FILE)) {
-    console.error(`Input file not found: ${CONFIG.INPUT_FILE}`);
-    console.error('Run analyze-apollo-personal-emails.js first to generate the input file.');
-    process.exit(1);
+  // Load contacts from both sources
+  const contacts = [];
+
+  // Source 1: Personal emails from Apollo secondary email field
+  if (fs.existsSync(CONFIG.PERSONAL_EMAILS_FILE)) {
+    const personalData = JSON.parse(fs.readFileSync(CONFIG.PERSONAL_EMAILS_FILE, 'utf8'));
+    console.log(`Apollo personal emails: ${personalData.contacts.length}`);
+    contacts.push(...personalData.contacts);
+  } else {
+    console.log('Apollo personal emails file not found (skipping)');
   }
 
-  const inputData = JSON.parse(fs.readFileSync(CONFIG.INPUT_FILE, 'utf8'));
-  const contacts = inputData.contacts;
+  // Source 2: SerpAPI search results
+  if (fs.existsSync(CONFIG.SERPAPI_RESULTS_FILE)) {
+    const serpData = JSON.parse(fs.readFileSync(CONFIG.SERPAPI_RESULTS_FILE, 'utf8'));
+    console.log(`SerpAPI found emails: ${serpData.found.length}`);
+    // Normalize SerpAPI results to match personal emails format
+    const serpContacts = serpData.found.map(c => ({
+      firstName: c.firstName,
+      lastName: c.lastName,
+      company: c.company,
+      email: c.email,
+      title: c.title,
+      source: 'serpapi',
+      emailScore: c.emailScore
+    }));
+    contacts.push(...serpContacts);
+  } else {
+    console.log('SerpAPI results file not found (skipping)');
+  }
 
-  console.log(`Contacts to import: ${contacts.length}`);
+  // Dedupe by email within the combined list
+  const seen = new Set();
+  const uniqueContacts = contacts.filter(c => {
+    const email = c.email.toLowerCase();
+    if (seen.has(email)) return false;
+    seen.add(email);
+    return true;
+  });
+
+  console.log(`\nCombined contacts (deduped): ${uniqueContacts.length}`);
 
   // Load existing emails to avoid duplicates
   console.log('\nChecking for duplicates across all collections...');
@@ -70,7 +104,7 @@ async function importContacts(dryRun = false) {
     'bfh_contacts',
     'direct_sales_contacts',
     'emailCampaigns/master/contacts',
-    'apollo_contacts'
+    'purchased_leads'
   ];
 
   for (const collPath of collections) {
@@ -96,7 +130,7 @@ async function importContacts(dryRun = false) {
   const toImport = [];
   const duplicates = [];
 
-  for (const contact of contacts) {
+  for (const contact of uniqueContacts) {
     if (existingEmails.has(contact.email.toLowerCase())) {
       duplicates.push(contact);
     } else {
@@ -128,18 +162,23 @@ async function importContacts(dryRun = false) {
 
     for (const contact of batchContacts) {
       const docRef = db.collection(CONFIG.COLLECTION).doc();
-      batch.set(docRef, {
+      const docData = {
         firstName: contact.firstName,
         lastName: contact.lastName,
         fullName: `${contact.firstName} ${contact.lastName}`.trim(),
         company: contact.company,
         email: contact.email,
         title: contact.title || null,
-        source: contact.source, // 'apollo_secondary' or 'apollo_primary'
+        source: contact.source, // 'apollo_secondary' or 'serpapi'
         createdAt: admin.firestore.FieldValue.serverTimestamp(),
         sent: false,
         emailSearched: true // Already have verified email
-      });
+      };
+      // Add email score for SerpAPI results (higher = more confident)
+      if (contact.emailScore) {
+        docData.emailScore = contact.emailScore;
+      }
+      batch.set(docRef, docData);
     }
 
     await batch.commit();
@@ -159,37 +198,38 @@ async function importContacts(dryRun = false) {
 // ============================================================================
 
 async function showStats() {
-  console.log('\n=== Apollo Personal Email Stats ===\n');
+  console.log('\n=== Purchased Leads Stats ===\n');
 
   // Input file stats
-  if (fs.existsSync(CONFIG.INPUT_FILE)) {
-    const inputData = JSON.parse(fs.readFileSync(CONFIG.INPUT_FILE, 'utf8'));
-    console.log(`Input file contacts: ${inputData.contacts.length}`);
-    console.log(`Generated at: ${inputData.generatedAt}`);
-  } else {
-    console.log('Input file not found.');
+  if (fs.existsSync(CONFIG.PERSONAL_EMAILS_FILE)) {
+    const inputData = JSON.parse(fs.readFileSync(CONFIG.PERSONAL_EMAILS_FILE, 'utf8'));
+    console.log(`Apollo personal emails file: ${inputData.contacts.length}`);
+  }
+  if (fs.existsSync(CONFIG.SERPAPI_RESULTS_FILE)) {
+    const serpData = JSON.parse(fs.readFileSync(CONFIG.SERPAPI_RESULTS_FILE, 'utf8'));
+    console.log(`SerpAPI found emails file: ${serpData.found.length}`);
   }
 
   // Firestore stats
-  const apolloSnapshot = await db.collection(CONFIG.COLLECTION).get();
-  console.log(`\nApollo contacts in Firestore: ${apolloSnapshot.size}`);
+  const snapshot = await db.collection(CONFIG.COLLECTION).get();
+  console.log(`\n${CONFIG.COLLECTION} in Firestore: ${snapshot.size}`);
 
   // Count by source
-  const bySourse = {};
-  apolloSnapshot.forEach(doc => {
+  const bySource = {};
+  snapshot.forEach(doc => {
     const source = doc.data().source || 'unknown';
-    bySourse[source] = (bySourse[source] || 0) + 1;
+    bySource[source] = (bySource[source] || 0) + 1;
   });
 
   console.log('\nBy source:');
-  Object.entries(bySourse).forEach(([source, count]) => {
+  Object.entries(bySource).forEach(([source, count]) => {
     console.log(`  ${source}: ${count}`);
   });
 
   // Count sent status
   let sent = 0;
   let unsent = 0;
-  apolloSnapshot.forEach(doc => {
+  snapshot.forEach(doc => {
     if (doc.data().sent) sent++;
     else unsent++;
   });

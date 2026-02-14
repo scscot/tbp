@@ -93,44 +93,128 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+/**
+ * Remove BFH boilerplate text that appears on ALL profile pages
+ * This generic content is not personalized to individual distributors
+ */
+function cleanProfileBio(bio) {
+  if (!bio) return null;
+
+  // Boilerplate phrases that appear on all BFH Recommended Distributor pages
+  const boilerplatePatterns = [
+    /Business For Home defines a leader and a professional networker in Direct Sales as follows:/gi,
+    /"?A leader and professional networker is the one who has the ability to guide and at the same time is able to motivate team members,? inspire respect and confidence and explain the power of the compensation plan"?\.?/gi,
+    /But they should also have:/gi,
+    /Effective communication:.*?It's fundamental for leading\.?/gi,
+    /Vision:.*?trying to see a bigger picture\.?/gi,
+    /Balance:.*?Give importance to team members' opinions\.?/gi,
+    /Art of Feedback:.*?Criticism must bring solutions and improvement\.?/gi,
+    /They must transmit the needed information suitably\.?/gi,
+    /A leader needs to have a vision,? which means not only thinking in a short term\.?/gi,
+    /In order to produce good feedback it's important to keep it impartial and objective\.?/gi,
+  ];
+
+  let cleaned = bio;
+  for (const pattern of boilerplatePatterns) {
+    cleaned = cleaned.replace(pattern, '');
+  }
+
+  // Clean up extra whitespace and newlines
+  cleaned = cleaned.replace(/\n{3,}/g, '\n\n').replace(/\s{2,}/g, ' ').trim();
+
+  // If nothing meaningful remains, return null
+  if (cleaned.length < 20) return null;
+
+  return cleaned;
+}
+
+/**
+ * Filter boilerplate from review snippets
+ * Returns only genuine, personalized reviews
+ */
+function filterRealReviews(reviewSnippets) {
+  if (!reviewSnippets || !Array.isArray(reviewSnippets)) return [];
+
+  const boilerplateStart = '"A leader and professional networker is the one who has the ability to guide';
+
+  return reviewSnippets.filter(snippet => {
+    if (!snippet) return false;
+    // Filter out boilerplate reviews
+    if (snippet.startsWith(boilerplateStart)) return false;
+    // Filter out very short snippets
+    if (snippet.length < 50) return false;
+    return true;
+  });
+}
+
+/**
+ * Check if contact has real, personalized review content
+ * (not just the BFH boilerplate that appears on all pages)
+ */
+function hasRealReviews(contact) {
+  const realReviews = filterRealReviews(contact.reviewSnippets);
+  return realReviews.length > 0;
+}
+
 // ============================================================================
 // CLAUDE PROMPTS
 // ============================================================================
 
 function buildEnglishIntroPrompt(contact) {
-  return `You are writing a personalized email opening for a direct sales professional.
+  // Clean the bio to remove BFH boilerplate text
+  const cleanedBio = cleanProfileBio(contact.profileBio);
+  // Filter out boilerplate reviews
+  const realReviews = filterRealReviews(contact.reviewSnippets);
+
+  return `You are writing a personalized cold email for a direct sales professional. Generate BOTH a subject line AND an opening paragraph.
 
 Contact Information:
 - Name: ${contact.fullName}
+- First Name: ${contact.firstName || contact.fullName.split(' ')[0]}
 - Company: ${contact.company || 'Not specified'}
 - Country: ${contact.country || 'Not specified'}
 
 Profile Data from Business For Home:
-- Bio: ${contact.profileBio || 'Not available'}
+- Bio: ${cleanedBio || 'Not available'}
 - Review Count: ${contact.reviewCount || 0}
 - Star Rating: ${contact.starRating || 'Not available'}
-- Sample Reviews: ${(contact.reviewSnippets || []).join(' | ') || 'None available'}
+- Reviews: ${realReviews.join(' | ') || 'None available'}
 
-Write 2-3 sentences that:
-1. Reference something specific from their BFH profile (a review, their rating, their reputation, etc.)
-2. Feel genuine and researched, not templated or generic
-3. Transition naturally to discussing AI tools for team building
-4. Do NOT include subject line, greeting ("Hello", "Hi"), or sign-off
+IMPORTANT: Only reference information that is ACTUALLY in the profile data above. Do NOT invent or assume details.
 
-The tone should be professional but warm, like a colleague reaching out who has done their homework.
+SUBJECT LINE requirements:
+- 5-10 words max
+- Reference something specific from their profile (star rating, review quote, achievement)
+- Professional but attention-grabbing
+- Do NOT use their name in the subject
+- Do NOT use clickbait or ALL CAPS
 
-Example good output:
-"Your 5-star reviews on Business For Home speak volumes about your leadership style—your team members clearly appreciate the support you provide. Building on that reputation with the right tools could help you scale even faster."
+INTRO PARAGRAPH requirements:
+- 2-3 sentences
+- Reference something specific from their BFH profile
+- Feel genuine and researched, not templated
+- Transition naturally to discussing AI tools for team building
+- Do NOT include greeting ("Hello", "Hi") or sign-off
 
-Example bad output (too generic):
-"I noticed you're a successful network marketer. You might be interested in our tools."
+Example good subjects:
+- "Your 5-star reviews caught my attention"
+- "What your team says about your leadership"
+- "8 years of servant leadership is impressive"
 
-Respond with ONLY the 2-3 sentence paragraph. No quotes, no explanation.`;
+Example bad subjects:
+- "AMAZING OPPORTUNITY FOR YOU" (too salesy)
+- "John, check this out" (uses name, too casual)
+- "I have something for you" (too vague)
+
+Respond with ONLY valid JSON in this exact format:
+{"subject": "Your subject line here", "intro": "Your 2-3 sentence intro paragraph here."}`;
 }
 
 function buildLocalizedEmailPrompt(contact, language) {
   const languageLabel = CONFIG.LANGUAGE_LABELS[language] || 'the recipient\'s native language';
   const ctaDomain = CONFIG.CTA_DOMAINS[language] || CONFIG.CTA_DOMAINS.en;
+  // Clean the bio to remove BFH boilerplate text
+  const cleanedBio = cleanProfileBio(contact.profileBio);
 
   return `You are writing a complete personalized cold email in ${languageLabel} for a direct sales professional.
 
@@ -142,10 +226,12 @@ Contact Information:
 - Language: ${languageLabel}
 
 Profile Data from Business For Home:
-- Bio: ${contact.profileBio || 'Not available'}
+- Bio: ${cleanedBio || 'Not available'}
 - Review Count: ${contact.reviewCount || 0}
 - Star Rating: ${contact.starRating || 'Not available'}
 - Sample Reviews: ${(contact.reviewSnippets || []).join(' | ') || 'None available'}
+
+IMPORTANT: Only reference information that is ACTUALLY in the profile data above. Do NOT invent or assume details about their philosophy, achievements, or approach that aren't explicitly stated.
 
 Write a complete cold email that:
 1. Is ENTIRELY in ${languageLabel} (not English)
@@ -176,6 +262,7 @@ Respond with ONLY the HTML content. No explanation or markdown.`;
 function buildValidationPrompt(content, contact, isFullHtml) {
   const contentType = isFullHtml ? 'full HTML email' : 'personalized intro paragraph';
   const languageLabel = CONFIG.LANGUAGE_LABELS[contact.detectedLanguage] || 'English';
+  const cleanedBio = cleanProfileBio(contact.profileBio);
 
   return `Review this ${contentType} for a direct sales professional outreach campaign.
 
@@ -187,9 +274,10 @@ RECIPIENT CONTEXT:
 - Company: ${contact.company || 'Not specified'}
 - Country: ${contact.country || 'Not specified'}
 - Language: ${languageLabel}
-- Profile Data Available: ${contact.profileBio ? 'Yes' : 'No'}
+- Profile Bio: ${cleanedBio || 'Not available'}
 - Review Count: ${contact.reviewCount || 0}
 - Star Rating: ${contact.starRating || 'N/A'}
+- Sample Reviews: ${(contact.reviewSnippets || []).join(' | ') || 'None'}
 
 Evaluate on these criteria (1-10 scale each):
 
@@ -256,14 +344,34 @@ async function generatePersonalizedIntro(client, contact) {
 
   const response = await client.messages.create({
     model: CONFIG.MODEL,
-    max_tokens: 300,
+    max_tokens: 500,
     messages: [{
       role: 'user',
       content: prompt
     }]
   });
 
-  return response.content[0].text.trim();
+  const responseText = response.content[0].text.trim();
+
+  // Parse JSON response
+  try {
+    const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+      const parsed = JSON.parse(jsonMatch[0]);
+      return {
+        subject: parsed.subject,
+        intro: parsed.intro
+      };
+    }
+  } catch (error) {
+    console.error(`  JSON parse error: ${error.message}`);
+  }
+
+  // Fallback: treat entire response as intro (no subject)
+  return {
+    subject: null,
+    intro: responseText
+  };
 }
 
 async function generateLocalizedEmail(client, contact) {
@@ -334,19 +442,31 @@ async function generatePersonalizations(maxContacts = 20, forceReview = false, d
   // so we query all enriched profiles and filter locally
   const query = db.collection(CONFIG.COLLECTION)
     .where('profileEnriched', '==', true)
-    .limit(maxContacts * 2);  // Fetch extra to account for filtering
+    .limit(maxContacts * 4);  // Fetch extra to account for filtering
 
   const rawSnapshot = await query.get();
 
-  // Filter locally - include docs where personalizationGenerated is false or undefined
+  // Filter locally:
+  // 1. Not already personalized
+  // 2. Has REAL reviews (not just boilerplate)
   const docs = rawSnapshot.docs.filter(doc => {
     const data = doc.data();
-    return data.personalizationGenerated !== true;
+    // Skip already personalized
+    if (data.personalizationGenerated === true) return false;
+    // Only include contacts with real reviews (personalization-worthy)
+    if (!hasRealReviews(data)) return false;
+    return true;
   }).slice(0, maxContacts);
+
+  const skippedBoilerplate = rawSnapshot.docs.filter(doc => {
+    const data = doc.data();
+    return data.personalizationGenerated !== true && !hasRealReviews(data);
+  }).length;
 
   const snapshot = { docs, size: docs.length };
 
-  console.log(`Found ${snapshot.size} contacts to personalize (from ${rawSnapshot.size} enriched)\n`);
+  console.log(`Found ${snapshot.size} contacts WITH REAL REVIEWS to personalize`);
+  console.log(`Skipped ${skippedBoilerplate} contacts with only boilerplate (will use standard templates)\n`);
 
   if (snapshot.size === 0) {
     console.log('No contacts need personalization. Run enrichment first:');
@@ -381,20 +501,31 @@ async function generatePersonalizations(maxContacts = 20, forceReview = false, d
 
     try {
       // PASS 1: Generate content
-      let content;
+      let contentForValidation;
+      let personalizedSubject = null;
+      let personalizedIntro = null;
+      let personalizedHtml = null;
+
       if (isEnglish) {
-        content = await generatePersonalizedIntro(client, contact);
+        const result = await generatePersonalizedIntro(client, contact);
+        personalizedSubject = result.subject;
+        personalizedIntro = result.intro;
+        contentForValidation = result.intro;
+        if (personalizedSubject) {
+          console.log(`  Subject: "${personalizedSubject}"`);
+        }
       } else {
-        content = await generateLocalizedEmail(client, contact);
+        personalizedHtml = await generateLocalizedEmail(client, contact);
+        contentForValidation = personalizedHtml;
       }
 
-      console.log(`  Generated: ${content.substring(0, 100)}...`);
+      console.log(`  Generated: ${contentForValidation.substring(0, 100)}...`);
       generated++;
 
       await sleep(CONFIG.DELAY_BETWEEN_REQUESTS);
 
       // PASS 2: Self-validation
-      const validation = await validateContent(client, content, contact, !isEnglish);
+      const validation = await validateContent(client, contentForValidation, contact, !isEnglish);
       validated++;
 
       console.log(`  Validation Score: ${validation.overallScore}/10`);
@@ -423,9 +554,12 @@ async function generatePersonalizations(maxContacts = 20, forceReview = false, d
       };
 
       if (isEnglish) {
-        updateData.personalizedIntro = content;
+        updateData.personalizedIntro = personalizedIntro;
+        if (personalizedSubject) {
+          updateData.personalizedSubject = personalizedSubject;
+        }
       } else {
-        updateData.personalizedHtml = content;
+        updateData.personalizedHtml = personalizedHtml;
       }
 
       if (shouldAutoApprove) {

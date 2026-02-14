@@ -175,6 +175,10 @@ const V11_HTML = `<!DOCTYPE html>
       Hello {{first_name}},
     </p>
 
+    <p style="margin:0 0 16px 0;">
+      I'm not recruiting you, and this isn't an opportunity.
+    </p>
+
     {{#if personalized_intro}}
     <p style="margin:0 0 16px 0;">
       {{personalized_intro}}
@@ -182,25 +186,19 @@ const V11_HTML = `<!DOCTYPE html>
     {{/if}}
 
     <p style="margin:0 0 16px 0;">
-      I'm not recruiting you, and this isn't an opportunity.
+      I built an AI-driven app for people in direct sales who want a better way to recruit and support their existing team.
     </p>
 
     <p style="margin:0 0 16px 0;">
-      I built something for people already in direct sales who want a better way to support their existing team.
+      Here's the idea: prospects can pre-build their team BEFORE they join — so they start Day 1 with momentum instead of doubt.
     </p>
 
     <p style="margin:0 0 16px 0;">
-      It's meant to help with things like:
+      You share it with them, they use it to line up their first contacts, and when they're ready to commit, they're not starting from zero.
     </p>
 
-    <ul style="margin:0 0 16px 10px;">
-      <li style="margin-bottom:6px;">knowing what to say without overthinking it</li>
-      <li style="margin-bottom:6px;">giving new people structure instead of starting from zero</li>
-      <li style="margin-bottom:0;">letting prospects build confidence before joining anything</li>
-    </ul>
-
     <p style="margin:0 0 16px 0;">
-      It works alongside whatever company you're already with.
+      Works for new recruits or existing team members who need a jumpstart. It's compatible with any company.
     </p>
 
     <p style="margin:0 0 16px 0;">
@@ -208,14 +206,16 @@ const V11_HTML = `<!DOCTYPE html>
     </p>
 
     <p style="margin:0 0 16px 0;">
-      Best,<br>
-      Stephen Scott
+      Here's to your continued success,
+    </p>
+
+    <p style="margin:0 0 16px 0;">
+      Stephen Scott<br>
+      Founder, Team Build Pro
     </p>
 
     <!-- Footer -->
     <div style="margin-top:24px; padding-top:16px; border-top:1px solid #eeeeee; font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size:12px; line-height:1.5; color:#777777;">
-      <a href="{{tracked_cta_url}}" style="color:#1a73e8; text-decoration:underline;">teambuildpro.com</a>
-      &nbsp;·&nbsp;
       <a href="{{unsubscribe_url}}" style="color:#777777; text-decoration:underline;">Unsubscribe</a>
     </div>
 
@@ -246,6 +246,10 @@ const V12_HTML = `<!DOCTYPE html>
       Hi {{first_name}},
     </p>
 
+    <p style="margin:0 0 16px 0;">
+      I'm not recruiting you, and this isn't an opportunity.
+    </p>
+
     {{#if personalized_intro}}
     <p style="margin:0 0 16px 0;">
       {{personalized_intro}}
@@ -257,36 +261,32 @@ const V12_HTML = `<!DOCTYPE html>
     </p>
 
     <p style="margin:0 0 16px 0;">
-      That's what Team Build Pro does — it lets prospects pre-build their downline BEFORE they sign up. Day 1 momentum instead of Day 1 doubt.
+      I created an AI-driven app called <b>Team Build Pro</b> that does exactly that — it lets prospects pre-build their downline BEFORE they sign up. Day 1 momentum instead of Day 1 doubt.
     </p>
 
     <p style="margin:0 0 16px 0;">
-      For you, that means:
-    </p>
-
-    <ul style="margin:0 0 16px 20px; padding:0; color:#1a1a1a;">
-      <li style="margin-bottom:8px;">Recruits who stick (not quit in 90 days)</li>
-      <li style="margin-bottom:8px;">A tool you hand off that does the heavy lifting</li>
-      <li style="margin-bottom:0;">Growth that compounds while you focus elsewhere</li>
-    </ul>
-
-    <p style="margin:0 0 16px 0;">
-      Works with any company. Fuels the one you already have.
-    </p>
-
-    <p style="margin:0 0 24px 0;">
-      <a href="{{tracked_cta_url}}" style="color:#7c3aed; font-weight:600; text-decoration:none; font-size:17px;">&#8594; See how it works</a>
+      You share it with them, they use it to line up their first contacts, and when they're ready to commit, they're not starting from zero.
     </p>
 
     <p style="margin:0 0 16px 0;">
-      Best,<br>
-      Stephen Scott
+      Works for new recruits or existing team members who need a jumpstart. It's compatible with any company.
+    </p>
+
+    <p style="margin:0 0 16px 0;">
+      If you're curious, you can take a look here: <a href="{{tracked_cta_url}}" style="color:#1a73e8; text-decoration:underline;">teambuildpro.com</a>
+    </p>
+
+    <p style="margin:0 0 16px 0;">
+      Here's to your continued success,
+    </p>
+
+    <p style="margin:0 0 16px 0;">
+      Stephen Scott<br>
+      Founder, Team Build Pro
     </p>
 
     <!-- Footer -->
     <div style="margin-top:32px; padding-top:16px; border-top:1px solid #eeeeee; font-size:12px; line-height:1.5; color:#777777;">
-      <a href="{{tracked_cta_url}}" style="color:#1a73e8; text-decoration:underline;">teambuildpro.com</a>
-      &nbsp;&middot;&nbsp;
       <a href="{{unsubscribe_url}}" style="color:#777777; text-decoration:underline;">Unsubscribe</a>
     </div>
 
@@ -297,33 +297,34 @@ const V12_HTML = `<!DOCTYPE html>
 // Plain text versions (with personalized_intro support)
 const V11_TEXT = `Hello {{first_name}},
 
+I'm not recruiting you, and this isn't an opportunity.
+
 {{#if personalized_intro}}
 {{personalized_intro}}
 
 {{/if}}
-I'm not recruiting you, and this isn't an opportunity.
+I built an AI-driven app for people in direct sales who want a better way to recruit and support their existing team.
 
-I built something for people already in direct sales who want a better way to support their existing team.
+Here's the idea: prospects can pre-build their team BEFORE they join — so they start Day 1 with momentum instead of doubt.
 
-It's meant to help with things like:
+You share it with them, they use it to line up their first contacts, and when they're ready to commit, they're not starting from zero.
 
-* knowing what to say without overthinking it
-* giving new people structure instead of starting from zero
-* letting prospects build confidence before joining anything
-
-It works alongside whatever company you're already with.
+Works for new recruits or existing team members who need a jumpstart. It's compatible with any company.
 
 If you're curious, you can take a look here:
 {{tracked_cta_url}}
 
-Best,
+Here's to your continued success,
+
 Stephen Scott
+Founder, Team Build Pro
 
 ---
-teambuildpro.com
 Unsubscribe: {{unsubscribe_url}}`;
 
 const V12_TEXT = `Hi {{first_name}},
+
+I'm not recruiting you, and this isn't an opportunity.
 
 {{#if personalized_intro}}
 {{personalized_intro}}
@@ -331,23 +332,21 @@ const V12_TEXT = `Hi {{first_name}},
 {{/if}}
 What if your next recruit joined with 20 people already lined up?
 
-That's what Team Build Pro does — it lets prospects pre-build their downline BEFORE they sign up. Day 1 momentum instead of Day 1 doubt.
+I created an AI-driven app called Team Build Pro that does exactly that — it lets prospects pre-build their downline BEFORE they sign up. Day 1 momentum instead of Day 1 doubt.
 
-For you, that means:
+You share it with them, they use it to line up their first contacts, and when they're ready to commit, they're not starting from zero.
 
-* Recruits who stick (not quit in 90 days)
-* A tool you hand off that does the heavy lifting
-* Growth that compounds while you focus elsewhere
+Works for new recruits or existing team members who need a jumpstart. It's compatible with any company.
 
-Works with any company. Fuels the one you already have.
+If you're curious, you can take a look here:
+{{tracked_cta_url}}
 
--> See how it works: {{tracked_cta_url}}
+Here's to your continued success,
 
-Best,
 Stephen Scott
+Founder, Team Build Pro
 
 ---
-teambuildpro.com
 Unsubscribe: {{unsubscribe_url}}`;
 
 // Plain text versions

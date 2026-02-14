@@ -101,6 +101,14 @@
       ]
     },
     {
+      "collectionGroup": "bfh_contacts",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "sent", "order": "ASCENDING" },
+        { "fieldPath": "sentTimestamp", "order": "DESCENDING" }
+      ]
+    },
+    {
       "collectionGroup": "purchased_leads",
       "queryScope": "COLLECTION",
       "fields": [

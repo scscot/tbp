@@ -16,6 +16,7 @@ const ga4ServiceAccount = defineSecret('GA4_SERVICE_ACCOUNT');
 const MAIN_CAMPAIGN_COLLECTION = 'emailCampaigns/master/contacts';
 const CONTACTS_CAMPAIGN_COLLECTION = 'direct_sales_contacts';
 const PURCHASED_CAMPAIGN_COLLECTION = 'purchased_leads';
+const BFH_CAMPAIGN_COLLECTION = 'bfh_contacts';
 const MONITORING_PASSWORD = process.env.MONITORING_PASSWORD || 'TeamBuildPro2024!';
 const GA4_PROPERTY_ID = '485651473';
 
@@ -193,7 +194,7 @@ async function fetchGA4Stats(serviceAccountJson) {
  */
 async function fetchCampaignStats(collectionPath, now, twentyFourHoursAgo, startOfTodayUTC, options = {}) {
   const contactsRef = db.collection(collectionPath);
-  const { isContactsCampaign = false } = options;
+  const { isContactsCampaign = false, isBfhCampaign = false } = options;
 
   // Get total count
   let totalSnapshot;
@@ -201,6 +202,12 @@ async function fetchCampaignStats(collectionPath, now, twentyFourHoursAgo, start
     // For contacts campaign, count scraped contacts (email validation done during scraping)
     totalSnapshot = await contactsRef
       .where('scraped', '==', true)
+      .count()
+      .get();
+  } else if (isBfhCampaign) {
+    // For BFH campaign, count contacts with bfhScraped == true and valid email
+    totalSnapshot = await contactsRef
+      .where('bfhScraped', '==', true)
       .count()
       .get();
   } else {
@@ -302,10 +309,11 @@ const getEmailCampaignStats = onRequest({
     const startOfTodayUTC = new Date(startOfTodayPT.getTime() - (ptOffset + now.getTimezoneOffset()) * 60 * 1000);
 
     // Fetch stats for all campaigns in parallel
-    const [mainCampaignStats, contactsCampaignStats, purchasedCampaignStats] = await Promise.all([
+    const [mainCampaignStats, contactsCampaignStats, purchasedCampaignStats, bfhCampaignStats] = await Promise.all([
       fetchCampaignStats(MAIN_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC),
       fetchCampaignStats(CONTACTS_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC, { isContactsCampaign: true }),
-      fetchCampaignStats(PURCHASED_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC, { isPurchasedCampaign: true })
+      fetchCampaignStats(PURCHASED_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC, { isPurchasedCampaign: true }),
+      fetchCampaignStats(BFH_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC, { isBfhCampaign: true })
     ]);
 
     // Get GA4 stats (shared across campaigns)
@@ -348,6 +356,16 @@ const getEmailCampaignStats = onRequest({
         tracking: purchasedCampaignStats.tracking,
         subjectLines: purchasedCampaignStats.subjectLines,
         recentSends: purchasedCampaignStats.recentSends
+      },
+
+      // BFH (Business For Home) campaign data
+      bfhCampaign: {
+        campaign: bfhCampaignStats.campaign,
+        last24h: bfhCampaignStats.last24h,
+        today: bfhCampaignStats.today,
+        tracking: bfhCampaignStats.tracking,
+        subjectLines: bfhCampaignStats.subjectLines,
+        recentSends: bfhCampaignStats.recentSends
       },
 
       // GA4 stats (shared)
