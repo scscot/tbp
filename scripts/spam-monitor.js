@@ -110,15 +110,15 @@ async function sendTestEmail(campaign, timestamp) {
   }
 
   // Unique subject line for Gmail search
-  const subject = `[SPAM-CHECK][${campaign.name.toUpperCase()}][${timestamp}]`;
+  const subject = `[DELIVERY-CHECK][${campaign.name.toUpperCase()}][${timestamp}]`;
 
   const form = new FormData();
   form.append('from', FROM_ADDRESS);
-  form.append('to', `Spam Monitor <${TEST_EMAIL}>`);
+  form.append('to', `Stephen <${TEST_EMAIL}>`);
   form.append('subject', subject);
   form.append('template', 'mailer');
   form.append('t:version', campaign.template);
-  form.append('o:tag', 'spam_check');
+  form.append('o:tag', 'delivery_check');
   form.append('o:tag', campaign.name.toLowerCase());
   form.append('o:tracking', 'no');
   form.append('o:tracking-opens', 'no');
@@ -126,7 +126,7 @@ async function sendTestEmail(campaign, timestamp) {
 
   // Template variables
   form.append('h:X-Mailgun-Variables', JSON.stringify({
-    first_name: 'Spam',
+    first_name: 'Stephen',
     tracked_cta_url: 'https://teambuildpro.com',
     unsubscribe_url: 'https://teambuildpro.com/unsubscribe.html'
   }));
