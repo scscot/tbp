@@ -695,7 +695,58 @@
             ],
             "cleanUrls": false,
             "trailingSlash": false,
-            "redirects": [],
+            "redirects": [
+                {
+                    "source": "/faq",
+                    "destination": "/faq.html",
+                    "type": 301
+                },
+                {
+                    "source": "/faqs",
+                    "destination": "/faq.html",
+                    "type": 301
+                },
+                {
+                    "source": "/about-us",
+                    "destination": "/about-us.html",
+                    "type": 301
+                },
+                {
+                    "source": "/about",
+                    "destination": "/about-us.html",
+                    "type": 301
+                },
+                {
+                    "source": "/contact-us",
+                    "destination": "/contact-us.html",
+                    "type": 301
+                },
+                {
+                    "source": "/contact",
+                    "destination": "/contact-us.html",
+                    "type": 301
+                },
+                {
+                    "source": "/privacy-policy",
+                    "destination": "/privacy-policy.html",
+                    "type": 301
+                },
+                {
+                    "source": "/privacy",
+                    "destination": "/privacy-policy.html",
+                    "type": 301
+                },
+                {
+                    "source": "/terms-of-service",
+                    "destination": "/terms-of-service.html",
+                    "type": 301
+                },
+                {
+                    "source": "/terms",
+                    "destination": "/terms-of-service.html",
+                    "type": 301
+                }
+            ],
             "rewrites": [
                 {
                     "source": "/demo/:firmId",
