@@ -40,9 +40,10 @@ const TEST_EMAIL = 'scscot@gmail.com';
 const ALERT_EMAIL = 'scscot@gmail.com';
 const MAILGUN_DOMAIN = 'news.teambuildpro.com';
 const FROM_ADDRESS = 'Stephen Scott <stephen@news.teambuildpro.com>';
-const CHECK_DELAY_MS = 5 * 60 * 1000; // 5 minutes
+const CHECK_DELAY_MS = 3 * 60 * 1000; // 3 minutes (Gmail typically delivers in 1-2 min)
 
-// Campaign configuration
+// Campaign configuration - test both A/B subjects with different templates
+// Main uses v9 template, Purchased uses v11 template
 const CAMPAIGNS = [
   {
     name: 'Main',
@@ -54,15 +55,12 @@ const CAMPAIGNS = [
     name: 'Purchased',
     batchSizeField: 'batchSizePurchased',
     template: 'v11',
-    subject: 'Not an opportunity. Just a tool.'
-  },
-  {
-    name: 'BFH',
-    batchSizeField: 'batchSizeBfh',
-    template: 'v9',
-    subject: 'Not an opportunity. Just a tool.'
+    subject: 'AI is changing how teams grow'
   }
 ];
+
+// All campaigns to disable if spam is detected (includes BFH which uses same subjects)
+const ALL_BATCH_SIZE_FIELDS = ['batchSize', 'batchSizePurchased', 'batchSizeBfh'];
 
 // =============================================================================
 // GMAIL API CLIENT
@@ -109,8 +107,13 @@ async function sendTestEmail(campaign, timestamp) {
     throw new Error('MAILGUN_API_KEY not configured');
   }
 
-  // Use actual campaign subject with date suffix for Gmail search accuracy
-  const dateSuffix = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  // Use actual campaign subject with date+time suffix for Gmail search accuracy
+  const dateSuffix = new Date().toLocaleString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit'
+  });
   const subject = `${campaign.subject} (${dateSuffix})`;
 
   const form = new FormData();
@@ -157,17 +160,20 @@ async function sendTestEmail(campaign, timestamp) {
 // =============================================================================
 
 async function checkEmailPlacement(gmail, subject) {
+  // Search with from: and newer_than: filters for precision
+  const baseQuery = `subject:"${subject}" from:stephen@news.teambuildpro.com newer_than:1d`;
+
   // Search in INBOX
   const inboxResponse = await gmail.users.messages.list({
     userId: 'me',
-    q: `subject:"${subject}" in:inbox`,
+    q: `${baseQuery} in:inbox`,
     maxResults: 1
   });
 
   // Search in SPAM
   const spamResponse = await gmail.users.messages.list({
     userId: 'me',
-    q: `subject:"${subject}" in:spam`,
+    q: `${baseQuery} in:spam`,
     maxResults: 1
   });
 
@@ -187,7 +193,7 @@ async function checkEmailPlacement(gmail, subject) {
 // DISABLE CAMPAIGN
 // =============================================================================
 
-async function disableCampaign(campaign) {
+async function disableAllCampaigns(triggeringCampaign) {
   const configRef = db.collection('config').doc('emailCampaign');
 
   await db.runTransaction(async (transaction) => {
@@ -197,20 +203,28 @@ async function disableCampaign(campaign) {
       throw new Error('config/emailCampaign document does not exist');
     }
 
-    const currentValue = configDoc.data()[campaign.batchSizeField] || 0;
+    const data = configDoc.data();
+    const updateData = {};
 
-    // Update with disabled status
-    const updateData = {
-      [campaign.batchSizeField]: 0,
-      [`${campaign.batchSizeField}_disabled_at`]: admin.firestore.FieldValue.serverTimestamp(),
-      [`${campaign.batchSizeField}_previous_value`]: currentValue,
-      [`${campaign.batchSizeField}_disabled_reason`]: 'spam_detected'
-    };
+    // Disable all campaigns (Main, Purchased, BFH)
+    for (const field of ALL_BATCH_SIZE_FIELDS) {
+      const currentValue = data[field] || 0;
 
-    transaction.update(configRef, updateData);
+      // Only update if not already disabled
+      if (currentValue > 0) {
+        updateData[field] = 0;
+        updateData[`${field}_disabled_at`] = admin.firestore.FieldValue.serverTimestamp();
+        updateData[`${field}_previous_value`] = currentValue;
+        updateData[`${field}_disabled_reason`] = `spam_detected_via_${triggeringCampaign}`;
+      }
+    }
+
+    if (Object.keys(updateData).length > 0) {
+      transaction.update(configRef, updateData);
+    }
   });
 
-  console.log(`Disabled ${campaign.name} campaign (${campaign.batchSizeField} set to 0)`);
+  console.log(`Disabled ALL campaigns (Main, Purchased, BFH) due to spam detected in ${triggeringCampaign}`);
 }
 
 // =============================================================================
@@ -361,10 +375,10 @@ async function main() {
         subject: sent.subject
       });
 
-      // Step 4: Disable if spam
+      // Step 4: Disable ALL campaigns if spam detected
       if (placement === 'spam') {
-        console.log(`SPAM DETECTED: Disabling ${sent.campaign} campaign...`);
-        await disableCampaign(campaign);
+        console.log(`SPAM DETECTED in ${sent.campaign}: Disabling ALL campaigns...`);
+        await disableAllCampaigns(sent.campaign);
       }
     } catch (error) {
       console.error(`Failed to check ${sent.campaign}:`, error.message);
