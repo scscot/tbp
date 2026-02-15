@@ -109,9 +109,9 @@ async function sendTestEmail(campaign, timestamp) {
     throw new Error('MAILGUN_API_KEY not configured');
   }
 
-  // Unique subject line for Gmail search
-  const currentDate = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-  const subject = `${campaign.name} Update for ${currentDate}`;
+  // Use actual campaign subject with date suffix for Gmail search accuracy
+  const dateSuffix = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  const subject = `${campaign.subject} (${dateSuffix})`;
 
   const form = new FormData();
   form.append('from', FROM_ADDRESS);
