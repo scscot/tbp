@@ -1,7 +1,7 @@
 # PreIntake.ai: Comprehensive Project Documentation
 
-**Last Updated**: 2026-02-11
-**Version**: 5.9 (SEO audit - meta tags, Twitter cards, Organization schema, internal linking)
+**Last Updated**: 2026-02-15
+**Version**: 6.0 (GSC indexing fix - added 301 redirects for clean URLs)
 
 ---
 
@@ -1430,6 +1430,26 @@ Email click → homepage loads with ?demo= → REDIRECT to /demo/?demo={id}
 | `privacy-policy.html` | Added og:image, Twitter Cards |
 | `terms-of-service.html` | Added og:image, Twitter Cards |
 | `sitemap.xml` | Updated lastmod dates |
+
+### Phase 61: GSC Indexing Fix (2026-02-15)
+- [x] **GSC Investigation** - Analyzed Google Search Console export showing 3 critical issues:
+  - 1x "Not found (404)" - URLs without .html hitting catch-all rewrite
+  - 1x "Page with redirect" - Same root cause
+  - 1x "Alternate page with proper canonical" - Expected behavior (index.html → /)
+- [x] **Root Cause** - `preintake-ai` Firebase hosting had empty `redirects` array
+  - Clean URLs like `/faq` fell through to `/:intakeCode` catch-all rewrite
+  - `serveHostedIntake` function returned 400/404 for non-intake-code paths
+- [x] **Fix Applied** - Added 10 redirect rules to `firebase.json`:
+  - `/faq` → `/faq.html`, `/faqs` → `/faq.html`
+  - `/about-us` → `/about-us.html`, `/about` → `/about-us.html`
+  - `/contact-us` → `/contact-us.html`, `/contact` → `/contact-us.html`
+  - `/privacy-policy` → `/privacy-policy.html`, `/privacy` → `/privacy-policy.html`
+  - `/terms-of-service` → `/terms-of-service.html`, `/terms` → `/terms-of-service.html`
+- [x] **Deployment** - Deployed hosting config, verified 301 redirects working
+
+**Current Indexing Status:**
+- Indexed: 2 pages (of 6 in sitemap)
+- Not indexed: 3 pages (should resolve after Google re-crawls)
 
 ---
 
