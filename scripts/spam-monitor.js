@@ -110,7 +110,8 @@ async function sendTestEmail(campaign, timestamp) {
   }
 
   // Unique subject line for Gmail search
-  const subject = `[DELIVERY-CHECK][${campaign.name.toUpperCase()}][${timestamp}]`;
+  const currentDate = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+  const subject = `${campaign.name} Update for ${currentDate}`;
 
   const form = new FormData();
   form.append('from', FROM_ADDRESS);
