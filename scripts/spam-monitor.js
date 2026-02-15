@@ -10,12 +10,9 @@
  *
  * Environment Variables Required:
  *   GOOGLE_APPLICATION_CREDENTIALS - Path to Firebase service account JSON
- *   TBP_MAILGUN_API_KEY - Mailgun API key
+ *   MAILGUN_API_KEY - Mailgun API key (for sending test emails and alerts)
  *   GMAIL_OAUTH_CREDENTIALS - OAuth client credentials JSON
  *   GMAIL_OAUTH_TOKEN - OAuth refresh token JSON
- *   TBP_SMTP_HOST - SMTP server for alerts
- *   TBP_SMTP_USER - SMTP username
- *   TBP_SMTP_PASS - SMTP password
  *
  * GitHub Actions Schedule: Daily at 6:00 AM PT (14:00 UTC)
  */
@@ -24,7 +21,6 @@ const admin = require('firebase-admin');
 const { google } = require('googleapis');
 const axios = require('axios');
 const FormData = require('form-data');
-const nodemailer = require('nodemailer');
 
 // =============================================================================
 // INITIALIZATION
@@ -107,10 +103,10 @@ async function getGmailClient() {
 // =============================================================================
 
 async function sendTestEmail(campaign, timestamp) {
-  const apiKey = process.env.TBP_MAILGUN_API_KEY;
+  const apiKey = process.env.MAILGUN_API_KEY;
 
   if (!apiKey) {
-    throw new Error('TBP_MAILGUN_API_KEY not configured');
+    throw new Error('MAILGUN_API_KEY not configured');
   }
 
   // Unique subject line for Gmail search
@@ -217,29 +213,16 @@ async function disableCampaign(campaign) {
 }
 
 // =============================================================================
-// SEND ALERT EMAIL
+// SEND ALERT EMAIL (via Mailgun)
 // =============================================================================
 
 async function sendAlertEmail(results) {
-  const smtpHost = process.env.TBP_SMTP_HOST || 'smtp.dreamhost.com';
-  const smtpUser = process.env.TBP_SMTP_USER;
-  const smtpPass = process.env.TBP_SMTP_PASS;
+  const apiKey = process.env.MAILGUN_API_KEY;
 
-  if (!smtpUser || !smtpPass) {
-    console.error('SMTP credentials not configured - cannot send alert');
+  if (!apiKey) {
+    console.error('MAILGUN_API_KEY not configured - cannot send alert');
     return;
   }
-
-  const transporter = nodemailer.createTransport({
-    host: smtpHost,
-    port: 587,
-    secure: false,
-    requireTLS: true,
-    auth: {
-      user: smtpUser,
-      pass: smtpPass
-    }
-  });
 
   // Build email content
   const spamCampaigns = results.filter(r => r.placement === 'spam');
@@ -285,8 +268,7 @@ async function sendAlertEmail(results) {
     </p>
   `;
 
-  const text = `
-EMAIL SPAM MONITOR ALERT
+  const text = `EMAIL SPAM MONITOR ALERT
 
 The following campaigns were detected in spam and have been disabled:
 ${spamCampaigns.map(c => `- ${c.campaign}`).join('\n')}
@@ -296,19 +278,29 @@ ${allResults}
 
 To re-enable, update the batch size in Firestore config/emailCampaign.
 
-Generated at ${new Date().toISOString()}
-  `;
+Generated at ${new Date().toISOString()}`;
 
-  await transporter.sendMail({
-    from: FROM_ADDRESS,
-    to: ALERT_EMAIL,
-    subject,
-    html,
-    text
-  });
+  // Send via Mailgun API
+  const form = new FormData();
+  form.append('from', FROM_ADDRESS);
+  form.append('to', ALERT_EMAIL);
+  form.append('subject', subject);
+  form.append('html', html);
+  form.append('text', text);
+  form.append('o:tag', 'spam_alert');
+
+  await axios.post(
+    `https://api.mailgun.net/v3/${MAILGUN_DOMAIN}/messages`,
+    form,
+    {
+      headers: {
+        ...form.getHeaders(),
+        'Authorization': `Basic ${Buffer.from(`api:${apiKey}`).toString('base64')}`
+      }
+    }
+  );
 
   console.log(`Alert email sent to ${ALERT_EMAIL}`);
-  transporter.close();
 }
 
 // =============================================================================
