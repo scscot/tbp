@@ -45,7 +45,7 @@ jobs:
       - name: Run spam monitor
         env:
           GOOGLE_APPLICATION_CREDENTIALS: secrets/serviceAccountKey.json
-          MAILGUN_API_KEY: ${{ secrets.MAILGUN_API_KEY }}
+          MAILGUN_API_KEY: ${{ secrets.TBP_MAILGUN_API_KEY }}
           GMAIL_OAUTH_CREDENTIALS: ${{ secrets.GMAIL_OAUTH_CREDENTIALS }}
           GMAIL_OAUTH_TOKEN: ${{ secrets.GMAIL_OAUTH_TOKEN }}
         run: |
@@ -55,7 +55,7 @@ jobs:
       - name: Notify on failure
         if: failure()
         env:
-          MAILGUN_API_KEY: ${{ secrets.MAILGUN_API_KEY }}
+          MAILGUN_API_KEY: ${{ secrets.TBP_MAILGUN_API_KEY }}
         run: |
           curl -s --user "api:$MAILGUN_API_KEY" \
             "https://api.mailgun.net/v3/news.teambuildpro.com/messages" \
