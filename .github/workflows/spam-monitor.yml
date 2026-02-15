@@ -1,0 +1,75 @@
+name: Email Spam Monitor
+
+on:
+  schedule:
+    # Daily at 6:00 AM PT (14:00 UTC)
+    # PST: 6:00 AM, PDT: 5:00 AM (shifts 1 hour earlier in summer)
+    - cron: '0 14 * * *'
+
+  # Allow manual trigger for testing
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  spam-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: 'functions/package.json'
+
+      - name: Install dependencies
+        run: |
+          cd functions && npm install && cd ..
+          npm install --prefix scripts googleapis
+          echo "Dependencies installed"
+
+      - name: Setup Firebase credentials
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          mkdir -p secrets
+          echo "$FIREBASE_SERVICE_ACCOUNT" > secrets/serviceAccountKey.json
+          echo "Firebase credentials configured"
+
+      - name: Run spam monitor
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: secrets/serviceAccountKey.json
+          TBP_MAILGUN_API_KEY: ${{ secrets.TBP_MAILGUN_API_KEY }}
+          GMAIL_OAUTH_CREDENTIALS: ${{ secrets.GMAIL_OAUTH_CREDENTIALS }}
+          GMAIL_OAUTH_TOKEN: ${{ secrets.GMAIL_OAUTH_TOKEN }}
+          TBP_SMTP_HOST: ${{ secrets.TBP_SMTP_HOST }}
+          TBP_SMTP_USER: ${{ secrets.TBP_SMTP_USER }}
+          TBP_SMTP_PASS: ${{ secrets.TBP_SMTP_PASS }}
+        run: |
+          echo "Starting email spam monitor..."
+          node scripts/spam-monitor.js
+
+      - name: Notify on failure
+        if: failure()
+        env:
+          TBP_MAILGUN_API_KEY: ${{ secrets.TBP_MAILGUN_API_KEY }}
+        run: |
+          curl -s --user "api:$TBP_MAILGUN_API_KEY" \
+            "https://api.mailgun.net/v3/news.teambuildpro.com/messages" \
+            -F from="Stephen Scott <stephen@news.teambuildpro.com>" \
+            -F to="scscot@gmail.com" \
+            -F subject="GitHub Actions: Spam Monitor FAILED" \
+            -F text="Workflow failed: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+            && echo "Failure notification sent" || echo "Failed to send notification"
+
+      - name: Clean up
+        if: always()
+        run: |
+          rm -rf secrets/
+          echo "Cleanup complete"

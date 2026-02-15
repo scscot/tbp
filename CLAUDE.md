@@ -1112,6 +1112,19 @@ The following corporate domains are excluded from purchased_leads campaigns (hig
   - Generates 4 language versions: English, Spanish, Portuguese, German
 - `generate-blog.js` - Legacy blog generation (static template approach)
 
+**Spam Monitoring:**
+- `gmail-oauth-setup.js` - One-time OAuth setup for Gmail API access
+  - Run interactively to authorize Gmail API
+  - Outputs refresh token for GMAIL_OAUTH_TOKEN secret
+  - Requires GMAIL_OAUTH_CREDENTIALS secret (OAuth client JSON)
+- `spam-monitor.js` - Email spam detection and auto-disable system
+  - Sends test emails from Main, Purchased, BFH campaigns
+  - Checks Gmail API for inbox vs spam placement
+  - Auto-disables campaigns (sets batchSize to 0) if spam detected
+  - Sends alert email via SMTP on spam detection
+  - Stores previous value for recovery
+  - Schedule: Daily 6am PT via `.github/workflows/spam-monitor.yml`
+
 **Contact Data Management:**
 - `analyze-apollo-personal-emails.js` - Extract contacts with personal emails from Apollo CSV
   - `--analyze` - Audit CSV and categorize contacts (personal email vs needs search)
@@ -1321,6 +1334,7 @@ Three email campaigns running with optimized batch sizes for ~30-day completion.
 | Contacts Seeder | Active | Every 4h, 3 sources (Common Crawl + Wayback + crt.sh) |
 | Contacts Scraper | Active | Hourly, 400 URLs/batch, 12 blocked platforms |
 | BFH Collection | 952 contacts | Includes 583 from MLM500 migration |
+| Spam Monitor | Active | Daily 6am PT, Gmail API check, auto-disable on spam |
 | PreIntake.ai | Autonomous | See `preintake/CLAUDE.md` for details |
 
 **Monitoring Checklist (Weekly):**
@@ -1328,6 +1342,7 @@ Three email campaigns running with optimized batch sizes for ~30-day completion.
 - [ ] Traffic sources in `/TBP-analytics.html`
 - [ ] App store downloads (iOS/Android tabs)
 - [ ] Google Search Console for blog indexing
+- [ ] Spam monitor workflow runs (GitHub Actions)
 
 ---
 
