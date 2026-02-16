@@ -4,13 +4,37 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Google tag (gtag.js) -->
+  <!-- Google tag (gtag.js) with bot detection -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-CSBMH9D41J"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-    gtag('config', 'G-CSBMH9D41J');
+
+    function isBot() {
+      const ua = navigator.userAgent || '';
+      const botPatterns = [
+        /\bbot\b/i, /\bcrawl(er|ing)?\b/i, /\bspider\b/i,
+        /headless(chrome)?/i, /phantomjs/i, /selenium/i, /webdriver/i,
+        /playwright/i, /puppeteer/i, /cypress/i,
+        /googlebot/i, /google-inspectiontool/i, /adsbot-google/i,
+        /bingbot/i, /bingpreview/i, /slurp/i, /duckduckbot/i,
+        /baiduspider/i, /yandex(bot|images|media)/i,
+        /facebookexternalhit/i, /facebot/i, /linkedinbot/i,
+        /twitterbot/i, /pinterestbot/i,
+        /uptimerobot/i, /pingdom/i, /statuscake/i, /site24x7/i,
+        /sitechecker/i, /ahrefsbot/i, /semrushbot/i, /mj12bot/i,
+        /prerender/i, /applebot/i, /archive\.org_bot/i
+      ];
+      const isWebDriver = navigator.webdriver === true;
+      return botPatterns.some(pattern => pattern.test(ua)) || isWebDriver;
+    }
+
+    if (isBot()) {
+      gtag('config', 'G-CSBMH9D41J', { 'traffic_type': 'internal' });
+    } else {
+      gtag('config', 'G-CSBMH9D41J');
+    }
   </script>
 
   <title>Books by Stephen Scott | AI, Network Marketing, Personal Growth & Spirituality</title>
