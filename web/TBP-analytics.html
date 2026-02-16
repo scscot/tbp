@@ -3301,8 +3301,9 @@
 
                     const impressions = metrics.engagement?.totalImpressions || 0;
                     const downloads = metrics.downloads?.total || 0;
+                    // Use 1 decimal place to match backend executive summary
                     document.getElementById('iosConversion').textContent = impressions > 0
-                        ? ((downloads / impressions) * 100).toFixed(2) + '%'
+                        ? ((downloads / impressions) * 100).toFixed(1) + '%'
                         : 'N/A';
 
                     document.getElementById('iosSessions').textContent = formatNumber(metrics.sessions?.totalSessions || 0);

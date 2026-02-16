@@ -86,9 +86,11 @@ const trackEmailOpen = onRequest({
  *
  * URL: /trackEmailClick?id={contactDocId}&url={encodedDestinationUrl}
  *
- * Checks both collections:
+ * Checks all 4 campaign collections:
  * - emailCampaigns/master/contacts (main campaign)
  * - direct_sales_contacts (contacts campaign)
+ * - purchased_leads (purchased leads campaign)
+ * - bfh_contacts (Business For Home campaign)
  *
  * Updates Firestore with:
  * - clickedAt: First click timestamp (only set once)
@@ -123,6 +125,18 @@ const trackEmailClick = onRequest({
     // If not found, try direct_sales_contacts collection
     if (!contactDoc.exists) {
       contactRef = db.collection('direct_sales_contacts').doc(id);
+      contactDoc = await contactRef.get();
+    }
+
+    // If not found, try purchased_leads collection
+    if (!contactDoc.exists) {
+      contactRef = db.collection('purchased_leads').doc(id);
+      contactDoc = await contactRef.get();
+    }
+
+    // If not found, try bfh_contacts collection
+    if (!contactDoc.exists) {
+      contactRef = db.collection('bfh_contacts').doc(id);
       contactDoc = await contactRef.get();
     }
 

@@ -569,7 +569,7 @@ async function fetchActualAppStoreMetrics(reportRequestId, reportTypes, token, b
   logger.info(`Found downloads report: ${downloadsReport?.name || 'NONE'}`);
   logger.info(`Found engagement report: ${engagementReport?.name || 'NONE'}`);
 
-  async function fetchReportData(reportId, reportName) {
+  async function fetchReportData(reportId, reportName, ignoreBenchmark = false) {
     try {
       const instancesResponse = await ascRequest(
         `/analyticsReports/${reportId}/instances`,
@@ -604,8 +604,8 @@ async function fetchActualAppStoreMetrics(reportRequestId, reportTypes, token, b
         if (date === today) {
           return false; // Skip today's incomplete data
         }
-        // Filter by benchmark date if set
-        if (benchmarkDate && date < benchmarkDate) {
+        // Filter by benchmark date if set (skip for engagement data which has 10-day lag)
+        if (!ignoreBenchmark && benchmarkDate && date < benchmarkDate) {
           return false; // Skip data before benchmark
         }
         if (seenDates.has(date)) {
@@ -729,9 +729,9 @@ async function fetchActualAppStoreMetrics(reportRequestId, reportTypes, token, b
     }
   }
 
-  // Fetch engagement data
+  // Fetch engagement data (ignore benchmark - engagement data has ~10 day lag from App Store Connect)
   if (engagementReport) {
-    const engagementData = await fetchReportData(engagementReport.id, engagementReport.name);
+    const engagementData = await fetchReportData(engagementReport.id, engagementReport.name, true);
     if (engagementData && engagementData.length > 0) {
       metrics.dataAvailable = true;
 
@@ -1387,11 +1387,17 @@ async function fetchSingleCampaignStats(collectionPath, campaignName, benchmarkT
       // Filter by benchmark date - need to query differently
       // For sent: sentTimestamp >= benchmark
       // For clicked: clickedAt >= benchmark
-      const sentDocs = await contactsRef
-        .where('sent', '==', true)
-        .where('sentTimestamp', '>=', benchmarkTimestamp)
-        .select('subjectTag', 'clickedAt', 'status')
-        .get();
+      const [sentDocs, failedSnap, totalSnap, unsentSnap] = await Promise.all([
+        contactsRef
+          .where('sent', '==', true)
+          .where('sentTimestamp', '>=', benchmarkTimestamp)
+          .select('subjectTag', 'clickedAt')
+          .get(),
+        // Failed contacts are separate from sent contacts - count all failures
+        contactsRef.where('status', '==', 'failed').count().get(),
+        contactsRef.count().get(),
+        contactsRef.where('sent', '==', false).count().get()
+      ]);
 
       sent = sentDocs.size;
       sentDocs.forEach(doc => {
@@ -1399,19 +1405,15 @@ async function fetchSingleCampaignStats(collectionPath, campaignName, benchmarkT
         if (data.clickedAt && data.clickedAt.toDate() >= benchmarkTimestamp) {
           clicked++;
         }
-        if (data.status === 'failed') failed++;
       });
-
-      // Get actual remaining count (unsent emails) - NOT total minus benchmark sent
-      const [totalSnap, remainingSnap] = await Promise.all([
-        contactsRef.count().get(),
-        contactsRef.where('sent', '==', false).count().get()
-      ]);
+      failed = failedSnap.data().count;
       total = totalSnap.data().count;
-      remaining = remainingSnap.data().count;
+      // Remaining = unsent contacts minus failed (available to send)
+      const unsent = unsentSnap.data().count;
+      remaining = Math.max(0, unsent - failed);
     } else {
       // No benchmark - use original fast count queries
-      const [sentSnap, failedSnap, clickedSnap, totalSnap, remainingSnap] = await Promise.all([
+      const [sentSnap, failedSnap, clickedSnap, totalSnap, unsentSnap] = await Promise.all([
         contactsRef.where('sent', '==', true).count().get(),
         contactsRef.where('status', '==', 'failed').count().get(),
         contactsRef.where('clickedAt', '!=', null).count().get(),
@@ -1423,7 +1425,9 @@ async function fetchSingleCampaignStats(collectionPath, campaignName, benchmarkT
       failed = failedSnap.data().count;
       clicked = clickedSnap.data().count;
       total = totalSnap.data().count;
-      remaining = remainingSnap.data().count;
+      // Remaining = unsent contacts minus failed (available to send)
+      const unsent = unsentSnap.data().count;
+      remaining = Math.max(0, unsent - failed);
     }
 
     const clickRate = sent > 0 ? ((clicked / sent) * 100).toFixed(2) : '0.00';
@@ -1730,15 +1734,16 @@ function buildConversionFunnel(emailStats, ga4Data, iosData, androidData) {
   // App Store page views
   const iosPageViews = iosData?.actualMetrics?.engagement?.totalPageViews || 0;
 
-  // Downloads (iOS + Android combined)
+  // Downloads - iOS only for funnel (we track iOS impressions, so use iOS downloads)
+  // Android shown separately in executive summary
   const iosDownloads = iosData?.actualMetrics?.downloads?.total || 0;
   const androidDownloads = androidData?.metrics?.recentInstalls || 0;
-  const totalDownloads = iosDownloads + androidDownloads;
 
   // Calculate conversion rates between stages
+  // Note: Using iOS downloads / iOS page views for valid 0-100% conversion rate
   const emailToWebsite = emailSent > 0 ? ((websiteFromEmail / emailSent) * 100).toFixed(1) : '0.0';
   const websiteToAppStore = websiteFromEmail > 0 ? ((iosPageViews / websiteFromEmail) * 100).toFixed(1) : '0.0';
-  const appStoreToDownload = iosPageViews > 0 ? ((totalDownloads / iosPageViews) * 100).toFixed(1) : '0.0';
+  const appStoreToDownload = iosPageViews > 0 ? ((iosDownloads / iosPageViews) * 100).toFixed(1) : '0.0';
 
   // Target benchmarks
   const targets = {
@@ -1763,18 +1768,19 @@ function buildConversionFunnel(emailStats, ga4Data, iosData, androidData) {
         status: parseFloat(emailToWebsite) >= targets.emailToWebsite ? 'good' : 'warning'
       },
       {
-        name: 'App Store View',
+        name: 'iOS App Store',
         count: iosPageViews,
         percentage: websiteToAppStore + '%',
         target: targets.websiteToAppStore + '%',
         status: parseFloat(websiteToAppStore) >= targets.websiteToAppStore ? 'good' : 'warning'
       },
       {
-        name: 'Download',
-        count: totalDownloads,
+        name: 'iOS Download',
+        count: iosDownloads,
         percentage: appStoreToDownload + '%',
         target: targets.appStoreToDownload + '%',
-        status: parseFloat(appStoreToDownload) >= targets.appStoreToDownload ? 'good' : 'warning'
+        status: parseFloat(appStoreToDownload) >= targets.appStoreToDownload ? 'good' : 'warning',
+        note: androidDownloads > 0 ? `+${androidDownloads} Android` : null
       }
     ],
     rates: {
