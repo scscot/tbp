@@ -619,10 +619,178 @@ const trackDemoView = onRequest(
  * Get email campaign analytics data
  * Returns aggregated stats for the analytics dashboard
  */
+/**
+ * Generate AI-powered strategic insights for PreIntake.ai campaign analytics
+ * @param {Object} data - Analytics data from getEmailAnalytics
+ * @param {string} anthropicKey - Anthropic API key
+ * @returns {Object} Strategic insights with recommendations
+ */
+async function generatePreIntakeInsights(data, anthropicKey) {
+    try {
+        const anthropic = new Anthropic({ apiKey: anthropicKey });
+
+        // Calculate key metrics for the prompt
+        const demoViewRate = data.totalSent > 0 ? ((data.visitedCount / data.totalSent) * 100).toFixed(1) : '0.0';
+        const completionRate = data.visitedCount > 0 ? ((data.intakeCompletedCount / data.visitedCount) * 100).toFixed(1) : '0.0';
+        const exploreRate = data.visitedCount > 0 ? ((data.exploredCount / data.visitedCount) * 100).toFixed(1) : '0.0';
+
+        // Get top performing sources
+        const topSources = Object.entries(data.sourcePerformance || {})
+            .filter(([src]) => src !== 'unknown')
+            .sort((a, b) => b[1].sent - a[1].sent)
+            .slice(0, 5)
+            .map(([source, perf]) => ({
+                source,
+                sent: perf.sent,
+                viewed: perf.visited,
+                completed: perf.completed,
+                viewRate: perf.sent > 0 ? ((perf.visited / perf.sent) * 100).toFixed(1) : '0.0',
+                completionRate: perf.visited > 0 ? ((perf.completed / perf.visited) * 100).toFixed(1) : '0.0'
+            }));
+
+        // Get template performance
+        const templatePerf = Object.entries(data.templatePerformance || {})
+            .map(([template, perf]) => ({
+                template,
+                sent: perf.sent,
+                viewed: perf.visited,
+                completed: perf.completed,
+                viewRate: perf.sent > 0 ? ((perf.visited / perf.sent) * 100).toFixed(1) : '0.0',
+                completionRate: perf.visited > 0 ? ((perf.completed / perf.visited) * 100).toFixed(1) : '0.0'
+            }));
+
+        const prompt = `You are analyzing campaign analytics data for PreIntake.ai.
+
+ABOUT PREINTAKE.AI:
+PreIntake.ai is an AI-powered legal intake screening tool for law firms. It pre-screens potential client inquiries using conversational AI, qualifying leads and delivering case summaries with GREEN/YELLOW/RED routing recommendations.
+
+BUSINESS MODEL:
+- $149 setup fee + $99/month subscription
+- Primary acquisition: Cold email campaigns to attorneys scraped from state bar associations
+- Target: Law firms spending $5K+/month on advertising who need better lead qualification
+- Demo model: Personalized demos auto-generated for each firm with their branding
+
+CAMPAIGN ARCHITECTURE:
+- Bar profile contacts: Attorneys scraped from state bar websites (CA, FL, OH, MI, MO, KY, GA, IL, IN, MS, NE, NC, OK, WA)
+- Website contacts: Firms with websites get website-branded demos
+- Email templates: v7-bar-profile-demo (bar contacts), v6-personalized-demo (website contacts)
+- Auto-loading demos: Demos load immediately when email link clicked (no "Start Demo" friction)
+
+=== CURRENT ANALYTICS DATA ===
+
+FUNNEL OVERVIEW (All Time Since Feb 9, 2026):
+- Emails Sent: ${data.totalSent || 0}
+- Demo Viewed: ${data.visitedCount || 0} (${demoViewRate}% view rate)
+- Explored Site: ${data.exploredCount || 0} (${exploreRate}% of viewers)
+- Intake Completed: ${data.intakeCompletedCount || 0} (${completionRate}% completion rate)
+
+LAST 7 DAYS:
+- Sent: ${data.last7DaysSent || 0}
+- Viewed: ${data.last7DaysVisited || 0}
+- Completed: ${data.last7DaysCompleted || 0}
+
+TODAY:
+- Sent: ${data.todaySent || 0}
+- Viewed: ${data.todayVisited || 0}
+- Completed: ${data.todayCompleted || 0}
+
+EMAIL DATABASE:
+- Total Contacts: ${data.totalContacts || 0}
+- Pending (not sent): ${data.totalPending || 0}
+- Unsubscribed: ${data.totalUnsubscribed || 0}
+- Failed: ${data.totalFailed || 0}
+
+SOURCE PERFORMANCE (Bar Associations):
+${topSources.map(s => `- ${s.source}: ${s.sent} sent, ${s.viewRate}% view rate, ${s.completionRate}% completion`).join('\n')}
+
+TEMPLATE PERFORMANCE:
+${templatePerf.map(t => `- ${t.template}: ${t.sent} sent, ${t.viewRate}% view rate, ${t.completionRate}% completion`).join('\n')}
+
+GA4 WEBSITE STATS (Last 7 Days):
+${data.ga4Stats ? `
+- Users: ${data.ga4Stats.last7Days?.activeUsers || 0}
+- Sessions: ${data.ga4Stats.last7Days?.sessions || 0}
+- Page Views: ${data.ga4Stats.last7Days?.pageViews || 0}
+- Bounce Rate: ${((data.ga4Stats.last7Days?.bounceRate || 0) * 100).toFixed(1)}%
+- Avg Session: ${Math.round(data.ga4Stats.last7Days?.avgSessionDuration || 0)}s
+` : 'GA4 data unavailable'}
+
+BENCHMARKS FOR CONTEXT:
+- Cold email view rate: 10-15% is excellent for attorney outreach
+- Demo completion rate: 5-10% is good for unscheduled demos
+- Law firms are generally skeptical of AI tools and cold email
+
+Based on this data, provide strategic insights. Return a JSON object with these exact keys:
+{
+  "whatsWorking": [
+    {"insight": "specific thing working well", "metric": "supporting metric", "impact": "high/medium/low"}
+  ],
+  "needsAttention": [
+    {"issue": "specific issue to address", "metric": "supporting metric", "severity": "high/medium/low"}
+  ],
+  "recommendedActions": [
+    {"priority": "HIGH/MEDIUM/LOW", "action": "specific actionable recommendation", "expectedImpact": "what improvement to expect"}
+  ]
+}
+
+Provide 2-4 items in each category. Be specific and reference actual numbers. Focus on:
+1. Which bar associations are performing best/worst for targeting
+2. Funnel bottlenecks (demo view → completion is critical)
+3. Template effectiveness comparison
+4. Email list health (unsubscribe/failure rates)
+5. Actionable next steps to improve conversions
+
+Be direct and avoid generic marketing advice. If data shows 0 or low numbers, acknowledge early-stage status.`;
+
+        const message = await anthropic.messages.create({
+            model: 'claude-sonnet-4-20250514',
+            max_tokens: 1000,
+            messages: [{ role: 'user', content: prompt }]
+        });
+
+        const content = message.content[0]?.text || '';
+
+        // Extract JSON from response
+        const jsonMatch = content.match(/\{[\s\S]*\}/);
+        if (!jsonMatch) {
+            throw new Error('No JSON found in response');
+        }
+
+        const analysis = JSON.parse(jsonMatch[0]);
+        return {
+            generatedAt: new Date().toISOString(),
+            insights: analysis,
+            dataContext: {
+                totalSent: data.totalSent,
+                demoViewRate,
+                completionRate,
+                topSource: topSources[0]?.source || null
+            }
+        };
+
+    } catch (error) {
+        console.error('Error generating PreIntake insights:', error);
+        return {
+            generatedAt: new Date().toISOString(),
+            error: error.message,
+            insights: {
+                whatsWorking: [{ insight: 'AI analysis temporarily unavailable', metric: '-', impact: 'low' }],
+                needsAttention: [],
+                recommendedActions: []
+            }
+        };
+    }
+}
+
+/**
+ * getEmailAnalytics
+ * Returns aggregated stats for the analytics dashboard
+ */
 const getEmailAnalytics = onRequest(
     {
         cors: true,
         region: 'us-west1',
+        secrets: [anthropicApiKey],
     },
     async (req, res) => {
         try {
@@ -1008,6 +1176,35 @@ const getEmailAnalytics = onRequest(
                 return bDate.localeCompare(aDate);
             });
 
+            // Generate AI strategic insights
+            let strategicInsights = null;
+            try {
+                const analyticsData = {
+                    totalSent,
+                    visitedCount,
+                    viewedCount,
+                    exploredCount,
+                    intakeCompletedCount,
+                    last7DaysSent,
+                    last7DaysVisited,
+                    last7DaysCompleted,
+                    todaySent,
+                    todayVisited,
+                    todayCompleted,
+                    totalContacts,
+                    totalPending,
+                    totalUnsubscribed,
+                    totalFailed,
+                    templatePerformance,
+                    sourcePerformance,
+                    ga4Stats
+                };
+                strategicInsights = await generatePreIntakeInsights(analyticsData, anthropicApiKey.value());
+            } catch (insightsError) {
+                console.error('Error generating strategic insights:', insightsError);
+                strategicInsights = { error: insightsError.message };
+            }
+
             return res.json({
                 dateRange: `${startDate.toISOString().split('T')[0]} to ${now.toISOString().split('T')[0]}`,
                 totalSent,
@@ -1051,6 +1248,8 @@ const getEmailAnalytics = onRequest(
                 stateBreakdown,
                 // GA4 website analytics
                 ga4Stats,
+                // AI strategic insights
+                strategicInsights,
             });
 
         } catch (error) {

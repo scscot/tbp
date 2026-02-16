@@ -1,7 +1,7 @@
 # PreIntake.ai: Comprehensive Project Documentation
 
-**Last Updated**: 2026-02-15
-**Version**: 6.1 (Demo notice text optimization for completion rate)
+**Last Updated**: 2026-02-16
+**Version**: 6.2 (AI strategic insights dashboard)
 
 ---
 
@@ -135,10 +135,10 @@ Your CRM manages leads. We make sure only real cases get there in the first plac
 - Structured case data—no more deciphering form submissions
 
 **Analytics Dashboard** (`email-analytics.html`)
+- ✅ AI Strategic Insights (Claude-powered analysis with actionable recommendations)
 - ✅ GA4 website traffic (users, sessions, bounce rate, traffic sources)
 - ✅ Email campaign metrics (sent, delivered, visits, demo starts)
 - ✅ Engagement funnel tracking (emails → visits → demo starts → leads)
-- ✅ A/B test performance (subject line variants)
 - ✅ Source/state breakdown by bar association
 - 🔮 Future: Green/Yellow/Red distribution, question flow A/B testing, ROI reporting
 
@@ -1474,6 +1474,35 @@ Email click → homepage loads with ?demo= → REDIRECT to /demo/?demo={id}
 |------|---------|
 | `/functions/templates/demo-intake.html.template` | Demo notice text rewrite |
 
+### Phase 63: AI Strategic Insights Dashboard (2026-02-15)
+- [x] **Claude AI Integration** - Added AI-powered strategic insights to campaign analytics
+  - Uses Claude Sonnet 4 (`claude-sonnet-4-20250514`) for analysis
+  - Generates insights based on funnel metrics, source performance, and template effectiveness
+- [x] **Backend Implementation** - `functions/widget-functions.js`
+  - Added `generatePreIntakeInsights()` function with PreIntake.ai-specific context
+  - Updated `getEmailAnalytics` endpoint to include `secrets: [anthropicApiKey]`
+  - Returns structured JSON with `whatsWorking`, `needsAttention`, `recommendedActions`
+- [x] **Frontend Implementation** - `preintake/email-analytics.html`
+  - Added Strategic Insights section at top of dashboard
+  - Three-column grid layout with color-coded cards:
+    - **What's Working** (green) - high-performing elements
+    - **Needs Attention** (amber) - issues requiring focus
+    - **Recommended Actions** (blue) - specific next steps
+  - Each insight shows metric context and impact/severity/priority badges
+
+**Insights Generated:**
+- Source performance comparison (which bar associations convert best)
+- Template effectiveness (v6-personalized vs v7-bar-profile)
+- Funnel bottleneck identification (demo view → completion)
+- Email list health analysis (unsubscribe/failure rates)
+- Actionable recommendations with expected impact
+
+**Files Modified:**
+| File | Changes |
+|------|---------|
+| `functions/widget-functions.js` | Added `generatePreIntakeInsights()`, updated `getEmailAnalytics` with secrets |
+| `preintake/email-analytics.html` | Added Strategic Insights section with CSS and rendering code |
+
 ---
 
 ## Architecture
@@ -1707,7 +1736,7 @@ For firms with strict data residency requirements, self-hosted option at custom 
 - ✅ Post-intake conversion email (Phase 17) - Sends after first demo lead delivery
 - ✅ Demo ready notification to customer - Sends via `sendProspectDemoReadyEmail()` when demo is generated
 - ✅ Customer Portal - `account.html` with magic link auth, settings management, Stripe billing portal
-- ✅ Analytics Dashboard - `email-analytics.html` with GA4 integration, email stats, A/B test tracking, engagement funnel
+- ✅ Analytics Dashboard - `email-analytics.html` with GA4 integration, email stats, engagement funnel, AI strategic insights (Phase 63)
 - ✅ Demo Expiration - `cleanup-stale-demos.js` auto-deletes 31+ day old unconverted demos (daily workflow)
 - ✅ A/B Testing (Subject Lines) - Subject line variants tracked via `subjectTag` field with dashboard reporting
 
@@ -1839,7 +1868,7 @@ EOF
 | `verifyAccountToken` | HTTP | Verify magic link token, return account data |
 | `updateAccountSettings` | HTTP | Update delivery email, practice areas, name |
 | `createBillingPortalSession` | HTTP | Create Stripe billing portal session |
-| `getEmailAnalytics` | HTTP | Return campaign analytics (GA4 + Firestore) |
+| `getEmailAnalytics` | HTTP | Return campaign analytics (GA4 + Firestore + AI insights) |
 
 ### API Endpoints
 
@@ -1866,7 +1895,7 @@ EOF
 | `/verifyAccountToken` | GET | Verify magic link, return account data |
 | `/updateAccountSettings` | POST | Update account settings |
 | `/createBillingPortalSession` | POST | Create Stripe billing portal session |
-| `/getEmailAnalytics` | GET | Return campaign analytics dashboard data |
+| `/getEmailAnalytics` | GET | Return campaign analytics + AI strategic insights |
 
 ### Firestore Collections (preintake database)
 

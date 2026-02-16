@@ -508,6 +508,99 @@
             color: #64748b;
         }
 
+        /* Strategic Insights */
+        .insights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+        }
+
+        .insights-card {
+            background: #0f172a;
+            border-radius: 12px;
+            padding: 24px;
+            border-left: 4px solid;
+        }
+
+        .insights-card.working { border-left-color: #10b981; }
+        .insights-card.attention { border-left-color: #f59e0b; }
+        .insights-card.actions { border-left-color: #3b82f6; }
+
+        .insights-card h4 {
+            color: #ffffff;
+            font-size: 1rem;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .insights-card h4 .icon { font-size: 1.1rem; }
+        .insights-card.working h4 .icon { color: #10b981; }
+        .insights-card.attention h4 .icon { color: #f59e0b; }
+        .insights-card.actions h4 .icon { color: #3b82f6; }
+
+        .insight-item {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            padding: 14px;
+            margin-bottom: 12px;
+        }
+
+        .insight-item:last-child { margin-bottom: 0; }
+
+        .insight-text {
+            color: #e2e8f0;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 8px;
+        }
+
+        .insight-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .insight-metric {
+            color: #94a3b8;
+            font-size: 0.8rem;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 3px 8px;
+            border-radius: 4px;
+        }
+
+        .insight-badge {
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            padding: 3px 8px;
+            border-radius: 4px;
+        }
+
+        .insight-badge.high {
+            background: rgba(239, 68, 68, 0.2);
+            color: #f87171;
+        }
+
+        .insight-badge.medium {
+            background: rgba(245, 158, 11, 0.2);
+            color: #fbbf24;
+        }
+
+        .insight-badge.low {
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+        }
+
+        .insights-timestamp {
+            color: #64748b;
+            font-size: 0.75rem;
+            margin-top: 16px;
+            text-align: right;
+        }
+
         /* Loading State */
         .loading {
             display: flex;
@@ -731,6 +824,70 @@
             lastUpdated.textContent = `Last updated: ${new Date().toLocaleString()}`;
 
             let html = '';
+
+            // ═══════════════════════════════════════════════
+            // STRATEGIC INSIGHTS (AI-Generated)
+            // ═══════════════════════════════════════════════
+            if (data.strategicInsights && data.strategicInsights.insights) {
+                const insights = data.strategicInsights.insights;
+                html += `
+                <div class="dashboard-section">
+                    <div class="section-header">
+                        <span class="section-icon">&#9733;</span>
+                        <h2>Strategic Insights</h2>
+                    </div>
+                    <div class="insights-grid">
+                        ${insights.whatsWorking && insights.whatsWorking.length > 0 ? `
+                        <div class="insights-card working">
+                            <h4><span class="icon">✓</span> What's Working</h4>
+                            ${insights.whatsWorking.map(item => `
+                                <div class="insight-item">
+                                    <div class="insight-text">${item.insight}</div>
+                                    <div class="insight-meta">
+                                        <span class="insight-metric">${item.metric}</span>
+                                        <span class="insight-badge ${item.impact}">${item.impact} impact</span>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        ` : ''}
+
+                        ${insights.needsAttention && insights.needsAttention.length > 0 ? `
+                        <div class="insights-card attention">
+                            <h4><span class="icon">!</span> Needs Attention</h4>
+                            ${insights.needsAttention.map(item => `
+                                <div class="insight-item">
+                                    <div class="insight-text">${item.issue}</div>
+                                    <div class="insight-meta">
+                                        <span class="insight-metric">${item.metric}</span>
+                                        <span class="insight-badge ${item.severity}">${item.severity} severity</span>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        ` : ''}
+
+                        ${insights.recommendedActions && insights.recommendedActions.length > 0 ? `
+                        <div class="insights-card actions">
+                            <h4><span class="icon">→</span> Recommended Actions</h4>
+                            ${insights.recommendedActions.map(item => `
+                                <div class="insight-item">
+                                    <div class="insight-text">${item.action}</div>
+                                    <div class="insight-meta">
+                                        <span class="insight-metric">${item.expectedImpact}</span>
+                                        <span class="insight-badge ${item.priority.toLowerCase()}">${item.priority}</span>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        ` : ''}
+                    </div>
+                    ${data.strategicInsights.generatedAt ? `
+                    <div class="insights-timestamp">Generated: ${new Date(data.strategicInsights.generatedAt).toLocaleString()}</div>
+                    ` : ''}
+                </div>
+                `;
+            }
 
             // ═══════════════════════════════════════════════
             // SECTION 1: ENGAGEMENT FUNNEL
