@@ -598,4 +598,13 @@
     <priority>0.7</priority>
   </url>
 
+
+  <!-- Blog Posts -->
+  <url>
+    <loc>https://pt.teambuildpro.com/blog/great-mlm-migration-2026-smart-recruiters-building.html</loc>
+    <lastmod>2026-02-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
 </urlset>
