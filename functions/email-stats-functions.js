@@ -194,7 +194,7 @@ async function fetchGA4Stats(serviceAccountJson) {
  */
 async function fetchCampaignStats(collectionPath, now, twentyFourHoursAgo, startOfTodayUTC, options = {}) {
   const contactsRef = db.collection(collectionPath);
-  const { isContactsCampaign = false, isBfhCampaign = false } = options;
+  const { isContactsCampaign = false } = options;
 
   // Get total count
   let totalSnapshot;
@@ -204,13 +204,8 @@ async function fetchCampaignStats(collectionPath, now, twentyFourHoursAgo, start
       .where('scraped', '==', true)
       .count()
       .get();
-  } else if (isBfhCampaign) {
-    // For BFH campaign, count contacts with bfhScraped == true and valid email
-    totalSnapshot = await contactsRef
-      .where('bfhScraped', '==', true)
-      .count()
-      .get();
   } else {
+    // For main, purchased, and BFH campaigns, count all contacts in collection
     totalSnapshot = await contactsRef.count().get();
   }
   const totalContacts = totalSnapshot.data().count;
@@ -312,8 +307,8 @@ const getEmailCampaignStats = onRequest({
     const [mainCampaignStats, contactsCampaignStats, purchasedCampaignStats, bfhCampaignStats] = await Promise.all([
       fetchCampaignStats(MAIN_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC),
       fetchCampaignStats(CONTACTS_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC, { isContactsCampaign: true }),
-      fetchCampaignStats(PURCHASED_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC, { isPurchasedCampaign: true }),
-      fetchCampaignStats(BFH_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC, { isBfhCampaign: true })
+      fetchCampaignStats(PURCHASED_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC),
+      fetchCampaignStats(BFH_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC)
     ]);
 
     // Get GA4 stats (shared across campaigns)

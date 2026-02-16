@@ -1,88 +1,46 @@
 App Store URL: https://apps.apple.com/us/app/team-build-pro-direct-sales/id6751211622
 App Name: Team Build Pro: AI Recruiting
 Subtitle: Direct Sales Downline Builder
-Google Subtitle: AI recruiting tools: 16 messages, 24/7 coaching & downline tracking
+Google Subtitle: AI recruiting tools: 17 messages, 24/7 coaching & downline tracking
 Keywords: downline,prospecting,recruiting,mlm,network,marketing,direct,sales,teambuilder,coach,ai
+Promotional Text: What if recruits joined with 20 people already lined up? Pre-build downlines before signing up. AI tools in 4 languages. 30-day free trial.
 
 -----------
 
 Description:
 
-AI Recruiting System for Direct Sales Professionals
+AI Downline Builder for Network Marketing & MLM
 
-Empower your business partners and recruiting prospects with AI-powered coaching and tools that drive downline growth—before and after they join your opportunity.
+What if your next recruit joined with 20 people already lined up?
 
-THE SYSTEM
+That's what Team Build Pro does. Prospects pre-build their downline BEFORE signing up. Day 1 momentum instead of Day 1 doubt.
 
-Your recruiting prospects build their teams risk-free:
+THE PRE-BUILD SYSTEM
 
 1. Share your referral link
-2. They invite contacts and pre-build their network
-3. Hit qualification milestones (4 direct + 20 total team)
-4. They receive invitation to join YOUR business—with their team ready
+2. Prospects invite contacts and grow their network with AI tools
+3. They hit milestones: 4 direct + 20 total team members
+4. They join YOUR business—with their team already built
 
-When they join your opportunity? They bring pre-built teams, proven skills, and real momentum.
+No more cold starts. No more 90-day dropouts.
 
-16 PRE-WRITTEN RECRUITING MESSAGES
+BUILT-IN AI RECRUITING TOOLS
 
-Eliminate writer's block and social anxiety. Smart messages address common objections:
+• 17 pre-written messages that crush every objection
+• 24/7 AI Coach answers questions so you don't have to
+• Real-time tracking shows exactly who's building
+• 4 languages: English, Spanish, Portuguese, German
 
-- Time constraints ("too busy")
-- Skepticism ("is this real?")
-- Past failures ("tried MLM before")
-- Social hesitation ("don't want to bother friends")
+WORKS WITH ANY COMPANY
 
-One tap to share via text, email, or social media. Works in English, Spanish (Español), Portuguese (Português), and German (Deutsch).
+Enter your company and referral link—it becomes YOUR system.
 
-24/7 AI ASSISTANT
+Try free for 30 days. $6.99/month after.
 
-Get instant answers about team building, app features, and strategies. Ask anything:
+Not a business opportunity—a recruiting tool for the one you have.
 
-- "How does qualification work?"
-- "What should I focus on next?"
-- "Show me my team analytics"
-- "How do I invite people?"
-
-Available in 4 languages. Your entire downline gets the same AI support—true duplication.
-
-REAL-TIME TEAM TRACKING
-
-- Live network visualization showing your entire organization
-- Automatic milestone tracking (4 direct + 20 total)
-- Team growth analytics and engagement metrics
-- Secure team messaging
-
-WORKS WITH ANY OPPORTUNITY
-
-Network marketing, MLM, or direct sales—Team Build Pro adapts to your business model. Enter your company name and referral link—it becomes your personalized recruiting system.
-
-Prospects who qualify are invited to join YOUR specific business—loyalty and team structure are built in.
-
-KEY BENEFITS
-
-- Offer prospects a proven system, not just a pitch
-- Stand out from competitors with modern AI tools
-- Let prospects try risk-free—30-day free trial
-- Achieve true duplication across your organization
-- Eliminate the 75% first-year dropout rate
-- Full international support: English, Spanish (Español), Portuguese (Português), German (Deutsch)
-
-WHO THIS IS FOR
-
-Direct sales professionals, network marketing leaders, MLM distributors—anyone who wants to give their prospects a real system and empower their team with AI-powered tools.
-
-NOT A BUSINESS OPPORTUNITY
-
-Team Build Pro is a recruiting tool for the opportunity you already have—not a business itself. We charge $6.99/month. We don't pay commissions or offer income opportunities.
-
-SUBSCRIPTION
-
-- 30-day free trial (full access)
-- $6.99/month, auto-renewing
-- Cancel anytime
-
-Terms: https://teambuildpro.com/terms_of_service.html
-Privacy: https://teambuildpro.com/privacy_policy.html
+Terms: teambuildpro.com/terms_of_service.html
+Privacy: teambuildpro.com/privacy_policy.html
 
 -------
 
