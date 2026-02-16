@@ -1553,26 +1553,28 @@ Emails Sent → Demo Viewed → Conversation Started → Contact Collected → S
 ### Phase 65: Demo Banner Redesign & SMTP Fix (2026-02-16)
 - [x] **Demo Notice Banner Redesign** - Enhanced banner with firm-specific personalization
   - Old banner: Static text "Try It Now (~2 min): Complete this intake demo..."
-  - New banner: 3-part structure with headline, body, and dynamic CTA
+  - New banner: 2-part structure with headline and body (CTA removed)
   - Headline: "✨ Your Customized Demo for **{firmName}**"
   - Body: "Complete this intake demo in **~2-3 minutes** to receive a full case review report..."
-  - CTA: Dynamic based on `hasWebsite` flag (embed vs hosted messaging)
-  - CSS: Updated `.demo-notice` with improved styling, added `.demo-notice-headline`, `.demo-notice-body`, `.demo-notice-cta` classes
+  - CSS: Updated `.demo-notice` with improved styling, added `.demo-notice-headline`, `.demo-notice-body` classes
   - HTML: Changed from single `<p>` to structured `<div>` elements
   - JS: Dynamic content population from `firmStatus` object
+- [x] **CTA Line Removal** - Simplified banner by removing conditional CTA
+  - Removed `hasWebsite` conditional logic that showed embed/hosted messaging
+  - Removed `.demo-notice-cta` CSS class and HTML element
+  - Banner now shows only headline + body (cleaner UX)
 - [x] **Bulk Demo Patch** - gsutil parallel operations
-  - Created `/tmp/fast-patch-banner.sh` with find/replace patterns
-  - Patched 2,759 of 2,878 demos in ~3 minutes
-  - 1 demo already patched (test demo), remaining demos without old pattern unchanged
+  - Initial patch: 2,759 demos with banner redesign
+  - Second patch: 2,760 demos with CTA removal + text fix ("Personalized" → "Customized")
 - [x] **SMTP Authentication Fix** - Demo confirmation emails
   - Issue: SMTP authentication failure (`535 5.7.8 Error: authentication failed`)
   - Root cause: Dreamhost password for `stephen@law.preintake.ai` didn't match Firebase/GCP secrets
   - Fix: User updated Dreamhost password to match secret value
   - Verified: SMTP working, demo email sent successfully
-- [x] **Environment File Update** - Added SMTP credentials to `.env.teambuilder-plus-fe74d`
-  - Added `PREINTAKE_SMTP_USER=stephen@law.preintake.ai`
-  - Added `PREINTAKE_SMTP_PASS` for local development reference
-  - Updated comment to include `demo-generator-functions.js` as user
+- [x] **Environment File Note** - SMTP credentials managed via Firebase Secrets
+  - `PREINTAKE_SMTP_USER` and `PREINTAKE_SMTP_PASS` use `defineSecret()` in Cloud Functions
+  - Cannot be added to `.env` file (conflicts with secret environment variables)
+  - Credentials documented as comments in `.env.teambuilder-plus-fe74d`
 
 **Test Account:**
 - Lead ID: `3vhfvzks9EHCRkgyKLU4` (scscot@gmail.com)
@@ -1581,8 +1583,7 @@ Emails Sent → Demo Viewed → Conversation Started → Contact Collected → S
 **Files Modified:**
 | File | Changes |
 |------|---------|
-| `functions/templates/demo-intake.html.template` | Banner CSS, HTML structure, JS logic |
-| `functions/.env.teambuilder-plus-fe74d` | Added PREINTAKE_SMTP_USER and PREINTAKE_SMTP_PASS |
+| `functions/templates/demo-intake.html.template` | Banner CSS, HTML structure, JS logic (CTA removed) |
 
 ---
 
