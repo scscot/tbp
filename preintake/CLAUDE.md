@@ -1507,6 +1507,49 @@ Email click → homepage loads with ?demo= → REDIRECT to /demo/?demo={id}
 | `functions/widget-functions.js` | Added `generatePreIntakeInsights()`, updated `getEmailAnalytics` with secrets |
 | `preintake/email-analytics.html` | Added Strategic Insights section with CSS and rendering code |
 
+### Phase 64: In-Demo Milestone Tracking (2026-02-15)
+- [x] **Problem Analysis** - 23 demo views with 0 completions, no visibility into conversation progress
+  - Existing tracking: `visit` (page load), `view` (demo start), `explore` (left to browse), `intakeDelivery.success` (completed)
+  - Gap: No visibility into what happens INSIDE the demo conversation
+  - Result: Cannot identify where users abandon the intake flow
+- [x] **3 New Milestones** - Granular tracking without over-instrumentation
+  - `conversation_started` - First user message sent (user engaged with chat)
+  - `contact_collected` - `collect_contact_info` tool fires (user provided name/phone/email)
+  - `screening_started` - `collect_case_info` tool fires (user started practice-area questions)
+- [x] **Backend Implementation** - `functions/widget-functions.js`
+  - Extended `trackDemoView` endpoint to accept 3 new milestone types
+  - Validates type is one of: `visit`, `view`, `explore`, `conversation_started`, `contact_collected`, `screening_started`
+  - Updates Firestore with `{type}At` timestamp field for each milestone
+  - Extended `getEmailAnalytics` to count milestone occurrences across all leads
+- [x] **Template Implementation** - `functions/templates/demo-intake.html.template`
+  - Added `trackMilestone()` helper function with deduplication
+  - **Key feature**: Skips tracking for active subscribers (`subscriptionStatus === 'active'`)
+  - Tracking calls at 3 trigger points:
+    - In `sendMessage()` after first user message → `conversation_started`
+    - In `processToolUse()` case `collect_contact_info` → `contact_collected`
+    - In `processToolUse()` case `collect_case_info` → `screening_started`
+- [x] **Dashboard Update** - `preintake/email-analytics.html`
+  - Changed funnel from 4 steps to 6 steps with milestones:
+    - Emails Sent → Demo Viewed → Started Chat → Contact Given → Screening → Completed
+  - Added milestone columns to Lead Details table with checkmark indicators
+  - Adjusted CSS for 6-step funnel layout (reduced min-width, font sizes)
+- [x] **Bulk Demo Patch** - gsutil parallel operations
+  - Initial patch: 2,827 demos with milestone tracking code
+  - v2 patch: Added active subscriber check to skip tracking for paid users
+  - Final result: All demos updated with conditional milestone tracking
+
+**Resulting Funnel:**
+```
+Emails Sent → Demo Viewed → Conversation Started → Contact Collected → Screening Started → Completed
+```
+
+**Files Modified:**
+| File | Changes |
+|------|---------|
+| `functions/widget-functions.js` | Extended `trackDemoView` types, updated `getEmailAnalytics` with milestone counts |
+| `functions/templates/demo-intake.html.template` | Added `trackMilestone()` helper and 3 trigger points |
+| `preintake/email-analytics.html` | 6-step funnel visualization, milestone columns in Lead Details |
+
 ---
 
 ## Architecture

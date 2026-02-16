@@ -1959,6 +1959,22 @@
         // Apply firm branding
         document.getElementById('schedule-button').href = CONFIG.scheduleUrl || '#';
 
+        // Milestone tracking helper (only for demo users, not paid subscribers)
+        const trackedMilestones = {};
+        async function trackMilestone(type) {
+            // Skip tracking for active subscribers - they don't need funnel analysis
+            if (firmStatus && firmStatus.subscriptionStatus === 'active') return;
+            if (trackedMilestones[type]) return; // Prevent duplicate tracking
+            trackedMilestones[type] = true;
+            try {
+                await fetch(
+                    `https://us-west1-teambuilder-plus-fe74d.cloudfunctions.net/trackDemoView?firmId={{LEAD_ID}}&type=${type}`
+                );
+            } catch (e) {
+                console.warn('Milestone tracking failed:', e);
+            }
+        }
+
         // Rate limit retry configuration
         const MAX_RETRIES = 3;
         const INITIAL_RETRY_DELAY = 5000;
@@ -2686,6 +2702,7 @@
             input.value = '';
             addMessage(message, 'user');
             conversationHistory.push({ role: "user", content: message });
+            trackMilestone('conversation_started'); // Track first user message
             sendToAPI(conversationHistory);
         }
 
@@ -2796,12 +2813,14 @@
                     collectedData.contact = input;
                     if (currentStep === 1) { currentStep = 2; updateProgressSteps(); }
                     saveSession(); // Save progress for session recovery
+                    trackMilestone('contact_collected'); // Track contact collection
                     return "Contact information collected.";
 
                 case 'collect_case_info':
                     collectedData.case_info = input;
                     if (currentStep <= 2) { currentStep = 3; updateProgressSteps(); }
                     saveSession(); // Save progress for session recovery
+                    trackMilestone('screening_started'); // Track screening start
                     return "Case information collected.";
 
                 case 'collect_details':

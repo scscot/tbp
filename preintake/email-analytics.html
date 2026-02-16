@@ -251,14 +251,14 @@
 
         .funnel-step {
             flex: 1;
-            min-width: 140px;
+            min-width: 100px;
             text-align: center;
             position: relative;
-            padding: 0 8px;
+            padding: 0 4px;
         }
 
         .funnel-step .funnel-count {
-            font-size: 1.75rem;
+            font-size: 1.5rem;
             font-weight: 700;
             color: #c9a962;
             margin-bottom: 4px;
@@ -893,11 +893,15 @@
             // SECTION 1: ENGAGEMENT FUNNEL
             // ═══════════════════════════════════════════════
             // Note: With auto-loading demos, visit = view, so we show "Demo Viewed" (using visitedCount)
+            // Milestones track in-demo progress: conversation_started → contact_collected → screening_started
+            const milestones = data.milestones || {};
             const funnelSteps = [
                 { label: 'Emails Sent', count: data.totalSent || 0, color: '#3b82f6' },
                 { label: 'Demo Viewed', count: data.visitedCount || 0, color: '#c9a962' },
-                { label: 'Explored Site', count: data.exploredCount || 0, color: '#f59e0b' },
-                { label: 'Intake Completed', count: data.intakeCompletedCount || 0, color: '#10b981' }
+                { label: 'Started Chat', count: milestones.conversationStarted || 0, color: '#8b5cf6' },
+                { label: 'Contact Given', count: milestones.contactCollected || 0, color: '#ec4899' },
+                { label: 'Screening', count: milestones.screeningStarted || 0, color: '#f59e0b' },
+                { label: 'Completed', count: data.intakeCompletedCount || 0, color: '#10b981' }
             ];
             const maxCount = funnelSteps[0].count || 1;
 
@@ -1203,10 +1207,11 @@
                                 <th>Firm Name</th>
                                 <th>Source</th>
                                 <th>Date</th>
-                                <th>Demo Viewed</th>
-                                <th>Explored</th>
-                                <th>Intake</th>
-                                <th>Subscription</th>
+                                <th>Demo</th>
+                                <th>Chat</th>
+                                <th>Contact</th>
+                                <th>Screening</th>
+                                <th>Completed</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -1217,22 +1222,27 @@
                                     <td style="color: #94a3b8; font-size: 0.8rem;">${lead.firstVisitAt || '-'}</td>
                                     <td>
                                         <span class="view-count ${lead.visitCount > 0 ? 'viewed' : 'not-viewed'}">
-                                            ${lead.visitCount > 0 ? lead.visitCount + 'x' : '-'}
+                                            ${lead.visitCount > 0 ? '✓' : '-'}
                                         </span>
                                     </td>
                                     <td>
-                                        <span class="view-count ${(lead.exploreCount || 0) > 0 ? 'viewed' : 'not-viewed'}">
-                                            ${(lead.exploreCount || 0) > 0 ? lead.exploreCount + 'x' : '-'}
+                                        <span class="view-count ${lead.conversationStarted ? 'viewed' : 'not-viewed'}">
+                                            ${lead.conversationStarted ? '✓' : '-'}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="view-count ${lead.contactCollected ? 'viewed' : 'not-viewed'}">
+                                            ${lead.contactCollected ? '✓' : '-'}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="view-count ${lead.screeningStarted ? 'viewed' : 'not-viewed'}">
+                                            ${lead.screeningStarted ? '✓' : '-'}
                                         </span>
                                     </td>
                                     <td>
                                         ${lead.intakeCompleted
-                                            ? '<span class="status-badge completed">Completed</span>'
-                                            : '<span class="status-badge none">-</span>'}
-                                    </td>
-                                    <td>
-                                        ${lead.subscriptionStatus
-                                            ? `<span class="status-badge ${lead.subscriptionStatus}">${lead.subscriptionStatus}</span>`
+                                            ? '<span class="status-badge completed">✓</span>'
                                             : '<span class="status-badge none">-</span>'}
                                     </td>
                                 </tr>

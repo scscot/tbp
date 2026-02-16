@@ -555,8 +555,9 @@ const trackDemoView = onRequest(
             }
 
             // Validate type
-            if (trackType !== 'visit' && trackType !== 'view' && trackType !== 'explore') {
-                return res.status(400).json({ error: 'Invalid type parameter (must be visit, view, or explore)' });
+            const validTypes = ['visit', 'view', 'explore', 'conversation_started', 'contact_collected', 'screening_started'];
+            if (!validTypes.includes(trackType)) {
+                return res.status(400).json({ error: `Invalid type parameter (must be one of: ${validTypes.join(', ')})` });
             }
 
             // Get lead document
@@ -589,6 +590,24 @@ const trackDemoView = onRequest(
                     updateData.firstExploreAt = now;
                 }
                 console.log(`Explore tracked for lead ${firmId}`);
+            } else if (trackType === 'conversation_started') {
+                // Track first user message sent
+                if (!data.conversationStartedAt) {
+                    updateData.conversationStartedAt = now;
+                    console.log(`Conversation started tracked for lead ${firmId}`);
+                }
+            } else if (trackType === 'contact_collected') {
+                // Track contact info collected
+                if (!data.contactCollectedAt) {
+                    updateData.contactCollectedAt = now;
+                    console.log(`Contact collected tracked for lead ${firmId}`);
+                }
+            } else if (trackType === 'screening_started') {
+                // Track screening questions started
+                if (!data.screeningStartedAt) {
+                    updateData.screeningStartedAt = now;
+                    console.log(`Screening started tracked for lead ${firmId}`);
+                }
             } else {
                 // Track demo view (engagement)
                 updateData.lastViewedAt = now;
@@ -1054,6 +1073,11 @@ const getEmailAnalytics = onRequest(
             // Explore tracking (aggregate)
             let exploredCount = 0;
 
+            // In-demo milestone tracking
+            let conversationStartedCount = 0;
+            let contactCollectedCount = 0;
+            let screeningStartedCount = 0;
+
             let activeLeads = 0;
             const leadDetails = [];
 
@@ -1094,6 +1118,11 @@ const getEmailAnalytics = onRequest(
                 const exploreCount = data.exploreCount || 0;
                 if (exploreCount > 0) exploredCount++;
 
+                // In-demo milestone tracking
+                if (data.conversationStartedAt) conversationStartedCount++;
+                if (data.contactCollectedAt) contactCollectedCount++;
+                if (data.screeningStartedAt) screeningStartedCount++;
+
                 // Intake completion tracking (set by logDelivery in intake-delivery-functions.js)
                 const intakeDelivery = data.intakeDelivery;
                 const intakeCompleted = !!(intakeDelivery && intakeDelivery.success);
@@ -1118,6 +1147,9 @@ const getEmailAnalytics = onRequest(
                     visited: visitCount > 0,
                     viewed: viewCount > 0,
                     explored: exploreCount > 0,
+                    conversationStarted: !!data.conversationStartedAt,
+                    contactCollected: !!data.contactCollectedAt,
+                    screeningStarted: !!data.screeningStartedAt,
                     completed: intakeCompleted
                 };
 
@@ -1195,6 +1227,10 @@ const getEmailAnalytics = onRequest(
                     viewedCount,
                     exploredCount,
                     intakeCompletedCount,
+                    // In-demo milestones
+                    conversationStartedCount,
+                    contactCollectedCount,
+                    screeningStartedCount,
                     last7DaysSent,
                     last7DaysVisited,
                     last7DaysCompleted,
@@ -1244,6 +1280,10 @@ const getEmailAnalytics = onRequest(
                 yesterdayCompleted,
                 // Explore aggregate
                 exploredCount,
+                // In-demo milestones
+                conversationStartedCount,
+                contactCollectedCount,
+                screeningStartedCount,
                 activeLeads,
                 templateVersions,
                 templatePerformance,
