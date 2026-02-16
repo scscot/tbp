@@ -19,9 +19,9 @@ const { Storage } = require('@google-cloud/storage');
 const ascKeyId = defineSecret('ASC_KEY_ID');
 const ascIssuerId = defineSecret('ASC_ISSUER_ID');
 const ascPrivateKey = defineSecret('ASC_PRIVATE_KEY');
-const openaiApiKey = defineSecret('OPENAI_API_KEY');
+const anthropicApiKey = defineSecret('ANTHROPIC_API_KEY');
 const ga4ServiceAccount = defineSecret('GA4_SERVICE_ACCOUNT');
-const OpenAI = require('openai');
+const Anthropic = require('@anthropic-ai/sdk');
 
 // GA4 Configuration
 const GA4_PROPERTY_ID = '485651473';
@@ -400,10 +400,10 @@ async function ascRequest(endpoint, token, method = 'GET', data = null, params =
  * @param {string} keyId - ASC Key ID
  * @param {string} issuerId - ASC Issuer ID
  * @param {string} privateKey - ASC Private Key
- * @param {string} openaiKey - OpenAI API Key for observations
+ * @param {string} anthropicKey - Anthropic API Key for AI observations
  * @param {string|null} benchmarkDate - Optional benchmark date (YYYY-MM-DD format)
  */
-async function fetchAppStoreMetrics(keyId, issuerId, privateKey, openaiKey, benchmarkDate = null) {
+async function fetchAppStoreMetrics(keyId, issuerId, privateKey, anthropicKey, benchmarkDate = null) {
   const token = generateASCToken(keyId, issuerId, privateKey);
 
   try {
@@ -500,13 +500,13 @@ async function fetchAppStoreMetrics(keyId, issuerId, privateKey, openaiKey, benc
 
     // Generate AI observations
     let observations = null;
-    if (openaiKey) {
+    if (anthropicKey) {
       observations = await generateAIObservations({
         appInfo,
         versions,
         reviews,
         actualMetrics
-      }, openaiKey);
+      }, anthropicKey);
     }
 
     return {
@@ -775,11 +775,11 @@ async function fetchActualAppStoreMetrics(reportRequestId, reportTypes, token, b
 }
 
 /**
- * Generate AI-powered observations using structured JSON output
+ * Generate AI-powered observations using Claude
  */
-async function generateAIObservations(data, openaiKey) {
+async function generateAIObservations(data, anthropicKey) {
   try {
-    const openai = new OpenAI({ apiKey: openaiKey });
+    const anthropic = new Anthropic({ apiKey: anthropicKey });
 
     const context = {
       appName: data.appInfo?.name || 'Team Build Pro',
@@ -791,16 +791,25 @@ async function generateAIObservations(data, openaiKey) {
       metricsAvailable: data.actualMetrics?.dataAvailable || false
     };
 
-    const prompt = `Analyze this iOS app data for "${context.appName}" and provide insights.
+    const prompt = `You are analyzing iOS App Store data for Team Build Pro.
 
-Current Data:
+ABOUT TEAM BUILD PRO:
+Team Build Pro is an AI-powered downline builder app ($6.99/month after 30-day free trial) for direct sales/MLM professionals. It helps users pre-build their teams BEFORE joining a business opportunity, solving the "cold start" problem that causes 75% of MLM recruits to quit in their first year. Key features: 16 pre-written recruiting messages, 24/7 AI Coach, company-agnostic (works with 100+ direct sales companies).
+
+CURRENT iOS APP STORE DATA:
 - App Version: ${context.currentVersion}
 - Average Rating: ${context.averageRating}/5 (${context.totalReviews} reviews)
 - Downloads (7 days): ${context.downloads}
 - Impressions: ${context.impressions}
 - Metrics Available: ${context.metricsAvailable}
 
-Return a JSON object with these exact keys:
+CONTEXT:
+- App launched Nov 2025, still in early growth phase
+- Primary acquisition: cold email campaigns to MLM professionals
+- Low review count is expected for a niche B2B app
+- Impressions-to-download conversion is critical (App Store listing optimization)
+
+Analyze this data and return a JSON object with these exact keys:
 {
   "keyObservations": ["observation 1", "observation 2", "observation 3"],
   "strengths": ["strength 1", "strength 2"],
@@ -808,33 +817,31 @@ Return a JSON object with these exact keys:
   "recommendedActions": ["action 1", "action 2", "action 3"]
 }
 
-Be specific and actionable. Keep responses concise.`;
+Be specific to Team Build Pro's situation. Avoid generic advice. Keep responses concise.`;
 
-    const completion = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
-      messages: [
-        {
-          role: 'system',
-          content: 'You are an app analytics expert. Always respond with valid JSON only, no markdown or additional text.'
-        },
-        { role: 'user', content: prompt }
-      ],
-      response_format: { type: "json_object" },
+    const message = await anthropic.messages.create({
+      model: 'claude-sonnet-4-20250514',
       max_tokens: 500,
-      temperature: 0.7
+      messages: [{ role: 'user', content: prompt }]
     });
 
-    const content = completion.choices[0]?.message?.content;
+    const content = message.content[0]?.text || '';
+
+    // Extract JSON from response (Claude may include some text before/after)
+    const jsonMatch = content.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) {
+      throw new Error('No JSON found in response');
+    }
 
     try {
-      const analysis = JSON.parse(content);
+      const analysis = JSON.parse(jsonMatch[0]);
       return {
         generatedAt: new Date().toISOString(),
         analysis,
         inputMetrics: context
       };
     } catch (parseError) {
-      logger.warn('Failed to parse AI response as JSON:', parseError);
+      logger.warn('Failed to parse Claude response as JSON:', parseError);
       return {
         generatedAt: new Date().toISOString(),
         analysis: {
@@ -860,9 +867,9 @@ Be specific and actionable. Keep responses concise.`;
 /**
  * Generate AI-powered observations for GA4 website analytics
  */
-async function generateGA4Observations(ga4Data, openaiKey) {
+async function generateGA4Observations(ga4Data, anthropicKey) {
   try {
-    const openai = new OpenAI({ apiKey: openaiKey });
+    const anthropic = new Anthropic({ apiKey: anthropicKey });
 
     const overview = ga4Data.overview || {};
     const trafficSources = ga4Data.trafficSources?.data || [];
@@ -897,9 +904,22 @@ async function generateGA4Observations(ga4Data, openaiKey) {
       emailUsers
     };
 
-    const prompt = `Analyze this website analytics data for "Team Build Pro" (teambuildpro.com) and provide insights.
+    const prompt = `You are analyzing website analytics for Team Build Pro (teambuildpro.com).
 
-Current Data (Last 30 Days):
+ABOUT TEAM BUILD PRO:
+Team Build Pro is an AI-powered downline builder app ($6.99/month after 30-day free trial) for direct sales/MLM professionals. The website ecosystem includes:
+- Main site: teambuildpro.com (English)
+- Localized sites: es., pt., de.teambuildpro.com
+- 114 company-specific landing pages for SEO
+- Blog with twice-weekly auto-generated posts (4 languages)
+- Author website: stephenscott.us (credibility/thought leadership)
+
+ACQUISITION STRATEGY:
+- Primary: Cold email campaigns to MLM professionals (3 active campaigns: Main, Purchased Leads, BFH)
+- Secondary: SEO/organic via blog content and company pages
+- Goal: Website visit → App Store → Download → 30-day trial → Paid subscription
+
+CURRENT WEBSITE DATA (Last 30 Days):
 - Active Users: ${context.activeUsers}
 - New Users: ${context.newUsers}
 - Sessions: ${context.sessions}
@@ -909,14 +929,16 @@ Current Data (Last 30 Days):
 - Page Views: ${context.pageViews}
 
 Traffic Sources: ${context.topSources || 'No data'}
-
 Top Pages: ${context.topPages || 'No data'}
+Email Campaign Traffic: ${context.emailSessions} sessions, ${context.emailUsers} users
 
-Email Campaign Performance: ${context.emailSessions} sessions, ${context.emailUsers} users from SMTP email campaigns
+BENCHMARKS FOR THIS NICHE:
+- Email click rate target: 3%+
+- Engagement rate target: 50%+
+- Bounce rate should be under 60%
+- Good session duration for this type of landing page: 30-60 seconds
 
-Context: Team Build Pro is an AI-powered downline builder app for direct sales professionals. The website serves as the main landing page and conversion funnel for app downloads.
-
-Return a JSON object with these exact keys:
+Analyze this data and return a JSON object with these exact keys:
 {
   "keyObservations": ["observation 1", "observation 2", "observation 3"],
   "strengths": ["strength 1", "strength 2"],
@@ -924,40 +946,31 @@ Return a JSON object with these exact keys:
   "recommendedActions": ["action 1", "action 2", "action 3"]
 }
 
-Focus on:
-- Traffic quality and sources
-- User engagement and behavior
-- Conversion optimization opportunities
-- Email campaign effectiveness
-- SEO and organic growth potential
+Be specific to Team Build Pro's situation. Reference actual numbers from the data. Avoid generic advice.`;
 
-Be specific and actionable. Keep responses concise.`;
-
-    const completion = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
-      messages: [
-        {
-          role: 'system',
-          content: 'You are a website analytics and conversion optimization expert. Always respond with valid JSON only, no markdown or additional text.'
-        },
-        { role: 'user', content: prompt }
-      ],
-      response_format: { type: "json_object" },
+    const message = await anthropic.messages.create({
+      model: 'claude-sonnet-4-20250514',
       max_tokens: 600,
-      temperature: 0.7
+      messages: [{ role: 'user', content: prompt }]
     });
 
-    const content = completion.choices[0]?.message?.content;
+    const content = message.content[0]?.text || '';
+
+    // Extract JSON from response
+    const jsonMatch = content.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) {
+      throw new Error('No JSON found in response');
+    }
 
     try {
-      const analysis = JSON.parse(content);
+      const analysis = JSON.parse(jsonMatch[0]);
       return {
         generatedAt: new Date().toISOString(),
         analysis,
         inputMetrics: context
       };
     } catch (parseError) {
-      logger.warn('Failed to parse GA4 AI response as JSON:', parseError);
+      logger.warn('Failed to parse GA4 Claude response as JSON:', parseError);
       return {
         generatedAt: new Date().toISOString(),
         analysis: {
@@ -1774,25 +1787,46 @@ function buildConversionFunnel(emailStats, ga4Data, iosData, androidData) {
 }
 
 /**
- * Generate strategic AI insights combining all data sources
+ * Generate strategic AI insights combining all data sources using Claude
  */
-async function generateStrategicInsights(data, openaiKey) {
+async function generateStrategicInsights(data, anthropicKey) {
   try {
-    const openai = new OpenAI({ apiKey: openaiKey });
+    const anthropic = new Anthropic({ apiKey: anthropicKey });
 
     const exec = data.executiveSummary || {};
     const funnel = data.conversionFunnel || {};
     const campaigns = data.allCampaignStats?.campaigns || {};
     const roi = data.purchasedLeadsROI || {};
 
-    // Build comprehensive context
-    const context = `
-TEAM BUILD PRO - STRATEGIC ANALYTICS SUMMARY
+    const prompt = `You are analyzing comprehensive analytics data for Team Build Pro.
 
-=== EXECUTIVE SUMMARY ===
+ABOUT TEAM BUILD PRO:
+Team Build Pro is an AI-powered downline builder app ($6.99/month after 30-day free trial) for direct sales/MLM professionals. It solves the "cold start" problem - 75% of MLM recruits quit in their first year because they start with zero team members. TBP lets prospects pre-build their teams BEFORE joining a business opportunity.
+
+KEY FEATURES:
+- 16 pre-written recruiting messages (8 for prospects, 8 for partners)
+- 24/7 AI Coach for recruiting guidance
+- Company-agnostic (works with 100+ direct sales companies)
+- Available in 4 languages: EN, ES, PT, DE
+
+BUSINESS MODEL:
+- Primary acquisition: Cold email campaigns to MLM professionals
+- Three active campaigns: Main (cold email list), Purchased Leads (Apollo, SerpAPI), BFH (Business For Home scraped contacts)
+- Secondary: SEO via 114 company-specific landing pages and blog content
+- Conversion funnel: Email → Website → App Store → Download → Trial → Paid
+
+CAMPAIGN CONTEXT:
+- Main Campaign: Cold email list of MLM professionals (largest list)
+- Purchased Leads: Contacts from Apollo.io with personal emails
+- BFH Campaign: High-quality contacts from BusinessForHome.org (MLM industry influencers)
+- Contacts Campaign: Scraped from distributor websites (paused)
+
+=== CURRENT ANALYTICS DATA ===
+
+EXECUTIVE SUMMARY:
 Performance Score: ${exec.performanceScore}/100
 
-Email Campaigns (All 4):
+Email Campaigns (All):
 - Total Sent: ${exec.email?.totalSent || 0}
 - Total Clicked: ${exec.email?.totalClicked || 0}
 - Overall Click Rate: ${exec.email?.overallClickRate || '0%'}
@@ -1815,29 +1849,30 @@ Android (7-day):
 - Active Installs: ${exec.android?.activeInstalls || 0}
 - Recent Installs: ${exec.android?.recentInstalls || 0}
 
-=== CONVERSION FUNNEL ===
+CONVERSION FUNNEL:
 Email Sent → Website: ${funnel.rates?.emailToWebsite || 0}% (target: ${funnel.targets?.emailToWebsite || 15}%)
 Website → App Store: ${funnel.rates?.websiteToAppStore || 0}% (target: ${funnel.targets?.websiteToAppStore || 20}%)
 App Store → Download: ${funnel.rates?.appStoreToDownload || 0}% (target: ${funnel.targets?.appStoreToDownload || 40}%)
 
-=== CAMPAIGN BREAKDOWN ===
+CAMPAIGN BREAKDOWN:
 Main Campaign: ${campaigns.main?.clickRate || 'N/A'} click rate, ${campaigns.main?.sent || 0} sent
 Contacts Campaign: ${campaigns.contacts?.clickRate || 'N/A'} click rate, ${campaigns.contacts?.sent || 0} sent
 Purchased Leads: ${campaigns.purchased?.clickRate || 'N/A'} click rate, ${campaigns.purchased?.sent || 0} sent
 BFH Campaign: ${campaigns.bfh?.clickRate || 'N/A'} click rate, ${campaigns.bfh?.sent || 0} sent
 
-=== PURCHASED LEADS ROI (by source) ===
+PURCHASED LEADS ROI (by source):
 ${Object.entries(roi.bySource || {}).map(([source, data]) =>
   `${source}: ${data.liveClickRate || data.clickRate || 'N/A'} click rate, Cost/Click: ${data.costPerClick || 'N/A'}`
 ).join('\n')}
 Best Source: ${roi.bestSource || 'N/A'}
-`;
 
-    const prompt = `${context}
+BENCHMARKS:
+- Cold email click rate: 2-3% is good for B2B cold email
+- MLM audience is pitch-fatigued, so lower rates expected
+- BFH contacts are higher quality (industry influencers) - should see higher engagement
+- App Store conversion rate of 30-40% is typical for well-optimized listings
 
-Based on this comprehensive Team Build Pro analytics data, provide strategic insights. Team Build Pro is an AI-powered downline builder app for direct sales professionals. The goal is to maximize app downloads and subscriptions.
-
-Return a JSON object with these exact keys:
+Based on this data, provide strategic insights. Return a JSON object with these exact keys:
 {
   "whatsWorking": [
     {"insight": "specific thing working well", "metric": "supporting metric", "impact": "high/medium/low"}
@@ -1850,33 +1885,31 @@ Return a JSON object with these exact keys:
   ]
 }
 
-Provide 2-4 items in each category. Be specific with metrics. Focus on:
-1. A/B test winners that should be scaled
-2. Underperforming campaigns/variants to fix
-3. Conversion funnel bottlenecks
+Provide 2-4 items in each category. Reference actual numbers from the data. Focus on:
+1. A/B test winners that should be scaled (identify specific variants)
+2. Underperforming campaigns to investigate
+3. Conversion funnel bottlenecks (compare to targets)
 4. Lead source ROI optimization
-5. Cross-channel insights
+5. Cross-channel insights (how email, website, app store connect)
 
-Keep insights actionable and data-driven.`;
+Be specific and avoid generic marketing advice. If data shows 0 or N/A, acknowledge data limitations rather than making assumptions.`;
 
-    const completion = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
-      messages: [
-        {
-          role: 'system',
-          content: 'You are a strategic marketing analytics expert specializing in app growth and conversion optimization. Always respond with valid JSON only.'
-        },
-        { role: 'user', content: prompt }
-      ],
-      response_format: { type: "json_object" },
+    const message = await anthropic.messages.create({
+      model: 'claude-sonnet-4-20250514',
       max_tokens: 1000,
-      temperature: 0.7
+      messages: [{ role: 'user', content: prompt }]
     });
 
-    const content = completion.choices[0]?.message?.content;
+    const content = message.content[0]?.text || '';
+
+    // Extract JSON from response
+    const jsonMatch = content.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) {
+      throw new Error('No JSON found in response');
+    }
 
     try {
-      const analysis = JSON.parse(content);
+      const analysis = JSON.parse(jsonMatch[0]);
       return {
         generatedAt: new Date().toISOString(),
         insights: analysis,
@@ -1923,7 +1956,7 @@ const getTBPAnalytics = onRequest({
   cors: true,
   timeoutSeconds: 180,
   memory: '1GiB',
-  secrets: [ascKeyId, ascIssuerId, ascPrivateKey, openaiApiKey, ga4ServiceAccount]
+  secrets: [ascKeyId, ascIssuerId, ascPrivateKey, anthropicApiKey, ga4ServiceAccount]
 }, async (req, res) => {
   try {
     // Password authentication
@@ -1957,7 +1990,7 @@ const getTBPAnalytics = onRequest({
         ascKeyId.value(),
         ascIssuerId.value(),
         ascPrivateKey.value(),
-        openaiApiKey.value(),
+        anthropicApiKey.value(),
         benchmarkDate  // Pass benchmark date
       ),
       fetchGooglePlayMetrics(benchmarkDate, ga4Credentials),  // Pass benchmark date and credentials
@@ -1978,7 +2011,7 @@ const getTBPAnalytics = onRequest({
     // Generate AI observations for GA4 data (use 30-day data for more comprehensive analysis)
     let ga4Observations = null;
     try {
-      ga4Observations = await generateGA4Observations(ga4Data30, openaiApiKey.value());
+      ga4Observations = await generateGA4Observations(ga4Data30, anthropicApiKey.value());
       logger.info('GA4 AI observations generated successfully');
     } catch (obsError) {
       logger.warn('Failed to generate GA4 observations:', obsError.message);
@@ -1992,7 +2025,7 @@ const getTBPAnalytics = onRequest({
         conversionFunnel,
         allCampaignStats,
         purchasedLeadsROI: purchasedROI
-      }, openaiApiKey.value());
+      }, anthropicApiKey.value());
       logger.info('Strategic AI insights generated successfully');
     } catch (insightsError) {
       logger.warn('Failed to generate strategic insights:', insightsError.message);
