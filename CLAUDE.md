@@ -1,6 +1,6 @@
 # Team Build Pro - Comprehensive Knowledge Base
 
-**Last Updated**: 2026-02-14
+**Last Updated**: 2026-02-15
 **Purpose**: Persistent knowledge base for AI assistants across sessions
 
 ---
@@ -603,7 +603,7 @@ The email campaign system consists of two parallel campaigns targeting different
 
 ### Contacts Campaign (PAUSED - Complete)
 - **Function**: `sendHourlyContactsCampaign` in `functions/email-campaign-contacts.js`
-- **Status**: PAUSED - All 981 contacts sent (0 remaining as of Feb 14, 2026)
+- **Status**: PAUSED - Collection cleaned (826 contacts after Feb 15 corporate email cleanup)
 - **Tags**: `contacts_campaign`, `tracked`
 - **Schedule**: 9am, 12pm, 3pm, 6pm PT (4 runs/day, staggered 1hr after Main)
 - **Data Source**: Firestore `direct_sales_contacts` collection
@@ -634,13 +634,13 @@ The email campaign system consists of two parallel campaigns targeting different
 ### Batch Size Configuration
 - **Firestore Config**: `config/emailCampaign` document stores batch sizes per campaign
 - **Current Settings** (optimized Feb 14, 2026 for ~30-day completion):
-  | Campaign | Batch Size | Runs/Day | Emails/Day | Remaining |
-  |----------|------------|----------|------------|-----------|
-  | Main (`batchSize`) | 50 | 4 | 200 | 5,944 |
-  | Purchased (`batchSizePurchased`) | 15 | 4 | 60 | 1,290 |
-  | BFH (`batchSizeBfh`) | 10 | 4 | 40 | 900 |
-  | Contacts (`batchSizeContacts`) | 0 | - | - | 0 (complete) |
-  | **Total** | - | 12 | **300** | 8,134 |
+  | Campaign | Batch Size | Runs/Day | Emails/Day | Collection Size |
+  |----------|------------|----------|------------|-----------------|
+  | Main (`batchSize`) | 50 | 4 | 200 | ~17,900 |
+  | Purchased (`batchSizePurchased`) | 15 | 4 | 60 | 1,402 |
+  | BFH (`batchSizeBfh`) | 10 | 4 | 40 | 886 |
+  | Contacts (`batchSizeContacts`) | 0 | - | - | 826 (paused) |
+  | **Total** | - | 12 | **300** | - |
 
 ### Automated Domain Warming System
 - **Workflow**: `.github/workflows/domain-warming-update.yml`
@@ -767,7 +767,7 @@ Automated 4-stage pipeline that discovers direct sales distributor URLs, scrapes
 
 ### BFH (Business For Home) Data Pipeline
 
-**Current Collection**: 952 contacts (900 remaining as of Feb 14, 2026)
+**Current Collection**: 886 contacts (after Feb 15 corporate email cleanup)
 
 ```
 ┌──────────────────────────────────────────────────────────────────────┐
@@ -985,19 +985,20 @@ The `purchased_leads` collection consolidates contacts from multiple sources for
 
 | Script | Purpose | Usage |
 |--------|---------|-------|
-| `analyze-apollo-personal-emails.js` | Extract contacts with personal emails from Apollo CSV | `--analyze` (audit CSV), `--export` (create JSON files) |
+| `analyze-apollo-personal-emails.js` | Extract non-corporate email contacts from Apollo CSV (blacklist approach using base_urls.txt) | `--analyze` (audit CSV), `--export` (create JSON files) |
+| `audit-corporate-emails.js` | Audit all contact collections for blacklisted corporate domain emails | `--remove` (delete corporate contacts) |
 | `apollo-email-search.js` | SerpAPI Google search for Apollo contacts | `--search`, `--max=N`, `--stats`, `--resume` |
 | `apollo-import-personal-emails.js` | Import Apollo personal emails to Firestore | `--dry-run`, `--import`, `--stats` |
 | `migrate-apollo-to-purchased-leads.js` | Migrate apollo_contacts to purchased_leads | `--dry-run`, `--migrate`, `--stats` |
 | `cleanup-purchased-leads.js` | Remove corporate MLM domain emails | `--audit`, `--delete`, `--dry-run` |
 | `audit-contact-duplicates.js` | Cross-collection duplicate detection | (runs audit across all contact collections) |
 
-### Corporate MLM Domains (Excluded)
+### Corporate MLM Domains Blacklist
 
-The following corporate domains are excluded from purchased_leads campaigns (high bounce risk):
+Corporate email domains are excluded from all contact collections using a **blacklist approach**. The blacklist is sourced from `scripts/base_urls.txt` (841 MLM company domains) and includes:
 
 ```javascript
-// Major MLM/Direct Sales companies
+// Major MLM/Direct Sales companies (841 domains in base_urls.txt)
 'youngliving.com', 'itworks.com', 'herbalife.com', 'avon.com', 'lifevantage.com',
 'stelladot.com', 'shaklee.com', 'senegence.com', 'partylite.com', 'pamperedchef.com',
 'myitworks.com', '4life.com', 'nuskin.com', 'origamiowl.com', 'beachbody.com',
@@ -1152,6 +1153,10 @@ The following corporate domains are excluded from purchased_leads campaigns (hig
   - Excludes: ~70 corporate MLM domains (youngliving.com, herbalife.com, etc.)
 - `audit-contact-duplicates.js` - Cross-collection duplicate detection
   - Audits: bfh_contacts, direct_sales_contacts, emailCampaigns/master/contacts, purchased_leads, apollo_contacts
+- `audit-corporate-emails.js` - Audit and clean corporate domain emails from all collections
+  - Loads blacklist from `scripts/base_urls.txt` (841 MLM company domains)
+  - Audits: emailCampaigns/master/contacts, bfh_contacts, direct_sales_contacts, purchased_leads
+  - `--remove` - Delete corporate email contacts
 
 **BFH Data Pipeline:**
 - `scrape-bfh-companies.js` - Scrape BusinessForHome.org sitemap for MLM company URLs
@@ -1310,17 +1315,27 @@ The following corporate domains are excluded from purchased_leads campaigns (hig
   - `apollo-email-search.js` with progress saving and resume capability
   - Rate limited at 4s delay (900 searches/hour, Developer plan)
 
-### Current System Status (Feb 14, 2026)
+**Corporate Email Cleanup (Feb 15, 2026)**
+- ✅ **Blacklist Approach Implemented**: `analyze-apollo-personal-emails.js` switched from whitelist (only accept gmail, yahoo, etc.) to blacklist (exclude corporate MLM domains from `base_urls.txt`)
+- ✅ **4 Domains Added to Blacklist**: avon.com, beachbody.com, rodanandfields.com, tupperware.com (now 841 total)
+- ✅ **Corporate Email Audit Script**: `audit-corporate-emails.js` audits all 4 contact collections for blacklisted domains
+- ✅ **246 Corporate Emails Removed**:
+  - bfh_contacts: 952 → 886 (66 removed)
+  - direct_sales_contacts: 981 → 826 (155 removed, mostly myecon.net)
+  - purchased_leads: 1,427 → 1,402 (25 removed)
+  - emailCampaigns/master/contacts: 0 corporate emails (already clean)
 
-**PROJECT STATUS: ACTIVE CAMPAIGNS**
-Three email campaigns running with optimized batch sizes for ~30-day completion. Total 300 emails/day across 12 scheduled runs.
+### Current System Status (Feb 15, 2026)
+
+**PROJECT STATUS: ACTIVE CAMPAIGNS (Feb 15, 2026)**
+Three email campaigns running with optimized batch sizes. Corporate email cleanup completed across all collections.
 
 | Component | Status | Notes |
 |-----------|--------|-------|
-| Main Campaign | Active | 8am, 11am, 2pm, 5pm PT · 50/batch · 5,944 remaining |
-| Purchased Campaign | Active | 9:30am, 12:30pm, 3:30pm, 6:30pm PT · 15/batch · 1,290 remaining |
-| BFH Campaign | Active | 10am, 1pm, 4pm, 7pm PT · 10/batch · 900 remaining |
-| Contacts Campaign | Complete | 981 sent, 0 remaining (paused) |
+| Main Campaign | Active | 8am, 11am, 2pm, 5pm PT · 50/batch · ~17,900 contacts |
+| Purchased Campaign | Active | 9:30am, 12:30pm, 3:30pm, 6:30pm PT · 15/batch · 1,402 contacts |
+| BFH Campaign | Active | 10am, 1pm, 4pm, 7pm PT · 10/batch · 886 contacts (cleaned) |
+| Contacts Campaign | Complete | 826 contacts (cleaned Feb 15) |
 | Email Sending | Mailgun API | Via Mailgun, news.teambuildpro.com |
 | Email A/B Testing | Active | Main: V9/V10 × 2 subjects; Purchased: V11a/V12a; BFH: V11a/V12a |
 | Yahoo Campaign | Removed | File and function deleted (Jan 31) |
@@ -1333,7 +1348,7 @@ Three email campaigns running with optimized batch sizes for ~30-day completion.
 | URL Discovery | Active | Every 2h, 120 companies/batch (processing 1,082 companies) |
 | Contacts Seeder | Active | Every 4h, 3 sources (Common Crawl + Wayback + crt.sh) |
 | Contacts Scraper | Active | Hourly, 400 URLs/batch, 12 blocked platforms |
-| BFH Collection | 952 contacts | Includes 583 from MLM500 migration |
+| BFH Collection | 886 contacts | After Feb 15 corporate email cleanup |
 | Spam Monitor | Active | Daily 6am PT, Gmail API check, auto-disable on spam |
 | PreIntake.ai | Autonomous | See `preintake/CLAUDE.md` for details |
 

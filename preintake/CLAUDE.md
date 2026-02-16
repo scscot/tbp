@@ -1,7 +1,7 @@
 # PreIntake.ai: Comprehensive Project Documentation
 
 **Last Updated**: 2026-02-15
-**Version**: 6.0 (GSC indexing fix - added 301 redirects for clean URLs)
+**Version**: 6.1 (Demo notice text optimization for completion rate)
 
 ---
 
@@ -1450,6 +1450,29 @@ Email click → homepage loads with ?demo= → REDIRECT to /demo/?demo={id}
 **Current Indexing Status:**
 - Indexed: 2 pages (of 6 in sitemap)
 - Not indexed: 3 pages (should resolve after Google re-crawls)
+
+### Phase 62: Demo Notice Text Optimization (2026-02-15)
+- [x] **Problem Analysis** - 23 demo views with 0 intake completions (0% completion rate)
+  - Users open demo but abandon before completing the intake conversation
+  - Old demo notice focused on "Create Account" instead of demo value
+  - No time estimate or clear outcome communicated
+- [x] **Demo Notice Text Rewrite** - Changed from account-focused to value-focused messaging
+  - **Old text**: "Demo Mode: This intake is customized for your firm. Create Account to get an embed code..."
+  - **New text**: "Try It Now (~2 min): Complete this intake demo to receive a full case screening report at **{email}**. See exactly what your team receives for every inquiry."
+- [x] **Key Improvements**:
+  - Added time estimate ("~2 min") to set expectations
+  - Shows delivery email dynamically (personalized)
+  - Action-oriented CTA ("Try It Now" vs "Demo Mode")
+  - Clear value proposition ("full case screening report")
+  - Removed account creation push (save for post-completion)
+- [x] **Fast Demo Patch** - Used gsutil parallel operations
+  - Patched 2,710 of 2,827 demos in ~7 minutes
+  - Template updated for future demos
+
+**Files Modified:**
+| File | Changes |
+|------|---------|
+| `/functions/templates/demo-intake.html.template` | Demo notice text rewrite |
 
 ---
 

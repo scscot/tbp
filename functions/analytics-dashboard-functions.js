@@ -20,6 +20,7 @@ const ascKeyId = defineSecret('ASC_KEY_ID');
 const ascIssuerId = defineSecret('ASC_ISSUER_ID');
 const ascPrivateKey = defineSecret('ASC_PRIVATE_KEY');
 const openaiApiKey = defineSecret('OPENAI_API_KEY');
+const ga4ServiceAccount = defineSecret('GA4_SERVICE_ACCOUNT');
 const OpenAI = require('openai');
 
 // GA4 Configuration
@@ -33,24 +34,32 @@ const PLAY_STORE_GCS_BUCKET = 'pubsite_prod_8651719546203306974';
 // GA4 Analytics Functions
 // ==============================
 
-// Path to service account credentials
-const SERVICE_ACCOUNT_KEY_PATH = './ga4-service-account.json';
-
 /**
- * Initialize GA4 client with service account credentials
+ * Initialize GA4 client with service account credentials from secret
  */
-function getGA4Client() {
-  // Use explicit service account credentials for GA4 access
+function getGA4Client(serviceAccountJson) {
+  if (!serviceAccountJson) {
+    throw new Error('GA4 service account credentials not provided');
+  }
+
+  const credentials = JSON.parse(serviceAccountJson);
+
   return new BetaAnalyticsDataClient({
-    keyFilename: SERVICE_ACCOUNT_KEY_PATH
+    credentials: {
+      client_email: credentials.client_email,
+      private_key: credentials.private_key
+    },
+    projectId: credentials.project_id
   });
 }
 
 /**
  * Fetch GA4 website analytics data
+ * @param {string} dateRange - Date range for the report
+ * @param {string} serviceAccountJson - GA4 service account credentials JSON
  */
-async function fetchGA4Analytics(dateRange = '30daysAgo') {
-  const client = getGA4Client();
+async function fetchGA4Analytics(dateRange = '30daysAgo', serviceAccountJson = null) {
+  const client = getGA4Client(serviceAccountJson);
   const propertyId = GA4_PROPERTY_ID;
 
   let startDate, endDate;
@@ -128,7 +137,7 @@ async function fetchGA4Analytics(dateRange = '30daysAgo') {
         dimensionFilter: {
           filter: {
             fieldName: 'sessionMedium',
-            stringFilter: { value: 'smtp', matchType: 'EXACT' }
+            stringFilter: { value: 'email', matchType: 'EXACT' }
           }
         },
         orderBys: [{ metric: { metricName: 'sessions' }, desc: true }],
@@ -219,10 +228,15 @@ async function fetchGA4Analytics(dateRange = '30daysAgo') {
     };
 
   } catch (error) {
-    logger.error('Error fetching GA4 data:', error);
+    logger.error('Error fetching GA4 data:', {
+      message: error.message,
+      code: error.code,
+      dateRange: { startDate, endDate }
+    });
     return {
       error: true,
       message: error.message,
+      code: error.code || 'UNKNOWN',
       dateRange: { startDate, endDate }
     };
   }
@@ -971,11 +985,23 @@ Be specific and actionable. Keep responses concise.`;
 // ==============================
 
 /**
- * Get Google Cloud Storage client with service account credentials
+ * Get Google Cloud Storage client
+ * Uses the GA4 service account credentials which have Play Store GCS access
+ * @param {string} serviceAccountJson - Service account credentials JSON
  */
-function getStorageClient() {
+function getStorageClient(serviceAccountJson) {
+  if (!serviceAccountJson) {
+    // Fall back to Application Default Credentials
+    return new Storage();
+  }
+
+  const credentials = JSON.parse(serviceAccountJson);
   return new Storage({
-    keyFilename: SERVICE_ACCOUNT_KEY_PATH
+    credentials: {
+      client_email: credentials.client_email,
+      private_key: credentials.private_key
+    },
+    projectId: credentials.project_id
   });
 }
 
@@ -1038,10 +1064,11 @@ function parseCSV(buffer) {
 /**
  * Fetch Google Play Store analytics data from GCS bucket
  * @param {string|null} benchmarkDate - Optional benchmark date (YYYY-MM-DD format)
+ * @param {string|null} serviceAccountJson - Service account credentials for GCS access
  */
-async function fetchGooglePlayMetrics(benchmarkDate = null) {
+async function fetchGooglePlayMetrics(benchmarkDate = null, serviceAccountJson = null) {
   try {
-    const storage = getStorageClient();
+    const storage = getStorageClient(serviceAccountJson);
     const bucket = storage.bucket(PLAY_STORE_GCS_BUCKET);
 
     // List files in the stats/installs directory
@@ -1896,7 +1923,7 @@ const getTBPAnalytics = onRequest({
   cors: true,
   timeoutSeconds: 180,
   memory: '1GiB',
-  secrets: [ascKeyId, ascIssuerId, ascPrivateKey, openaiApiKey]
+  secrets: [ascKeyId, ascIssuerId, ascPrivateKey, openaiApiKey, ga4ServiceAccount]
 }, async (req, res) => {
   try {
     // Password authentication
@@ -1917,12 +1944,15 @@ const getTBPAnalytics = onRequest({
     const benchmarkTimestamp = benchmarkToTimestamp(benchmarkDate);
     logger.info(`Benchmark date: ${benchmarkDate || 'None (showing all data)'}`);
 
-    // Fetch all data sources in parallel (with benchmark filtering where applicable)
-    const [ga4Data30, ga4Data7, ga4DataYesterday, ga4DataToday, iosData, androidData, allCampaignStats, purchasedROI] = await Promise.all([
-      fetchGA4Analytics('30daysAgo'),
-      fetchGA4Analytics('7daysAgo'),
-      fetchGA4Analytics('yesterday'),
-      fetchGA4Analytics('today'),
+    // Get GA4 service account credentials
+    const ga4Credentials = ga4ServiceAccount.value();
+    if (!ga4Credentials) {
+      logger.warn('GA4 service account credentials not available');
+    }
+
+    // Fetch GA4 data sequentially to avoid rate limiting (8 concurrent requests per call)
+    // while fetching other data sources in parallel
+    const [iosData, androidData, allCampaignStats, purchasedROI] = await Promise.all([
       fetchAppStoreMetrics(
         ascKeyId.value(),
         ascIssuerId.value(),
@@ -1930,10 +1960,16 @@ const getTBPAnalytics = onRequest({
         openaiApiKey.value(),
         benchmarkDate  // Pass benchmark date
       ),
-      fetchGooglePlayMetrics(benchmarkDate),  // Pass benchmark date
+      fetchGooglePlayMetrics(benchmarkDate, ga4Credentials),  // Pass benchmark date and credentials
       fetchAllEmailCampaignStats(benchmarkTimestamp),  // Pass benchmark timestamp
       fetchPurchasedLeadsROI()
     ]);
+
+    // Fetch GA4 data sequentially to stay within concurrent request quota
+    const ga4Data30 = await fetchGA4Analytics('30daysAgo', ga4Credentials);
+    const ga4Data7 = await fetchGA4Analytics('7daysAgo', ga4Credentials);
+    const ga4DataYesterday = await fetchGA4Analytics('yesterday', ga4Credentials);
+    const ga4DataToday = await fetchGA4Analytics('today', ga4Credentials);
 
     // Build executive summary and conversion funnel using 7-day data
     const executiveSummary = buildExecutiveSummary(ga4Data7, iosData, androidData, allCampaignStats);

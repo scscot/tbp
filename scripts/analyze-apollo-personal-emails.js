@@ -53,20 +53,36 @@ function normalizeEmail(email) {
   return cleaned;
 }
 
-// Personal email domains (free webmail providers)
-const PERSONAL_DOMAINS = [
-  'gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', 'aol.com',
-  'icloud.com', 'me.com', 'live.com', 'msn.com', 'protonmail.com',
-  'ymail.com', 'rocketmail.com', 'mail.com', 'zoho.com', 'gmx.com',
-  'fastmail.com', 'tutanota.com', 'hey.com', 'pm.me', 'proton.me',
-  'comcast.net', 'verizon.net', 'att.net', 'sbcglobal.net', 'bellsouth.net',
-  'cox.net', 'charter.net', 'earthlink.net', 'juno.com', 'netzero.com'
-];
+// Load corporate domains from base_urls.txt (blacklist approach)
+function loadCorporateDomains() {
+  const baseUrlsPath = path.join(__dirname, 'base_urls.txt');
+  const content = fs.readFileSync(baseUrlsPath, 'utf8');
+  const domains = new Set();
 
-function isPersonalEmail(email) {
+  content.split('\n').forEach(line => {
+    line = line.trim();
+    if (!line) return;
+    // Extract domain from URL like "https://youngliving.com"
+    try {
+      const url = new URL(line);
+      domains.add(url.hostname.replace(/^www\./, ''));
+    } catch {
+      // Skip invalid URLs
+    }
+  });
+
+  return domains;
+}
+
+const CORPORATE_DOMAINS = loadCorporateDomains();
+console.log(`Loaded ${CORPORATE_DOMAINS.size} corporate domains from base_urls.txt`);
+
+function isNonCorporateEmail(email) {
   if (!email) return false;
   const domain = email.split('@')[1];
-  return PERSONAL_DOMAINS.includes(domain);
+  if (!domain) return false;
+  // Accept email if domain is NOT in corporate list
+  return !CORPORATE_DOMAINS.has(domain.toLowerCase());
 }
 
 function isCorporateEmail(email, company) {
@@ -113,8 +129,9 @@ async function analyze() {
       secondaryDomains[domain] = (secondaryDomains[domain] || 0) + 1;
     }
 
-    // Categorize
-    if (isPersonalEmail(secondary)) {
+    // Categorize using blacklist approach
+    // Priority: non-corporate secondary > non-corporate primary > corporate only > no email
+    if (isNonCorporateEmail(secondary)) {
       withPersonalSecondary.push({
         firstName: record['First Name'],
         lastName: record['Last Name'],
@@ -123,7 +140,7 @@ async function analyze() {
         personalEmail: secondary,
         title: record['Title']
       });
-    } else if (isPersonalEmail(primary)) {
+    } else if (isNonCorporateEmail(primary)) {
       withPersonalPrimary.push({
         firstName: record['First Name'],
         lastName: record['Last Name'],
@@ -174,7 +191,7 @@ async function analyze() {
     .slice(0, 15);
 
   topSecondary.forEach(([domain, count]) => {
-    const type = PERSONAL_DOMAINS.includes(domain) ? '✓ PERSONAL' : '✗ CORPORATE';
+    const type = !CORPORATE_DOMAINS.has(domain) ? '✓ NON-CORPORATE' : '✗ CORPORATE';
     console.log(`  ${count.toString().padStart(4)} - ${domain} ${type}`);
   });
 
@@ -188,7 +205,7 @@ async function analyze() {
     .slice(0, 15);
 
   topPrimary.forEach(([domain, count]) => {
-    const type = PERSONAL_DOMAINS.includes(domain) ? '✓ PERSONAL' : '✗ CORPORATE';
+    const type = !CORPORATE_DOMAINS.has(domain) ? '✓ NON-CORPORATE' : '✗ CORPORATE';
     console.log(`  ${count.toString().padStart(4)} - ${domain} ${type}`);
   });
 

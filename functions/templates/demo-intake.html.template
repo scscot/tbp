@@ -1942,12 +1942,8 @@
                         const notice = document.getElementById('demo-notice');
                         const text = document.getElementById('demo-notice-text');
                         if (notice && text) {
-                            const hasWebsite = firmStatus.hasWebsite !== false;
-                            if (hasWebsite) {
-                                text.innerHTML = '<strong>Demo Mode:</strong> This intake is customized for your firm. Create Account to get an embed code\u2014your clients complete intakes directly on your website.';
-                            } else {
-                                text.innerHTML = '<strong>Demo Mode:</strong> This intake is customized for your firm. Create Account to get a shareable link for emails, social media, or anywhere you connect with clients.';
-                            }
+                            const email = firmStatus.deliveryEmail || 'your email';
+                            text.innerHTML = '<strong>Try It Now (~2 min):</strong> Complete this intake demo to receive a full case screening report at <strong>' + email + '</strong>. See exactly what your team receives for every inquiry.';
                             notice.style.display = 'block';
                         }
                     }
