@@ -143,25 +143,42 @@
 
         /* Demo Notice Banner (shown via postMessage from parent) */
         .demo-notice {
-            background: rgba(201, 169, 98, 0.15);
-            border: 1px solid rgba(201, 169, 98, 0.3);
-            border-radius: 8px;
-            padding: 1rem 1.5rem;
+            background: rgba(201, 169, 98, 0.12);
+            border: 1px solid rgba(201, 169, 98, 0.35);
+            border-radius: 12px;
+            padding: 1.25rem 1.5rem;
             margin-bottom: 1.5rem;
             max-width: 600px;
             margin-left: auto;
             margin-right: auto;
         }
 
-        .demo-notice p {
+        .demo-notice-headline {
             color: #ffffff;
-            font-size: 0.9rem;
-            line-height: 1.5;
-            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
         }
 
-        .demo-notice strong {
+        .demo-notice-headline strong {
             color: var(--accent-gold);
+        }
+
+        .demo-notice-body {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 0.75rem;
+        }
+
+        .demo-notice-body strong {
+            color: var(--accent-gold);
+        }
+
+        .demo-notice-cta {
+            color: var(--accent-gold);
+            font-size: 0.9rem;
+            font-weight: 500;
         }
 
         .landing-headline {
@@ -1518,7 +1535,9 @@
         <div class="landing-content">
             <!-- Demo Notice Banner (shown via postMessage from parent) -->
             <div id="demo-notice" class="demo-notice" style="display: none;">
-                <p id="demo-notice-text"></p>
+                <div id="demo-notice-headline" class="demo-notice-headline"></div>
+                <div id="demo-notice-body" class="demo-notice-body"></div>
+                <div id="demo-notice-cta" class="demo-notice-cta"></div>
             </div>
 
             <div class="logo-container">
@@ -1940,10 +1959,23 @@
 
                     if (showDemoUI) {
                         const notice = document.getElementById('demo-notice');
-                        const text = document.getElementById('demo-notice-text');
-                        if (notice && text) {
+                        const headline = document.getElementById('demo-notice-headline');
+                        const body = document.getElementById('demo-notice-body');
+                        const cta = document.getElementById('demo-notice-cta');
+
+                        if (notice && headline && body && cta) {
+                            const firmName = firmStatus.firmName || 'Your Firm';
                             const email = firmStatus.deliveryEmail || 'your email';
-                            text.innerHTML = '<strong>Try It Now (~2 min):</strong> Complete this intake demo to receive a full case screening report at <strong>' + email + '</strong>. See exactly what your team receives for every inquiry.';
+                            const hasWebsite = firmStatus.hasWebsite !== false;
+
+                            headline.innerHTML = '✨ Your Customized Demo for <strong>' + firmName + '</strong>';
+                            body.innerHTML = 'Complete this intake demo in <strong>~2-3 minutes</strong> to receive a full case review report at <strong>' + email + '</strong>. See exactly what your team receives for every inquiry.';
+
+                            // Only show CTA for website users
+                            if (hasWebsite) {
+                                cta.textContent = '→ Embed this intake on your website in under 10 minutes';
+                            }
+
                             notice.style.display = 'block';
                         }
                     }
