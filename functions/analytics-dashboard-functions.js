@@ -1821,6 +1821,19 @@ CAMPAIGN CONTEXT:
 - BFH Campaign: High-quality contacts from BusinessForHome.org (MLM industry influencers)
 - Contacts Campaign: Scraped from distributor websites (paused)
 
+=== RECENTLY IMPLEMENTED (DO NOT RECOMMEND THESE - ALREADY DONE) ===
+- Email deliverability: DONE - SPF/DKIM/DMARC configured, 10/10 mail-tester score
+- Domain warming: DONE - Automated via GitHub Actions, 8 runs/day
+- A/B testing: DONE - 4-way test deployed (V9a/V9b/V10a/V10b for Main, V7/V8 for Contacts)
+- Email templates: DONE - Simplified HTML with text link CTA for inbox placement
+- Multi-language websites: DONE - ES, PT, DE sites live with full content parity
+- App Store localizations: DONE - App names localized in all 4 languages
+- SEO optimization: DONE - 114 company landing pages, hreflang tags, sitemaps
+- Blog automation: DONE - Twice-weekly auto-generation in 4 languages
+- Analytics dashboard: DONE - Top Countries, Date Range selector, Firestore migration
+- Contacts discovery: DONE - BFH scraper, multi-source URL seeder (CC + Wayback + crt.sh)
+- Click tracking: DONE - Firestore-based trackEmailClick endpoint
+
 === CURRENT ANALYTICS DATA ===
 
 EXECUTIVE SUMMARY:
@@ -1892,6 +1905,7 @@ Provide 2-4 items in each category. Reference actual numbers from the data. Focu
 4. Lead source ROI optimization
 5. Cross-channel insights (how email, website, app store connect)
 
+CRITICAL: Do NOT recommend anything listed in "RECENTLY IMPLEMENTED" above - those are already done.
 Be specific and avoid generic marketing advice. If data shows 0 or N/A, acknowledge data limitations rather than making assumptions.`;
 
     const message = await anthropic.messages.create({
