@@ -1489,6 +1489,10 @@ Email click → homepage loads with ?demo= → REDIRECT to /demo/?demo={id}
     - **Needs Attention** (amber) - issues requiring focus
     - **Recommended Actions** (blue) - specific next steps
   - Each insight shows metric context and impact/severity/priority badges
+- [x] **Context-Aware Recommendations** - Added "RECENTLY IMPLEMENTED" section to AI prompt
+  - Lists completed implementations (auto-load demo, demo notice text, firmName cleanup, SEO, GSC, etc.)
+  - Prevents AI from recommending actions already completed
+  - Ensures actionable, relevant recommendations only
 
 **Insights Generated:**
 - Source performance comparison (which bar associations convert best)
