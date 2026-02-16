@@ -676,6 +676,15 @@ CAMPAIGN ARCHITECTURE:
 - Email templates: v7-bar-profile-demo (bar contacts), v6-personalized-demo (website contacts)
 - Auto-loading demos: Demos load immediately when email link clicked (no "Start Demo" friction)
 
+=== RECENTLY IMPLEMENTED (DO NOT RECOMMEND THESE - ALREADY DONE) ===
+- Demo UX friction: FIXED - Removed "Start Demo" button, demo now auto-loads immediately on page visit
+- Demo notice messaging: FIXED - Changed from account-focused to value-focused ("Try It Now ~2 min, receive full case screening report")
+- firmName data quality: FIXED - Cleaned ~6,545 records with bad firm names (placeholders, addresses, PO boxes)
+- SEO meta tags: FIXED - Shortened titles/descriptions, added Twitter Cards, updated sitemap
+- GSC indexing: FIXED - Added 10 redirect rules for clean URLs (/faq → /faq.html, etc.)
+- Header/banner UX: FIXED - Conditional header for paid subscribers, contextual demo notice banner
+- Internal linking: FIXED - Added cross-links between About, FAQ, Contact pages
+
 === CURRENT ANALYTICS DATA ===
 
 FUNNEL OVERVIEW (All Time Since Feb 9, 2026):
@@ -740,6 +749,7 @@ Provide 2-4 items in each category. Be specific and reference actual numbers. Fo
 4. Email list health (unsubscribe/failure rates)
 5. Actionable next steps to improve conversions
 
+CRITICAL: Do NOT recommend anything listed in "RECENTLY IMPLEMENTED" above - those are already done.
 Be direct and avoid generic marketing advice. If data shows 0 or low numbers, acknowledge early-stage status.`;
 
         const message = await anthropic.messages.create({
