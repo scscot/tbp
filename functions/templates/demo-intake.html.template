@@ -168,17 +168,10 @@
             color: rgba(255, 255, 255, 0.9);
             font-size: 0.95rem;
             line-height: 1.6;
-            margin-bottom: 0.75rem;
         }
 
         .demo-notice-body strong {
             color: var(--accent-gold);
-        }
-
-        .demo-notice-cta {
-            color: var(--accent-gold);
-            font-size: 0.9rem;
-            font-weight: 500;
         }
 
         .landing-headline {
@@ -1537,7 +1530,6 @@
             <div id="demo-notice" class="demo-notice" style="display: none;">
                 <div id="demo-notice-headline" class="demo-notice-headline"></div>
                 <div id="demo-notice-body" class="demo-notice-body"></div>
-                <div id="demo-notice-cta" class="demo-notice-cta"></div>
             </div>
 
             <div class="logo-container">
@@ -1961,20 +1953,13 @@
                         const notice = document.getElementById('demo-notice');
                         const headline = document.getElementById('demo-notice-headline');
                         const body = document.getElementById('demo-notice-body');
-                        const cta = document.getElementById('demo-notice-cta');
 
-                        if (notice && headline && body && cta) {
+                        if (notice && headline && body) {
                             const firmName = firmStatus.firmName || 'Your Firm';
                             const email = firmStatus.deliveryEmail || 'your email';
-                            const hasWebsite = firmStatus.hasWebsite !== false;
 
                             headline.innerHTML = '✨ Your Customized Demo for <strong>' + firmName + '</strong>';
                             body.innerHTML = 'Complete this intake demo in <strong>~2-3 minutes</strong> to receive a full case review report at <strong>' + email + '</strong>. See exactly what your team receives for every inquiry.';
-
-                            // Only show CTA for website users
-                            if (hasWebsite) {
-                                cta.textContent = '→ Embed this intake on your website in under 10 minutes';
-                            }
 
                             notice.style.display = 'block';
                         }
