@@ -1205,7 +1205,7 @@
                         <thead>
                             <tr>
                                 <th>Firm Name</th>
-                                <th>Source</th>
+                                <th>Website</th>
                                 <th>Date</th>
                                 <th>Demo</th>
                                 <th>Chat</th>
@@ -1218,7 +1218,11 @@
                             ${visitedLeads.map(lead => `
                                 <tr>
                                     <td style="color: #e2e8f0; font-weight: 500;">${lead.firmName}</td>
-                                    <td><span class="source-badge ${lead.source}">${formatSource(lead.source)}</span></td>
+                                    <td>
+                                        <span class="view-count ${lead.hasWebsite ? 'viewed' : 'not-viewed'}">
+                                            ${lead.hasWebsite ? '✓' : '-'}
+                                        </span>
+                                    </td>
                                     <td style="color: #94a3b8; font-size: 0.8rem;">${lead.firstVisitAt || '-'}</td>
                                     <td>
                                         <span class="view-count ${lead.visitCount > 0 ? 'viewed' : 'not-viewed'}">
