@@ -498,7 +498,7 @@ function generateEmailHTML(firmName, email, leadId, firstName) {
       <p style="font-size: 16px;">We've prepared a demo tailored specifically to <strong>${firmName}</strong>:</p>
 
       <div style="text-align: center; margin: 20px 0 30px 0;">
-          <a href="${demoUrl}" style="display: inline-block; background: linear-gradient(135deg, #c9a962 0%, #b8944f 100%); color: #0c1f3f; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-size: 16px;">View Your Firm's Demo</a>
+          <a href="${demoUrl}" style="display: inline-block; background: linear-gradient(135deg, #c9a962 0%, #b8944f 100%); color: #0c1f3f; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-size: 16px;">View Your Customized Demo</a>
       </div>
 
       <p style="font-size: 16px; margin-top: 16px;">
@@ -651,7 +651,7 @@ Embeds directly on your website — visitors never leave your site.
 
 We've prepared a demo tailored specifically to ${firmName}:
 
-View Your Firm's Demo: ${demoUrl}
+View Your Customized Demo: ${demoUrl}
 
 No commitment. Review it on your own — no calls required.
 
@@ -719,9 +719,6 @@ function generateBarProfileEmailHTML(firmName, email, leadId, firstName, practic
     const unsubscribeUrl = `https://preintake.ai/unsubscribe.html?email=${encodeURIComponent(email)}`;
     const demoUrl = `https://preintake.ai/demo/?demo=${leadId}&utm_source=email&utm_medium=outreach&utm_campaign=bar_profile&utm_content=cta_button`;
 
-    // Format practice area for display
-    const displayPracticeArea = practiceArea || 'legal';
-
     return `<!DOCTYPE html>
 <html>
 <head>
@@ -732,6 +729,9 @@ function generateBarProfileEmailHTML(firmName, email, leadId, firstName, practic
     <!--<![endif]-->
 </head>
 <body style="margin:0; padding:0; background-color:#f8fafc;">
+  <div style="display:none; max-height:0; overflow:hidden;">
+    Pre-screen every inquiry before it reaches you—see how it works for ${firmName}.
+  </div>
   <div style="max-width:600px; margin:0 auto; padding:20px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; line-height:1.6; color:#1a1a2e;">
 
     <div style="background-color:#0c1f3f; background:linear-gradient(135deg,#0c1f3f 0%,#1a3a5c 100%); padding:20px; border-radius:12px 12px 0 0; text-align:center;">
@@ -746,33 +746,33 @@ function generateBarProfileEmailHTML(firmName, email, leadId, firstName, practic
     </div>
 
     <div style="background:#ffffff; padding:30px; border-radius:0 0 12px 12px; box-shadow:0 4px 6px rgba(0,0,0,0.1);">
-      <p style="font-size: 16px;">Hi${firstName ? ' ' + firstName : ''},</p>
+      <p style="font-size: 16px;">Hello${firstName ? ' ' + firstName : ''},</p>
 
-      <p style="font-size: 16px;">I came across your ${state ? state + ' ' : ''}Bar profile and saw that you handle <strong>${displayPracticeArea}</strong> matters.</p>
+      <p style="font-size: 16px;">Every law firm has the same intake problem: too many inquiries, not enough signal. Strong cases wait alongside weak or misdirected submissions, and staff time gets burned sorting it out. PreIntake.ai ensures your most important matters surface immediately—screened, summarized, and prioritized before you ever review them.</p>
 
-      <p style="font-size: 16px;">Most intake systems assume you have a website. This one doesn't. It works as a simple hosted intake link you can share anywhere you currently accept inquiries—email signature, referral partners, even a text message.</p>
+      <p style="font-size: 16px;">Instead of reviewing raw submissions in the order they arrive, you focus on what matters most first. Strong inquiries are clear, weak ones are obvious, and misdirected matters don't steal attention they don't deserve.</p>
 
-      <p style="font-size: 16px;">Each inquiry is reviewed and delivered with:</p>
+      <p style="font-size: 16px;">Every inquiry is reviewed and delivered with:</p>
 
       <ul style="color: #1a1a2e; padding-left: 20px; font-size: 16px;">
-          <li>A case summary tailored to ${displayPracticeArea}</li>
-          <li>A qualification rating: qualified, needs review, or not a fit</li>
+          <li>A case summary tailored to your practice area</li>
+          <li>A qualification rating: <strong>qualified</strong>, <strong>needs review</strong>, or <strong>not a fit</strong></li>
           <li>A plain-English explanation of why</li>
       </ul>
 
       <p style="font-size: 16px; margin-top: 16px;">
-          <strong style="color: #c9a962;">Zero data retention.</strong> Inquiry content is processed and delivered to you, not stored.
+          <strong style="color: #c9a962;">Zero Data Retention</strong> — Inquiry content is processed and delivered, not retained.
       </p>
 
-      <p style="font-size: 16px;">Based on public Bar information, I put together a short demo showing how this would work for <strong>${firmName}</strong>.</p>
+      <p style="font-size: 16px; margin-top: 8px;">Most intake systems assume you have a website. This one doesn't. It works as a simple hosted intake link you can share anywhere you currently accept inquiries—email signature, referral partners, even a text message.</p>
 
-      <div style="text-align: center; margin: 25px 0;">
-          <a href="${demoUrl}" style="display: inline-block; background: linear-gradient(135deg, #c9a962 0%, #b8944f 100%); color: #0c1f3f; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-size: 16px;">See Your Personalized Demo →</a>
+      <p style="font-size: 16px;">We've prepared a demo tailored specifically to your practice:</p>
+
+      <div style="text-align: center; margin: 20px 0 30px 0;">
+          <a href="${demoUrl}" style="display: inline-block; background: linear-gradient(135deg, #c9a962 0%, #b8944f 100%); color: #0c1f3f; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-size: 16px;">View Your Customized Demo</a>
       </div>
 
-      <p style="font-size: 16px;">It takes about two minutes to review. No setup. No commitment.</p>
-
-      <p style="font-size: 16px;">If it saves you a few interruptions a week, it's doing its job. If not, feel free to ignore it.</p>
+      <p style="font-size: 16px; margin-top: 16px;">No commitment. Review it on your own — no calls required.</p>
 
       <p style="font-size: 16px; margin-top: 20px;">
           Best,<br>
@@ -801,32 +801,30 @@ function generateBarProfileEmailPlainText(firmName, email, leadId, firstName, pr
     const unsubscribeUrl = `https://preintake.ai/unsubscribe.html?email=${encodeURIComponent(email)}`;
     const demoUrl = `https://preintake.ai/demo/?demo=${leadId}&utm_source=email&utm_medium=outreach&utm_campaign=bar_profile&utm_content=cta_button`;
 
-    const displayPracticeArea = practiceArea || 'legal';
-
     return `PreIntake.ai
 Pre-Screen Every Inquiry — Tailored to Your Practice Area
 
-Hi${firstName ? ' ' + firstName : ''},
+Hello${firstName ? ' ' + firstName : ''},
 
-I came across your ${state ? state + ' ' : ''}Bar profile and saw that you handle ${displayPracticeArea} matters.
+Every law firm has the same intake problem: too many inquiries, not enough signal. Strong cases wait alongside weak or misdirected submissions, and staff time gets burned sorting it out. PreIntake.ai ensures your most important matters surface immediately—screened, summarized, and prioritized before you ever review them.
 
-Most intake systems assume you have a website. This one doesn't. It works as a simple hosted intake link you can share anywhere you currently accept inquiries—email signature, referral partners, even a text message.
+Instead of reviewing raw submissions in the order they arrive, you focus on what matters most first. Strong inquiries are clear, weak ones are obvious, and misdirected matters don't steal attention they don't deserve.
 
-Each inquiry is reviewed and delivered with:
+Every inquiry is reviewed and delivered with:
 
-• A case summary tailored to ${displayPracticeArea}
+• A case summary tailored to your practice area
 • A qualification rating: qualified, needs review, or not a fit
 • A plain-English explanation of why
 
-Zero data retention. Inquiry content is processed and delivered to you, not stored.
+ZERO DATA RETENTION — Inquiry content is processed and delivered, not retained.
 
-Based on public Bar information, I put together a short demo showing how this would work for ${firmName}.
+Most intake systems assume you have a website. This one doesn't. It works as a simple hosted intake link you can share anywhere you currently accept inquiries—email signature, referral partners, even a text message.
 
-See Your Personalized Demo: ${demoUrl}
+We've prepared a demo tailored specifically to your practice:
 
-It takes about two minutes to review. No setup. No commitment.
+View Your Customized Demo: ${demoUrl}
 
-If it saves you a few interruptions a week, it's doing its job. If not, feel free to ignore it.
+No commitment. Review it on your own — no calls required.
 
 Best,
 Stephen Scott
@@ -843,7 +841,7 @@ Unsubscribe: ${unsubscribeUrl}`;
  */
 function generateSubject(hasDemo, isBarProfile = false) {
     if (isBarProfile) {
-        return 'I built you a personalized intake demo';
+        return 'Pre-screen every inquiry before it reaches you';
     }
     // Same subject for both personalized and fallback emails
     return 'Pre-screen every inquiry before it reaches your team';
@@ -1223,7 +1221,7 @@ async function runCampaign() {
                 // Determine template version
                 let templateVersion = 'v6-generic';
                 if (isBarProfile && hasDemo) {
-                    templateVersion = 'v7-bar-profile-demo';
+                    templateVersion = 'v8-bar-profile-demo';
                 } else if (hasDemo) {
                     templateVersion = 'v6-personalized-demo';
                 }

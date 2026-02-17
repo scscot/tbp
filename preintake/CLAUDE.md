@@ -1613,6 +1613,52 @@ Emails Sent → Demo Viewed → Conversation Started → Contact Collected → S
 | `functions/widget-functions.js` | Removed DATA_START_DATE filter from getEmailAnalytics |
 | `scripts/send-preintake-campaign.js` | Proportional selection (50/50 website vs bar profile) |
 
+### Phase 67: V8 Bar Profile Email Template (2026-02-16)
+- [x] **Template Revision** - Adopted V6's problem-focused messaging approach for bar profile emails
+  - V6 (Website Demo) had 11.3% view rate vs V7's 2.1% - a 5x performance difference
+  - Root cause: V7's personal "I came across your Bar profile" approach felt intrusive/sales-y
+  - Solution: Use V6's problem-focused opening, move "no website needed" to trust signals section
+- [x] **Subject Line Update** - Changed to match V6's successful pattern
+  - Old: "I built you a personalized intake demo"
+  - New: "Pre-screen every inquiry before it reaches you"
+- [x] **HTML Template Rewrite** - `generateBarProfileEmailHTML()` function
+  - New preheader with firm name personalization
+  - Changed greeting from "Hi" to "Hello" for consistency with V6
+  - Opening paragraph: Problem statement about intake signal-to-noise ratio
+  - Value prop: Focus on prioritization and efficiency
+  - Features: Bulleted list with bolded qualification ratings
+  - Trust signals: "Zero Data Retention" with gold accent, then hosted intake explanation
+  - CTA: "View Your Customized Demo" (changed from "See Your Personalized Demo →")
+  - Closing: "No commitment. Review it on your own — no calls required."
+- [x] **Plain Text Version Update** - `generateBarProfileEmailPlainText()` mirrored changes
+- [x] **Template Version Update** - Changed from `v7-bar-profile-demo` to `v8-bar-profile-demo`
+  - Enables A/B performance comparison in analytics dashboard
+  - Historical v7 data preserved for benchmarking
+
+**Key Messaging Changes:**
+| Element | V7 (Old) | V8 (New) |
+|---------|----------|----------|
+| Subject | "I built you a personalized intake demo" | "Pre-screen every inquiry before it reaches you" |
+| Opening | "I came across your Bar profile..." | Problem statement (same as V6) |
+| Tone | Personal/sales-y | Problem-focused/professional |
+| No-website message | Opening paragraph | Trust signal section (less prominent) |
+| CTA | "See Your Personalized Demo →" | "View Your Customized Demo" |
+
+**Removed Elements:**
+- ❌ "I came across your {state} Bar profile and saw that you handle {practiceArea} matters"
+- ❌ "Based on public Bar information, I put together a short demo..."
+- ❌ "It takes about two minutes to review. No setup. No commitment."
+- ❌ "If it saves you a few interruptions a week, it's doing its job."
+
+**Files Modified:**
+| File | Changes |
+|------|---------|
+| `scripts/send-preintake-campaign.js` | Subject line, HTML template, plain text template, template version |
+
+**Success Metrics:**
+- Target: Increase bar profile view rate from 2.1% toward V6's 11.3%
+- Tracking: Compare `v8-bar-profile-demo` vs `v7-bar-profile-demo` in Template Performance table
+
 ---
 
 ## Architecture
