@@ -1,7 +1,7 @@
 # PreIntake.ai: Comprehensive Project Documentation
 
-**Last Updated**: 2026-02-16
-**Version**: 6.3 (proportional contact selection fix)
+**Last Updated**: 2026-02-17
+**Version**: 6.4 (V8 email template + SPF fix)
 
 ---
 
@@ -1658,6 +1658,33 @@ Emails Sent → Demo Viewed → Conversation Started → Contact Collected → S
 **Success Metrics:**
 - Target: Increase bar profile view rate from 2.1% toward V6's 11.3%
 - Tracking: Compare `v8-bar-profile-demo` vs `v7-bar-profile-demo` in Template Performance table
+
+### Phase 68: SPF Fix for law.preintake.ai (2026-02-17)
+- [x] **SPF Softfail Diagnosis** - Test emails landing in spam despite DKIM/DMARC passing
+  - Root cause: SPF record for `law.preintake.ai` was missing Mailgun authorization
+  - Old SPF: `v=spf1 include:relay.mailchannels.net include:netblocks.dreamhost.com ~all`
+  - Gmail returned: `spf=softfail (domain does not designate 143.55.232.47 as permitted sender)`
+- [x] **SPF Record Updated** - Added Mailgun to authorized senders
+  - New SPF: `v=spf1 include:mailgun.org include:relay.mailchannels.net include:netblocks.dreamhost.com ~all`
+  - All three checks now passing: SPF ✅, DKIM ✅, DMARC ✅
+- [x] **Test Email Verification** - Confirmed emails now land in inbox
+  - Created test contact in `preintake_emails` for proper deliverability testing
+  - To header mismatch (firm name vs personal email) can also trigger spam filters
+
+**DNS Change:**
+- Record Type: TXT
+- Host: `law.preintake.ai`
+- Value: `v=spf1 include:mailgun.org include:relay.mailchannels.net include:netblocks.dreamhost.com ~all`
+
+### Phase 69: Analytics Dashboard v8 Support (2026-02-17)
+- [x] **Template Mapping Update** - Added v8 to `formatTemplate()` function
+  - Added `'v8-bar-profile-demo': 'Bar Profile (v8)'` to template mapping
+  - Dashboard now correctly displays V8 template in Template Performance table
+
+**Files Modified:**
+| File | Changes |
+|------|---------|
+| `preintake/email-analytics.html` | Added v8 template mapping to `formatTemplate()` |
 
 ---
 

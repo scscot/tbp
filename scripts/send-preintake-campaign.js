@@ -475,7 +475,9 @@ function generateEmailHTML(firmName, email, leadId, firstName) {
     </div>
 
     <div style="background:#ffffff; padding:30px; border-radius:0 0 12px 12px; box-shadow:0 4px 6px rgba(0,0,0,0.1);">
-      ${greeting}<p style="font-size: 16px;">Every law firm has the same intake problem: too many inquiries, not enough signal. Strong cases wait alongside weak or misdirected submissions, and staff time gets burned sorting it out. PreIntake.ai ensures your most important matters surface immediately—screened, summarized, and prioritized before your team ever reviews them.</p>
+      ${greeting}<p style="font-size: 16px;">Every law firm has the same intake problem: too many inquiries, not enough signal. Strong cases wait alongside weak or misdirected submissions, and staff time gets burned sorting it out.</p>
+      
+      <p style="font-size: 16px;">PreIntake.ai ensures your most important matters surface immediately—screened, summarized, and prioritized before your team ever reviews them.</p>
 
       <p style="font-size: 16px;">Instead of reviewing raw submissions in the order they arrive, your team sees what matters most first. Strong inquiries are clear, weak ones are obvious, and misdirected matters don't steal attention they don't deserve.</p>
 
@@ -568,7 +570,9 @@ function generateFallbackEmailHTML(firmName, email, firstName) {
     </div>
 
     <div style="background:#ffffff; padding:30px; border-radius:0 0 12px 12px; box-shadow:0 4px 6px rgba(0,0,0,0.1);">
-      ${greeting}<p style="font-size: 16px;">Every law firm has the same intake problem: too many inquiries, not enough signal. Strong cases wait alongside weak or misdirected submissions, and staff time gets burned sorting it out. PreIntake.ai ensures your most important matters surface immediately—screened, summarized, and prioritized before your team ever reviews them.</p>
+      ${greeting}<p style="font-size: 16px;">Every law firm has the same intake problem: too many inquiries, not enough signal. Strong cases wait alongside weak or misdirected submissions, and staff time gets burned sorting it out.</p>
+      
+      <p style="font-size: 16px;">PreIntake.ai ensures your most important matters surface immediately—screened, summarized, and prioritized before your team ever reviews them.</p>
 
       <p style="font-size: 16px;">Instead of reviewing raw submissions in the order they arrive, your team sees what matters most first. Strong inquiries are clear, weak ones are obvious, and misdirected matters don't steal attention they don't deserve.</p>
 
@@ -635,7 +639,9 @@ function generateEmailPlainText(firmName, email, leadId, firstName) {
     return `PreIntake.ai
 Pre-Screen Every Inquiry — Tailored to Your Practice Area
 
-${greeting}Every law firm has the same intake problem: too many inquiries, not enough signal. Strong cases wait alongside weak or misdirected submissions, and staff time gets burned sorting it out. PreIntake.ai ensures your most important matters surface immediately—screened, summarized, and prioritized before your team ever reviews them.
+${greeting}Every law firm has the same intake problem: too many inquiries, not enough signal. Strong cases wait alongside weak or misdirected submissions, and staff time gets burned sorting it out. 
+
+PreIntake.ai ensures your most important matters surface immediately—screened, summarized, and prioritized before your team ever reviews them.
 
 Instead of reviewing raw submissions in the order they arrive, your team sees what matters most first. Strong inquiries are clear, weak ones are obvious, and misdirected matters don't steal attention they don't deserve.
 
@@ -680,7 +686,9 @@ function generateFallbackEmailPlainText(firmName, email, firstName) {
     return `PreIntake.ai
 Pre-Screen Every Inquiry — Tailored to Your Practice Area
 
-${greeting}Every law firm has the same intake problem: too many inquiries, not enough signal. Strong cases wait alongside weak or misdirected submissions, and staff time gets burned sorting it out. PreIntake.ai ensures your most important matters surface immediately—screened, summarized, and prioritized before your team ever reviews them.
+${greeting}Every law firm has the same intake problem: too many inquiries, not enough signal. Strong cases wait alongside weak or misdirected submissions, and staff time gets burned sorting it out. 
+
+PreIntake.ai ensures your most important matters surface immediately—screened, summarized, and prioritized before your team ever reviews them.
 
 Instead of reviewing raw submissions in the order they arrive, your team sees what matters most first. Strong inquiries are clear, weak ones are obvious, and misdirected matters don't steal attention they don't deserve.
 
@@ -748,7 +756,9 @@ function generateBarProfileEmailHTML(firmName, email, leadId, firstName, practic
     <div style="background:#ffffff; padding:30px; border-radius:0 0 12px 12px; box-shadow:0 4px 6px rgba(0,0,0,0.1);">
       <p style="font-size: 16px;">Hello${firstName ? ' ' + firstName : ''},</p>
 
-      <p style="font-size: 16px;">Every law firm has the same intake problem: too many inquiries, not enough signal. Strong cases wait alongside weak or misdirected submissions, and staff time gets burned sorting it out. PreIntake.ai ensures your most important matters surface immediately—screened, summarized, and prioritized before you ever review them.</p>
+      <p style="font-size: 16px;">Every law firm has the same intake problem: too many inquiries, not enough signal. Strong cases wait alongside weak or misdirected submissions, and staff time gets burned sorting it out.</p>
+      
+      <p style="font-size: 16px;">PreIntake.ai ensures your most important matters surface immediately—screened, summarized, and prioritized before you ever review them.</p>
 
       <p style="font-size: 16px;">Instead of reviewing raw submissions in the order they arrive, you focus on what matters most first. Strong inquiries are clear, weak ones are obvious, and misdirected matters don't steal attention they don't deserve.</p>
 
@@ -806,7 +816,9 @@ Pre-Screen Every Inquiry — Tailored to Your Practice Area
 
 Hello${firstName ? ' ' + firstName : ''},
 
-Every law firm has the same intake problem: too many inquiries, not enough signal. Strong cases wait alongside weak or misdirected submissions, and staff time gets burned sorting it out. PreIntake.ai ensures your most important matters surface immediately—screened, summarized, and prioritized before you ever review them.
+Every law firm has the same intake problem: too many inquiries, not enough signal. Strong cases wait alongside weak or misdirected submissions, and staff time gets burned sorting it out. 
+
+PreIntake.ai ensures your most important matters surface immediately—screened, summarized, and prioritized before you ever review them.
 
 Instead of reviewing raw submissions in the order they arrive, you focus on what matters most first. Strong inquiries are clear, weak ones are obvious, and misdirected matters don't steal attention they don't deserve.
 
