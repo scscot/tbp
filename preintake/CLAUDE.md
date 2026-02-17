@@ -1,7 +1,7 @@
 # PreIntake.ai: Comprehensive Project Documentation
 
 **Last Updated**: 2026-02-16
-**Version**: 6.2 (AI strategic insights dashboard)
+**Version**: 6.3 (proportional contact selection fix)
 
 ---
 
@@ -1584,6 +1584,34 @@ Emails Sent → Demo Viewed → Conversation Started → Contact Collected → S
 | File | Changes |
 |------|---------|
 | `functions/templates/demo-intake.html.template` | Banner CSS, HTML structure, JS logic (CTA removed) |
+
+### Phase 66: Proportional Contact Selection Fix (2026-02-16)
+- [x] **Analytics Dashboard Fix** - Removed DATA_START_DATE filter
+  - Issue: Campaign Lead Details showed NO checkmarks under WEBSITE column for any leads
+  - Root cause: `DATA_START_DATE` filter (Feb 9, 2026) in `widget-functions.js` excluded 23 of 24 website leads
+  - Fix: Removed `DATA_START_DATE` constant and `filterByDate()` function
+  - Deployed via `firebase deploy --only functions:getEmailAnalytics`
+- [x] **Campaign Script Fix** - Proportional selection for contact types
+  - Issue: Email campaign was sending 12:1 bar profile vs website contacts
+  - Root cause: Firestore inequality query on `website != ''` requires `orderBy('website')` before `orderBy('randomIndex')`
+  - This caused website contacts to be fetched in alphabetical order by URL, not by randomIndex
+  - When merged with bar profile contacts (sorted by randomIndex), bar profiles dominated
+  - Fix: Implemented proportional selection in `send-preintake-campaign.js`:
+    - Sort website contacts by randomIndex after fetching (client-side sort)
+    - Take ~50% from website pool and ~50% from bar profile pool
+    - Merge and sort by randomIndex for final processing order
+  - Test result: 25 website + 25 bar profile = perfect 50/50 split per batch
+- [x] **Diagnostic Scripts Created** (for investigation, can be deleted)
+  - `functions/check-leads.js` - Checks leads with visits and hasWebsite status
+  - `functions/check-email-queue.js` - Email queue status by contact type
+  - `functions/check-random-index.js` - RandomIndex distribution analysis
+  - `functions/check-website-fields.js` - Field pattern analysis
+
+**Files Modified:**
+| File | Changes |
+|------|---------|
+| `functions/widget-functions.js` | Removed DATA_START_DATE filter from getEmailAnalytics |
+| `scripts/send-preintake-campaign.js` | Proportional selection (50/50 website vs bar profile) |
 
 ---
 

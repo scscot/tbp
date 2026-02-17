@@ -840,11 +840,6 @@ const getEmailAnalytics = onRequest(
             const yesterdayStart = new Date(Date.UTC(pstYear, pstMonth, pstDay - 1) - PST_OFFSET);
             const endDate = new Date(Date.UTC(pstYear, pstMonth, pstDay + 1) - PST_OFFSET);
             const startDate = new Date(Date.UTC(pstYear, pstMonth, pstDay - 7) - PST_OFFSET);
-
-            // Data cutoff date: February 9, 2026 at midnight PST
-            // All data before this date is excluded from analytics
-            const DATA_START_DATE = new Date('2026-02-09T00:00:00-08:00');
-
             // Create date strings for GA4 (YYYY-MM-DD format in PST)
             const formatDateStr = (date) => {
                 const y = date.getUTCFullYear();
@@ -955,22 +950,10 @@ const getEmailAnalytics = onRequest(
                 db.collection('preintake_emails').where('sent', '==', false).get()
             ]);
 
-            // Filter by DATA_START_DATE to exclude pre-Feb 2, 2026 data
-            const filterByDate = (snap) => {
-                const filtered = [];
-                snap.forEach(doc => {
-                    const data = doc.data();
-                    const sentDate = data.sentTimestamp?.toDate();
-                    if (sentDate && sentDate >= DATA_START_DATE) {
-                        filtered.push({ id: doc.id, data: () => data });
-                    }
-                });
-                return { docs: filtered, size: filtered.length, forEach: (fn) => filtered.forEach(d => fn({ id: d.id, data: d.data })) };
-            };
-
-            const emailsSnap = filterByDate(emailsSnapRaw);
-            const unsubSnap = filterByDate(unsubSnapRaw);
-            const failedSnap = filterByDate(failedSnapRaw);
+            // Use raw snapshots directly (no date filtering)
+            const emailsSnap = emailsSnapRaw;
+            const unsubSnap = unsubSnapRaw;
+            const failedSnap = failedSnapRaw;
 
             const totalSent = emailsSnap.size;
             const totalUnsubscribed = unsubSnap.size;
@@ -1037,20 +1020,9 @@ const getEmailAnalytics = onRequest(
             });
 
             // Get campaign-sourced leads (includes both 'campaign' and 'bar_profile_campaign')
-            const leadsSnapRaw = await db.collection('preintake_leads')
+            const leadsSnap = await db.collection('preintake_leads')
                 .where('source', 'in', ['campaign', 'bar_profile_campaign'])
                 .get();
-
-            // Filter by DATA_START_DATE to exclude pre-Feb 2, 2026 data
-            const filteredLeads = [];
-            leadsSnapRaw.forEach(doc => {
-                const data = doc.data();
-                const createdAt = data.createdAt?.toDate();
-                if (createdAt && createdAt >= DATA_START_DATE) {
-                    filteredLeads.push({ id: doc.id, data: () => data });
-                }
-            });
-            const leadsSnap = { docs: filteredLeads, size: filteredLeads.length, forEach: (fn) => filteredLeads.forEach(d => fn({ id: d.id, data: d.data })) };
 
             // Visit tracking (email CTA clicks)
             let visitedCount = 0;

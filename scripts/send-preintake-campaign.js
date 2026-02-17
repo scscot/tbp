@@ -1010,15 +1010,48 @@ async function runCampaign() {
         console.log(`   - Bar profile (not_found): ${notFoundSnapshot.size}`);
         console.log(`   - Bar profile (personal_email): ${personalEmailSnapshot.size}`);
 
-        // Merge all contacts into a single deduplicated pool sorted by randomIndex
+        // PROPORTIONAL SELECTION FIX:
+        // The website query uses `.orderBy('website')` (required by Firestore for inequality)
+        // which means website contacts aren't fetched in randomIndex order.
+        // Bar profile queries use `.orderBy('randomIndex')` so they get low-randomIndex contacts.
+        // When merged and sorted by randomIndex, bar profiles dominated (12:1 ratio).
+        //
+        // Fix: Sort each pool by randomIndex separately, then interleave proportionally
+        // to ensure fair representation of both contact types.
+
+        // Sort website contacts by their actual randomIndex (they arrive in website alphabetical order)
+        const websiteDocs = [...withWebsiteSnapshot.docs].sort(
+            (a, b) => (a.data().randomIndex || 0) - (b.data().randomIndex || 0)
+        );
+
+        // Bar profile docs are already sorted by randomIndex from the query
+        const barProfileMap = new Map();
+        [...notFoundSnapshot.docs, ...personalEmailSnapshot.docs].forEach(doc => {
+            if (!barProfileMap.has(doc.id)) {
+                barProfileMap.set(doc.id, doc);
+            }
+        });
+        const barProfileDocs = Array.from(barProfileMap.values())
+            .sort((a, b) => (a.data().randomIndex || 0) - (b.data().randomIndex || 0));
+
+        // Proportional selection: aim for ~50/50 split (or whatever is available)
+        const halfBatch = Math.ceil(BATCH_SIZE / 2);
+        const websiteSelection = websiteDocs.slice(0, halfBatch);
+        const barProfileSelection = barProfileDocs.slice(0, halfBatch);
+
+        // Combine and sort by randomIndex for final ordering
         const contactMap = new Map();
-        [...withWebsiteSnapshot.docs, ...notFoundSnapshot.docs, ...personalEmailSnapshot.docs].forEach(doc => {
+        [...websiteSelection, ...barProfileSelection].forEach(doc => {
             if (!contactMap.has(doc.id)) {
                 contactMap.set(doc.id, doc);
             }
         });
         let mergedDocs = Array.from(contactMap.values())
             .sort((a, b) => (a.data().randomIndex || 0) - (b.data().randomIndex || 0));
+
+        console.log(`📊 Proportional selection (50/50 target):`);
+        console.log(`   - Website selected: ${websiteSelection.length}`);
+        console.log(`   - Bar profile selected: ${barProfileSelection.length}`);
 
         // Apply Yahoo/AOL filter if enabled
         if (EXCLUDE_YAHOO_AOL) {
