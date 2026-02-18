@@ -1,6 +1,6 @@
 # Team Build Pro - Comprehensive Knowledge Base
 
-**Last Updated**: 2026-02-16
+**Last Updated**: 2026-02-18
 **Purpose**: Persistent knowledge base for AI assistants across sessions
 
 ---
@@ -99,7 +99,8 @@ The Team Build Pro ecosystem is a comprehensive, interconnected network of digit
 - Each post includes app download CTAs
 
 **6. Email Campaign Integration**
-- Three active campaigns: Main (5.9K remaining), Purchased (1.3K), BFH (900)
+- Three campaigns: Main (reduced, underperforming), Purchased (1.3K, primary focus), BFH (776, primary focus)
+- Main Campaign reduced to 2/batch due to low click-through; focus shifted to BFH and Purchased campaigns
 - Mailgun API via news.teambuildpro.com with Firestore tracking
 - Click tracking via trackEmailClick endpoint; open tracking disabled for deliverability
 - Drives traffic to landing page → app downloads
@@ -592,13 +593,14 @@ The email campaign system consists of two parallel campaigns targeting different
 - **DNS**: SPF + DKIM + DMARC configured for 10/10 mail-tester.com score
 - **Mailgun Credentials**: `functions/.env.teambuilder-plus-fe74d` (TBP_MAILGUN_* variables)
 
-### Main Campaign (Mailgun API - Automated)
+### Main Campaign (Mailgun API - REDUCED)
+- **Status**: REDUCED (Feb 18, 2026) - Underperforming click-through rates; focus shifted to BFH and Purchased campaigns
 - **Function**: `sendHourlyEmailCampaign` in `functions/email-campaign-functions.js`
 - **Tags**: `tbp_campaign`, `tracked`
 - **Schedule**: 8am, 11am, 2pm, 5pm PT (4 runs/day)
 - **Data Source**: Firestore `emailCampaigns/master/contacts` collection
 - **Control Variable**: EMAIL_CAMPAIGN_ENABLED
-- **Batch Size**: Dynamic via Firestore `config/emailCampaign.batchSize` (automated by GitHub Actions)
+- **Batch Size**: 2 (reduced from 50 via Firestore `config/emailCampaign.batchSize`)
 - **Domain Warming**: Automated via `.github/workflows/domain-warming-update.yml`
 
 ### Contacts Campaign (PAUSED - Complete)
@@ -633,14 +635,14 @@ The email campaign system consists of two parallel campaigns targeting different
 
 ### Batch Size Configuration
 - **Firestore Config**: `config/emailCampaign` document stores batch sizes per campaign
-- **Current Settings** (optimized Feb 14, 2026 for ~30-day completion):
-  | Campaign | Batch Size | Runs/Day | Emails/Day | Collection Size |
-  |----------|------------|----------|------------|-----------------|
-  | Main (`batchSize`) | 50 | 4 | 200 | ~17,900 |
-  | Purchased (`batchSizePurchased`) | 15 | 4 | 60 | 1,402 |
-  | BFH (`batchSizeBfh`) | 10 | 4 | 40 | 886 |
-  | Contacts (`batchSizeContacts`) | 0 | - | - | 826 (paused) |
-  | **Total** | - | 12 | **300** | - |
+- **Current Settings** (updated Feb 18, 2026 - Main reduced, focus on BFH/Purchased):
+  | Campaign | Batch Size | Runs/Day | Emails/Day | Collection Size | Status |
+  |----------|------------|----------|------------|-----------------|--------|
+  | Main (`batchSize`) | 2 | 4 | 8 | ~17,900 | Reduced (underperforming) |
+  | Purchased (`batchSizePurchased`) | 15 | 4 | 60 | 1,402 | **Primary focus** |
+  | BFH (`batchSizeBfh`) | 10 | 4 | 40 | 776 | **Primary focus** |
+  | Contacts (`batchSizeContacts`) | 0 | - | - | 826 (paused) | Complete |
+  | **Total** | - | 12 | **108** | - | - |
 
 ### Automated Domain Warming System
 - **Workflow**: `.github/workflows/domain-warming-update.yml`
@@ -1325,16 +1327,16 @@ Corporate email domains are excluded from all contact collections using a **blac
   - purchased_leads: 1,427 → 1,402 (25 removed)
   - emailCampaigns/master/contacts: 0 corporate emails (already clean)
 
-### Current System Status (Feb 15, 2026)
+### Current System Status (Feb 18, 2026)
 
-**PROJECT STATUS: ACTIVE CAMPAIGNS (Feb 15, 2026)**
-Three email campaigns running with optimized batch sizes. Corporate email cleanup completed across all collections.
+**PROJECT STATUS: FOCUSED CAMPAIGNS (Feb 18, 2026)**
+Main Campaign reduced due to underperformance. Focus shifted to BFH and Purchased campaigns for Team Build Pro promotion.
 
 | Component | Status | Notes |
 |-----------|--------|-------|
-| Main Campaign | Active | 8am, 11am, 2pm, 5pm PT · 50/batch · ~17,900 contacts |
-| Purchased Campaign | Active | 9:30am, 12:30pm, 3:30pm, 6:30pm PT · 15/batch · 1,402 contacts |
-| BFH Campaign | Active | 10am, 1pm, 4pm, 7pm PT · 10/batch · 886 contacts (cleaned) |
+| Main Campaign | Reduced | 8am, 11am, 2pm, 5pm PT · **2/batch** · underperforming click-through |
+| Purchased Campaign | **Primary** | 9:30am, 12:30pm, 3:30pm, 6:30pm PT · 15/batch · 1,402 contacts |
+| BFH Campaign | **Primary** | 10am, 1pm, 4pm, 7pm PT · 10/batch · 776 contacts |
 | Contacts Campaign | Complete | 826 contacts (cleaned Feb 15) |
 | Email Sending | Mailgun API | Via Mailgun, news.teambuildpro.com |
 | Email A/B Testing | Active | Main: V9/V10 × 2 subjects; Purchased: V11a/V12a; BFH: V11a/V12a |
@@ -1348,7 +1350,7 @@ Three email campaigns running with optimized batch sizes. Corporate email cleanu
 | URL Discovery | Active | Every 2h, 120 companies/batch (processing 1,082 companies) |
 | Contacts Seeder | Active | Every 4h, 3 sources (Common Crawl + Wayback + crt.sh) |
 | Contacts Scraper | Active | Hourly, 400 URLs/batch, 12 blocked platforms |
-| BFH Collection | 886 contacts | After Feb 15 corporate email cleanup |
+| BFH Collection | 776 contacts | Primary campaign focus (Feb 18) |
 | Spam Monitor | Active | Daily 6am PT, Gmail API check, auto-disable on spam |
 | PreIntake.ai | Autonomous | See `preintake/CLAUDE.md` for details |
 
