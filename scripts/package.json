@@ -23,6 +23,8 @@
     "googleapis": "^148.0.0",
     "node-fetch": "^3.3.2",
     "nodemailer": "^7.0.12",
-    "puppeteer": "^24.35.0"
+    "puppeteer": "^24.35.0",
+    "puppeteer-extra": "^3.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2"
   }
 }
