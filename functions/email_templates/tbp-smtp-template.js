@@ -101,7 +101,7 @@ function generateEmailHTML(contact, trackingId, config, seasonalSignoff = '') {
     </p>
 
     <p style="margin:0 0 16px 0;">
-      I built something for people already in direct sales who want a better way to support their existing team.
+      I built something for people in direct sales who want a better way to support their existing team.
     </p>
 
     <p style="margin:0 0 16px 0;">
@@ -168,7 +168,7 @@ function generateEmailPlainText(contact, trackingId, config, seasonalSignoff = '
 
 I'm not recruiting you, and this isn't an opportunity.
 
-I built something for people already in direct sales who want a better way to support their existing team.
+I built something for people in direct sales who want a better way to support their existing team.
 
 It's meant to help with things like:
 

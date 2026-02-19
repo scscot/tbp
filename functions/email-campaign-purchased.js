@@ -30,23 +30,23 @@ const SEND_DELAY_MS = 1000;
 const TRACKING_BASE_URL = 'https://us-central1-teambuilder-plus-fe74d.cloudfunctions.net';
 const LANDING_PAGE_URL = 'https://teambuildpro.com';
 
-// A/B Test Variants - V11 vs V12 templates (improved messaging, subtle CTA)
+// A/B Test Variants - V9 vs V10 templates
 const AB_TEST_VARIANTS = {
-  v11a: {
-    templateVersion: 'v11',
+  v9a: {
+    templateVersion: 'v9',
     subject: 'Not an opportunity. Just a tool.',
-    subjectTag: 'purchased_v11a',
-    description: 'V11 + Pattern interrupt subject'
+    subjectTag: 'purchased_v9a',
+    description: 'V9 (statistical hook) + Pattern interrupt subject'
   },
-  v12a: {
-    templateVersion: 'v12',
+  v10a: {
+    templateVersion: 'v10',
     subject: 'AI is changing how teams grow',
-    subjectTag: 'purchased_v12a',
-    description: 'V12 + AI curiosity subject'
+    subjectTag: 'purchased_v10a',
+    description: 'V10 (credentials hook) + AI curiosity subject'
   }
 };
 
-const ACTIVE_VARIANTS = ['v11a', 'v12a'];
+const ACTIVE_VARIANTS = ['v9a', 'v10a'];
 
 // =============================================================================
 // HELPER FUNCTIONS

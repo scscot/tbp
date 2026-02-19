@@ -581,7 +581,11 @@ The email campaign system consists of two parallel campaigns targeting different
 **Email Configuration:**
 - **Sending Domain**: `news.teambuildpro.com`
 - **From**: `Stephen Scott <stephen@news.teambuildpro.com>`
-- **Template**: Mailgun-hosted 'mailer' template with v1-v10 versions (personal note style)
+- **Template**: Mailgun-hosted 'mailer' template with v9/v10 as primary versions (personal note style)
+  - V9: Statistical hook ("75% of new reps quit") + systems problem framing
+  - V10: Credentials hook ("After 20+ years in tech and direct sales") + pattern observation
+  - V9-es/V10-es: Spanish translations, V9-de/V10-de: German translations
+  - V11/V12: Deprecated (were personalized_intro variants, now consolidated into v9/v10)
 - **Main Campaign A/B Test** (4-way): V9/V10 templates × 2 subject lines
   - V9a: V9 template + "Not an opportunity. Just a tool."
   - V9b: V9 template + "AI is changing how teams grow"
@@ -905,9 +909,9 @@ Automated 4-stage pipeline that discovers direct sales distributor URLs, scrapes
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │  email-campaign-bfh.js:                                                     │
-│  ├─ English + personalizedIntro → V11/V12 template with variable           │
+│  ├─ English → Standard V9/V10 template                                     │
 │  ├─ Non-English + personalizedHtml → Raw HTML via Mailgun                  │
-│  └─ No personalization → Standard V9/V10 template                          │
+│  └─ All campaigns now use V9/V10 (V11/V12 deprecated)                      │
 │                                                                             │
 │  Language-specific CTA domains:                                             │
 │  ├─ en → teambuildpro.com                                                  │
@@ -947,7 +951,7 @@ The `purchased_leads` collection consolidates contacts from multiple sources for
                               ▼
               Purchased Leads Campaign (email-campaign-purchased.js)
               Schedule: 9:30am, 12:30pm, 3:30pm, 6:30pm PT
-              V11a/V12a A/B test rotation
+              V9a/V10a A/B test rotation
 ```
 
 ### Purchased Leads Collection Schema: `purchased_leads`
@@ -1196,6 +1200,12 @@ Corporate email domains are excluded from all contact collections using a **blac
   - ES: "Team Build Pro: IA Equipo", PT: "Team Build Pro: IA Equipe", DE: "Team Build Pro: KI Team"
 
 **Email Campaign Infrastructure**
+- ✅ **Template Simplification** (Feb 19, 2026): Consolidated to v9/v10 as primary templates
+  - V9: Statistical hook ("75% quit in first year") + systems problem framing + 3-feature list
+  - V10: Credentials hook ("After 20+ years in tech and direct sales") + pattern observation
+  - V11/V12 deprecated: Were personalized_intro variants, now unused (personalization not utilized)
+  - Purchased campaign switched from v11a/v12a to v9a/v10a
+  - Updated v9-es, v9-de, v10-es, v10-de translations to match new English templates
 - ✅ **Email Campaigns via Mailgun API**: Both Main and Contacts campaigns use Mailgun API with template versioning
   - Sending domain: `news.teambuildpro.com` with 10/10 mail-tester.com score (SPF/DKIM/DMARC configured)
   - Open tracking disabled for deliverability; click tracking via Firestore `trackEmailClick` endpoint

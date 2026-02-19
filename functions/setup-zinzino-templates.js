@@ -51,7 +51,7 @@ const V9_ES_HTML = `<!DOCTYPE html>
     </p>
 
     <p style="margin:0 0 16px 0;">
-      Cree algo para personas que ya estan en ventas directas y quieren una mejor manera de apoyar a su equipo existente.
+      Cree algo para personas en ventas directas y quieren una mejor manera de apoyar a su equipo existente.
     </p>
 
     <p style="margin:0 0 16px 0;">
@@ -172,7 +172,7 @@ const V9_DE_HTML = `<!DOCTYPE html>
     </p>
 
     <p style="margin:0 0 16px 0;">
-      Ich habe etwas fur Menschen entwickelt, die bereits im Direktvertrieb tatig sind und einen besseren Weg suchen, ihr bestehendes Team zu unterstutzen.
+      Ich habe etwas fur Menschen entwickelt, die im Direktvertrieb tatig sind und einen besseren Weg suchen, ihr bestehendes Team zu unterstutzen.
     </p>
 
     <p style="margin:0 0 16px 0;">
@@ -275,7 +275,7 @@ const V9_ES_TEXT = `Hola {{first_name}},
 
 No te estoy reclutando, y esto no es una oportunidad de negocio.
 
-Cree algo para personas que ya estan en ventas directas y quieren una mejor manera de apoyar a su equipo existente.
+Cree algo para personas en ventas directas y quieren una mejor manera de apoyar a su equipo existente.
 
 Esta disenado para ayudar con cosas como:
 
@@ -322,7 +322,7 @@ const V9_DE_TEXT = `Hallo {{first_name}},
 
 Ich rekrutiere Sie nicht, und dies ist keine Geschaftsmoglichkeit.
 
-Ich habe etwas fur Menschen entwickelt, die bereits im Direktvertrieb tatig sind und einen besseren Weg suchen, ihr bestehendes Team zu unterstutzen.
+Ich habe etwas fur Menschen entwickelt, die im Direktvertrieb tatig sind und einen besseren Weg suchen, ihr bestehendes Team zu unterstutzen.
 
 Es hilft bei Dingen wie:
 
