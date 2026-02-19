@@ -1,0 +1,116 @@
+name: FindSalesRep Scraper
+
+on:
+  schedule:
+    # Run 4x daily for moderate throughput
+    - cron: '0 14 * * *'   # 6am PT
+    - cron: '0 18 * * *'   # 10am PT
+    - cron: '0 22 * * *'   # 2pm PT
+    - cron: '0 2 * * *'    # 6pm PT
+
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'Scraping mode'
+        required: true
+        default: 'scrape'
+        type: choice
+        options:
+          - scrape
+          - discover
+          - stats
+      max_contacts:
+        description: 'Maximum contacts to process'
+        default: '50'
+      company:
+        description: 'Company to discover (only for discover mode)'
+        default: 'avon'
+      dry_run:
+        description: 'Dry run mode (no Firestore writes)'
+        default: false
+        type: boolean
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: 'scripts/package.json'
+
+      - name: Install dependencies
+        run: cd scripts && npm ci
+
+      - name: Install Chrome dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libnss3 libatk-bridge2.0-0 libdrm2 \
+            libxkbcommon0 libgbm1 libasound2t64 libxshmfence1
+
+      - name: Setup Firebase credentials
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          mkdir -p secrets
+          echo "$FIREBASE_SERVICE_ACCOUNT" > secrets/serviceAccountKey.json
+
+      - name: Run scraper (scheduled)
+        if: github.event_name == 'schedule'
+        env:
+          TWOCAPTCHA_API_KEY: ${{ secrets.TWOCAPTCHA_API_KEY }}
+        run: |
+          # Discover from next company in rotation (20 companies, Firestore-tracked)
+          node scripts/fsr-scraper.js --discover-next --max=30
+
+          # Scrape pending contacts
+          node scripts/fsr-scraper.js --scrape --max=75
+
+      - name: Run scraper (manual - scrape mode)
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.mode == 'scrape'
+        env:
+          TWOCAPTCHA_API_KEY: ${{ secrets.TWOCAPTCHA_API_KEY }}
+          MAX_CONTACTS: ${{ github.event.inputs.max_contacts }}
+          DRY_RUN: ${{ github.event.inputs.dry_run }}
+        run: |
+          ARGS="--scrape --max=$MAX_CONTACTS"
+          if [ "$DRY_RUN" = "true" ]; then
+            ARGS="$ARGS --dry-run"
+          fi
+          node scripts/fsr-scraper.js $ARGS
+
+      - name: Run scraper (manual - discover mode)
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.mode == 'discover'
+        env:
+          TWOCAPTCHA_API_KEY: ${{ secrets.TWOCAPTCHA_API_KEY }}
+          MAX_CONTACTS: ${{ github.event.inputs.max_contacts }}
+          COMPANY: ${{ github.event.inputs.company }}
+          DRY_RUN: ${{ github.event.inputs.dry_run }}
+        run: |
+          ARGS="--discover --company=$COMPANY --max=$MAX_CONTACTS"
+          if [ "$DRY_RUN" = "true" ]; then
+            ARGS="$ARGS --dry-run"
+          fi
+          node scripts/fsr-scraper.js $ARGS
+
+      - name: Run scraper (manual - stats mode)
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.mode == 'stats'
+        run: node scripts/fsr-scraper.js --stats
+
+      - name: Show stats
+        if: always()
+        run: node scripts/fsr-scraper.js --stats || true
+
+      - name: Cleanup
+        if: always()
+        run: rm -rf secrets/
