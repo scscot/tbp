@@ -154,6 +154,13 @@ const {
 } = require('./email-campaign-bfh');
 
 // ==============================
+// Import Email Campaign for Zinzino Contacts
+// ==============================
+const {
+  sendHourlyZinzinoCampaign,
+} = require('./email-campaign-zinzino');
+
+// ==============================
 // Import Email Tracking Functions (SMTP Migration)
 // ==============================
 const {
@@ -411,6 +418,9 @@ module.exports = {
 
   // Email campaign for BFH contacts (scheduled)
   sendHourlyBfhCampaign,
+
+  // Email campaign for Zinzino contacts (scheduled)
+  sendHourlyZinzinoCampaign,
 
   // Email tracking endpoints (SMTP migration)
   trackEmailOpen,

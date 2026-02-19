@@ -17,6 +17,7 @@ const MAIN_CAMPAIGN_COLLECTION = 'emailCampaigns/master/contacts';
 const CONTACTS_CAMPAIGN_COLLECTION = 'direct_sales_contacts';
 const PURCHASED_CAMPAIGN_COLLECTION = 'purchased_leads';
 const BFH_CAMPAIGN_COLLECTION = 'bfh_contacts';
+const ZINZINO_CAMPAIGN_COLLECTION = 'zinzino_contacts';
 const MONITORING_PASSWORD = process.env.MONITORING_PASSWORD || 'TeamBuildPro2024!';
 const GA4_PROPERTY_ID = '485651473';
 
@@ -194,7 +195,7 @@ async function fetchGA4Stats(serviceAccountJson) {
  */
 async function fetchCampaignStats(collectionPath, now, twentyFourHoursAgo, startOfTodayUTC, options = {}) {
   const contactsRef = db.collection(collectionPath);
-  const { isContactsCampaign = false } = options;
+  const { isContactsCampaign = false, isZinzinoCampaign = false } = options;
 
   // Get total count
   let totalSnapshot;
@@ -244,7 +245,8 @@ async function fetchCampaignStats(collectionPath, now, twentyFourHoursAgo, start
       template: data.templateVersion || data.template || 'N/A',
       subjectTag: data.subjectTag || '-',
       clicked: !!data.clickedAt,
-      company: data.company || null  // Include company for contacts campaign
+      company: data.company || null,  // Include company for contacts campaign
+      country: data.country || null   // Include country for zinzino campaign
     };
   });
 
@@ -253,6 +255,30 @@ async function fetchCampaignStats(collectionPath, now, twentyFourHoursAgo, start
 
   // Get subject line breakdown
   const subjectLineStats = await fetchSubjectLineStats(contactsRef);
+
+  // Get language breakdown for Zinzino campaign
+  let languageBreakdown = null;
+  if (isZinzinoCampaign) {
+    try {
+      const sentDocs = await contactsRef
+        .where('sent', '==', true)
+        .select('sentLanguage')
+        .get();
+
+      const langCounts = { en: 0, es: 0, de: 0 };
+      sentDocs.docs.forEach(doc => {
+        const lang = doc.data().sentLanguage || 'en';
+        if (langCounts.hasOwnProperty(lang)) {
+          langCounts[lang]++;
+        } else {
+          langCounts.en++;  // Default to English if unknown
+        }
+      });
+      languageBreakdown = langCounts;
+    } catch (langError) {
+      console.error('Error fetching language breakdown:', langError.message);
+    }
+  }
 
   return {
     campaign: {
@@ -273,7 +299,8 @@ async function fetchCampaignStats(collectionPath, now, twentyFourHoursAgo, start
       clickRate: '0%'
     },
     subjectLines: subjectLineStats,
-    recentSends
+    recentSends,
+    languageBreakdown
   };
 }
 
@@ -304,11 +331,12 @@ const getEmailCampaignStats = onRequest({
     const startOfTodayUTC = new Date(startOfTodayPT.getTime() - (ptOffset + now.getTimezoneOffset()) * 60 * 1000);
 
     // Fetch stats for all campaigns in parallel
-    const [mainCampaignStats, contactsCampaignStats, purchasedCampaignStats, bfhCampaignStats] = await Promise.all([
+    const [mainCampaignStats, contactsCampaignStats, purchasedCampaignStats, bfhCampaignStats, zinzinoCampaignStats] = await Promise.all([
       fetchCampaignStats(MAIN_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC),
       fetchCampaignStats(CONTACTS_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC, { isContactsCampaign: true }),
       fetchCampaignStats(PURCHASED_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC),
-      fetchCampaignStats(BFH_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC)
+      fetchCampaignStats(BFH_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC),
+      fetchCampaignStats(ZINZINO_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC, { isZinzinoCampaign: true })
     ]);
 
     // Get GA4 stats (shared across campaigns)
@@ -361,6 +389,17 @@ const getEmailCampaignStats = onRequest({
         tracking: bfhCampaignStats.tracking,
         subjectLines: bfhCampaignStats.subjectLines,
         recentSends: bfhCampaignStats.recentSends
+      },
+
+      // Zinzino campaign data
+      zinzinoCampaign: {
+        campaign: zinzinoCampaignStats.campaign,
+        last24h: zinzinoCampaignStats.last24h,
+        today: zinzinoCampaignStats.today,
+        tracking: zinzinoCampaignStats.tracking,
+        subjectLines: zinzinoCampaignStats.subjectLines,
+        recentSends: zinzinoCampaignStats.recentSends,
+        languageBreakdown: zinzinoCampaignStats.languageBreakdown
       },
 
       // GA4 stats (shared)

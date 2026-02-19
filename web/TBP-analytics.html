@@ -731,6 +731,11 @@
             color: #0369a1;
         }
 
+        .campaign-label.zinzino {
+            background: #fce7f3;
+            color: #be185d;
+        }
+
         .source-label {
             display: inline-block;
             font-size: 0.7rem;
@@ -1560,6 +1565,29 @@
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Zinzino Campaign -->
+                        <div style="background: #f8f9fa; border-radius: 12px; padding: 15px; border-left: 4px solid #be185d;">
+                            <h4 style="margin: 0 0 12px 0; color: #be185d; font-size: 0.9rem;">ZINZINO CAMPAIGN</h4>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                <div>
+                                    <div style="font-size: 0.7rem; color: #666; text-transform: uppercase;">Sent</div>
+                                    <div style="font-size: 1.3rem; font-weight: 600; color: #34c759;" id="execZinzinoSent">-</div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 0.7rem; color: #666; text-transform: uppercase;">Remaining</div>
+                                    <div style="font-size: 1.3rem; font-weight: 600; color: #be185d;" id="execZinzinoRemaining">-</div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 0.7rem; color: #666; text-transform: uppercase;">Clicked</div>
+                                    <div style="font-size: 1.3rem; font-weight: 600; color: #34c759;" id="execZinzinoClicked">-</div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 0.7rem; color: #666; text-transform: uppercase;">Click Rate</div>
+                                    <div style="font-size: 1.3rem; font-weight: 600;" id="execZinzinoClickRate">-</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- GA4 Campaign Traffic -->
@@ -1833,6 +1861,9 @@
                     <div class="campaign-tab" onclick="switchEmailTab('bfh')">
                         BFH Campaign <span class="tab-badge" id="emailBfhTabBadge">-</span>
                     </div>
+                    <div class="campaign-tab" onclick="switchEmailTab('zinzino')">
+                        Zinzino <span class="tab-badge" id="emailZinzinoTabBadge">-</span>
+                    </div>
                     <div class="campaign-tab comparison" onclick="switchEmailTab('comparison')">
                         &#128202; Comparison
                     </div>
@@ -2089,6 +2120,104 @@
                                 </tr>
                             </thead>
                             <tbody id="emailBfhRecentSendsBody">
+                                <tr><td colspan="5" class="no-data-message">Loading...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Zinzino Campaign Sub-Tab Content -->
+                <div id="emailZinzinoTab" class="campaign-content">
+                    <!-- Campaign Progress -->
+                    <h2 class="section-title">Campaign Progress <span class="campaign-label zinzino">Zinzino</span></h2>
+                    <div class="section-card" style="margin-bottom: 30px;">
+                        <h3>Overall Send Progress</h3>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar" id="emailZinzinoProgressBar" style="width: 0%;">0%</div>
+                        </div>
+                        <div class="progress-stats">
+                            <span><strong id="emailZinzinoTotalSent">0</strong> sent</span>
+                            <span><strong id="emailZinzinoTotalRemaining">0</strong> remaining</span>
+                            <span><strong id="emailZinzinoTotalContacts">0</strong> total</span>
+                        </div>
+                    </div>
+
+                    <div class="section-card">
+                        <h3>Email Statistics</h3>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-value green" id="emailZinzinoSentToday">-</div>
+                                <div class="stat-label">Sent Today</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="emailZinzinoSent24h">-</div>
+                                <div class="stat-label">Last 24 Hours</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value red" id="emailZinzinoFailed">-</div>
+                                <div class="stat-label">Failed</div>
+                            </div>
+                        </div>
+                        <div class="stats-grid" style="margin-top: 15px;">
+                            <div class="stat-card">
+                                <div class="stat-value green" id="emailZinzinoTotalClicked">-</div>
+                                <div class="stat-label">Clicked</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="emailZinzinoClickRate">-</div>
+                                <div class="stat-label">Click Rate</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-card" style="margin-top: 30px;">
+                        <h3>Language Breakdown</h3>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-value" id="emailZinzinoLangEn">-</div>
+                                <div class="stat-label">English</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="emailZinzinoLangEs">-</div>
+                                <div class="stat-label">Spanish</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="emailZinzinoLangDe">-</div>
+                                <div class="stat-label">German</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-card" style="margin-top: 30px;">
+                        <h3>A/B Test Performance</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Variant</th>
+                                    <th>Sent</th>
+                                    <th>Clicked</th>
+                                    <th>Rate</th>
+                                </tr>
+                            </thead>
+                            <tbody id="emailZinzinoAbTestBody">
+                                <tr><td colspan="4" class="no-data-message">Loading...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="section-card" style="margin-top: 30px;">
+                        <h3>Recent Sends</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Time (PT)</th>
+                                    <th>Email</th>
+                                    <th>Country</th>
+                                    <th>Variant</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="emailZinzinoRecentSendsBody">
                                 <tr><td colspan="5" class="no-data-message">Loading...</td></tr>
                             </tbody>
                         </table>
@@ -2626,6 +2755,13 @@
                 document.getElementById('execBfhRemaining').textContent = formatNumber(bfh.remaining || 0);
                 document.getElementById('execBfhClicked').textContent = formatNumber(bfh.clicked || 0);
                 document.getElementById('execBfhClickRate').textContent = bfh.clickRate || '0%';
+
+                // Zinzino Campaign
+                const zinzino = campaigns.zinzino || {};
+                document.getElementById('execZinzinoSent').textContent = formatNumber(zinzino.sent || 0);
+                document.getElementById('execZinzinoRemaining').textContent = formatNumber(zinzino.remaining || 0);
+                document.getElementById('execZinzinoClicked').textContent = formatNumber(zinzino.clicked || 0);
+                document.getElementById('execZinzinoClickRate').textContent = zinzino.clickRate || '0%';
             }
 
             // GA4 Campaign Traffic (from date-range website data)
@@ -2946,6 +3082,93 @@
                 document.getElementById('emailBfhTabBadge').textContent = formatNumber(bfhSent) + ' sent';
             }
 
+            // ==================== ZINZINO CAMPAIGN ====================
+            if (emailStatsData.zinzinoCampaign) {
+                const zz = emailStatsData.zinzinoCampaign;
+
+                // Campaign progress
+                const zzTotal = zz.campaign?.total || 1;
+                const zzSent = zz.campaign?.sent || 0;
+                const zzProgress = (zzSent / zzTotal * 100);
+
+                document.getElementById('emailZinzinoProgressBar').style.width = zzProgress + '%';
+                document.getElementById('emailZinzinoProgressBar').textContent = zzProgress.toFixed(1) + '%';
+                document.getElementById('emailZinzinoTotalSent').textContent = formatNumber(zzSent);
+                document.getElementById('emailZinzinoTotalRemaining').textContent = formatNumber(zz.campaign?.remaining || 0);
+                document.getElementById('emailZinzinoTotalContacts').textContent = formatNumber(zz.campaign?.total || 0);
+
+                // Sending activity
+                document.getElementById('emailZinzinoSentToday').textContent = formatNumber(zz.today?.sent || 0);
+                document.getElementById('emailZinzinoSent24h').textContent = formatNumber(zz.last24h?.sent || 0);
+
+                // Click performance
+                if (zz.tracking) {
+                    document.getElementById('emailZinzinoFailed').textContent = formatNumber(zz.tracking.failed || 0);
+                    document.getElementById('emailZinzinoTotalClicked').textContent = formatNumber(zz.tracking.clicked || 0);
+                    document.getElementById('emailZinzinoClickRate').textContent = zz.tracking.clickRate || '0%';
+                }
+
+                // Language breakdown
+                if (zz.languageBreakdown) {
+                    document.getElementById('emailZinzinoLangEn').textContent = formatNumber(zz.languageBreakdown.en || 0);
+                    document.getElementById('emailZinzinoLangEs').textContent = formatNumber(zz.languageBreakdown.es || 0);
+                    document.getElementById('emailZinzinoLangDe').textContent = formatNumber(zz.languageBreakdown.de || 0);
+                }
+
+                // A/B test performance
+                const zzAbBody = document.getElementById('emailZinzinoAbTestBody');
+                const zzSubjectLines = (zz.subjectLines || []).filter(sl =>
+                    sl.subjectTag?.startsWith('zinzino_v9') || sl.subjectTag?.startsWith('zinzino_v10')
+                );
+                if (zzSubjectLines.length > 0) {
+                    const sorted = [...zzSubjectLines].sort((a, b) => {
+                        return parseFloat(b.clickRate) - parseFloat(a.clickRate);
+                    });
+                    const winnerTag = sorted[0].subjectTag;
+
+                    zzAbBody.innerHTML = zzSubjectLines.map(sl => {
+                        const label = sl.subjectTag || 'Unknown';
+                        const isWinner = sl.subjectTag === winnerTag && zzSubjectLines.length > 1;
+                        const badgeClass = getBadgeClass(sl.subjectTag);
+                        return `
+                            <tr class="${isWinner ? 'ab-winner' : ''}">
+                                <td>${escapeHtml(label)} ${isWinner ? '<span class="badge badge-clicked">LEADING</span>' : ''}</td>
+                                <td>${formatNumber(sl.sent)}</td>
+                                <td>${formatNumber(sl.clicked)}</td>
+                                <td><span class="badge ${badgeClass}">${sl.clickRate}</span></td>
+                            </tr>
+                        `;
+                    }).join('');
+                } else {
+                    zzAbBody.innerHTML = '<tr><td colspan="4" class="no-data-message">No A/B test data</td></tr>';
+                }
+
+                // Recent sends (includes country column)
+                const zzTbody = document.getElementById('emailZinzinoRecentSendsBody');
+                if (zz.recentSends && zz.recentSends.length > 0) {
+                    zzTbody.innerHTML = zz.recentSends.map(send => {
+                        const variantBadge = getVariantBadge(send.subjectTag);
+                        const statusBadge = send.clicked
+                            ? '<span class="badge badge-clicked">Clicked</span>'
+                            : '<span class="badge badge-sent">Sent</span>';
+                        return `
+                            <tr>
+                                <td>${escapeHtml(send.time || '')}</td>
+                                <td>${escapeHtml(send.email || '')}</td>
+                                <td>${escapeHtml(send.country || '-')}</td>
+                                <td>${variantBadge}</td>
+                                <td>${statusBadge}</td>
+                            </tr>
+                        `;
+                    }).join('');
+                } else {
+                    zzTbody.innerHTML = '<tr><td colspan="5" class="no-data-message">No recent sends</td></tr>';
+                }
+
+                // Update tab badge
+                document.getElementById('emailZinzinoTabBadge').textContent = formatNumber(zzSent) + ' sent';
+            }
+
             // ==================== GA4 EMAIL TRAFFIC ====================
             if (emailStatsData.ga4) {
                 const trafficContent = document.getElementById('emailCampaignTrafficContent');
@@ -3110,7 +3333,8 @@
                 const campaignList = [
                     { key: 'main', name: 'Main', data: campaigns.main },
                     { key: 'purchased', name: 'Purchased', data: campaigns.purchased },
-                    { key: 'bfh', name: 'BFH', data: campaigns.bfh }
+                    { key: 'bfh', name: 'BFH', data: campaigns.bfh },
+                    { key: 'zinzino', name: 'Zinzino', data: campaigns.zinzino }
                 ];
 
                 campaignList.forEach(c => {

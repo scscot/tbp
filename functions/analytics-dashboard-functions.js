@@ -1305,6 +1305,7 @@ const CONTACTS_COLLECTION = 'emailCampaigns/master/contacts';
 const CONTACTS_CAMPAIGN_COLLECTION = 'direct_sales_contacts';
 const PURCHASED_CAMPAIGN_COLLECTION = 'purchased_leads';
 const BFH_CAMPAIGN_COLLECTION = 'bfh_contacts';
+const ZINZINO_CAMPAIGN_COLLECTION = 'zinzino_contacts';
 
 /**
  * Fetch email campaign stats from Firestore
@@ -1513,15 +1514,16 @@ async function fetchSingleCampaignStats(collectionPath, campaignName, benchmarkT
  */
 async function fetchAllEmailCampaignStats(benchmarkTimestamp = null) {
   try {
-    const [mainStats, contactsStats, purchasedStats, bfhStats] = await Promise.all([
+    const [mainStats, contactsStats, purchasedStats, bfhStats, zinzinoStats] = await Promise.all([
       fetchSingleCampaignStats(CONTACTS_COLLECTION, 'Main', benchmarkTimestamp),
       fetchSingleCampaignStats(CONTACTS_CAMPAIGN_COLLECTION, 'Contacts', benchmarkTimestamp),
       fetchSingleCampaignStats(PURCHASED_CAMPAIGN_COLLECTION, 'Purchased', benchmarkTimestamp),
-      fetchSingleCampaignStats(BFH_CAMPAIGN_COLLECTION, 'BFH', benchmarkTimestamp)
+      fetchSingleCampaignStats(BFH_CAMPAIGN_COLLECTION, 'BFH', benchmarkTimestamp),
+      fetchSingleCampaignStats(ZINZINO_CAMPAIGN_COLLECTION, 'Zinzino', benchmarkTimestamp)
     ]);
 
     // Calculate totals across all campaigns
-    const campaigns = [mainStats, contactsStats, purchasedStats, bfhStats];
+    const campaigns = [mainStats, contactsStats, purchasedStats, bfhStats, zinzinoStats];
     const totals = {
       totalSent: campaigns.reduce((sum, c) => sum + c.sent, 0),
       totalClicked: campaigns.reduce((sum, c) => sum + c.clicked, 0),
@@ -1552,7 +1554,8 @@ async function fetchAllEmailCampaignStats(benchmarkTimestamp = null) {
         main: mainStats,
         contacts: contactsStats,
         purchased: purchasedStats,
-        bfh: bfhStats
+        bfh: bfhStats,
+        zinzino: zinzinoStats
       },
       totals,
       bestCampaign: {
