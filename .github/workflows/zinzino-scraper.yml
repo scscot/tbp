@@ -1,0 +1,134 @@
+name: Zinzino Partner Scraper
+
+on:
+  schedule:
+    # Run 5 times daily (~every 5 hours): 6am, 11am, 4pm, 9pm, 2am PT
+    - cron: '0 13 * * *'   # 6am PT
+    - cron: '0 18 * * *'   # 11am PT
+    - cron: '0 23 * * *'   # 4pm PT
+    - cron: '0 4 * * *'    # 9pm PT
+    - cron: '0 9 * * *'    # 2am PT
+
+  # Allow manual trigger for testing
+  workflow_dispatch:
+    inputs:
+      country:
+        description: 'Country code (e.g., "de", "us") or leave blank for auto-resume'
+        required: false
+        default: ''
+        type: string
+      city:
+        description: 'City filter (e.g., "Berlin")'
+        required: false
+        default: ''
+        type: string
+      max_partners:
+        description: 'Maximum partners to scrape per run'
+        required: false
+        default: '50'
+        type: string
+      dry_run:
+        description: 'Dry run (preview only, no Firestore writes)'
+        required: false
+        default: false
+        type: boolean
+      reset_state:
+        description: 'Reset scraper state before running'
+        required: false
+        default: false
+        type: boolean
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: 'scripts/package.json'
+
+      - name: Install dependencies
+        run: |
+          cd scripts && npm ci && cd ..
+          echo "Dependencies installed"
+
+      - name: Install Puppeteer Chrome dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libnss3 \
+            libatk-bridge2.0-0 \
+            libdrm2 \
+            libxkbcommon0 \
+            libgbm1 \
+            libasound2t64 \
+            libxshmfence1
+          echo "Chrome dependencies installed"
+
+      - name: Setup Firebase credentials
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          mkdir -p secrets
+          echo "$FIREBASE_SERVICE_ACCOUNT" > secrets/serviceAccountKey.json
+          echo "Firebase credentials configured"
+
+      - name: Reset state (if requested)
+        if: ${{ github.event.inputs.reset_state == 'true' }}
+        run: |
+          echo "Resetting scraper state..."
+          node scripts/zinzino-scraper.js --reset-state
+          echo "State reset complete"
+
+      - name: Run Zinzino scraper
+        env:
+          MAX_PARTNERS: ${{ github.event.inputs.max_partners || '50' }}
+          COUNTRY: ${{ github.event.inputs.country || '' }}
+          CITY: ${{ github.event.inputs.city || '' }}
+          DRY_RUN: ${{ github.event.inputs.dry_run }}
+        run: |
+          echo "Starting Zinzino Partner Scraper..."
+          echo "Max partners: $MAX_PARTNERS"
+
+          ARGS="--scrape --max=$MAX_PARTNERS"
+
+          if [ -n "$COUNTRY" ]; then
+            echo "Country filter: $COUNTRY"
+            ARGS="$ARGS --country=$COUNTRY"
+          fi
+
+          if [ -n "$CITY" ]; then
+            echo "City filter: $CITY"
+            ARGS="$ARGS --city=$CITY"
+          fi
+
+          if [ "$DRY_RUN" = "true" ]; then
+            echo "Mode: DRY RUN"
+            ARGS="$ARGS --dry-run"
+          else
+            echo "Mode: LIVE"
+          fi
+
+          node scripts/zinzino-scraper.js $ARGS
+
+      - name: Show stats
+        if: always()
+        run: |
+          echo "Final stats:"
+          node scripts/zinzino-scraper.js --stats || true
+
+      - name: Cleanup
+        if: always()
+        run: |
+          rm -rf secrets/
+          echo "Cleanup complete"
