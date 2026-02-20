@@ -1,7 +1,7 @@
 # PreIntake.ai: Comprehensive Project Documentation
 
-**Last Updated**: 2026-02-17
-**Version**: 6.4 (V8 email template + SPF fix)
+**Last Updated**: 2026-02-19
+**Version**: 6.5 (removed Yahoo/AOL exclusion)
 
 ---
 
@@ -15,7 +15,7 @@
 
 PreIntake.ai has reached a mature, fully-automated state:
 - ✅ 8 active bar scrapers continuously adding attorney contacts (7 disabled after completion)
-- ✅ Email campaign runs 4x daily Mon-Fri (PST: 8:30am, 10:30am, 12:30pm, 2:30pm) with domain warming
+- ✅ Email campaign runs 4x daily Mon-Fri (PST: 8:30am, 10:30am, 12:30pm, 2:30pm) - domain warming complete
 - ✅ Demo generation fully automated (website + bar profile)
 - ✅ Analytics dashboard operational (GA4 + Firestore)
 - ✅ Customer portal implemented (magic link auth, settings, billing)
@@ -1685,6 +1685,21 @@ Emails Sent → Demo Viewed → Conversation Started → Contact Collected → S
 | File | Changes |
 |------|---------|
 | `preintake/email-analytics.html` | Added v8 template mapping to `formatTemplate()` |
+
+### Phase 70: Remove Yahoo/AOL Exclusion (2026-02-19)
+- [x] **Domain Warming Complete** - Removed Yahoo/AOL email exclusion from campaign
+  - Domain warming period has matured sufficiently
+  - Email campaign now sends to all providers including Yahoo, AOL, and free email services
+  - Removed `EXCLUDE_YAHOO_AOL: 'true'` environment variable from workflow
+- [x] **Root Cause Analysis** - Investigated why 2:30pm batch sent 0 emails
+  - Yahoo/AOL exclusion was filtering contacts AFTER proportional selection
+  - When all 50 selected contacts were Yahoo/AOL, post-selection filtering resulted in 0 sends
+  - Fix: Remove exclusion entirely rather than move filtering before selection
+
+**Files Modified:**
+| File | Changes |
+|------|---------|
+| `.github/workflows/preintake-email-campaign.yml` | Removed `EXCLUDE_YAHOO_AOL` env var and related logging |
 
 ---
 
