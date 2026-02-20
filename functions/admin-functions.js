@@ -1037,47 +1037,15 @@ const checkTrialsExpiringSoon = onSchedule("0 9 * * *", async (event) => {
 
 /**
  * Check for subscriptions expiring soon
+ *
+ * DISABLED: Apple App Store and Google Play handle automatic subscription renewals.
+ * This reminder is unnecessary and potentially confusing for auto-renewing subscriptions.
+ * Users don't need to take action - billing happens automatically.
  */
 const checkSubscriptionsExpiringSoon = onSchedule("0 9 * * *", async (event) => {
-  logger.info("Starting subscriptions expiring soon check");
-
-  try {
-    const now = new Date();
-    const threeDaysFromNow = new Date(now.getTime() + 3 * 24 * 60 * 60 * 1000);
-
-    const usersSnapshot = await db.collection('users')
-      .where('subscriptionExpiry', '<=', threeDaysFromNow)
-      .where('subscriptionExpiry', '>', now)
-      .where('subscriptionStatus', 'in', ['active', 'cancelled'])
-      .get();
-
-    const notificationPromises = [];
-
-    for (const userDoc of usersSnapshot.docs) {
-      const userId = userDoc.id;
-      const userData = userDoc.data();
-      const expiryDate = userData.subscriptionExpiry.toDate();
-
-      notificationPromises.push(
-        createNotification({
-          userId,
-          type: 'subscription_expiring_soon',
-          title: '⏰ Subscription Expiring',
-          body: `Your subscription expires on ${expiryDate.toLocaleDateString()}. Renew now to avoid interruption.`,
-          docFields: {
-            route: '/subscription',
-            route_params: JSON.stringify({ action: 'renew' })
-          }
-        })
-      );
-    }
-
-    await Promise.allSettled(notificationPromises);
-    logger.info(`Sent expiring notifications to ${usersSnapshot.size} users`);
-
-  } catch (error) {
-    logger.error("Error checking subscriptions expiring soon:", error);
-  }
+  // Disabled - auto-renewing subscriptions don't need reminders
+  logger.info("checkSubscriptionsExpiringSoon: Disabled (auto-renewal handled by app stores)");
+  return;
 });
 
 /**
