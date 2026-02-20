@@ -295,7 +295,10 @@ async function regenerateDemos(options = {}) {
 
     const snapshot = await query.get();
 
-    // Collect and sort by creation date
+    // Test demo ID - always process first for quick testing
+    const TEST_DEMO_ID = '3vhfvzks9EHCRkgyKLU4';
+
+    // Collect and sort: test demo first, then by creation date desc (newest first)
     const leads = [];
     snapshot.forEach(doc => {
         const data = doc.data();
@@ -309,7 +312,13 @@ async function regenerateDemos(options = {}) {
         });
     });
 
-    leads.sort((a, b) => (a.created || 0) - (b.created || 0));
+    leads.sort((a, b) => {
+        // Test demo always first
+        if (a.id === TEST_DEMO_ID) return -1;
+        if (b.id === TEST_DEMO_ID) return 1;
+        // Then sort by creation date desc (newest first)
+        return (b.created || 0) - (a.created || 0);
+    });
 
     console.log(`Found ${leads.length} demo_ready leads:\n`);
 

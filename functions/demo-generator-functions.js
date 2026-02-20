@@ -43,8 +43,8 @@ const smtpPass = defineSecret('PREINTAKE_SMTP_PASS');
 // Constants
 const NOTIFY_EMAIL = 'stephen@preintake.ai';
 const FROM_ADDRESS = 'PreIntake.ai <support@preintake.ai>';
-const PROXY_URL = 'https://dpm-proxy-312163687148.us-central1.run.app/api/chat';
-const CLAUDE_MODEL = 'claude-sonnet-4-20250514';
+const PROXY_URL = 'https://us-west1-teambuilder-plus-fe74d.cloudfunctions.net/chatProxy';
+const CLAUDE_MODEL = 'claude-haiku-4-5';  // Fastest model with near-frontier intelligence
 const STORAGE_BUCKET = 'teambuilder-plus-fe74d.firebasestorage.app';
 
 /**
@@ -384,6 +384,7 @@ function generateDemoFiles(leadId, leadData, analysis, deepResearch) {
             : 'Ready to go live on your website?',
         // Show escape link for ALL demos (allows bar profile contacts to create demo for current firm)
         '{{ESCAPE_LINK_DISPLAY}}': 'block',
+        '{{IS_ACTIVE_SUBSCRIPTION}}': leadData.subscriptionStatus === 'active' ? 'true' : 'false',
     };
 
     for (const [token, value] of Object.entries(replacements)) {
@@ -1223,6 +1224,20 @@ function generateDetectButtonsFunction(practiceArea, practiceAreasList, isMultiP
         baseFunction = getEstatePlanningButtonsFunction();
     } else if (area.includes('personal injury')) {
         baseFunction = getPersonalInjuryButtonsFunction();
+    } else if (area.includes('workers') || area.includes('worker')) {
+        baseFunction = getWorkersCompButtonsFunction();
+    } else if (area.includes('employment')) {
+        baseFunction = getEmploymentLawButtonsFunction();
+    } else if (area.includes('real estate') || area.includes('property')) {
+        baseFunction = getRealEstateButtonsFunction();
+    } else if (area.includes('elder')) {
+        baseFunction = getElderLawButtonsFunction();
+    } else if (area.includes('insurance')) {
+        baseFunction = getInsuranceLawButtonsFunction();
+    } else if (area.includes('social security')) {
+        baseFunction = getSocialSecurityButtonsFunction();
+    } else if (area.includes('construction')) {
+        baseFunction = getConstructionLawButtonsFunction();
     } else {
         baseFunction = getGenericButtonsFunction();
     }
@@ -1250,6 +1265,20 @@ function generateDetectButtonsFunction(practiceArea, practiceAreasList, isMultiP
                 areaButtons = getEstatePlanningButtonsContent();
             } else if (areaLower.includes('personal injury')) {
                 areaButtons = getPersonalInjuryButtonsContent();
+            } else if (areaLower.includes('workers') || areaLower.includes('worker')) {
+                areaButtons = getWorkersCompButtonsContent();
+            } else if (areaLower.includes('employment')) {
+                areaButtons = getEmploymentLawButtonsContent();
+            } else if (areaLower.includes('real estate') || areaLower.includes('property')) {
+                areaButtons = getRealEstateButtonsContent();
+            } else if (areaLower.includes('elder')) {
+                areaButtons = getElderLawButtonsContent();
+            } else if (areaLower.includes('insurance')) {
+                areaButtons = getInsuranceLawButtonsContent();
+            } else if (areaLower.includes('social security')) {
+                areaButtons = getSocialSecurityButtonsContent();
+            } else if (areaLower.includes('construction')) {
+                areaButtons = getConstructionLawButtonsContent();
             }
 
             if (areaButtons) {
@@ -1270,13 +1299,14 @@ ${practiceAreaDetection}
 
 ${combinedDetections}
 
-    // Generic yes/no (only for actual yes/no questions, not WH-questions)
+    // Generic yes/no (only for actual yes/no questions, not WH-questions or name requests)
     if ((lowerText.includes('do you') || lowerText.includes('are you') || lowerText.includes('have you') ||
          lowerText.includes('did you') || lowerText.includes('were you') || lowerText.includes('is there') ||
          lowerText.includes('was there') || lowerText.includes('can you') || lowerText.includes('will you')) &&
         !lowerText.includes('describe') && !lowerText.includes('explain') && !lowerText.includes('tell me') &&
         !lowerText.includes('when') && !lowerText.includes('where') && !lowerText.includes('why') &&
-        !lowerText.includes('how') && !lowerText.includes('what') && !lowerText.includes('which')) {
+        !lowerText.includes('how') && !lowerText.includes('what') && !lowerText.includes('which') &&
+        !lowerText.includes('your name')) {
         return [
             { label: "Yes", value: "Yes" },
             { label: "No", value: "No" }
@@ -1300,7 +1330,7 @@ function getImmigrationButtonsFunction() {
     const lowerText = questionText.toLowerCase();
 
     // Immigration status - current status in US
-    if ((lowerText.includes('immigration status') || lowerText.includes('current status')) &&
+    if (lowerText.includes('immigration') && (lowerText.includes('status') || lowerText.includes('current')) &&
         !lowerText.includes('change') && !lowerText.includes('adjust')) {
         return [
             { label: "US Citizen", value: "US Citizen" },
@@ -1405,7 +1435,7 @@ function getImmigrationButtonsFunction() {
         ];
     }
 
-    // Generic Yes/No (only for actual yes/no questions, not WH-questions)
+    // Generic Yes/No (only for actual yes/no questions, not WH-questions or name requests)
     if ((lowerText.includes('do you have') || lowerText.includes('are you currently') ||
          lowerText.includes('have you') || lowerText.includes('did you') ||
          lowerText.includes('is there') || lowerText.includes('was there') ||
@@ -1414,7 +1444,8 @@ function getImmigrationButtonsFunction() {
         !lowerText.includes('type') && !lowerText.includes('kind') &&
         !lowerText.includes('how') && !lowerText.includes('where') && !lowerText.includes('why') &&
         !lowerText.includes('when') && !lowerText.includes('describe') && !lowerText.includes('explain') &&
-        !lowerText.includes('tell me')) {
+        !lowerText.includes('tell me') && !lowerText.includes('your name') &&
+        !lowerText.includes('your email') && !lowerText.includes('your phone') && !lowerText.includes('contact')) {
         return [
             { label: "Yes", value: "Yes" },
             { label: "No", value: "No" }
@@ -1531,15 +1562,16 @@ function getFamilyLawButtonsFunction() {
         ];
     }
 
-    // Generic Yes/No (only for actual yes/no questions, not WH-questions)
+    // Generic Yes/No (only for actual yes/no questions, not WH-questions or name requests)
     if ((lowerText.includes('do you') || lowerText.includes('are you') || lowerText.includes('have you') ||
          lowerText.includes('is there') || lowerText.includes('did you') || lowerText.includes('were you') ||
          lowerText.includes('was there') || lowerText.includes('can you') || lowerText.includes('will you')) &&
         !lowerText.includes('what') && !lowerText.includes('which') &&
-        !lowerText.includes('type') && !lowerText.includes('how long') &&
+        !lowerText.includes('type') && !lowerText.includes('kind') && !lowerText.includes('how long') &&
         !lowerText.includes('when') && !lowerText.includes('where') && !lowerText.includes('why') &&
         !lowerText.includes('how') && !lowerText.includes('describe') && !lowerText.includes('explain') &&
-        !lowerText.includes('tell me')) {
+        !lowerText.includes('tell me') && !lowerText.includes('your name') &&
+        !lowerText.includes('your email') && !lowerText.includes('your phone') && !lowerText.includes('contact')) {
         return [
             { label: "Yes", value: "Yes" },
             { label: "No", value: "No" }
@@ -1661,10 +1693,11 @@ function getTaxLawButtonsFunction() {
          lowerText.includes('did you') || lowerText.includes('were you') || lowerText.includes('is there') ||
          lowerText.includes('was there') || lowerText.includes('can you') || lowerText.includes('will you')) &&
         !lowerText.includes('what') && !lowerText.includes('which') && !lowerText.includes('type') &&
-        !lowerText.includes('how much') && !lowerText.includes('how many') &&
+        !lowerText.includes('kind') && !lowerText.includes('how much') && !lowerText.includes('how many') &&
         !lowerText.includes('when') && !lowerText.includes('where') && !lowerText.includes('why') &&
         !lowerText.includes('how') && !lowerText.includes('describe') && !lowerText.includes('explain') &&
-        !lowerText.includes('tell me')) {
+        !lowerText.includes('tell me') && !lowerText.includes('your name') &&
+        !lowerText.includes('your email') && !lowerText.includes('your phone') && !lowerText.includes('contact')) {
         return [
             { label: "Yes", value: "Yes" },
             { label: "No", value: "No" }
@@ -1710,7 +1743,7 @@ function getBankruptcyButtonsFunction() {
     }
 
     // Types of debt
-    if (lowerText.includes('type') && lowerText.includes('debt') || lowerText.includes('kinds of debt')) {
+    if ((lowerText.includes('type') && lowerText.includes('debt')) || lowerText.includes('kinds of debt')) {
         return {
             multiSelect: true,
             buttons: [
@@ -1787,10 +1820,11 @@ function getBankruptcyButtonsFunction() {
          lowerText.includes('did you') || lowerText.includes('were you') || lowerText.includes('is there') ||
          lowerText.includes('was there') || lowerText.includes('can you') || lowerText.includes('will you')) &&
         !lowerText.includes('what') && !lowerText.includes('which') && !lowerText.includes('type') &&
-        !lowerText.includes('how much') &&
+        !lowerText.includes('kind') && !lowerText.includes('how much') &&
         !lowerText.includes('when') && !lowerText.includes('where') && !lowerText.includes('why') &&
         !lowerText.includes('how') && !lowerText.includes('describe') && !lowerText.includes('explain') &&
-        !lowerText.includes('tell me')) {
+        !lowerText.includes('tell me') && !lowerText.includes('your name') &&
+        !lowerText.includes('your email') && !lowerText.includes('your phone') && !lowerText.includes('contact')) {
         return [
             { label: "Yes", value: "Yes" },
             { label: "No", value: "No" }
@@ -1842,7 +1876,7 @@ function getCriminalDefenseButtonsFunction() {
     }
 
     // Arrested
-    if (lowerText.includes('arrest') && !lowerText.includes('prior')) {
+    if (lowerText.includes('arrest') && !lowerText.includes('prior arrest')) {
         return [
             { label: "Yes", value: "Yes" },
             { label: "No, under investigation", value: "No, under investigation" },
@@ -1903,9 +1937,11 @@ function getCriminalDefenseButtonsFunction() {
          lowerText.includes('did you') || lowerText.includes('were you') || lowerText.includes('is there') ||
          lowerText.includes('was there') || lowerText.includes('can you') || lowerText.includes('will you')) &&
         !lowerText.includes('what') && !lowerText.includes('which') && !lowerText.includes('type') &&
+        !lowerText.includes('kind') &&
         !lowerText.includes('when') && !lowerText.includes('where') && !lowerText.includes('why') &&
         !lowerText.includes('how') && !lowerText.includes('describe') && !lowerText.includes('explain') &&
-        !lowerText.includes('tell me')) {
+        !lowerText.includes('tell me') && !lowerText.includes('your name') &&
+        !lowerText.includes('your email') && !lowerText.includes('your phone') && !lowerText.includes('contact')) {
         return [
             { label: "Yes", value: "Yes" },
             { label: "No", value: "No" }
@@ -1978,7 +2014,7 @@ function getEstatePlanningButtonsFunction() {
     }
 
     // Asset types
-    if (lowerText.includes('type') && lowerText.includes('asset') || lowerText.includes('what assets')) {
+    if ((lowerText.includes('type') && lowerText.includes('asset')) || lowerText.includes('what assets')) {
         return {
             multiSelect: true,
             buttons: [
@@ -2023,9 +2059,11 @@ function getEstatePlanningButtonsFunction() {
          lowerText.includes('did you') || lowerText.includes('were you') || lowerText.includes('is there') ||
          lowerText.includes('was there') || lowerText.includes('can you') || lowerText.includes('will you')) &&
         !lowerText.includes('what') && !lowerText.includes('which') && !lowerText.includes('type') &&
+        !lowerText.includes('kind') &&
         !lowerText.includes('when') && !lowerText.includes('where') && !lowerText.includes('why') &&
         !lowerText.includes('how') && !lowerText.includes('describe') && !lowerText.includes('explain') &&
-        !lowerText.includes('tell me')) {
+        !lowerText.includes('tell me') && !lowerText.includes('your name') &&
+        !lowerText.includes('your email') && !lowerText.includes('your phone') && !lowerText.includes('contact')) {
         return [
             { label: "Yes", value: "Yes" },
             { label: "No", value: "No" }
@@ -2144,7 +2182,7 @@ function getPersonalInjuryButtonsFunction() {
     }
 
     // Emergency room
-    if (lowerText.includes('emergency room') || /\\bthe er\\b|\\bto er\\b/.test(lowerText)) {
+    if (lowerText.includes('emergency room') || (/\\bthe er\\b|\\bto er\\b/.test(lowerText) && !lowerText.includes('error'))) {
         return [
             { label: "Yes", value: "Yes" },
             { label: "No", value: "No" }
@@ -2155,7 +2193,8 @@ function getPersonalInjuryButtonsFunction() {
     if (lowerText.includes('surgery')) {
         return [
             { label: "Yes", value: "Yes" },
-            { label: "No", value: "No" }
+            { label: "No", value: "No" },
+            { label: "Not sure", value: "Not sure" }
         ];
     }
 
@@ -2163,12 +2202,13 @@ function getPersonalInjuryButtonsFunction() {
     if (lowerText.includes('miss') && lowerText.includes('work')) {
         return [
             { label: "Yes", value: "Yes" },
-            { label: "No", value: "No" }
+            { label: "No", value: "No" },
+            { label: "Not sure", value: "Not sure" }
         ];
     }
 
     // Insurance
-    if (lowerText.includes('insur')) {
+    if (lowerText.includes('insurance')) {
         return [
             { label: "Yes", value: "Yes" },
             { label: "No", value: "No" },
@@ -2190,9 +2230,11 @@ function getPersonalInjuryButtonsFunction() {
          lowerText.includes('did you') || lowerText.includes('were you') || lowerText.includes('is there') ||
          lowerText.includes('was there') || lowerText.includes('can you') || lowerText.includes('will you')) &&
         !lowerText.includes('what') && !lowerText.includes('which') && !lowerText.includes('type') &&
+        !lowerText.includes('kind') &&
         !lowerText.includes('when') && !lowerText.includes('where') && !lowerText.includes('why') &&
         !lowerText.includes('how') && !lowerText.includes('describe') && !lowerText.includes('explain') &&
-        !lowerText.includes('tell me')) {
+        !lowerText.includes('tell me') && !lowerText.includes('your name') &&
+        !lowerText.includes('your email') && !lowerText.includes('your phone') && !lowerText.includes('contact')) {
         return [
             { label: "Yes", value: "Yes" },
             { label: "No", value: "No" }
@@ -2261,7 +2303,656 @@ function getGenericButtonsFunction() {
         !lowerText.includes('type') && !lowerText.includes('kind') &&
         !lowerText.includes('how') && !lowerText.includes('where') && !lowerText.includes('why') &&
         !lowerText.includes('when') && !lowerText.includes('status') && !lowerText.includes('describe') &&
-        !lowerText.includes('explain') && !lowerText.includes('tell me')) {
+        !lowerText.includes('explain') && !lowerText.includes('tell me') && !lowerText.includes('your name') &&
+        !lowerText.includes('your email') && !lowerText.includes('your phone') && !lowerText.includes('contact')) {
+        return [
+            { label: "Yes", value: "Yes" },
+            { label: "No", value: "No" }
+        ];
+    }
+
+    return null;
+}`;
+}
+
+function getWorkersCompButtonsFunction() {
+    return `function detectQuestionButtons(text) {
+    const questionMatch = text.match(/[^.!?]*\\?[^.!?]*/g);
+    if (!questionMatch || questionMatch.length === 0) return null;
+
+    const questionText = questionMatch[questionMatch.length - 1];
+    const lowerText = questionText.toLowerCase();
+
+    // Injury type at work
+    if ((lowerText.includes('type') && (lowerText.includes('injur') || lowerText.includes('incident'))) ||
+        lowerText.includes('what happened') || lowerText.includes('how were you injured')) {
+        return [
+            { label: "Slip/Trip/Fall", value: "Slip, Trip, or Fall" },
+            { label: "Lifting/Strain", value: "Lifting or Strain Injury" },
+            { label: "Equipment Accident", value: "Equipment or Machinery Accident" },
+            { label: "Vehicle Accident", value: "Work Vehicle Accident" },
+            { label: "Repetitive Stress", value: "Repetitive Stress Injury" },
+            { label: "Exposure (Chemical/Toxin)", value: "Chemical or Toxic Exposure" },
+            { label: "Other", value: "Other" }
+        ];
+    }
+
+    // Where injury occurred
+    if (lowerText.includes('where') && (lowerText.includes('injur') || lowerText.includes('happen') || lowerText.includes('occur'))) {
+        return [
+            { label: "At workplace", value: "At my workplace" },
+            { label: "At job site", value: "At a job site (off-premises)" },
+            { label: "During travel", value: "While traveling for work" },
+            { label: "Working from home", value: "Working from home" },
+            { label: "Company vehicle", value: "In a company vehicle" },
+            { label: "Other", value: "Other location" }
+        ];
+    }
+
+    // Reported to employer
+    if (lowerText.includes('report') && (lowerText.includes('employer') || lowerText.includes('supervisor') || lowerText.includes('company'))) {
+        return [
+            { label: "Yes, immediately", value: "Yes, reported immediately" },
+            { label: "Yes, later", value: "Yes, reported later" },
+            { label: "No, not yet", value: "No, not yet reported" },
+            { label: "No, afraid to", value: "No, afraid of retaliation" }
+        ];
+    }
+
+    // Workers' comp claim filed
+    if (lowerText.includes('claim') && (lowerText.includes('file') || lowerText.includes('workers') || lowerText.includes('compensation'))) {
+        return [
+            { label: "Yes, approved", value: "Yes, claim approved" },
+            { label: "Yes, denied", value: "Yes, claim denied" },
+            { label: "Yes, pending", value: "Yes, claim pending" },
+            { label: "No, not yet", value: "No, haven't filed yet" },
+            { label: "Not sure how", value: "Not sure how to file" }
+        ];
+    }
+
+    // Medical treatment
+    if (lowerText.includes('medical') || lowerText.includes('treatment') || lowerText.includes('doctor') || lowerText.includes('hospital')) {
+        return [
+            { label: "Yes, ongoing", value: "Yes, receiving ongoing treatment" },
+            { label: "Yes, completed", value: "Yes, treatment completed" },
+            { label: "Emergency room only", value: "Emergency room visit only" },
+            { label: "Not yet", value: "Haven't seen a doctor yet" },
+            { label: "Denied by employer", value: "Employer denied medical care" }
+        ];
+    }
+
+    // Currently working
+    if ((lowerText.includes('able to work') || lowerText.includes('working') || lowerText.includes('return to work')) &&
+        !lowerText.includes('type')) {
+        return [
+            { label: "Yes, same job", value: "Yes, returned to same job" },
+            { label: "Yes, light duty", value: "Yes, on light duty" },
+            { label: "No, temporary", value: "No, temporarily disabled" },
+            { label: "No, permanent", value: "No, permanently disabled" },
+            { label: "Terminated", value: "Was terminated" }
+        ];
+    }
+
+    // Generic Yes/No
+    if ((lowerText.includes('do you') || lowerText.includes('are you') || lowerText.includes('have you') ||
+         lowerText.includes('did you') || lowerText.includes('were you') || lowerText.includes('is there') ||
+         lowerText.includes('was there') || lowerText.includes('can you') || lowerText.includes('will you')) &&
+        !lowerText.includes('describe') && !lowerText.includes('explain') && !lowerText.includes('tell me') &&
+        !lowerText.includes('when') && !lowerText.includes('where') && !lowerText.includes('why') &&
+        !lowerText.includes('how') && !lowerText.includes('what') && !lowerText.includes('which') &&
+        !lowerText.includes('your name') && !lowerText.includes('kind') && !lowerText.includes('type') &&
+        !lowerText.includes('your email') && !lowerText.includes('your phone') && !lowerText.includes('contact')) {
+        return [
+            { label: "Yes", value: "Yes" },
+            { label: "No", value: "No" }
+        ];
+    }
+
+    return null;
+}`;
+}
+
+function getEmploymentLawButtonsFunction() {
+    return `function detectQuestionButtons(text) {
+    const questionMatch = text.match(/[^.!?]*\\?[^.!?]*/g);
+    if (!questionMatch || questionMatch.length === 0) return null;
+
+    const questionText = questionMatch[questionMatch.length - 1];
+    const lowerText = questionText.toLowerCase();
+
+    // Type of employment issue
+    if ((lowerText.includes('type') && (lowerText.includes('issue') || lowerText.includes('problem') || lowerText.includes('matter'))) ||
+        lowerText.includes('what happened') || lowerText.includes('employment issue')) {
+        return [
+            { label: "Wrongful Termination", value: "Wrongful Termination" },
+            { label: "Discrimination", value: "Workplace Discrimination" },
+            { label: "Harassment", value: "Harassment" },
+            { label: "Wage/Hour Violation", value: "Wage or Hour Violation" },
+            { label: "Retaliation", value: "Retaliation" },
+            { label: "Contract Dispute", value: "Employment Contract Dispute" },
+            { label: "Leave/FMLA Issue", value: "Leave or FMLA Issue" },
+            { label: "Other", value: "Other" }
+        ];
+    }
+
+    // Discrimination basis
+    if (lowerText.includes('discrimination') && (lowerText.includes('basis') || lowerText.includes('based on') || lowerText.includes('type'))) {
+        return [
+            { label: "Race/Ethnicity", value: "Race or Ethnicity" },
+            { label: "Gender/Sex", value: "Gender or Sex" },
+            { label: "Age", value: "Age" },
+            { label: "Disability", value: "Disability" },
+            { label: "Religion", value: "Religion" },
+            { label: "Pregnancy", value: "Pregnancy" },
+            { label: "National Origin", value: "National Origin" },
+            { label: "Sexual Orientation", value: "Sexual Orientation" },
+            { label: "Multiple/Other", value: "Multiple or Other" }
+        ];
+    }
+
+    // Employment status
+    if (lowerText.includes('employment status') || lowerText.includes('currently employed') ||
+        (lowerText.includes('still') && lowerText.includes('work'))) {
+        return [
+            { label: "Still employed", value: "Still employed" },
+            { label: "Resigned", value: "Resigned" },
+            { label: "Terminated", value: "Terminated" },
+            { label: "On leave", value: "On leave" },
+            { label: "Laid off", value: "Laid off" }
+        ];
+    }
+
+    // EEOC/complaint filed
+    if (lowerText.includes('eeoc') || lowerText.includes('complaint') || lowerText.includes('charge') ||
+        (lowerText.includes('file') && (lowerText.includes('claim') || lowerText.includes('report')))) {
+        return [
+            { label: "Yes, with EEOC", value: "Yes, filed with EEOC" },
+            { label: "Yes, with state agency", value: "Yes, filed with state agency" },
+            { label: "Yes, internally", value: "Yes, filed internal complaint" },
+            { label: "No, not yet", value: "No, haven't filed yet" },
+            { label: "Not sure how", value: "Not sure how to file" }
+        ];
+    }
+
+    // Documentation
+    if (lowerText.includes('documentation') || lowerText.includes('evidence') || lowerText.includes('records') ||
+        (lowerText.includes('do you have') && (lowerText.includes('proof') || lowerText.includes('written')))) {
+        return [
+            { label: "Yes, extensive", value: "Yes, extensive documentation" },
+            { label: "Some documents", value: "Some documents/emails" },
+            { label: "Witnesses only", value: "Witness testimony only" },
+            { label: "Limited", value: "Limited documentation" },
+            { label: "None", value: "No documentation" }
+        ];
+    }
+
+    // Severance offered
+    if (lowerText.includes('severance') || lowerText.includes('settlement offer')) {
+        return [
+            { label: "Yes, reviewing", value: "Yes, currently reviewing" },
+            { label: "Yes, signed", value: "Yes, already signed" },
+            { label: "No offer", value: "No severance offered" },
+            { label: "Declined offer", value: "Declined the offer" }
+        ];
+    }
+
+    // Generic Yes/No
+    if ((lowerText.includes('do you') || lowerText.includes('are you') || lowerText.includes('have you') ||
+         lowerText.includes('did you') || lowerText.includes('were you') || lowerText.includes('is there') ||
+         lowerText.includes('was there') || lowerText.includes('can you') || lowerText.includes('will you')) &&
+        !lowerText.includes('describe') && !lowerText.includes('explain') && !lowerText.includes('tell me') &&
+        !lowerText.includes('when') && !lowerText.includes('where') && !lowerText.includes('why') &&
+        !lowerText.includes('how') && !lowerText.includes('what') && !lowerText.includes('which') &&
+        !lowerText.includes('your name') && !lowerText.includes('kind') && !lowerText.includes('type') &&
+        !lowerText.includes('your email') && !lowerText.includes('your phone') && !lowerText.includes('contact')) {
+        return [
+            { label: "Yes", value: "Yes" },
+            { label: "No", value: "No" }
+        ];
+    }
+
+    return null;
+}`;
+}
+
+function getRealEstateButtonsFunction() {
+    return `function detectQuestionButtons(text) {
+    const questionMatch = text.match(/[^.!?]*\\?[^.!?]*/g);
+    if (!questionMatch || questionMatch.length === 0) return null;
+
+    const questionText = questionMatch[questionMatch.length - 1];
+    const lowerText = questionText.toLowerCase();
+
+    // Type of real estate matter
+    if ((lowerText.includes('type') && (lowerText.includes('matter') || lowerText.includes('issue') || lowerText.includes('help'))) ||
+        lowerText.includes('real estate') && lowerText.includes('need')) {
+        return [
+            { label: "Buying Property", value: "Buying a Property" },
+            { label: "Selling Property", value: "Selling a Property" },
+            { label: "Landlord/Tenant Dispute", value: "Landlord/Tenant Dispute" },
+            { label: "Title Issue", value: "Title Issue" },
+            { label: "Boundary/Easement", value: "Boundary or Easement Dispute" },
+            { label: "Foreclosure", value: "Foreclosure" },
+            { label: "Contract Review", value: "Contract Review" },
+            { label: "Other", value: "Other" }
+        ];
+    }
+
+    // Property type
+    if (lowerText.includes('type of property') || lowerText.includes('kind of property') ||
+        (lowerText.includes('property') && (lowerText.includes('residential') || lowerText.includes('commercial')))) {
+        return [
+            { label: "Single Family Home", value: "Single Family Home" },
+            { label: "Condo/Townhouse", value: "Condo or Townhouse" },
+            { label: "Multi-Family", value: "Multi-Family Property" },
+            { label: "Commercial", value: "Commercial Property" },
+            { label: "Land/Vacant", value: "Vacant Land" },
+            { label: "Investment Property", value: "Investment Property" }
+        ];
+    }
+
+    // Buyer/Seller/Tenant role
+    if (lowerText.includes('your role') || lowerText.includes('are you the') ||
+        (lowerText.includes('buyer') || lowerText.includes('seller') || lowerText.includes('tenant') || lowerText.includes('landlord'))) {
+        return [
+            { label: "Buyer", value: "Buyer" },
+            { label: "Seller", value: "Seller" },
+            { label: "Tenant", value: "Tenant" },
+            { label: "Landlord", value: "Landlord" },
+            { label: "Investor", value: "Investor" }
+        ];
+    }
+
+    // Transaction stage
+    if (lowerText.includes('stage') || lowerText.includes('status') || lowerText.includes('where are you in')) {
+        return [
+            { label: "Just starting", value: "Just starting to look" },
+            { label: "Under contract", value: "Under contract" },
+            { label: "Due diligence", value: "In due diligence period" },
+            { label: "Near closing", value: "Approaching closing" },
+            { label: "Post-closing issue", value: "Post-closing issue" },
+            { label: "In dispute", value: "Already in dispute" }
+        ];
+    }
+
+    // Urgency/timeline
+    if (lowerText.includes('timeline') || lowerText.includes('deadline') || lowerText.includes('closing date') ||
+        lowerText.includes('how soon') || lowerText.includes('when do you need')) {
+        return [
+            { label: "Urgent (days)", value: "Urgent - within days" },
+            { label: "Within 2 weeks", value: "Within 2 weeks" },
+            { label: "Within 30 days", value: "Within 30 days" },
+            { label: "No rush", value: "No specific deadline" }
+        ];
+    }
+
+    // Generic Yes/No
+    if ((lowerText.includes('do you') || lowerText.includes('are you') || lowerText.includes('have you') ||
+         lowerText.includes('did you') || lowerText.includes('were you') || lowerText.includes('is there') ||
+         lowerText.includes('was there') || lowerText.includes('can you') || lowerText.includes('will you')) &&
+        !lowerText.includes('describe') && !lowerText.includes('explain') && !lowerText.includes('tell me') &&
+        !lowerText.includes('when') && !lowerText.includes('where') && !lowerText.includes('why') &&
+        !lowerText.includes('how') && !lowerText.includes('what') && !lowerText.includes('which') &&
+        !lowerText.includes('your name') && !lowerText.includes('kind') && !lowerText.includes('type') &&
+        !lowerText.includes('your email') && !lowerText.includes('your phone') && !lowerText.includes('contact')) {
+        return [
+            { label: "Yes", value: "Yes" },
+            { label: "No", value: "No" }
+        ];
+    }
+
+    return null;
+}`;
+}
+
+function getElderLawButtonsFunction() {
+    return `function detectQuestionButtons(text) {
+    const questionMatch = text.match(/[^.!?]*\\?[^.!?]*/g);
+    if (!questionMatch || questionMatch.length === 0) return null;
+
+    const questionText = questionMatch[questionMatch.length - 1];
+    const lowerText = questionText.toLowerCase();
+
+    // Type of elder law matter
+    if ((lowerText.includes('type') && (lowerText.includes('matter') || lowerText.includes('issue') || lowerText.includes('help'))) ||
+        lowerText.includes('what brings you') || lowerText.includes('elder law') && lowerText.includes('need')) {
+        return [
+            { label: "Guardianship/Conservatorship", value: "Guardianship or Conservatorship" },
+            { label: "Nursing Home Issues", value: "Nursing Home Issues" },
+            { label: "Medicare/Medicaid Planning", value: "Medicare or Medicaid Planning" },
+            { label: "Elder Abuse/Neglect", value: "Elder Abuse or Neglect" },
+            { label: "Long-Term Care Planning", value: "Long-Term Care Planning" },
+            { label: "Power of Attorney", value: "Power of Attorney" },
+            { label: "Estate Planning", value: "Estate Planning" },
+            { label: "Other", value: "Other" }
+        ];
+    }
+
+    // Who needs help
+    if (lowerText.includes('who') && (lowerText.includes('need') || lowerText.includes('help') || lowerText.includes('assist'))) {
+        return [
+            { label: "Myself", value: "For myself" },
+            { label: "Parent", value: "For my parent" },
+            { label: "Spouse", value: "For my spouse" },
+            { label: "Grandparent", value: "For my grandparent" },
+            { label: "Other family member", value: "For another family member" }
+        ];
+    }
+
+    // Living situation
+    if (lowerText.includes('living') && (lowerText.includes('situation') || lowerText.includes('arrangement')) ||
+        lowerText.includes('where') && (lowerText.includes('live') || lowerText.includes('reside'))) {
+        return [
+            { label: "At home alone", value: "Living at home alone" },
+            { label: "At home with family", value: "Living at home with family" },
+            { label: "Assisted living", value: "Assisted living facility" },
+            { label: "Nursing home", value: "Nursing home" },
+            { label: "Memory care", value: "Memory care facility" },
+            { label: "Hospital", value: "Currently hospitalized" }
+        ];
+    }
+
+    // Capacity/cognitive issues
+    if (lowerText.includes('capacity') || lowerText.includes('cognitive') || lowerText.includes('dementia') ||
+        lowerText.includes('alzheimer') || lowerText.includes('mental')) {
+        return [
+            { label: "Fully capable", value: "Fully mentally capable" },
+            { label: "Some decline", value: "Some cognitive decline" },
+            { label: "Significant decline", value: "Significant cognitive issues" },
+            { label: "Diagnosed dementia", value: "Diagnosed with dementia/Alzheimer's" },
+            { label: "Not sure", value: "Not sure of current capacity" }
+        ];
+    }
+
+    // Urgency
+    if (lowerText.includes('urgent') || lowerText.includes('immediate') || lowerText.includes('how soon') ||
+        lowerText.includes('timeline') || lowerText.includes('quickly')) {
+        return [
+            { label: "Emergency", value: "Emergency - immediate help needed" },
+            { label: "Within days", value: "Within a few days" },
+            { label: "Within weeks", value: "Within a few weeks" },
+            { label: "Planning ahead", value: "Planning ahead - no rush" }
+        ];
+    }
+
+    // Generic Yes/No
+    if ((lowerText.includes('do you') || lowerText.includes('are you') || lowerText.includes('have you') ||
+         lowerText.includes('did you') || lowerText.includes('were you') || lowerText.includes('is there') ||
+         lowerText.includes('was there') || lowerText.includes('can you') || lowerText.includes('will you')) &&
+        !lowerText.includes('describe') && !lowerText.includes('explain') && !lowerText.includes('tell me') &&
+        !lowerText.includes('when') && !lowerText.includes('where') && !lowerText.includes('why') &&
+        !lowerText.includes('how') && !lowerText.includes('what') && !lowerText.includes('which') &&
+        !lowerText.includes('your name') && !lowerText.includes('kind') && !lowerText.includes('type') &&
+        !lowerText.includes('your email') && !lowerText.includes('your phone') && !lowerText.includes('contact')) {
+        return [
+            { label: "Yes", value: "Yes" },
+            { label: "No", value: "No" }
+        ];
+    }
+
+    return null;
+}`;
+}
+
+function getInsuranceLawButtonsFunction() {
+    return `function detectQuestionButtons(text) {
+    const questionMatch = text.match(/[^.!?]*\\?[^.!?]*/g);
+    if (!questionMatch || questionMatch.length === 0) return null;
+
+    const questionText = questionMatch[questionMatch.length - 1];
+    const lowerText = questionText.toLowerCase();
+
+    // Type of insurance issue
+    if ((lowerText.includes('type') && (lowerText.includes('issue') || lowerText.includes('matter') || lowerText.includes('claim'))) ||
+        lowerText.includes('insurance') && lowerText.includes('help')) {
+        return [
+            { label: "Claim Denied", value: "Insurance Claim Denied" },
+            { label: "Underpaid Claim", value: "Underpaid Insurance Claim" },
+            { label: "Bad Faith", value: "Bad Faith by Insurer" },
+            { label: "Policy Dispute", value: "Policy Coverage Dispute" },
+            { label: "Delayed Claim", value: "Unreasonably Delayed Claim" },
+            { label: "Cancellation", value: "Wrongful Policy Cancellation" },
+            { label: "Other", value: "Other Insurance Issue" }
+        ];
+    }
+
+    // Type of insurance
+    if (lowerText.includes('type of insurance') || lowerText.includes('kind of insurance') ||
+        lowerText.includes('what insurance') || lowerText.includes('which insurance')) {
+        return [
+            { label: "Auto", value: "Auto Insurance" },
+            { label: "Homeowners", value: "Homeowners Insurance" },
+            { label: "Health", value: "Health Insurance" },
+            { label: "Life", value: "Life Insurance" },
+            { label: "Disability", value: "Disability Insurance" },
+            { label: "Business/Commercial", value: "Business/Commercial Insurance" },
+            { label: "Other", value: "Other Insurance Type" }
+        ];
+    }
+
+    // Claim status
+    if (lowerText.includes('claim') && (lowerText.includes('status') || lowerText.includes('file') || lowerText.includes('submit'))) {
+        return [
+            { label: "Not yet filed", value: "Haven't filed a claim yet" },
+            { label: "Recently filed", value: "Recently filed claim" },
+            { label: "Under review", value: "Claim under review" },
+            { label: "Denied", value: "Claim was denied" },
+            { label: "Partially paid", value: "Claim partially paid" },
+            { label: "In dispute", value: "Claim in dispute" }
+        ];
+    }
+
+    // Documentation
+    if (lowerText.includes('documentation') || lowerText.includes('policy') && lowerText.includes('have') ||
+        lowerText.includes('denial letter') || lowerText.includes('paperwork')) {
+        return [
+            { label: "Have policy", value: "Have copy of policy" },
+            { label: "Have denial letter", value: "Have denial letter" },
+            { label: "Have both", value: "Have policy and denial letter" },
+            { label: "Have some docs", value: "Have some documentation" },
+            { label: "No documents", value: "Don't have documentation" }
+        ];
+    }
+
+    // Claim amount
+    if (lowerText.includes('amount') || lowerText.includes('value') || lowerText.includes('how much') ||
+        lowerText.includes('worth')) {
+        return [
+            { label: "Under $10,000", value: "Under $10,000" },
+            { label: "$10,000 - $50,000", value: "$10,000 - $50,000" },
+            { label: "$50,000 - $100,000", value: "$50,000 - $100,000" },
+            { label: "$100,000 - $500,000", value: "$100,000 - $500,000" },
+            { label: "Over $500,000", value: "Over $500,000" },
+            { label: "Not sure", value: "Not sure of amount" }
+        ];
+    }
+
+    // Generic Yes/No
+    if ((lowerText.includes('do you') || lowerText.includes('are you') || lowerText.includes('have you') ||
+         lowerText.includes('did you') || lowerText.includes('were you') || lowerText.includes('is there') ||
+         lowerText.includes('was there') || lowerText.includes('can you') || lowerText.includes('will you')) &&
+        !lowerText.includes('describe') && !lowerText.includes('explain') && !lowerText.includes('tell me') &&
+        !lowerText.includes('when') && !lowerText.includes('where') && !lowerText.includes('why') &&
+        !lowerText.includes('how') && !lowerText.includes('what') && !lowerText.includes('which') &&
+        !lowerText.includes('your name') && !lowerText.includes('kind') && !lowerText.includes('type') &&
+        !lowerText.includes('your email') && !lowerText.includes('your phone') && !lowerText.includes('contact')) {
+        return [
+            { label: "Yes", value: "Yes" },
+            { label: "No", value: "No" }
+        ];
+    }
+
+    return null;
+}`;
+}
+
+function getSocialSecurityButtonsFunction() {
+    return `function detectQuestionButtons(text) {
+    const questionMatch = text.match(/[^.!?]*\\?[^.!?]*/g);
+    if (!questionMatch || questionMatch.length === 0) return null;
+
+    const questionText = questionMatch[questionMatch.length - 1];
+    const lowerText = questionText.toLowerCase();
+
+    // Type of Social Security matter
+    if ((lowerText.includes('type') && (lowerText.includes('matter') || lowerText.includes('issue') || lowerText.includes('help'))) ||
+        lowerText.includes('social security') && lowerText.includes('need')) {
+        return [
+            { label: "SSDI (Disability)", value: "SSDI - Social Security Disability Insurance" },
+            { label: "SSI", value: "SSI - Supplemental Security Income" },
+            { label: "Denied Claim", value: "Denied Disability Claim" },
+            { label: "Appeal", value: "Appeal a Decision" },
+            { label: "Overpayment", value: "Overpayment Issue" },
+            { label: "Benefits Review", value: "Benefits Review/Termination" },
+            { label: "Other", value: "Other Social Security Issue" }
+        ];
+    }
+
+    // Application status
+    if (lowerText.includes('application') || lowerText.includes('claim') && (lowerText.includes('status') || lowerText.includes('file'))) {
+        return [
+            { label: "Haven't applied", value: "Haven't applied yet" },
+            { label: "Application pending", value: "Application pending" },
+            { label: "Initially denied", value: "Initially denied" },
+            { label: "Reconsideration denied", value: "Reconsideration denied" },
+            { label: "Awaiting hearing", value: "Awaiting ALJ hearing" },
+            { label: "Hearing denied", value: "Denied after hearing" }
+        ];
+    }
+
+    // Type of disability
+    if (lowerText.includes('disability') && (lowerText.includes('type') || lowerText.includes('condition') || lowerText.includes('what'))) {
+        return [
+            { label: "Physical", value: "Physical disability" },
+            { label: "Mental health", value: "Mental health condition" },
+            { label: "Both", value: "Both physical and mental" },
+            { label: "Multiple conditions", value: "Multiple medical conditions" }
+        ];
+    }
+
+    // Work history
+    if (lowerText.includes('work') && (lowerText.includes('able') || lowerText.includes('history') || lowerText.includes('currently'))) {
+        return [
+            { label: "Cannot work at all", value: "Cannot work at all" },
+            { label: "Very limited", value: "Very limited work ability" },
+            { label: "Part-time only", value: "Can only work part-time" },
+            { label: "Recently stopped", value: "Recently stopped working" },
+            { label: "Still working", value: "Still working but struggling" }
+        ];
+    }
+
+    // Medical treatment
+    if (lowerText.includes('medical') || lowerText.includes('doctor') || lowerText.includes('treatment') ||
+        lowerText.includes('receiving care')) {
+        return [
+            { label: "Regular treatment", value: "Receiving regular medical treatment" },
+            { label: "Some treatment", value: "Some medical treatment" },
+            { label: "Limited access", value: "Limited access to healthcare" },
+            { label: "No current treatment", value: "No current medical treatment" }
+        ];
+    }
+
+    // Generic Yes/No
+    if ((lowerText.includes('do you') || lowerText.includes('are you') || lowerText.includes('have you') ||
+         lowerText.includes('did you') || lowerText.includes('were you') || lowerText.includes('is there') ||
+         lowerText.includes('was there') || lowerText.includes('can you') || lowerText.includes('will you')) &&
+        !lowerText.includes('describe') && !lowerText.includes('explain') && !lowerText.includes('tell me') &&
+        !lowerText.includes('when') && !lowerText.includes('where') && !lowerText.includes('why') &&
+        !lowerText.includes('how') && !lowerText.includes('what') && !lowerText.includes('which') &&
+        !lowerText.includes('your name') && !lowerText.includes('kind') && !lowerText.includes('type') &&
+        !lowerText.includes('your email') && !lowerText.includes('your phone') && !lowerText.includes('contact')) {
+        return [
+            { label: "Yes", value: "Yes" },
+            { label: "No", value: "No" }
+        ];
+    }
+
+    return null;
+}`;
+}
+
+function getConstructionLawButtonsFunction() {
+    return `function detectQuestionButtons(text) {
+    const questionMatch = text.match(/[^.!?]*\\?[^.!?]*/g);
+    if (!questionMatch || questionMatch.length === 0) return null;
+
+    const questionText = questionMatch[questionMatch.length - 1];
+    const lowerText = questionText.toLowerCase();
+
+    // Type of construction issue
+    if ((lowerText.includes('type') && (lowerText.includes('issue') || lowerText.includes('matter') || lowerText.includes('dispute'))) ||
+        lowerText.includes('construction') && lowerText.includes('help')) {
+        return [
+            { label: "Construction Defect", value: "Construction Defect" },
+            { label: "Mechanic's Lien", value: "Mechanic's Lien" },
+            { label: "Payment Dispute", value: "Payment Dispute" },
+            { label: "Contract Dispute", value: "Contract Dispute" },
+            { label: "Delay Claims", value: "Project Delay Claims" },
+            { label: "Workmanship Issues", value: "Workmanship Quality Issues" },
+            { label: "Permit/Code Issues", value: "Permit or Building Code Issues" },
+            { label: "Other", value: "Other Construction Issue" }
+        ];
+    }
+
+    // Your role
+    if (lowerText.includes('your role') || lowerText.includes('are you') && (lowerText.includes('owner') ||
+        lowerText.includes('contractor') || lowerText.includes('subcontractor'))) {
+        return [
+            { label: "Property Owner", value: "Property Owner" },
+            { label: "General Contractor", value: "General Contractor" },
+            { label: "Subcontractor", value: "Subcontractor" },
+            { label: "Developer", value: "Developer" },
+            { label: "Supplier", value: "Material Supplier" },
+            { label: "Architect/Engineer", value: "Architect or Engineer" }
+        ];
+    }
+
+    // Project type
+    if (lowerText.includes('project') && (lowerText.includes('type') || lowerText.includes('kind')) ||
+        lowerText.includes('residential') || lowerText.includes('commercial')) {
+        return [
+            { label: "Residential - Single", value: "Residential - Single Family" },
+            { label: "Residential - Multi", value: "Residential - Multi-Family" },
+            { label: "Commercial", value: "Commercial Building" },
+            { label: "Industrial", value: "Industrial" },
+            { label: "Renovation", value: "Renovation/Remodel" },
+            { label: "Public/Government", value: "Public/Government Project" }
+        ];
+    }
+
+    // Project status
+    if (lowerText.includes('project') && (lowerText.includes('status') || lowerText.includes('stage') || lowerText.includes('complete'))) {
+        return [
+            { label: "Planning stage", value: "In planning stage" },
+            { label: "Under construction", value: "Currently under construction" },
+            { label: "Recently completed", value: "Recently completed" },
+            { label: "Completed (issues found)", value: "Completed but issues discovered" },
+            { label: "Abandoned/Stopped", value: "Project abandoned or stopped" }
+        ];
+    }
+
+    // Amount in dispute
+    if (lowerText.includes('amount') || lowerText.includes('value') || lowerText.includes('how much') ||
+        lowerText.includes('dispute') && lowerText.includes('worth')) {
+        return [
+            { label: "Under $25,000", value: "Under $25,000" },
+            { label: "$25,000 - $100,000", value: "$25,000 - $100,000" },
+            { label: "$100,000 - $500,000", value: "$100,000 - $500,000" },
+            { label: "$500,000 - $1 million", value: "$500,000 - $1 million" },
+            { label: "Over $1 million", value: "Over $1 million" },
+            { label: "Not sure", value: "Not sure of amount" }
+        ];
+    }
+
+    // Generic Yes/No
+    if ((lowerText.includes('do you') || lowerText.includes('are you') || lowerText.includes('have you') ||
+         lowerText.includes('did you') || lowerText.includes('were you') || lowerText.includes('is there') ||
+         lowerText.includes('was there') || lowerText.includes('can you') || lowerText.includes('will you')) &&
+        !lowerText.includes('describe') && !lowerText.includes('explain') && !lowerText.includes('tell me') &&
+        !lowerText.includes('when') && !lowerText.includes('where') && !lowerText.includes('why') &&
+        !lowerText.includes('how') && !lowerText.includes('what') && !lowerText.includes('which') &&
+        !lowerText.includes('your name') && !lowerText.includes('kind') && !lowerText.includes('type') &&
+        !lowerText.includes('your email') && !lowerText.includes('your phone') && !lowerText.includes('contact')) {
         return [
             { label: "Yes", value: "Yes" },
             { label: "No", value: "No" }
@@ -2277,7 +2968,7 @@ function getGenericButtonsFunction() {
  */
 function getImmigrationButtonsContent() {
     return `    // Immigration status
-    if ((lowerText.includes('immigration status') || lowerText.includes('current status')) &&
+    if (lowerText.includes('immigration') && (lowerText.includes('status') || lowerText.includes('current')) &&
         !lowerText.includes('change') && !lowerText.includes('adjust')) {
         return [
             { label: "US Citizen", value: "US Citizen" },
@@ -2684,6 +3375,330 @@ function getPersonalInjuryButtonsContent() {
     }`;
 }
 
+function getWorkersCompButtonsContent() {
+    return `    // Workers' Comp - Injury type at work
+    if ((lowerText.includes('type') && (lowerText.includes('injur') || lowerText.includes('incident'))) ||
+        lowerText.includes('what happened') || lowerText.includes('how were you injured')) {
+        return [
+            { label: "Slip/Trip/Fall", value: "Slip, Trip, or Fall" },
+            { label: "Lifting/Strain", value: "Lifting or Strain Injury" },
+            { label: "Equipment Accident", value: "Equipment or Machinery Accident" },
+            { label: "Vehicle Accident", value: "Work Vehicle Accident" },
+            { label: "Repetitive Stress", value: "Repetitive Stress Injury" },
+            { label: "Exposure (Chemical/Toxin)", value: "Chemical or Toxic Exposure" },
+            { label: "Other", value: "Other" }
+        ];
+    }
+
+    // Workers' Comp - Where injury occurred
+    if (lowerText.includes('where') && (lowerText.includes('injur') || lowerText.includes('happen') || lowerText.includes('occur'))) {
+        return [
+            { label: "At workplace", value: "At my workplace" },
+            { label: "At job site", value: "At a job site (off-premises)" },
+            { label: "During travel", value: "While traveling for work" },
+            { label: "Working from home", value: "Working from home" },
+            { label: "Company vehicle", value: "In a company vehicle" },
+            { label: "Other", value: "Other location" }
+        ];
+    }
+
+    // Workers' Comp - Reported to employer
+    if (lowerText.includes('report') && (lowerText.includes('employer') || lowerText.includes('supervisor') || lowerText.includes('company'))) {
+        return [
+            { label: "Yes, immediately", value: "Yes, reported immediately" },
+            { label: "Yes, later", value: "Yes, reported later" },
+            { label: "No, not yet", value: "No, not yet reported" },
+            { label: "No, afraid to", value: "No, afraid of retaliation" }
+        ];
+    }
+
+    // Workers' Comp - Claim filed
+    if (lowerText.includes('claim') && (lowerText.includes('file') || lowerText.includes('workers') || lowerText.includes('compensation'))) {
+        return [
+            { label: "Yes, approved", value: "Yes, claim approved" },
+            { label: "Yes, denied", value: "Yes, claim denied" },
+            { label: "Yes, pending", value: "Yes, claim pending" },
+            { label: "No, not yet", value: "No, haven't filed yet" },
+            { label: "Not sure how", value: "Not sure how to file" }
+        ];
+    }`;
+}
+
+function getEmploymentLawButtonsContent() {
+    return `    // Employment Law - Type of issue
+    if ((lowerText.includes('type') && (lowerText.includes('issue') || lowerText.includes('problem') || lowerText.includes('matter'))) ||
+        lowerText.includes('what happened') || lowerText.includes('employment issue')) {
+        return [
+            { label: "Wrongful Termination", value: "Wrongful Termination" },
+            { label: "Discrimination", value: "Workplace Discrimination" },
+            { label: "Harassment", value: "Harassment" },
+            { label: "Wage/Hour Violation", value: "Wage or Hour Violation" },
+            { label: "Retaliation", value: "Retaliation" },
+            { label: "Contract Dispute", value: "Employment Contract Dispute" },
+            { label: "Leave/FMLA Issue", value: "Leave or FMLA Issue" },
+            { label: "Other", value: "Other" }
+        ];
+    }
+
+    // Employment Law - Discrimination basis
+    if (lowerText.includes('discrimination') && (lowerText.includes('basis') || lowerText.includes('based on') || lowerText.includes('type'))) {
+        return [
+            { label: "Race/Ethnicity", value: "Race or Ethnicity" },
+            { label: "Gender/Sex", value: "Gender or Sex" },
+            { label: "Age", value: "Age" },
+            { label: "Disability", value: "Disability" },
+            { label: "Religion", value: "Religion" },
+            { label: "Pregnancy", value: "Pregnancy" },
+            { label: "National Origin", value: "National Origin" },
+            { label: "Sexual Orientation", value: "Sexual Orientation" },
+            { label: "Multiple/Other", value: "Multiple or Other" }
+        ];
+    }
+
+    // Employment Law - Status
+    if (lowerText.includes('employment status') || lowerText.includes('currently employed') ||
+        (lowerText.includes('still') && lowerText.includes('work'))) {
+        return [
+            { label: "Still employed", value: "Still employed" },
+            { label: "Resigned", value: "Resigned" },
+            { label: "Terminated", value: "Terminated" },
+            { label: "On leave", value: "On leave" },
+            { label: "Laid off", value: "Laid off" }
+        ];
+    }
+
+    // Employment Law - EEOC/complaint filed
+    if (lowerText.includes('eeoc') || lowerText.includes('complaint') || lowerText.includes('charge') ||
+        (lowerText.includes('file') && (lowerText.includes('claim') || lowerText.includes('report')))) {
+        return [
+            { label: "Yes, with EEOC", value: "Yes, filed with EEOC" },
+            { label: "Yes, with state agency", value: "Yes, filed with state agency" },
+            { label: "Yes, internally", value: "Yes, filed internal complaint" },
+            { label: "No, not yet", value: "No, haven't filed yet" },
+            { label: "Not sure how", value: "Not sure how to file" }
+        ];
+    }`;
+}
+
+function getRealEstateButtonsContent() {
+    return `    // Real Estate - Type of matter
+    if ((lowerText.includes('type') && (lowerText.includes('matter') || lowerText.includes('issue') || lowerText.includes('help'))) ||
+        lowerText.includes('real estate') && lowerText.includes('need')) {
+        return [
+            { label: "Buying Property", value: "Buying a Property" },
+            { label: "Selling Property", value: "Selling a Property" },
+            { label: "Landlord/Tenant Dispute", value: "Landlord/Tenant Dispute" },
+            { label: "Title Issue", value: "Title Issue" },
+            { label: "Boundary/Easement", value: "Boundary or Easement Dispute" },
+            { label: "Foreclosure", value: "Foreclosure" },
+            { label: "Contract Review", value: "Contract Review" },
+            { label: "Other", value: "Other" }
+        ];
+    }
+
+    // Real Estate - Property type
+    if (lowerText.includes('type of property') || lowerText.includes('kind of property') ||
+        (lowerText.includes('property') && (lowerText.includes('residential') || lowerText.includes('commercial')))) {
+        return [
+            { label: "Single Family Home", value: "Single Family Home" },
+            { label: "Condo/Townhouse", value: "Condo or Townhouse" },
+            { label: "Multi-Family", value: "Multi-Family Property" },
+            { label: "Commercial", value: "Commercial Property" },
+            { label: "Land/Vacant", value: "Vacant Land" },
+            { label: "Investment Property", value: "Investment Property" }
+        ];
+    }
+
+    // Real Estate - Role
+    if (lowerText.includes('your role') || lowerText.includes('are you the') ||
+        (lowerText.includes('buyer') || lowerText.includes('seller') || lowerText.includes('tenant') || lowerText.includes('landlord'))) {
+        return [
+            { label: "Buyer", value: "Buyer" },
+            { label: "Seller", value: "Seller" },
+            { label: "Tenant", value: "Tenant" },
+            { label: "Landlord", value: "Landlord" },
+            { label: "Investor", value: "Investor" }
+        ];
+    }
+
+    // Real Estate - Transaction stage
+    if (lowerText.includes('stage') || lowerText.includes('status') || lowerText.includes('where are you in')) {
+        return [
+            { label: "Just starting", value: "Just starting to look" },
+            { label: "Under contract", value: "Under contract" },
+            { label: "Due diligence", value: "In due diligence period" },
+            { label: "Near closing", value: "Approaching closing" },
+            { label: "Post-closing issue", value: "Post-closing issue" },
+            { label: "In dispute", value: "Already in dispute" }
+        ];
+    }`;
+}
+
+function getElderLawButtonsContent() {
+    return `    // Elder Law - Type of matter
+    if ((lowerText.includes('type') && (lowerText.includes('matter') || lowerText.includes('issue') || lowerText.includes('help'))) ||
+        lowerText.includes('what brings you') || lowerText.includes('elder law') && lowerText.includes('need')) {
+        return [
+            { label: "Guardianship/Conservatorship", value: "Guardianship or Conservatorship" },
+            { label: "Nursing Home Issues", value: "Nursing Home Issues" },
+            { label: "Medicare/Medicaid Planning", value: "Medicare or Medicaid Planning" },
+            { label: "Elder Abuse/Neglect", value: "Elder Abuse or Neglect" },
+            { label: "Long-Term Care Planning", value: "Long-Term Care Planning" },
+            { label: "Power of Attorney", value: "Power of Attorney" },
+            { label: "Estate Planning", value: "Estate Planning" },
+            { label: "Other", value: "Other" }
+        ];
+    }
+
+    // Elder Law - Who needs help
+    if (lowerText.includes('who') && (lowerText.includes('need') || lowerText.includes('help') || lowerText.includes('assist'))) {
+        return [
+            { label: "Myself", value: "For myself" },
+            { label: "Parent", value: "For my parent" },
+            { label: "Spouse", value: "For my spouse" },
+            { label: "Grandparent", value: "For my grandparent" },
+            { label: "Other family member", value: "For another family member" }
+        ];
+    }
+
+    // Elder Law - Living situation
+    if (lowerText.includes('living') && (lowerText.includes('situation') || lowerText.includes('arrangement')) ||
+        lowerText.includes('where') && (lowerText.includes('live') || lowerText.includes('reside'))) {
+        return [
+            { label: "At home alone", value: "Living at home alone" },
+            { label: "At home with family", value: "Living at home with family" },
+            { label: "Assisted living", value: "Assisted living facility" },
+            { label: "Nursing home", value: "Nursing home" },
+            { label: "Memory care", value: "Memory care facility" },
+            { label: "Hospital", value: "Currently hospitalized" }
+        ];
+    }`;
+}
+
+function getInsuranceLawButtonsContent() {
+    return `    // Insurance Law - Type of issue
+    if ((lowerText.includes('type') && (lowerText.includes('issue') || lowerText.includes('matter') || lowerText.includes('claim'))) ||
+        lowerText.includes('insurance') && lowerText.includes('help')) {
+        return [
+            { label: "Claim Denied", value: "Insurance Claim Denied" },
+            { label: "Underpaid Claim", value: "Underpaid Insurance Claim" },
+            { label: "Bad Faith", value: "Bad Faith by Insurer" },
+            { label: "Policy Dispute", value: "Policy Coverage Dispute" },
+            { label: "Delayed Claim", value: "Unreasonably Delayed Claim" },
+            { label: "Cancellation", value: "Wrongful Policy Cancellation" },
+            { label: "Other", value: "Other Insurance Issue" }
+        ];
+    }
+
+    // Insurance Law - Type of insurance
+    if (lowerText.includes('type of insurance') || lowerText.includes('kind of insurance') ||
+        lowerText.includes('what insurance') || lowerText.includes('which insurance')) {
+        return [
+            { label: "Auto", value: "Auto Insurance" },
+            { label: "Homeowners", value: "Homeowners Insurance" },
+            { label: "Health", value: "Health Insurance" },
+            { label: "Life", value: "Life Insurance" },
+            { label: "Disability", value: "Disability Insurance" },
+            { label: "Business/Commercial", value: "Business/Commercial Insurance" },
+            { label: "Other", value: "Other Insurance Type" }
+        ];
+    }
+
+    // Insurance Law - Claim status
+    if (lowerText.includes('claim') && (lowerText.includes('status') || lowerText.includes('file') || lowerText.includes('submit'))) {
+        return [
+            { label: "Not yet filed", value: "Haven't filed a claim yet" },
+            { label: "Recently filed", value: "Recently filed claim" },
+            { label: "Under review", value: "Claim under review" },
+            { label: "Denied", value: "Claim was denied" },
+            { label: "Partially paid", value: "Claim partially paid" },
+            { label: "In dispute", value: "Claim in dispute" }
+        ];
+    }`;
+}
+
+function getSocialSecurityButtonsContent() {
+    return `    // Social Security - Type of matter
+    if ((lowerText.includes('type') && (lowerText.includes('matter') || lowerText.includes('issue') || lowerText.includes('help'))) ||
+        lowerText.includes('social security') && lowerText.includes('need')) {
+        return [
+            { label: "SSDI (Disability)", value: "SSDI - Social Security Disability Insurance" },
+            { label: "SSI", value: "SSI - Supplemental Security Income" },
+            { label: "Denied Claim", value: "Denied Disability Claim" },
+            { label: "Appeal", value: "Appeal a Decision" },
+            { label: "Overpayment", value: "Overpayment Issue" },
+            { label: "Benefits Review", value: "Benefits Review/Termination" },
+            { label: "Other", value: "Other Social Security Issue" }
+        ];
+    }
+
+    // Social Security - Application status
+    if (lowerText.includes('application') || lowerText.includes('claim') && (lowerText.includes('status') || lowerText.includes('file'))) {
+        return [
+            { label: "Haven't applied", value: "Haven't applied yet" },
+            { label: "Application pending", value: "Application pending" },
+            { label: "Initially denied", value: "Initially denied" },
+            { label: "Reconsideration denied", value: "Reconsideration denied" },
+            { label: "Awaiting hearing", value: "Awaiting ALJ hearing" },
+            { label: "Hearing denied", value: "Denied after hearing" }
+        ];
+    }
+
+    // Social Security - Work ability
+    if (lowerText.includes('work') && (lowerText.includes('able') || lowerText.includes('history') || lowerText.includes('currently'))) {
+        return [
+            { label: "Cannot work at all", value: "Cannot work at all" },
+            { label: "Very limited", value: "Very limited work ability" },
+            { label: "Part-time only", value: "Can only work part-time" },
+            { label: "Recently stopped", value: "Recently stopped working" },
+            { label: "Still working", value: "Still working but struggling" }
+        ];
+    }`;
+}
+
+function getConstructionLawButtonsContent() {
+    return `    // Construction Law - Type of issue
+    if ((lowerText.includes('type') && (lowerText.includes('issue') || lowerText.includes('matter') || lowerText.includes('dispute'))) ||
+        lowerText.includes('construction') && lowerText.includes('help')) {
+        return [
+            { label: "Construction Defect", value: "Construction Defect" },
+            { label: "Mechanic's Lien", value: "Mechanic's Lien" },
+            { label: "Payment Dispute", value: "Payment Dispute" },
+            { label: "Contract Dispute", value: "Contract Dispute" },
+            { label: "Delay Claims", value: "Project Delay Claims" },
+            { label: "Workmanship Issues", value: "Workmanship Quality Issues" },
+            { label: "Permit/Code Issues", value: "Permit or Building Code Issues" },
+            { label: "Other", value: "Other Construction Issue" }
+        ];
+    }
+
+    // Construction Law - Role
+    if (lowerText.includes('your role') || lowerText.includes('are you') && (lowerText.includes('owner') ||
+        lowerText.includes('contractor') || lowerText.includes('subcontractor'))) {
+        return [
+            { label: "Property Owner", value: "Property Owner" },
+            { label: "General Contractor", value: "General Contractor" },
+            { label: "Subcontractor", value: "Subcontractor" },
+            { label: "Developer", value: "Developer" },
+            { label: "Supplier", value: "Material Supplier" },
+            { label: "Architect/Engineer", value: "Architect or Engineer" }
+        ];
+    }
+
+    // Construction Law - Project type
+    if (lowerText.includes('project') && (lowerText.includes('type') || lowerText.includes('kind')) ||
+        lowerText.includes('residential') || lowerText.includes('commercial')) {
+        return [
+            { label: "Residential - Single", value: "Residential - Single Family" },
+            { label: "Residential - Multi", value: "Residential - Multi-Family" },
+            { label: "Commercial", value: "Commercial Building" },
+            { label: "Industrial", value: "Industrial" },
+            { label: "Renovation", value: "Renovation/Remodel" },
+            { label: "Public/Government", value: "Public/Government Project" }
+        ];
+    }`;
+}
+
 /**
  * Generate progress steps HTML
  * For multi-practice firms, only show "Basic Information" initially - the rest will populate dynamically
@@ -2723,6 +3738,20 @@ function getProgressStepLabels(practiceArea) {
         return ['Basic Information', 'Charges', 'Case Status', 'Court Details', 'Review'];
     } else if (area.includes('estate')) {
         return ['Basic Information', 'Planning Needs', 'Asset Overview', 'Special Circumstances', 'Review'];
+    } else if (area.includes('workers') || area.includes('worker')) {
+        return ['Basic Information', 'Injury Details', 'Employer Response', 'Claim Status', 'Review'];
+    } else if (area.includes('employment')) {
+        return ['Basic Information', 'Issue Type', 'Employment Status', 'Documentation', 'Review'];
+    } else if (area.includes('real estate') || area.includes('property')) {
+        return ['Basic Information', 'Transaction Type', 'Property Details', 'Timeline', 'Review'];
+    } else if (area.includes('elder')) {
+        return ['Basic Information', 'Care Situation', 'Legal Needs', 'Urgency', 'Review'];
+    } else if (area.includes('insurance')) {
+        return ['Basic Information', 'Insurance Issue', 'Claim Details', 'Documentation', 'Review'];
+    } else if (area.includes('social security')) {
+        return ['Basic Information', 'Benefit Type', 'Application Status', 'Medical Info', 'Review'];
+    } else if (area.includes('construction')) {
+        return ['Basic Information', 'Project Details', 'Issue Type', 'Amount', 'Review'];
     } else {
         return ['Basic Information', 'Case Overview', 'Details', 'Qualification', 'Review'];
     }

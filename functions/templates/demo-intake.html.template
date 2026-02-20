@@ -1145,6 +1145,86 @@
             border-color: var(--accent-gold);
         }
 
+        /* Error Screen */
+        #error-screen {
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            background: var(--gradient-primary);
+        }
+
+        .error-content {
+            max-width: 500px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 2.5rem;
+            text-align: center;
+        }
+
+        .error-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+        }
+
+        .error-icon svg {
+            color: white;
+        }
+
+        .error-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.75rem;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+        }
+
+        .error-subtitle {
+            color: var(--text-muted);
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .error-message {
+            color: #f87171;
+            font-size: 0.9rem;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .error-actions {
+            margin-bottom: 1.5rem;
+        }
+
+        .error-actions .cta-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .error-support {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        .error-support a {
+            color: var(--accent-gold);
+            text-decoration: none;
+        }
+
+        .error-support a:hover {
+            text-decoration: underline;
+        }
+
         /* Additional Comments Screen */
         #additional-comments-screen {
             flex-direction: column;
@@ -1635,7 +1715,7 @@
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                         </svg>
-                        Get Started
+                        Create Account
                     </a>
                     <a href="{{RETURN_URL}}" class="sidebar-return-link" target="_blank">Return to PreIntake.ai</a>
                 </div>
@@ -1705,7 +1785,7 @@
                 <h3 class="next-steps-title">What Happens Next</h3>
                 <p id="next-steps-text" class="next-steps-text">
                     Based on the information you provided, we believe you may have a case worth discussing.
-                    A member of our team will contact you within 24 hours to schedule a free consultation.
+                    A member of our team will contact you to schedule a consultation.
                 </p>
             </div>
 
@@ -1731,7 +1811,7 @@
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                     </svg>
-                    Get Started
+                    Create Account
                 </a>
             </div>
 
@@ -1817,6 +1897,32 @@
         </div>
     </div>
 
+    <!-- Error Screen -->
+    <div id="error-screen" class="screen">
+        <div class="error-content">
+            <div class="error-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+            </div>
+            <h2 class="error-title">Submission Error</h2>
+            <p class="error-subtitle">We couldn't submit your inquiry</p>
+            <p id="error-message" class="error-message"></p>
+            <div class="error-actions">
+                <button class="cta-button" onclick="retrySubmission()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="margin-right: 8px;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                    Try Again
+                </button>
+            </div>
+            <p class="error-support">
+                If the problem persists, please contact us at<br>
+                <a href="mailto:support@preintake.ai">support@preintake.ai</a>
+            </p>
+        </div>
+    </div>
+
     <!-- Help Modal -->
     <div id="help-modal-overlay" class="help-modal-overlay" onclick="closeHelpModal(event)">
         <div class="help-modal" onclick="event.stopPropagation()">
@@ -1879,7 +1985,7 @@
     <div id="demo-floating-buttons" style="display: none; position: fixed; bottom: 24px; right: 24px; flex-direction: column; gap: 12px; z-index: 9999;">
         <a href="https://preintake.ai/create-account.html?firm={{LEAD_ID}}"
            style="display: flex; align-items: center; gap: 8px; padding: 14px 24px; background: linear-gradient(135deg, #c9a962, #b8860b); color: #fff; text-decoration: none; border-radius: 50px; font-weight: 600; font-size: 0.95rem; box-shadow: 0 4px 20px rgba(201, 169, 98, 0.4); transition: all 0.2s ease;">
-            Get Started
+            Create Account
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
             </svg>
@@ -1899,7 +2005,7 @@
             </p>
             <a href="https://preintake.ai/create-account.html?firm={{LEAD_ID}}"
                style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 1rem 2rem; background: linear-gradient(135deg, #c9a962, #b8860b); color: white; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 1rem; transition: all 0.3s ease;">
-                Get Started
+                Create Account
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M5 12h14M12 5l7 7-7 7"/>
                 </svg>
@@ -1925,7 +2031,8 @@
             webhookKey: {{WEBHOOK_KEY}},
             scheduleUrl: {{SCHEDULE_URL}},
             state: '{{STATE}}',
-            firmEmail: '{{FIRM_EMAIL}}'
+            firmEmail: '{{FIRM_EMAIL}}',
+            isActiveSubscription: {{IS_ACTIVE_SUBSCRIPTION}}
         };
 
         // Fetch firm status to determine Demo vs Live mode
@@ -2745,16 +2852,20 @@
                     })
                 });
 
-                if (response.status === 429 && retryCount < MAX_RETRIES) {
+                // Retry on rate limiting (429) or server errors (500+)
+                const isRetryable = response.status === 429 || response.status >= 500;
+                if (isRetryable && retryCount < MAX_RETRIES) {
                     const delay = INITIAL_RETRY_DELAY * Math.pow(2, retryCount);
-                    updateTypingMessage(`High demand - waiting ${Math.ceil(delay / 1000)}s...`);
+                    const statusMsg = response.status === 429 ? 'High demand' : 'Server busy';
+                    updateTypingMessage(`${statusMsg} - retrying in ${Math.ceil(delay / 1000)}s...`);
                     await new Promise(resolve => setTimeout(resolve, delay));
                     return sendToAPI(messages, retryCount + 1);
                 }
 
                 if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(`API error ${response.status}: ${errorData.error?.message || JSON.stringify(errorData)}`);
+                    const errorData = await response.json().catch(() => ({}));
+                    const errorMsg = errorData.error?.message || errorData.message || `Status ${response.status}`;
+                    throw new Error(`API error ${response.status}: ${errorMsg}`);
                 }
 
                 const data = await response.json();
@@ -2764,7 +2875,24 @@
             } catch (error) {
                 console.error('API Error:', error);
                 removeTypingIndicator();
-                addMessage(`I apologize, but I encountered an error. Please refresh and try again.`, 'assistant');
+
+                // Provide helpful error messages based on error type
+                let errorMessage;
+                const errorStr = error.message || '';
+
+                if (errorStr.includes('Failed to fetch') || errorStr.includes('NetworkError') || errorStr.includes('network')) {
+                    errorMessage = 'Connection lost. Please check your internet connection and try again.';
+                } else if (errorStr.includes('429')) {
+                    errorMessage = 'We\'re experiencing high demand. Please wait a moment and try again.';
+                } else if (errorStr.includes('500') || errorStr.includes('502') || errorStr.includes('503')) {
+                    errorMessage = 'Our servers are temporarily busy. Please try again in a moment.';
+                } else if (errorStr.includes('Invalid API response')) {
+                    errorMessage = 'Received an unexpected response. Please try again.';
+                } else {
+                    errorMessage = 'Something went wrong. Please refresh the page and try again.';
+                }
+
+                addMessage(errorMessage, 'assistant');
             } finally {
                 apiCallDepth--;
                 if (apiCallDepth === 0) {
@@ -2775,6 +2903,11 @@
         }
 
         async function processResponse(data) {
+            // Defensive check for malformed API response
+            if (!data || !data.content || !Array.isArray(data.content)) {
+                throw new Error('Invalid API response: missing or malformed content');
+            }
+
             let textContent = '';
             let toolUses = [];
 
@@ -2789,7 +2922,7 @@
             const toolResults = [];
             if (toolUses.length > 0) {
                 for (const tool of toolUses) {
-                    const result = processToolUse(tool);
+                    const result = await processToolUse(tool);
                     toolResults.push({
                         type: "tool_result",
                         tool_use_id: tool.id,
@@ -2822,7 +2955,7 @@
             }
         }
 
-        function processToolUse(tool) {
+        async function processToolUse(tool) {
             const { name, input } = tool;
 
             switch (name) {
@@ -2866,16 +2999,25 @@
                         return "Demo submission limit reached.";
                     }
                     collectedData.assessment = input;
-                    // Check if GREEN or YELLOW - offer additional comments
-                    if (input.routing === 'green' || input.routing === 'yellow') {
+
+                    // Check if this is a demo (not active subscription)
+                    const isDemo = !CONFIG.isActiveSubscription;
+
+                    // Check if GREEN or YELLOW - offer additional comments (active subscriptions only)
+                    if ((input.routing === 'green' || input.routing === 'yellow') && !isDemo) {
+                        // ACTIVE SUBSCRIPTION: Show additional comments (existing behavior)
                         pendingAssessment = input;
                         showScreen('additional-comments-screen');
                         return "Assessment complete. Awaiting additional comments.";
                     } else {
-                        // RED routing - skip additional comments
+                        // DEMO MODE or RED routing: Skip additional comments, submit directly
                         clearSession(); // Clear session on successful submission
-                        sendWebhook(input);
-                        showLoadingScreen(input);
+                        const result = await sendWebhook(input);
+                        if (result.success) {
+                            showLoadingScreen(input);
+                        } else {
+                            showErrorScreen(result.error, input);
+                        }
                         return "Assessment complete.";
                     }
 
@@ -2917,9 +3059,10 @@
             return lines.join('\n\n');
         }
 
-        // Send webhook with lead data
+        // Send webhook with lead data - returns {success: boolean, error?: string}
         async function sendWebhook(assessment) {
-            if (!CONFIG.webhookUrl) return;
+            // No webhook configured = success (nothing to send)
+            if (!CONFIG.webhookUrl) return { success: true };
 
             const payload = {
                 lead: collectedData.contact || {},
@@ -2955,8 +3098,9 @@
                     },
                     body: JSON.stringify(payload)
                 });
-                // Increment demo submission count on successful delivery
+
                 if (response.ok) {
+                    // Increment demo submission count on successful delivery
                     const newCount = incrementSubmissionCount();
                     console.log(`Demo submission ${newCount}/${MAX_DEMO_SUBMISSIONS} recorded`);
 
@@ -2967,9 +3111,14 @@
                             firmId: '{{LEAD_ID}}'
                         }, '*');
                     }
+                    return { success: true };
+                } else {
+                    console.error('Webhook failed with status:', response.status);
+                    return { success: false, error: `Server returned ${response.status}` };
                 }
             } catch (error) {
                 console.error('Webhook error:', error);
+                return { success: false, error: error.message || 'Network error' };
             }
         }
 
@@ -3005,6 +3154,45 @@
             }, 60);
         }
 
+        // Store failed assessment for retry
+        let lastFailedAssessment = null;
+
+        // Show error screen with message
+        function showErrorScreen(errorMessage, assessment) {
+            lastFailedAssessment = assessment || lastFailedAssessment;
+            const messageEl = document.getElementById('error-message');
+            if (messageEl) {
+                messageEl.textContent = errorMessage || 'There was a problem submitting your inquiry. Please try again.';
+            }
+            showScreen('error-screen');
+        }
+
+        // Retry submission after error
+        async function retrySubmission() {
+            if (!lastFailedAssessment) {
+                showErrorScreen('No submission to retry. Please start over.', null);
+                return;
+            }
+
+            // Show loading state on button
+            const button = document.querySelector('#error-screen .cta-button');
+            const originalHTML = button.innerHTML;
+            button.disabled = true;
+            button.innerHTML = '<svg class="spinner" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="margin-right: 8px; animation: spin 1s linear infinite;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg> Retrying...';
+
+            const result = await sendWebhook(lastFailedAssessment);
+
+            if (result.success) {
+                const assessmentToShow = lastFailedAssessment;
+                lastFailedAssessment = null;
+                showLoadingScreen(assessmentToShow);
+            } else {
+                button.disabled = false;
+                button.innerHTML = originalHTML;
+                showErrorScreen(result.error, lastFailedAssessment);
+            }
+        }
+
         function showResults(assessment) {
             if (assessment.routing === 'red') {
                 showScreen('decline-screen');
@@ -3026,7 +3214,7 @@
 
             const nextStepsText = document.getElementById('next-steps-text');
             if (assessment.routing === 'green') {
-                nextStepsText.textContent = "Based on the information you provided, we believe you may have a case worth discussing. A member of our team will contact you within 24 hours to schedule a free consultation.";
+                nextStepsText.textContent = "Based on the information you provided, we believe you may have a case worth discussing. A member of our team will contact you to schedule a consultation.";
             } else {
                 nextStepsText.textContent = "We'd like to learn more about your case before scheduling a consultation. Please gather any relevant documents you may have. We'll reach out to discuss next steps.";
             }
@@ -3109,13 +3297,13 @@
         }
 
         // Submit with additional comments
-        function submitWithComments() {
+        async function submitWithComments() {
             additionalComments = document.getElementById('additional-comments-input').value.trim();
-            finalizeSubmission();
+            await finalizeSubmission();
         }
 
         // Complete the submission flow
-        function finalizeSubmission() {
+        async function finalizeSubmission() {
             if (!pendingAssessment) return;
 
             // Add additional comments to assessment if provided
@@ -3124,9 +3312,15 @@
             }
 
             clearSession(); // Clear session on successful submission
-            sendWebhook(pendingAssessment);
-            showLoadingScreen(pendingAssessment);
+            const assessmentToSubmit = pendingAssessment;
             pendingAssessment = null;
+
+            const result = await sendWebhook(assessmentToSubmit);
+            if (result.success) {
+                showLoadingScreen(assessmentToSubmit);
+            } else {
+                showErrorScreen(result.error, assessmentToSubmit);
+            }
         }
 
         // Initialize character counter on DOMContentLoaded

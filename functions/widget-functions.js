@@ -27,6 +27,10 @@ const db = getFirestore('preintake');
 // Anthropic API key secret
 const anthropicApiKey = defineSecret('ANTHROPIC_API_KEY');
 
+// Analytics benchmark date - all data before this date is excluded from analytics
+// Set to Feb 20, 2026 to establish clean baseline after demo conversation fixes
+const ANALYTICS_BENCHMARK_DATE = new Date('2026-02-20T00:00:00-08:00'); // PST
+
 // Import prompt/tools generators from demo-generator
 const {
     generateSystemPrompt,
@@ -166,6 +170,83 @@ const getWidgetConfig = onRequest(
 );
 
 /**
+ * Chat proxy for demo intakes - drop-in replacement for dpm-proxy
+ * Accepts Anthropic-format requests, returns Anthropic-format responses
+ * Has automatic fallback from Sonnet to Haiku on overload (529)
+ */
+const chatProxy = onRequest(
+    {
+        cors: true,
+        region: 'us-west1',
+        secrets: [anthropicApiKey],
+        timeoutSeconds: 120,
+        memory: '512MiB',
+    },
+    async (req, res) => {
+        if (req.method !== 'POST') {
+            return res.status(405).json({ error: 'Method not allowed' });
+        }
+
+        try {
+            const { model, max_tokens, system, tools, messages } = req.body;
+
+            if (!messages || !Array.isArray(messages)) {
+                return res.status(400).json({ error: 'Missing or invalid messages' });
+            }
+
+            // Initialize Anthropic client
+            const anthropic = new Anthropic({
+                apiKey: anthropicApiKey.value(),
+            });
+
+            // Use Haiku 4.5 as primary model - fastest with near-frontier intelligence
+            const MODEL = model || 'claude-haiku-4-5';
+
+            const response = await anthropic.messages.create({
+                model: MODEL,
+                max_tokens: max_tokens || 4096,
+                system: system,
+                tools: tools,
+                messages: messages,
+            });
+
+            // Return Anthropic-format response (compatible with existing demos)
+            return res.json({
+                id: response.id,
+                type: response.type,
+                role: response.role,
+                content: response.content,
+                model: MODEL,
+                stop_reason: response.stop_reason,
+                stop_sequence: response.stop_sequence,
+                usage: response.usage,
+            });
+
+        } catch (error) {
+            console.error('chatProxy error:', error);
+
+            // Handle rate limiting
+            if (error.status === 429) {
+                return res.status(429).json({
+                    error: { type: 'rate_limit_error', message: 'Rate limited. Please wait a moment.' },
+                });
+            }
+
+            // Handle overload after fallback also failed
+            if (error.status === 529) {
+                return res.status(529).json({
+                    error: { type: 'overloaded_error', message: 'Service temporarily unavailable due to high demand.' },
+                });
+            }
+
+            return res.status(500).json({
+                error: { type: 'api_error', message: 'Failed to process message' },
+            });
+        }
+    }
+);
+
+/**
  * Handle chat messages with server-side AI processing
  * Client sends messages, server loads prompts and calls Claude
  * PROTECTS: System prompts, tools definitions, qualification criteria
@@ -251,9 +332,11 @@ const intakeChat = onRequest(
                 apiKey: anthropicApiKey.value(),
             });
 
-            // Call Claude with server-side prompt
+            // Use Haiku 4.5 as primary model - fastest with near-frontier intelligence
+            const MODEL = 'claude-haiku-4-5';
+
             const response = await anthropic.messages.create({
-                model: 'claude-sonnet-4-20250514',
+                model: MODEL,
                 max_tokens: 4096,
                 system: systemPrompt,
                 tools: tools,
@@ -269,6 +352,7 @@ const intakeChat = onRequest(
                 buttons: processed.buttons,
                 toolCalls: processed.toolCalls,
                 stopReason: response.stop_reason,
+                modelUsed: MODEL, // Include for debugging/analytics
             });
 
         } catch (error) {
@@ -280,6 +364,15 @@ const intakeChat = onRequest(
                     error: 'Rate limited',
                     message: 'Please wait a moment before sending another message.',
                     retryAfter: 5,
+                });
+            }
+
+            // Handle overload after fallback also failed
+            if (error.status === 529) {
+                return res.status(529).json({
+                    error: 'Service temporarily unavailable',
+                    message: 'Our AI service is experiencing high demand. Please try again in a moment.',
+                    retryAfter: 10,
                 });
             }
 
@@ -772,7 +865,7 @@ CRITICAL: Do NOT recommend anything listed in "RECENTLY IMPLEMENTED" above - tho
 Be direct and avoid generic marketing advice. If data shows 0 or low numbers, acknowledge early-stage status.`;
 
         const message = await anthropic.messages.create({
-            model: 'claude-sonnet-4-20250514',
+            model: 'claude-haiku-4-5',
             max_tokens: 1000,
             messages: [{ role: 'user', content: prompt }]
         });
@@ -950,16 +1043,33 @@ const getEmailAnalytics = onRequest(
                 db.collection('preintake_emails').where('sent', '==', false).get()
             ]);
 
-            // Use raw snapshots directly (no date filtering)
-            const emailsSnap = emailsSnapRaw;
+            // Filter emails to only include those sent on/after benchmark date
+            // This allows us to "reset" analytics without deleting data
+            const emailsDocs = emailsSnapRaw.docs.filter(doc => {
+                const data = doc.data();
+                const sentTimestamp = data.sentTimestamp?.toDate();
+                return sentTimestamp && sentTimestamp >= ANALYTICS_BENCHMARK_DATE;
+            });
+
+            // Create a filtered "snapshot-like" object for compatibility
+            const emailsSnap = {
+                docs: emailsDocs,
+                size: emailsDocs.length,
+                forEach: (fn) => emailsDocs.forEach(fn)
+            };
+
+            // Unsubscribed and failed don't need date filtering (cumulative counts)
             const unsubSnap = unsubSnapRaw;
             const failedSnap = failedSnapRaw;
 
+            // Total sent = only those sent since benchmark
             const totalSent = emailsSnap.size;
             const totalUnsubscribed = unsubSnap.size;
             const totalFailed = failedSnap.size;
+            // Pending = still waiting to be sent (remaining pool)
             const totalPending = pendingSnap.size;
-            const totalContacts = totalSent + totalPending;
+            // Total contacts = pending pool (not including already-sent before benchmark)
+            const totalContacts = totalPending;
 
             let withDemo = 0;
             let withoutDemo = 0;
@@ -1020,9 +1130,23 @@ const getEmailAnalytics = onRequest(
             });
 
             // Get campaign-sourced leads (includes both 'campaign' and 'bar_profile_campaign')
-            const leadsSnap = await db.collection('preintake_leads')
+            const leadsSnapRaw = await db.collection('preintake_leads')
                 .where('source', 'in', ['campaign', 'bar_profile_campaign'])
                 .get();
+
+            // Filter leads to only include those created on/after benchmark date
+            const leadsDocs = leadsSnapRaw.docs.filter(doc => {
+                const data = doc.data();
+                const createdAt = data.createdAt?.toDate();
+                return createdAt && createdAt >= ANALYTICS_BENCHMARK_DATE;
+            });
+
+            // Create a filtered "snapshot-like" object for compatibility
+            const leadsSnap = {
+                docs: leadsDocs,
+                size: leadsDocs.length,
+                forEach: (fn) => leadsDocs.forEach(fn)
+            };
 
             // Visit tracking (email CTA clicks)
             let visitedCount = 0;
@@ -1228,6 +1352,7 @@ const getEmailAnalytics = onRequest(
             }
 
             return res.json({
+                benchmarkDate: ANALYTICS_BENCHMARK_DATE.toISOString().split('T')[0],
                 dateRange: `${startDate.toISOString().split('T')[0]} to ${now.toISOString().split('T')[0]}`,
                 totalSent,
                 withDemo,
@@ -1287,6 +1412,7 @@ const getEmailAnalytics = onRequest(
 
 module.exports = {
     getWidgetConfig,
+    chatProxy,
     intakeChat,
     serveDemo,
     serveHostedIntake,

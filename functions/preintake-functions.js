@@ -287,7 +287,7 @@ async function validateLawFirmWebsite(url) {
         console.log(`Website validation: Sending ${url} to Claude for analysis...`);
 
         const message = await anthropic.messages.create({
-            model: 'claude-3-haiku-20240307',
+            model: 'claude-haiku-4-5',  // Updated from deprecated claude-3-haiku
             max_tokens: 200,
             messages: [{
                 role: 'user',

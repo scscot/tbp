@@ -300,7 +300,7 @@ async function analyzeWebsite(websiteUrl) {
         ...aiAnalysis,
         rawHtmlSize: html.length,
         pagesAnalyzed: 1,
-        model: 'claude-3-haiku-20240307',
+        model: 'claude-haiku-4-5',
     };
 }
 
@@ -555,7 +555,7 @@ Respond with ONLY valid JSON (no markdown, no explanation). Replace ALL placehol
 
     try {
         const message = await anthropic.messages.create({
-            model: 'claude-3-haiku-20240307',
+            model: 'claude-haiku-4-5',
             max_tokens: 1000,
             messages: [{ role: 'user', content: prompt }],
         });

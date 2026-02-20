@@ -287,6 +287,7 @@ const {
 const {
   getWidgetConfig,
   intakeChat,
+  chatProxy,
   serveDemo,
   serveHostedIntake,
   trackDemoView,
@@ -473,6 +474,7 @@ module.exports = {
   // ========== WIDGET FUNCTIONS (Embeddable Intake) ==========
   getWidgetConfig,
   intakeChat,
+  chatProxy,
   serveDemo,
   serveHostedIntake,
   trackDemoView,

@@ -18,6 +18,7 @@ const CONTACTS_CAMPAIGN_COLLECTION = 'direct_sales_contacts';
 const PURCHASED_CAMPAIGN_COLLECTION = 'purchased_leads';
 const BFH_CAMPAIGN_COLLECTION = 'bfh_contacts';
 const ZINZINO_CAMPAIGN_COLLECTION = 'zinzino_contacts';
+const FSR_CAMPAIGN_COLLECTION = 'fsr_contacts';
 const MONITORING_PASSWORD = process.env.MONITORING_PASSWORD || 'TeamBuildPro2024!';
 const GA4_PROPERTY_ID = '485651473';
 
@@ -195,7 +196,7 @@ async function fetchGA4Stats(serviceAccountJson) {
  */
 async function fetchCampaignStats(collectionPath, now, twentyFourHoursAgo, startOfTodayUTC, options = {}) {
   const contactsRef = db.collection(collectionPath);
-  const { isContactsCampaign = false, isZinzinoCampaign = false } = options;
+  const { isContactsCampaign = false, isZinzinoCampaign = false, isFsrCampaign = false } = options;
 
   // Get total count
   let totalSnapshot;
@@ -280,6 +281,31 @@ async function fetchCampaignStats(collectionPath, now, twentyFourHoursAgo, start
     }
   }
 
+  // Get company/state distribution for FSR campaign
+  let distribution = null;
+  if (isFsrCampaign) {
+    try {
+      const sentDocs = await contactsRef
+        .where('sent', '==', true)
+        .select('company', 'state')
+        .get();
+
+      const companies = new Set();
+      const states = new Set();
+      sentDocs.docs.forEach(doc => {
+        const data = doc.data();
+        if (data.company) companies.add(data.company);
+        if (data.state) states.add(data.state);
+      });
+      distribution = {
+        companies: companies.size,
+        states: states.size
+      };
+    } catch (distError) {
+      console.error('Error fetching FSR distribution:', distError.message);
+    }
+  }
+
   return {
     campaign: {
       sent: sentCount,
@@ -300,7 +326,8 @@ async function fetchCampaignStats(collectionPath, now, twentyFourHoursAgo, start
     },
     subjectLines: subjectLineStats,
     recentSends,
-    languageBreakdown
+    languageBreakdown,
+    distribution
   };
 }
 
@@ -331,12 +358,13 @@ const getEmailCampaignStats = onRequest({
     const startOfTodayUTC = new Date(startOfTodayPT.getTime() - (ptOffset + now.getTimezoneOffset()) * 60 * 1000);
 
     // Fetch stats for all campaigns in parallel
-    const [mainCampaignStats, contactsCampaignStats, purchasedCampaignStats, bfhCampaignStats, zinzinoCampaignStats] = await Promise.all([
+    const [mainCampaignStats, contactsCampaignStats, purchasedCampaignStats, bfhCampaignStats, zinzinoCampaignStats, fsrCampaignStats] = await Promise.all([
       fetchCampaignStats(MAIN_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC),
       fetchCampaignStats(CONTACTS_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC, { isContactsCampaign: true }),
       fetchCampaignStats(PURCHASED_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC),
       fetchCampaignStats(BFH_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC),
-      fetchCampaignStats(ZINZINO_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC, { isZinzinoCampaign: true })
+      fetchCampaignStats(ZINZINO_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC, { isZinzinoCampaign: true }),
+      fetchCampaignStats(FSR_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC, { isFsrCampaign: true })
     ]);
 
     // Get GA4 stats (shared across campaigns)
@@ -400,6 +428,17 @@ const getEmailCampaignStats = onRequest({
         subjectLines: zinzinoCampaignStats.subjectLines,
         recentSends: zinzinoCampaignStats.recentSends,
         languageBreakdown: zinzinoCampaignStats.languageBreakdown
+      },
+
+      // FSR (FindSalesRep) campaign data
+      fsrCampaign: {
+        campaign: fsrCampaignStats.campaign,
+        last24h: fsrCampaignStats.last24h,
+        today: fsrCampaignStats.today,
+        tracking: fsrCampaignStats.tracking,
+        subjectLines: fsrCampaignStats.subjectLines,
+        recentSends: fsrCampaignStats.recentSends,
+        distribution: fsrCampaignStats.distribution
       },
 
       // GA4 stats (shared)

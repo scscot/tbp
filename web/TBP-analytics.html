@@ -736,6 +736,11 @@
             color: #be185d;
         }
 
+        .campaign-label.fsr {
+            background: #ccfbf1;
+            color: #0d9488;
+        }
+
         .source-label {
             display: inline-block;
             font-size: 0.7rem;
@@ -1588,6 +1593,29 @@
                                 </div>
                             </div>
                         </div>
+
+                        <!-- FSR Campaign -->
+                        <div style="background: #f8f9fa; border-radius: 12px; padding: 15px; border-left: 4px solid #0d9488;">
+                            <h4 style="margin: 0 0 12px 0; color: #0d9488; font-size: 0.9rem;">FSR CAMPAIGN</h4>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                <div>
+                                    <div style="font-size: 0.7rem; color: #666; text-transform: uppercase;">Sent</div>
+                                    <div style="font-size: 1.3rem; font-weight: 600; color: #34c759;" id="execFsrSent">-</div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 0.7rem; color: #666; text-transform: uppercase;">Remaining</div>
+                                    <div style="font-size: 1.3rem; font-weight: 600; color: #0d9488;" id="execFsrRemaining">-</div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 0.7rem; color: #666; text-transform: uppercase;">Clicked</div>
+                                    <div style="font-size: 1.3rem; font-weight: 600; color: #34c759;" id="execFsrClicked">-</div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 0.7rem; color: #666; text-transform: uppercase;">Click Rate</div>
+                                    <div style="font-size: 1.3rem; font-weight: 600;" id="execFsrClickRate">-</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- GA4 Campaign Traffic -->
@@ -1863,6 +1891,9 @@
                     </div>
                     <div class="campaign-tab" onclick="switchEmailTab('zinzino')">
                         Zinzino <span class="tab-badge" id="emailZinzinoTabBadge">-</span>
+                    </div>
+                    <div class="campaign-tab" onclick="switchEmailTab('fsr')">
+                        FSR <span class="tab-badge" id="emailFsrTabBadge">-</span>
                     </div>
                     <div class="campaign-tab comparison" onclick="switchEmailTab('comparison')">
                         &#128202; Comparison
@@ -2224,6 +2255,100 @@
                     </div>
                 </div>
 
+                <!-- FSR Campaign Sub-Tab Content -->
+                <div id="emailFsrTab" class="campaign-content">
+                    <!-- Campaign Progress -->
+                    <h2 class="section-title">Campaign Progress <span class="campaign-label fsr">FSR</span></h2>
+                    <div class="section-card" style="margin-bottom: 30px;">
+                        <h3>Overall Send Progress</h3>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar" id="emailFsrProgressBar" style="width: 0%;">0%</div>
+                        </div>
+                        <div class="progress-stats">
+                            <span><strong id="emailFsrTotalSent">0</strong> sent</span>
+                            <span><strong id="emailFsrTotalRemaining">0</strong> remaining</span>
+                            <span><strong id="emailFsrTotalContacts">0</strong> total</span>
+                        </div>
+                    </div>
+
+                    <div class="section-card">
+                        <h3>Email Statistics</h3>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-value green" id="emailFsrSentToday">-</div>
+                                <div class="stat-label">Sent Today</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="emailFsrSent24h">-</div>
+                                <div class="stat-label">Last 24 Hours</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value red" id="emailFsrFailed">-</div>
+                                <div class="stat-label">Failed</div>
+                            </div>
+                        </div>
+                        <div class="stats-grid" style="margin-top: 15px;">
+                            <div class="stat-card">
+                                <div class="stat-value green" id="emailFsrTotalClicked">-</div>
+                                <div class="stat-label">Clicked</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="emailFsrClickRate">-</div>
+                                <div class="stat-label">Click Rate</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-card" style="margin-top: 30px;">
+                        <h3>Company Distribution</h3>
+                        <div class="stats-grid" id="emailFsrCompanyStats">
+                            <div class="stat-card">
+                                <div class="stat-value" id="emailFsrCompanyCount">-</div>
+                                <div class="stat-label">Companies</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="emailFsrStateCount">-</div>
+                                <div class="stat-label">States</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-card" style="margin-top: 30px;">
+                        <h3>A/B Test Performance</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Variant</th>
+                                    <th>Sent</th>
+                                    <th>Clicked</th>
+                                    <th>Rate</th>
+                                </tr>
+                            </thead>
+                            <tbody id="emailFsrAbTestBody">
+                                <tr><td colspan="4" class="no-data-message">Loading...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="section-card" style="margin-top: 30px;">
+                        <h3>Recent Sends</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Time (PT)</th>
+                                    <th>Email</th>
+                                    <th>Company</th>
+                                    <th>Variant</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="emailFsrRecentSendsBody">
+                                <tr><td colspan="5" class="no-data-message">Loading...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
                 <!-- Campaign Comparison Tab Content -->
                 <div id="emailComparisonTab" class="campaign-content">
                     <h2 class="section-title">&#128202; Campaign Performance Comparison</h2>
@@ -2350,7 +2475,10 @@
             'purchased_v9a': 'V9a: "Not an opportunity. Just a tool."',
             'purchased_v9b': 'V9b: "AI is changing how teams grow"',
             'purchased_v10a': 'V10a: "Not an opportunity. Just a tool."',
-            'purchased_v10b': 'V10b: "AI is changing how teams grow"'
+            'purchased_v10b': 'V10b: "AI is changing how teams grow"',
+            // FSR campaign
+            'fsr_v9a': 'V9a: "Not an opportunity. Just a tool."',
+            'fsr_v10a': 'V10a: "AI is changing how teams grow"'
         };
 
         // Authentication
@@ -3169,6 +3297,98 @@
                 document.getElementById('emailZinzinoTabBadge').textContent = formatNumber(zzSent) + ' sent';
             }
 
+            // ==================== FSR CAMPAIGN ====================
+            if (emailStatsData.fsrCampaign) {
+                const fsr = emailStatsData.fsrCampaign;
+
+                // Campaign progress
+                const fsrTotal = fsr.campaign?.total || 1;
+                const fsrSent = fsr.campaign?.sent || 0;
+                const fsrProgress = (fsrSent / fsrTotal * 100);
+
+                document.getElementById('emailFsrProgressBar').style.width = fsrProgress + '%';
+                document.getElementById('emailFsrProgressBar').textContent = fsrProgress.toFixed(1) + '%';
+                document.getElementById('emailFsrTotalSent').textContent = formatNumber(fsrSent);
+                document.getElementById('emailFsrTotalRemaining').textContent = formatNumber(fsr.campaign?.remaining || 0);
+                document.getElementById('emailFsrTotalContacts').textContent = formatNumber(fsr.campaign?.total || 0);
+
+                // Sending activity
+                document.getElementById('emailFsrSentToday').textContent = formatNumber(fsr.today?.sent || 0);
+                document.getElementById('emailFsrSent24h').textContent = formatNumber(fsr.last24h?.sent || 0);
+
+                // Click performance
+                if (fsr.tracking) {
+                    document.getElementById('emailFsrFailed').textContent = formatNumber(fsr.tracking.failed || 0);
+                    document.getElementById('emailFsrTotalClicked').textContent = formatNumber(fsr.tracking.clicked || 0);
+                    document.getElementById('emailFsrClickRate').textContent = fsr.tracking.clickRate || '0%';
+                }
+
+                // Company/State distribution
+                if (fsr.distribution) {
+                    document.getElementById('emailFsrCompanyCount').textContent = formatNumber(fsr.distribution.companies || 0);
+                    document.getElementById('emailFsrStateCount').textContent = formatNumber(fsr.distribution.states || 0);
+                }
+
+                // A/B test performance
+                const fsrAbBody = document.getElementById('emailFsrAbTestBody');
+                const fsrSubjectLines = (fsr.subjectLines || []).filter(sl =>
+                    sl.subjectTag?.startsWith('fsr_v9') || sl.subjectTag?.startsWith('fsr_v10')
+                );
+                if (fsrSubjectLines.length > 0) {
+                    const sorted = [...fsrSubjectLines].sort((a, b) => {
+                        return parseFloat(b.clickRate) - parseFloat(a.clickRate);
+                    });
+                    const winnerTag = sorted[0].subjectTag;
+
+                    fsrAbBody.innerHTML = fsrSubjectLines.map(sl => {
+                        const label = SUBJECT_LABELS[sl.subjectTag] || sl.subjectTag || 'Unknown';
+                        const isWinner = sl.subjectTag === winnerTag && fsrSubjectLines.length > 1;
+                        const badgeClass = getBadgeClass(sl.subjectTag);
+                        return `
+                            <tr class="${isWinner ? 'ab-winner' : ''}">
+                                <td>${escapeHtml(label)} ${isWinner ? '<span class="badge badge-clicked">LEADING</span>' : ''}</td>
+                                <td>${formatNumber(sl.sent)}</td>
+                                <td>${formatNumber(sl.clicked)}</td>
+                                <td><span class="badge ${badgeClass}">${sl.clickRate}</span></td>
+                            </tr>
+                        `;
+                    }).join('');
+                } else {
+                    fsrAbBody.innerHTML = '<tr><td colspan="4" class="no-data-message">No A/B test data</td></tr>';
+                }
+
+                // Recent sends (includes company column)
+                const fsrTbody = document.getElementById('emailFsrRecentSendsBody');
+                if (fsr.recentSends && fsr.recentSends.length > 0) {
+                    fsrTbody.innerHTML = fsr.recentSends.map(send => {
+                        const variantBadge = getVariantBadge(send.subjectTag);
+                        const statusBadge = send.clicked
+                            ? '<span class="badge badge-clicked">Clicked</span>'
+                            : '<span class="badge badge-sent">Sent</span>';
+                        return `
+                            <tr>
+                                <td>${escapeHtml(send.time || '')}</td>
+                                <td>${escapeHtml(send.email || '')}</td>
+                                <td>${escapeHtml(send.company || '-')}</td>
+                                <td>${variantBadge}</td>
+                                <td>${statusBadge}</td>
+                            </tr>
+                        `;
+                    }).join('');
+                } else {
+                    fsrTbody.innerHTML = '<tr><td colspan="5" class="no-data-message">No recent sends</td></tr>';
+                }
+
+                // Update tab badge
+                document.getElementById('emailFsrTabBadge').textContent = formatNumber(fsrSent) + ' sent';
+
+                // Update executive summary card
+                document.getElementById('execFsrSent').textContent = formatNumber(fsrSent);
+                document.getElementById('execFsrRemaining').textContent = formatNumber(fsr.campaign?.remaining || 0);
+                document.getElementById('execFsrClicked').textContent = formatNumber(fsr.tracking?.clicked || 0);
+                document.getElementById('execFsrClickRate').textContent = fsr.tracking?.clickRate || '0%';
+            }
+
             // ==================== GA4 EMAIL TRAFFIC ====================
             if (emailStatsData.ga4) {
                 const trafficContent = document.getElementById('emailCampaignTrafficContent');
@@ -3334,7 +3554,8 @@
                     { key: 'main', name: 'Main', data: campaigns.main },
                     { key: 'purchased', name: 'Purchased', data: campaigns.purchased },
                     { key: 'bfh', name: 'BFH', data: campaigns.bfh },
-                    { key: 'zinzino', name: 'Zinzino', data: campaigns.zinzino }
+                    { key: 'zinzino', name: 'Zinzino', data: campaigns.zinzino },
+                    { key: 'fsr', name: 'FSR', data: campaigns.fsr }
                 ];
 
                 campaignList.forEach(c => {

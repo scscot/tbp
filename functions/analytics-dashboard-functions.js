@@ -820,7 +820,7 @@ Analyze this data and return a JSON object with these exact keys:
 Be specific to Team Build Pro's situation. Avoid generic advice. Keep responses concise.`;
 
     const message = await anthropic.messages.create({
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-haiku-4-5',
       max_tokens: 500,
       messages: [{ role: 'user', content: prompt }]
     });
@@ -949,7 +949,7 @@ Analyze this data and return a JSON object with these exact keys:
 Be specific to Team Build Pro's situation. Reference actual numbers from the data. Avoid generic advice.`;
 
     const message = await anthropic.messages.create({
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-haiku-4-5',
       max_tokens: 600,
       messages: [{ role: 'user', content: prompt }]
     });
@@ -1306,6 +1306,7 @@ const CONTACTS_CAMPAIGN_COLLECTION = 'direct_sales_contacts';
 const PURCHASED_CAMPAIGN_COLLECTION = 'purchased_leads';
 const BFH_CAMPAIGN_COLLECTION = 'bfh_contacts';
 const ZINZINO_CAMPAIGN_COLLECTION = 'zinzino_contacts';
+const FSR_CAMPAIGN_COLLECTION = 'fsr_contacts';
 
 /**
  * Fetch email campaign stats from Firestore
@@ -1509,21 +1510,22 @@ async function fetchSingleCampaignStats(collectionPath, campaignName, benchmarkT
 }
 
 /**
- * Fetch all email campaign stats across all 4 campaigns
+ * Fetch all email campaign stats across all 6 campaigns
  * @param {Date|null} benchmarkTimestamp - Optional benchmark date to filter from
  */
 async function fetchAllEmailCampaignStats(benchmarkTimestamp = null) {
   try {
-    const [mainStats, contactsStats, purchasedStats, bfhStats, zinzinoStats] = await Promise.all([
+    const [mainStats, contactsStats, purchasedStats, bfhStats, zinzinoStats, fsrStats] = await Promise.all([
       fetchSingleCampaignStats(CONTACTS_COLLECTION, 'Main', benchmarkTimestamp),
       fetchSingleCampaignStats(CONTACTS_CAMPAIGN_COLLECTION, 'Contacts', benchmarkTimestamp),
       fetchSingleCampaignStats(PURCHASED_CAMPAIGN_COLLECTION, 'Purchased', benchmarkTimestamp),
       fetchSingleCampaignStats(BFH_CAMPAIGN_COLLECTION, 'BFH', benchmarkTimestamp),
-      fetchSingleCampaignStats(ZINZINO_CAMPAIGN_COLLECTION, 'Zinzino', benchmarkTimestamp)
+      fetchSingleCampaignStats(ZINZINO_CAMPAIGN_COLLECTION, 'Zinzino', benchmarkTimestamp),
+      fetchSingleCampaignStats(FSR_CAMPAIGN_COLLECTION, 'FSR', benchmarkTimestamp)
     ]);
 
     // Calculate totals across all campaigns
-    const campaigns = [mainStats, contactsStats, purchasedStats, bfhStats, zinzinoStats];
+    const campaigns = [mainStats, contactsStats, purchasedStats, bfhStats, zinzinoStats, fsrStats];
     const totals = {
       totalSent: campaigns.reduce((sum, c) => sum + c.sent, 0),
       totalClicked: campaigns.reduce((sum, c) => sum + c.clicked, 0),
@@ -1555,7 +1557,8 @@ async function fetchAllEmailCampaignStats(benchmarkTimestamp = null) {
         contacts: contactsStats,
         purchased: purchasedStats,
         bfh: bfhStats,
-        zinzino: zinzinoStats
+        zinzino: zinzinoStats,
+        fsr: fsrStats
       },
       totals,
       bestCampaign: {
@@ -1881,6 +1884,7 @@ Main Campaign: ${campaigns.main?.clickRate || 'N/A'} click rate, ${campaigns.mai
 Contacts Campaign: ${campaigns.contacts?.clickRate || 'N/A'} click rate, ${campaigns.contacts?.sent || 0} sent
 Purchased Leads: ${campaigns.purchased?.clickRate || 'N/A'} click rate, ${campaigns.purchased?.sent || 0} sent
 BFH Campaign: ${campaigns.bfh?.clickRate || 'N/A'} click rate, ${campaigns.bfh?.sent || 0} sent
+FSR Campaign: ${campaigns.fsr?.clickRate || 'N/A'} click rate, ${campaigns.fsr?.sent || 0} sent
 
 PURCHASED LEADS ROI (by source):
 ${Object.entries(roi.bySource || {}).map(([source, data]) =>
@@ -1918,7 +1922,7 @@ CRITICAL: Do NOT recommend anything listed in "RECENTLY IMPLEMENTED" above - tho
 Be specific and avoid generic marketing advice. If data shows 0 or N/A, acknowledge data limitations rather than making assumptions.`;
 
     const message = await anthropic.messages.create({
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-haiku-4-5',
       max_tokens: 1000,
       messages: [{ role: 'user', content: prompt }]
     });

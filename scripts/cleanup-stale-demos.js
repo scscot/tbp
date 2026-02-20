@@ -3,8 +3,9 @@
  * PreIntake.ai Stale Demo Cleanup Script
  *
  * Deletes demo documents and storage files that are:
- *   1. 31+ days old (based on demo.generatedAt)
+ *   1. 15+ days old (based on demo.generatedAt)
  *   2. Never converted to a subscription (no stripeSubscriptionId)
+ *   3. Never accessed via email campaign CTA (no firstVisitAt/visitCount)
  *
  * This prevents the preintake_leads collection from becoming bloated
  * with demos that were never activated.
@@ -52,8 +53,14 @@ db.settings({ databaseId: 'preintake' });
 // Configuration
 const COLLECTION_NAME = 'preintake_leads';
 const STORAGE_PATH_PREFIX = 'preintake-demos';
-const STALE_DAYS = 31;
+const STALE_DAYS = 15;
 const DRY_RUN = process.env.DRY_RUN === 'true';
+
+// Protected accounts - never delete these (test/demo accounts)
+const PROTECTED_LEAD_IDS = [
+    '3vhfvzks9EHCRkgyKLU4',  // Stephen's test account (Claery & Hammond)
+    '9yXCw3SXVjBeHJTbD4qr',  // Stephen's paid test account (Scott Law Group, LLC) - also has stripeSubscriptionId
+];
 
 /**
  * Main cleanup function
@@ -90,6 +97,8 @@ async function runCleanup() {
     let skippedSubscription = 0;
     let skippedNotStale = 0;
     let skippedNoDemo = 0;
+    let skippedProtected = 0;
+    let skippedAccessed = 0;
     let errors = 0;
 
     const bucket = admin.storage().bucket();
@@ -122,7 +131,21 @@ async function runCleanup() {
             continue;
         }
 
-        // This document is stale and never converted - delete it
+        // Check if this is a protected test account
+        if (PROTECTED_LEAD_IDS.includes(leadId)) {
+            console.log(`   🛡️  Skipping ${leadId} - protected test account`);
+            skippedProtected++;
+            continue;
+        }
+
+        // Check if demo was ever accessed (via email campaign CTA)
+        // Only delete demos that were NEVER visited
+        if (data.firstVisitAt || data.visitCount > 0) {
+            skippedAccessed++;
+            continue;
+        }
+
+        // This document is stale, never converted, and never accessed - delete it
         const firmName = data.analysis?.firmName || data.name || 'Unknown';
         const daysOld = Math.floor((Date.now() - generatedDate.getTime()) / (24 * 60 * 60 * 1000));
 
@@ -170,6 +193,8 @@ async function runCleanup() {
     console.log(`   Total documents processed: ${processed}`);
     console.log(`   ${DRY_RUN ? 'Would delete' : 'Deleted'}: ${deleted}`);
     console.log(`   Skipped (has subscription): ${skippedSubscription}`);
+    console.log(`   Skipped (protected account): ${skippedProtected}`);
+    console.log(`   Skipped (demo was accessed): ${skippedAccessed}`);
     console.log(`   Skipped (not stale yet): ${skippedNotStale}`);
     console.log(`   Skipped (no demo generated): ${skippedNoDemo}`);
     if (errors > 0) {

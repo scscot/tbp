@@ -1,7 +1,7 @@
 # PreIntake.ai: Comprehensive Project Documentation
 
-**Last Updated**: 2026-02-19
-**Version**: 6.5 (removed Yahoo/AOL exclusion)
+**Last Updated**: 2026-02-20
+**Version**: 6.7 (analytics benchmark reset, Haiku 4.5 model, 15-day cleanup)
 
 ---
 
@@ -19,7 +19,7 @@ PreIntake.ai has reached a mature, fully-automated state:
 - ✅ Demo generation fully automated (website + bar profile)
 - ✅ Analytics dashboard operational (GA4 + Firestore)
 - ✅ Customer portal implemented (magic link auth, settings, billing)
-- ✅ Stale demo cleanup runs daily (31+ day unconverted)
+- ✅ Stale demo cleanup runs daily (15+ day never-accessed)
 - ✅ All previously-identified gaps implemented
 
 **Why pause now:**
@@ -134,7 +134,7 @@ Your CRM manages leads. We make sure only real cases get there in the first plac
 - Green leads auto-route to your consultation calendar
 - Structured case data—no more deciphering form submissions
 
-**Analytics Dashboard** (`email-analytics.html`)
+**Analytics Dashboard** (`preintake-analytics.html`)
 - ✅ AI Strategic Insights (Claude-powered analysis with actionable recommendations)
 - ✅ GA4 website traffic (users, sessions, bounce rate, traffic sources)
 - ✅ Email campaign metrics (sent, delivered, visits, demo starts)
@@ -818,7 +818,7 @@ When you're spending $300-500 per lead, even small conversion improvements mean 
   - Run mode: `node scripts/regenerate-preintake-demos.js --run`
   - Specific lead: `node scripts/regenerate-preintake-demos.js --run --id=LEAD_ID`
   - All 12 existing demos regenerated with updated template
-- [x] **Email Analytics Dashboard** - `preintake/email-analytics.html`
+- [x] **Email Analytics Dashboard** - `preintake/preintake-analytics.html`
   - Campaign performance tracking (visits, demo views, conversions)
   - Integrates with GA4 data
 - [x] **Click Rate Analysis** - `scripts/analyze-click-rate.js`
@@ -1030,7 +1030,7 @@ When you're spending $300-500 per lead, even small conversion improvements mean 
 - [x] **PreIntake Campaign Tracking Update** - Disabled Mailgun tracking in `send-preintake-campaign.js`
   - Set `o:tracking`, `o:tracking-opens`, `o:tracking-clicks` to `'no'`
   - Using Firestore-based tracking instead (`trackDemoView`: visit on page load, view on demo start)
-- [x] **Email Analytics Dashboard Overhaul** - `preintake/email-analytics.html`
+- [x] **Email Analytics Dashboard Overhaul** - `preintake/preintake-analytics.html`
   - Renamed from "Email Campaign Analytics" to "Campaign Analytics"
   - Migrated backend from Mailgun API to GA4 Data API
   - Added big number cards, section headers, accent styling
@@ -1151,7 +1151,7 @@ Email Sent → Link Clicked → Homepage (?demo=) → REDIRECT → /demo/?demo={
 - [x] **Demo Regeneration** - 473 existing demos regenerated with updated template
   - `node scripts/regenerate-preintake-demos.js --run`
   - All demos now recognize `skip_onboarding=true` parameter
-- [x] **Email Analytics Cleanup** - Removed legacy A/B test section from `email-analytics.html`
+- [x] **Email Analytics Cleanup** - Removed legacy A/B test section from `preintake-analytics.html`
   - Removed V1/V2 ("Not an opportunity" / "What if your next recruit") table (legacy subject lines)
 
 **Data Flow (Phase 51 — superseded by Phase 53):**
@@ -1482,7 +1482,7 @@ Email click → homepage loads with ?demo= → REDIRECT to /demo/?demo={id}
   - Added `generatePreIntakeInsights()` function with PreIntake.ai-specific context
   - Updated `getEmailAnalytics` endpoint to include `secrets: [anthropicApiKey]`
   - Returns structured JSON with `whatsWorking`, `needsAttention`, `recommendedActions`
-- [x] **Frontend Implementation** - `preintake/email-analytics.html`
+- [x] **Frontend Implementation** - `preintake/preintake-analytics.html`
   - Added Strategic Insights section at top of dashboard
   - Three-column grid layout with color-coded cards:
     - **What's Working** (green) - high-performing elements
@@ -1505,7 +1505,7 @@ Email click → homepage loads with ?demo= → REDIRECT to /demo/?demo={id}
 | File | Changes |
 |------|---------|
 | `functions/widget-functions.js` | Added `generatePreIntakeInsights()`, updated `getEmailAnalytics` with secrets |
-| `preintake/email-analytics.html` | Added Strategic Insights section with CSS and rendering code |
+| `preintake/preintake-analytics.html` | Added Strategic Insights section with CSS and rendering code |
 
 ### Phase 64: In-Demo Milestone Tracking (2026-02-15)
 - [x] **Problem Analysis** - 23 demo views with 0 completions, no visibility into conversation progress
@@ -1528,7 +1528,7 @@ Email click → homepage loads with ?demo= → REDIRECT to /demo/?demo={id}
     - In `sendMessage()` after first user message → `conversation_started`
     - In `processToolUse()` case `collect_contact_info` → `contact_collected`
     - In `processToolUse()` case `collect_case_info` → `screening_started`
-- [x] **Dashboard Update** - `preintake/email-analytics.html`
+- [x] **Dashboard Update** - `preintake/preintake-analytics.html`
   - Changed funnel from 4 steps to 6 steps with milestones:
     - Emails Sent → Demo Viewed → Started Chat → Contact Given → Screening → Completed
   - Added milestone columns to Lead Details table with checkmark indicators
@@ -1548,7 +1548,7 @@ Emails Sent → Demo Viewed → Conversation Started → Contact Collected → S
 |------|---------|
 | `functions/widget-functions.js` | Extended `trackDemoView` types, updated `getEmailAnalytics` with milestone counts |
 | `functions/templates/demo-intake.html.template` | Added `trackMilestone()` helper and 3 trigger points |
-| `preintake/email-analytics.html` | 6-step funnel visualization, milestone columns in Lead Details |
+| `preintake/preintake-analytics.html` | 6-step funnel visualization, milestone columns in Lead Details |
 
 ### Phase 65: Demo Banner Redesign & SMTP Fix (2026-02-16)
 - [x] **Demo Notice Banner Redesign** - Enhanced banner with firm-specific personalization
@@ -1684,7 +1684,7 @@ Emails Sent → Demo Viewed → Conversation Started → Contact Collected → S
 **Files Modified:**
 | File | Changes |
 |------|---------|
-| `preintake/email-analytics.html` | Added v8 template mapping to `formatTemplate()` |
+| `preintake/preintake-analytics.html` | Added v8 template mapping to `formatTemplate()` |
 
 ### Phase 70: Remove Yahoo/AOL Exclusion (2026-02-19)
 - [x] **Domain Warming Complete** - Removed Yahoo/AOL email exclusion from campaign
@@ -1700,6 +1700,64 @@ Emails Sent → Demo Viewed → Conversation Started → Contact Collected → S
 | File | Changes |
 |------|---------|
 | `.github/workflows/preintake-email-campaign.yml` | Removed `EXCLUDE_YAHOO_AOL` env var and related logging |
+
+### Phase 71: Haiku 4.5 Model & Cleanup Optimization (2026-02-20)
+- [x] **Claude Haiku 4.5 Migration** - Switched primary AI model for faster demo conversations
+  - Changed model from Claude Sonnet to Claude Haiku 4.5 (`claude-haiku-4-5`) in `widget-functions.js`
+  - Performance improvement: 1-3s response time (was 20-40s with Sonnet) - ~15x faster
+  - Cost savings: Haiku 4.5 is significantly cheaper per token
+  - Quality maintained: Haiku 4.5 is near-frontier intelligence for conversation tasks
+- [x] **Demo Cleanup Optimization** - Reduced cutoff from 31 days to 15 days
+  - Modified `scripts/cleanup-stale-demos.js` to delete demos 15+ days old (was 31)
+  - Added access-based deletion criteria (only delete demos NEVER accessed via email CTA)
+  - New skip criteria: `firstVisitAt` set OR `visitCount > 0` → demo is preserved
+  - Demos that were clicked on from emails are retained even if unconverted
+- [x] **Protected Accounts List** - Added test account protection
+  - Protected IDs: `3vhfvzks9EHCRkgyKLU4` (Claery & Hammond test), `9yXCw3SXVjBeHJTbD4qr` (Scott Law Group paid test)
+  - Protected accounts never deleted regardless of age
+  - Added `skippedProtected` counter in cleanup summary
+- [x] **Demo Regeneration** - All demos regenerated with Haiku 4.5 model
+  - 3,267 demo_ready leads regenerated with updated template
+  - Ensures all demos use the faster Haiku 4.5 model
+
+**Cleanup Deletion Criteria (updated):**
+```
+Demo is deleted if ALL conditions are true:
+1. demo.generatedAt >= 15 days ago
+2. No stripeSubscriptionId (never converted to paid)
+3. Not in PROTECTED_LEAD_IDS list
+4. No firstVisitAt AND visitCount == 0 (never accessed via email)
+```
+
+**Files Modified:**
+| File | Changes |
+|------|---------|
+| `functions/widget-functions.js` | Changed model to `claude-haiku-4-5` |
+| `scripts/cleanup-stale-demos.js` | 15-day cutoff, access-based deletion, protected accounts |
+
+### Phase 72: Analytics Benchmark Reset (2026-02-20)
+- [x] **Analytics Dashboard Rename** - Renamed for clarity
+  - Changed `email-analytics.html` → `preintake-analytics.html`
+  - Better reflects full dashboard scope (GA4 + email + engagement metrics)
+- [x] **Analytics Benchmark Date** - Established Feb 20, 2026 as clean baseline
+  - Added `ANALYTICS_BENCHMARK_DATE` constant to `widget-functions.js`
+  - All email and lead data before this date is excluded from analytics
+  - Filters applied in-memory to avoid Firestore composite index requirements
+  - Response now includes `benchmarkDate` field for dashboard display
+- [x] **Metrics Reset Logic** - Clean baseline for conversion tracking
+  - `totalSent` = emails sent on/after Feb 20, 2026 (starting from 0)
+  - `totalContacts` = pending pool (remaining unsent contacts)
+  - Lead engagement metrics (visited, viewed, completed) filtered by benchmark date
+- [x] **Updated CLAUDE.md** - All references updated to new filename
+
+**Rationale:** After implementing demo conversation fixes (Haiku 4.5 model, button detection improvements), establishing a clean analytics baseline allows accurate measurement of improved conversion rates without historical data from buggy period skewing metrics.
+
+**Files Modified:**
+| File | Changes |
+|------|---------|
+| `preintake/email-analytics.html` | Renamed to `preintake-analytics.html` |
+| `functions/widget-functions.js` | Added `ANALYTICS_BENCHMARK_DATE`, filtered queries |
+| `preintake/CLAUDE.md` | Updated all filename references |
 
 ---
 
@@ -1721,7 +1779,7 @@ pending → analyzing → researching → generating_demo → demo_ready
 ├── about-us.html           # About us page
 ├── contact-us.html         # Contact form page
 ├── faq.html                # FAQ with accordion
-├── email-analytics.html    # Campaign analytics dashboard (GA4-powered)
+├── preintake-analytics.html    # Campaign analytics dashboard (GA4-powered)
 ├── how-it-works-schematic.html  # Visual schematic of PreIntake.ai flow
 ├── privacy-policy.html     # Privacy policy
 ├── terms-of-service.html   # Terms of service
@@ -1794,7 +1852,7 @@ pending → analyzing → researching → generating_demo → demo_ready
 ├── analyze-sources.js               # Analyze preintake_emails by source (scraper vs legacy)
 ├── audit-preintake-emails.js        # Audit data integrity for send-preintake-campaign.js
 ├── infer-websites.js                # Infer attorney websites from email domains
-└── cleanup-stale-demos.js           # Auto-delete 31+ day old unconverted demos (daily workflow)
+└── cleanup-stale-demos.js           # Auto-delete 15+ day old never-accessed demos (daily workflow)
 ```
 
 ### Firebase Configuration
@@ -1934,8 +1992,8 @@ For firms with strict data residency requirements, self-hosted option at custom 
 - ✅ Post-intake conversion email (Phase 17) - Sends after first demo lead delivery
 - ✅ Demo ready notification to customer - Sends via `sendProspectDemoReadyEmail()` when demo is generated
 - ✅ Customer Portal - `account.html` with magic link auth, settings management, Stripe billing portal
-- ✅ Analytics Dashboard - `email-analytics.html` with GA4 integration, email stats, engagement funnel, AI strategic insights (Phase 63)
-- ✅ Demo Expiration - `cleanup-stale-demos.js` auto-deletes 31+ day old unconverted demos (daily workflow)
+- ✅ Analytics Dashboard - `preintake-analytics.html` with GA4 integration, email stats, engagement funnel, AI strategic insights (Phase 63)
+- ✅ Demo Expiration - `cleanup-stale-demos.js` auto-deletes 15+ day old never-accessed demos (daily workflow)
 - ✅ A/B Testing (Subject Lines) - Subject line variants tracked via `subjectTag` field with dashboard reporting
 
 | Gap | Current State | Planned Solution | Priority |

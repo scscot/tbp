@@ -649,8 +649,9 @@ The email campaign system consists of two parallel campaigns targeting different
   - V10a: "AI is changing how teams grow"
 - **Query**: `sent == false && email != null`, ordered by randomIndex
 - **Template Variables**: `first_name`, `tracked_cta_url`, `unsubscribe_url`
-- **Scripts**:
-  - `scripts/fsr-scraper.js` - Puppeteer scraper with 2Captcha reCAPTCHA solver
+- **Two-Script Architecture** (Feb 2026):
+  - `scripts/fsr-id-harvester.js` - Fast ID harvester (no CAPTCHA, 12x daily, 50 pages/run)
+  - `scripts/fsr-scraper.js` - Contact scraper with 2Captcha reCAPTCHA solver (4x daily, 75/run)
 
 ### Batch Size Configuration
 - **Firestore Config**: `config/emailCampaign` document stores batch sizes per campaign
@@ -937,6 +938,89 @@ Automated 4-stage pipeline that discovers direct sales distributor URLs, scrapes
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
+
+### FSR (FindSalesRep) Data Pipeline
+
+**Two-Script Architecture** (Feb 2026): Separates fast ID harvesting from CAPTCHA-gated contact scraping for efficient pipeline processing.
+
+```
+┌──────────────────────────────────────────────────────────────────────────┐
+│  Stage 1: ID Harvesting (NEW - Fast, Aggressive)                         │
+│  scripts/fsr-id-harvester.js                                             │
+│  Source: State+Company listing pages (no CAPTCHA needed)                 │
+│  URL Pattern: https://{state}.findsalesrep.com/lc/{company}              │
+│  Coverage: 25 states × 272 companies = 6,800 combinations                │
+│  Schedule: 12x daily (every 2h), 50 pages/run                            │
+│  Output: fsr_user_ids collection (userId, sourceState, sourceCompany)    │
+│  Stops automatically when full cycle complete (cycleComplete: true)      │
+├──────────────────────────────────────────────────────────────────────────┤
+│  Stage 2: Contact Scraping (Existing - CAPTCHA-gated)                    │
+│  scripts/fsr-scraper.js                                                  │
+│  Source: fsr_user_ids where scraped==false                               │
+│  Schedule: 4x daily, 75 contacts/run                                     │
+│  Uses 2Captcha for reCAPTCHA solving                                     │
+│  Output: fsr_contacts collection (email, name, company, location)        │
+└──────────────────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+              FSR Campaign (email-campaign-fsr.js)
+              Schedule: 10am, 1pm, 4pm, 7pm PT
+              V9a/V10a A/B test rotation
+```
+
+### FSR Priority States (Top 25 by Population)
+```javascript
+const PRIORITY_STATES = [
+  'ca', 'tx', 'fl', 'ny', 'pa',  // 1-5
+  'il', 'oh', 'ga', 'nc', 'mi',  // 6-10
+  'nj', 'va', 'wa', 'az', 'ma',  // 11-15
+  'tn', 'in', 'md', 'mo', 'wi',  // 16-20
+  'co', 'mn', 'sc', 'al', 'la'   // 21-25
+];
+```
+
+### FSR Collection Schema: `fsr_user_ids`
+```javascript
+{
+  userId: string,               // Unique user ID from FSR (e.g., '3725')
+  profileUrl: string,           // https://www.findsalesrep.com/users/3725
+  discoveredAt: timestamp,
+  sourceState: string,          // State where discovered (e.g., 'tx')
+  sourceCompany: string,        // Company page where found (e.g., 'avon')
+  scraped: boolean,             // Becomes true after contact extraction
+  scrapedAt: timestamp | null
+}
+```
+
+### FSR Harvester State: `scraper_state/fsr_harvester`
+```javascript
+{
+  currentStateIndex: number,    // 0-24 (rotates through 25 states)
+  currentCompanyIndex: number,  // 0-271 (rotates through 272 companies)
+  totalProcessed: number,       // Total state+company combinations processed
+  totalIdsFound: number,        // Total user IDs discovered
+  totalIdsSaved: number,        // New IDs saved (deduplicated)
+  cycleComplete: boolean,       // True when all 6,800 combinations processed
+  cycleCompletedAt: timestamp,  // When cycle finished
+  lastState: string,
+  lastCompany: string,
+  updatedAt: timestamp
+}
+```
+
+### FSR Scripts
+
+| Script | Purpose | Usage |
+|--------|---------|-------|
+| `fsr-id-harvester.js` | Fast ID harvesting from state+company pages | `--harvest --max-pages=50`, `--stats`, `--reset` |
+| `fsr-scraper.js` | Contact scraping with 2Captcha | `--scrape --max=75`, `--stats` |
+
+### FSR GitHub Actions Workflows
+
+| Workflow | Schedule | Purpose |
+|----------|----------|---------|
+| `fsr-id-harvester.yml` | Every 2 hours (12x daily) | Harvest user IDs, 50 pages/run |
+| `fsr-scraper.yml` | 4x daily | Scrape contacts from queue, 75/run |
 
 ### Purchased Leads Data Pipeline
 
@@ -1268,6 +1352,13 @@ Corporate email domains are excluded from all contact collections using a **blac
   - Blocked platforms (12): doTERRA, Ambit Energy, Le-Vel, Herbalife, Zilis, It Works!, Arbonne, LifeWave, Scentsy, Young Living, Nu Skin, Shaklee
 - ✅ **URL Discovery Throughput 3x**: Workflow batch size 40→120, schedule every 4h→every 2h
   - Processes 1,082 companies in ~10 hours instead of ~4 days
+- ✅ **FSR ID Harvester** (Feb 20, 2026): Two-script architecture for efficient FSR pipeline
+  - `scripts/fsr-id-harvester.js` - Fast ID harvesting from state+company pages (no CAPTCHA)
+  - 25 states × 272 companies = 6,800 combinations
+  - 12x daily schedule (every 2 hours), 50 pages/run
+  - Auto-stops when `cycleComplete: true` (prevents infinite loops)
+  - `--reset` CLI option to restart cycle
+  - Modified `fsr-scraper.js` to consume from `fsr_user_ids` queue
 
 **Automation Systems**
 - ✅ **Automated Blog Generation**: Twice-weekly (Mon/Thu) via GitHub Actions + Claude CLI
@@ -1369,7 +1460,7 @@ Corporate email domains are excluded from all contact collections using a **blac
   - Reminders unnecessary and potentially confusing for auto-renewing subscriptions
   - Users don't need to take action - billing happens automatically
 
-### Current System Status (Feb 19, 2026)
+### Current System Status (Feb 20, 2026)
 
 **PROJECT STATUS: FOCUSED CAMPAIGNS (Feb 19, 2026)**
 Main Campaign reduced due to underperformance. Focus shifted to BFH, Purchased, and FSR campaigns for Team Build Pro promotion.
@@ -1395,7 +1486,9 @@ Main Campaign reduced due to underperformance. Focus shifted to BFH, Purchased, 
 | Contacts Seeder | Active | Every 4h, 3 sources (Common Crawl + Wayback + crt.sh) |
 | Contacts Scraper | Active | Hourly, 400 URLs/batch, 12 blocked platforms |
 | BFH Collection | 776 contacts | Primary campaign focus (Feb 18) |
-| FSR Collection | 17 contacts | New scraper source (Feb 19) |
+| FSR ID Harvester | Active | Every 2h (12x daily), 50 pages/run, 6,800 combinations |
+| FSR Contact Scraper | Active | 4x daily, 75/run, consumes fsr_user_ids queue |
+| FSR Collection | 17+ contacts | Two-script architecture (Feb 20) |
 | Spam Monitor | Active | Daily 6am PT, Gmail API check, auto-disable on spam |
 | PreIntake.ai | Autonomous | See `preintake/CLAUDE.md` for details |
 
