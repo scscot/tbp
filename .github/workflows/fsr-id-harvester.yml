@@ -2,19 +2,25 @@ name: FSR ID Harvester
 
 on:
   schedule:
-    # Run 6x daily for aggressive ID harvesting (no CAPTCHA = fast)
-    - cron: '0 12 * * *'   # 4am PT
-    - cron: '0 15 * * *'   # 7am PT
-    - cron: '0 18 * * *'   # 10am PT
-    - cron: '0 21 * * *'   # 1pm PT
+    # Run 12x daily (every 2 hours) for aggressive ID harvesting
     - cron: '0 0 * * *'    # 4pm PT
-    - cron: '0 3 * * *'    # 7pm PT
+    - cron: '0 2 * * *'    # 6pm PT
+    - cron: '0 4 * * *'    # 8pm PT
+    - cron: '0 6 * * *'    # 10pm PT
+    - cron: '0 8 * * *'    # 12am PT
+    - cron: '0 10 * * *'   # 2am PT
+    - cron: '0 12 * * *'   # 4am PT
+    - cron: '0 14 * * *'   # 6am PT
+    - cron: '0 16 * * *'   # 8am PT
+    - cron: '0 18 * * *'   # 10am PT
+    - cron: '0 20 * * *'   # 12pm PT
+    - cron: '0 22 * * *'   # 2pm PT
 
   workflow_dispatch:
     inputs:
       max_pages:
         description: 'Maximum pages to process'
-        default: '30'
+        default: '50'
       state:
         description: 'Start from specific state (optional)'
         default: ''
@@ -61,9 +67,9 @@ jobs:
       - name: Run harvester (scheduled)
         if: github.event_name == 'schedule'
         run: |
-          # Harvest user IDs from state+company pages (10 states × 272 companies = 2,720 combinations)
-          # No CAPTCHA needed - runs fast, 30 pages per run
-          node scripts/fsr-id-harvester.js --harvest --max-pages=30
+          # Harvest user IDs from state+company pages (25 states × 272 companies = 6,800 combinations)
+          # No CAPTCHA needed - runs fast, 50 pages per run
+          node scripts/fsr-id-harvester.js --harvest --max-pages=50
 
       - name: Run harvester (manual)
         if: github.event_name == 'workflow_dispatch'

@@ -25,10 +25,13 @@ const CONTACTS_COLLECTION = 'fsr_contacts';
 const STATE_COLLECTION = 'scraper_state';
 const HARVESTER_STATE_DOC = 'fsr_harvester';
 
-// Top 10 US states by population/MLM activity
+// Top 25 US states by population
 const PRIORITY_STATES = [
-  'tx', 'ca', 'fl', 'ny', 'il',  // Top 5 population
-  'pa', 'oh', 'ga', 'nc', 'mi'   // Next 5
+  'ca', 'tx', 'fl', 'ny', 'pa',  // 1-5
+  'il', 'oh', 'ga', 'nc', 'mi',  // 6-10
+  'nj', 'va', 'wa', 'az', 'ma',  // 11-15
+  'tn', 'in', 'md', 'mo', 'wi',  // 16-20
+  'co', 'mn', 'sc', 'al', 'la'   // 21-25
 ];
 
 // Complete company list from FindSalesRep.com search form (272 companies)
