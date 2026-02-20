@@ -637,16 +637,32 @@ The email campaign system consists of two parallel campaigns targeting different
   - `scripts/bfh-scraper.js` - Phase 1: Scrape BFH profile pages (name, company, country, Facebook/website URLs)
   - `scripts/bfh-email-search.js` - Phase 2: Google search for public email addresses
 
+### FSR Campaign (Mailgun API - Automated)
+- **Function**: `sendFsrContactsCampaign` in `functions/email-campaign-fsr.js`
+- **Tags**: `fsr_campaign`, `tracked`
+- **Schedule**: 10am, 1pm, 4pm, 7pm PT (4 runs/day, same as BFH)
+- **Data Source**: Firestore `fsr_contacts` collection (scraped from findsalesrep.com)
+- **Control Variable**: FSR_CAMPAIGN_ENABLED
+- **Batch Size**: Dynamic via Firestore `config/emailCampaign.batchSizeFsr`
+- **Subject**: V9/V10 A/B test with 2-way rotation (`fsr_v9a`, `fsr_v10a`)
+  - V9a: "Not an opportunity. Just a tool."
+  - V10a: "AI is changing how teams grow"
+- **Query**: `sent == false && email != null`, ordered by randomIndex
+- **Template Variables**: `first_name`, `tracked_cta_url`, `unsubscribe_url`
+- **Scripts**:
+  - `scripts/fsr-scraper.js` - Puppeteer scraper with 2Captcha reCAPTCHA solver
+
 ### Batch Size Configuration
 - **Firestore Config**: `config/emailCampaign` document stores batch sizes per campaign
-- **Current Settings** (updated Feb 18, 2026 - Main reduced, focus on BFH/Purchased):
+- **Current Settings** (updated Feb 19, 2026 - FSR campaign added):
   | Campaign | Batch Size | Runs/Day | Emails/Day | Collection Size | Status |
   |----------|------------|----------|------------|-----------------|--------|
   | Main (`batchSize`) | 2 | 4 | 8 | ~17,900 | Reduced (underperforming) |
   | Purchased (`batchSizePurchased`) | 15 | 4 | 60 | 1,402 | **Primary focus** |
   | BFH (`batchSizeBfh`) | 10 | 4 | 40 | 776 | **Primary focus** |
+  | FSR (`batchSizeFsr`) | 5 | 4 | 20 | 17 | New (Feb 19) |
   | Contacts (`batchSizeContacts`) | 0 | - | - | 826 (paused) | Complete |
-  | **Total** | - | 12 | **108** | - | - |
+  | **Total** | - | 16 | **128** | - | - |
 
 ### Automated Domain Warming System
 - **Workflow**: `.github/workflows/domain-warming-update.yml`
@@ -1337,21 +1353,39 @@ Corporate email domains are excluded from all contact collections using a **blac
   - purchased_leads: 1,427 → 1,402 (25 removed)
   - emailCampaigns/master/contacts: 0 corporate emails (already clean)
 
-### Current System Status (Feb 18, 2026)
+**FSR Campaign & Subscription Updates (Feb 19, 2026)**
+- ✅ **FSR Email Campaign Created**: New campaign for FindSalesRep contacts
+  - File: `functions/email-campaign-fsr.js`
+  - Collection: `fsr_contacts` (17 contacts with emails from 24 scraped)
+  - Schedule: 10am, 1pm, 4pm, 7pm PT (4 runs/day)
+  - A/B test: V9a/V10a with 2-way strict alternation
+  - Control: `config/emailCampaign.batchSizeFsr` (set to 5)
+- ✅ **FSR Firestore Indexes Added**: 3 composite indexes for `fsr_contacts` collection
+  - `sent + email + randomIndex`
+  - `sent + sentTimestamp DESC`
+  - `sent + sentTimestamp ASC`
+- ✅ **Subscription Expiring Reminder Disabled**: `checkSubscriptionsExpiringSoon` in `admin-functions.js`
+  - Apple App Store and Google Play handle automatic subscription renewals
+  - Reminders unnecessary and potentially confusing for auto-renewing subscriptions
+  - Users don't need to take action - billing happens automatically
 
-**PROJECT STATUS: FOCUSED CAMPAIGNS (Feb 18, 2026)**
-Main Campaign reduced due to underperformance. Focus shifted to BFH and Purchased campaigns for Team Build Pro promotion.
+### Current System Status (Feb 19, 2026)
+
+**PROJECT STATUS: FOCUSED CAMPAIGNS (Feb 19, 2026)**
+Main Campaign reduced due to underperformance. Focus shifted to BFH, Purchased, and FSR campaigns for Team Build Pro promotion.
 
 | Component | Status | Notes |
 |-----------|--------|-------|
 | Main Campaign | Reduced | 8am, 11am, 2pm, 5pm PT · **2/batch** · underperforming click-through |
 | Purchased Campaign | **Primary** | 9:30am, 12:30pm, 3:30pm, 6:30pm PT · 15/batch · 1,402 contacts |
 | BFH Campaign | **Primary** | 10am, 1pm, 4pm, 7pm PT · 10/batch · 776 contacts |
+| FSR Campaign | Active | 10am, 1pm, 4pm, 7pm PT · 5/batch · 17 contacts (new Feb 19) |
 | Contacts Campaign | Complete | 826 contacts (cleaned Feb 15) |
 | Email Sending | Mailgun API | Via Mailgun, news.teambuildpro.com |
-| Email A/B Testing | Active | Main: V9/V10 × 2 subjects; Purchased: V11a/V12a; BFH: V11a/V12a |
+| Email A/B Testing | Active | Main: V9/V10 × 2 subjects; FSR: V9a/V10a; BFH: V9/V10 |
 | Yahoo Campaign | Removed | File and function deleted (Jan 31) |
 | Android Campaign | Removed | Function and all references deleted |
+| Subscription Reminders | Disabled | Auto-renewal handled by app stores (Feb 19) |
 | Email Tracking | Firestore | Clicks via trackEmailClick; opens disabled |
 | Analytics Dashboard | Enhanced | 3 campaign cards, improved remaining counts |
 | Push Notifications | Working | profile_reminder, trial_expired verified |
@@ -1361,6 +1395,7 @@ Main Campaign reduced due to underperformance. Focus shifted to BFH and Purchase
 | Contacts Seeder | Active | Every 4h, 3 sources (Common Crawl + Wayback + crt.sh) |
 | Contacts Scraper | Active | Hourly, 400 URLs/batch, 12 blocked platforms |
 | BFH Collection | 776 contacts | Primary campaign focus (Feb 18) |
+| FSR Collection | 17 contacts | New scraper source (Feb 19) |
 | Spam Monitor | Active | Daily 6am PT, Gmail API check, auto-disable on spam |
 | PreIntake.ai | Autonomous | See `preintake/CLAUDE.md` for details |
 
