@@ -1058,9 +1058,28 @@ const getEmailAnalytics = onRequest(
                 forEach: (fn) => emailsDocs.forEach(fn)
             };
 
-            // Unsubscribed and failed don't need date filtering (cumulative counts)
-            const unsubSnap = unsubSnapRaw;
-            const failedSnap = failedSnapRaw;
+            // Filter unsubscribed and failed by benchmark date (based on sentTimestamp)
+            const unsubDocs = unsubSnapRaw.docs.filter(doc => {
+                const data = doc.data();
+                const sentTimestamp = data.sentTimestamp?.toDate();
+                return sentTimestamp && sentTimestamp >= ANALYTICS_BENCHMARK_DATE;
+            });
+            const unsubSnap = {
+                docs: unsubDocs,
+                size: unsubDocs.length,
+                forEach: (fn) => unsubDocs.forEach(fn)
+            };
+
+            const failedDocs = failedSnapRaw.docs.filter(doc => {
+                const data = doc.data();
+                const sentTimestamp = data.sentTimestamp?.toDate();
+                return sentTimestamp && sentTimestamp >= ANALYTICS_BENCHMARK_DATE;
+            });
+            const failedSnap = {
+                docs: failedDocs,
+                size: failedDocs.length,
+                forEach: (fn) => failedDocs.forEach(fn)
+            };
 
             // Total sent = only those sent since benchmark
             const totalSent = emailsSnap.size;
