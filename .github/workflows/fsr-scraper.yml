@@ -70,7 +70,7 @@ jobs:
         env:
           TWOCAPTCHA_API_KEY: ${{ secrets.TWOCAPTCHA_API_KEY }}
         run: |
-          # Discover from next company in rotation (20 companies, Firestore-tracked)
+          # Discover from next company in rotation (272 companies, Firestore-tracked)
           node scripts/fsr-scraper.js --discover-next --max=30
 
           # Scrape pending contacts

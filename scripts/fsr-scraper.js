@@ -28,41 +28,106 @@ const STATE_DOC = 'fsr';
 
 const BASE_URL = 'https://www.findsalesrep.com';
 
-// Priority companies - based on BusinessForHome.org Momentum Rankings (Feb 2026)
-// Source: https://www.businessforhome.org/momentum-ranks/
+// Complete company list from FindSalesRep.com search form (272 companies)
+// Source: https://www.findsalesrep.com/search2 - extracted Feb 2026
 const COMPANIES = [
-  // Top 25 Momentum Leaders
-  'zinzino',           // #1 - 15,552 pts
-  'usana',             // #3 - 14,298 pts
-  'lifewave',          // #5 - 13,230 pts
-  'neora',             // #6 - 13,023 pts
-  'doterra',           // #7 - 12,948 pts
-  'lifevantage',       // #8 - 12,867 pts
-  'primerica',         // #9 - 12,844 pts
-  'pm-international',  // #10 - 12,840 pts
-  'farmasi',           // #13 - 12,731 pts
-  'nu-skin',           // #14 - 12,726 pts
-  'asea',              // #17 - 12,681 pts
-  'total-life-changes',// #19 - 12,629 pts
-  'isagenix',          // #21 - 12,540 pts
-  'healy-world',       // #23 - 12,504 pts
-  'young-living',      // #24 - 12,470 pts
-  'mydailychoice',     // #25 - 12,451 pts
-  // FindSalesRep Featured (verified listings)
-  'jafra-cosmetics',
-  'avon',
-  'tupperware',
-  'shaklee',
-  'amway',
-  'pampered-chef',
-  'mary-kay',
-  'herbalife',
-  'scentsy',
-  'rodan-fields',
-  'arbonne',
-  'monat',
-  'plexus',
-  'color-street'
+  // A
+  '3000bc', '4life-research', '5linx', 'acn', 'adornable.u', 'advocare',
+  'all-natural-assets', 'alureve', 'ambit-energy', 'ameo-essential-oils',
+  'ameriplan-usa', 'ampegy', 'ams-health-sciences', 'amsoil', 'amway',
+  'apriori-beauty', 'arbonne', 'ardyss', 'asea', 'asirvia',
+  'athenas-home-novelties', 'ava-anderson-non-toxic', 'avon', 'azuli-skye',
+  // B
+  'b-epic', 'bandals-footwear', 'barefoot-books', 'bcharmed',
+  'beachbody:-p90x,-insanity', 'beauticontrol', 'beauty-society',
+  'beautycounter', 'befragrant', 'beijo', 'bella-speranza', 'bellamora',
+  'bellaroma:-candles', 'beyond-organic', 'blessings-unlimited', 'body-fx',
+  'boresha-international',
+  // C
+  'celadon-road', 'celebrating-home', 'choffy', 'cieaura', 'clever-container',
+  'close-to-my-heart', 'cloud-9-parties', 'color-by-amber', 'color-street',
+  'consumer-choice-marketing', 'cookie-lee-jewelry', 'country-gourmet-home',
+  'creative-memories', 'cyber-wealth-7',
+  // D
+  'damsel-in-defense', 'demarle-at-home', 'dirt-broke-gourmet', 'discovery-toys',
+  'do-you-bake', 'doterra', 'dove-chocolate-discoveries',
+  // E
+  'eclipse-candle-company', 'ecosway', 'empowerment-flex-marketing',
+  'essante-organics', 'evolv',
+  // F
+  'facial5', 'fgxpress', 'fibi-and-clo', 'fm-world', 'for-every-home',
+  'for-your-pleasure',
+  // G
+  'gelmoment', 'global-wealth-trade-corp', 'gold-canyon', 'grace-adele',
+  'green-mountain-energy', 'green-organics-international',
+  // H
+  'h2o-at-home', 'hbnaturals', 'healy-world', 'herbalife', 'immunotec-research',
+  // I
+  'in-a-pikle', 'independence-energy-alliance', 'initial-outfitters',
+  'initials-inc', 'intimate-expressions', 'invado-international', 'isagenix',
+  'itworks',
+  // J
+  'j.r.-watkins-naturals', 'jade-and-jasper', 'jafra-cosmetics', 'jamberry-nails',
+  'javita', 'jerky-direct', 'jeunesse-global', 'jewel-kade', 'jewelry-in-candles',
+  'jockey-person-to-person', 'jordan-essentials', 'jujubelle', 'just-jewelry',
+  // K
+  'kall8', 'kangen-water', 'karatbars-international', 'keep-collective',
+  'kitcheneez', 'kyani',
+  // L
+  'latasia', 'lattice-and-ivy', 'le-vel', 'legalshield', 'lemongrass-spa',
+  'lia-sophia', 'liberty-lady-designs', 'lifepharm-global-network', 'lifevantage',
+  'lillia-rose', 'lilybean-and-baxter', 'limu', 'liv', 'livesmart-360',
+  'llynda-more-boots', 'longaberger', 'lumaxa', 'lyoness-international',
+  // M
+  'madison-handbags', 'magnetix-wellness', 'magnolia-and-vine', 'makeup-eraser',
+  'mannazo-global', 'mark', 'market-america', 'mary-kay', 'melaleuca',
+  'metagenics', 'mia-bath-and-body', 'mialisia', 'miche-bag', 'momentis',
+  'monat', 'monavie', 'motor-club-of-america', 'multipure-drinking-water-systems',
+  'my-bling-place', 'my-mickey-vacation-travel', 'my-utility-brokers',
+  'my-video-talk-usa', 'mynyloxin',
+  // N
+  'neora', 'new-vision-international', 'nikken', 'north-american-power', 'norwex',
+  'novae', 'novica-live', 'nu-skin', 'nutrilite', 'nuverus', 'nyr-organic',
+  // O
+  'one-hope-wine', 'organo-gold', 'origami-owl', 'our-hearts-desire',
+  // P
+  'pampered-chef', 'pangea-organics', 'paparazzi-accessories', 'park-lane-jewelry',
+  'partygals', 'partylite', 'passion-parties', 'perfectly-posh', 'pet-protector',
+  'pink-papaya', 'pink-zebra', 'pirate-n-princess-vacations', 'plannet-marketing',
+  'plexus-slim', 'premier-designs', 'primerica', 'princess-house', 'pure-romance',
+  'purium-health-products',
+  // R
+  'radiantly-you', 'real-time-pain-relief', 'regeneration-usa', 'rendi',
+  'rodan-and-fields', 'ruby-ribbon',
+  // S
+  'saba:-ace', 'savvi', 'scent-sations', 'scentsy', 'seacret-direct',
+  'send-out-cards', 'senegence', 'sfi', 'shaklee', 'shirley-j',
+  'signature-homestyles', 'silpada', 'simply-aroma', 'simply-you',
+  'sinsations-parties', 'sisel-international', 'skinny-body-care', 'slumber-parties',
+  'solavei', 'solely-jane', 'south-hill-designs', 'stampin-up', 'steeped-tea',
+  'stella-and-dot', 'style-dots', 'sunset-gourmet-food-company', 'sweet-minerals',
+  'sweet-toy-delights',
+  // T
+  'tasteful-treasures', 'tastefully-simple', 'team-effort-network',
+  'the-gourmet-cupboard', 'the-heart-link-network', 'the-traveling-vineyard',
+  'the-trump-network', 'thirty-one-gifts', 'thrive-life', 'tocara',
+  'total-life-changes:-iaso-tea', 'touchstone-crystal-by-swarovski',
+  'traci-lynn-fashion-jewelry', 'treskinrx', 'trivita', 'truaura-beauty',
+  'truvision-health', 'tupperware', 'tyra-beauty',
+  // U
+  'unicity:-bios-life-slim', 'uppercase-living', 'usana', 'usborne-books',
+  // V
+  'vasayo', 'vault-denim', 'velata', 'vemma', 'vidacup', 'visalus', 'visi',
+  'vitel-wireless', 'votre-vu', 'voyager-health-technologies',
+  // W
+  'wake-up-now', 'wellmed-global', 'wildtree', 'willow-house', 'wineshop-at-home',
+  'wishing-well-travel', 'world-global-network', 'worldventures', 'wowwe',
+  // X
+  'xango', 'xocai', 'xplocial',
+  // Y
+  'young-living-essential-oils', 'youngevity', 'younique', 'ytb-travel-network',
+  // Z
+  'zija-international', 'zinzino', 'zurvita'
 ];
 
 // =============================================================================
@@ -725,7 +790,7 @@ Usage:
 
 Options:
   --discover         Discover user IDs from a company page
-  --discover-next    Discover from next company in rotation (20 companies)
+  --discover-next    Discover from next company in rotation (272 companies)
   --discover-all     Discover from all known companies
   --scrape           Scrape contact info for discovered user IDs
   --stats            Show statistics
