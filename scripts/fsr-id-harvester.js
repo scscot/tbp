@@ -312,6 +312,18 @@ async function harvestBatch(maxPages, dryRun = false, specificState = null) {
   console.log(`\nHarvesting user IDs (max pages: ${maxPages}, dry-run: ${dryRun})`);
 
   const harvesterState = await getHarvesterState();
+
+  // Check if cycle is already complete
+  if (harvesterState.cycleComplete) {
+    console.log('\n*** CYCLE ALREADY COMPLETE ***');
+    console.log(`Completed on: ${harvesterState.cycleCompletedAt?.toDate?.() || 'unknown'}`);
+    console.log(`Total pages processed: ${harvesterState.totalProcessed || 0}`);
+    console.log(`Total IDs saved: ${harvesterState.totalIdsSaved || 0}`);
+    console.log('\nTo restart the cycle, manually set cycleComplete=false in Firestore');
+    console.log('Document: scraper_state/fsr_harvester');
+    return { skipped: true, reason: 'cycle_complete' };
+  }
+
   let stateIndex = harvesterState.currentStateIndex || 0;
   let companyIndex = harvesterState.currentCompanyIndex || 0;
 
@@ -355,8 +367,30 @@ async function harvestBatch(maxPages, dryRun = false, specificState = null) {
       companyIndex = 0;
       stateIndex++;
       if (stateIndex >= PRIORITY_STATES.length) {
-        console.log('\n*** FULL CYCLE COMPLETE - Restarting from beginning ***');
-        stateIndex = 0;
+        console.log('\n*** FULL CYCLE COMPLETE ***');
+        console.log('All 6,800 state+company combinations have been harvested.');
+        console.log('Setting cycleComplete=true. Future runs will be skipped.');
+
+        // Mark cycle as complete and stop
+        if (!dryRun) {
+          await updateHarvesterState({
+            currentStateIndex: 0,
+            currentCompanyIndex: 0,
+            cycleComplete: true,
+            cycleCompletedAt: admin.firestore.FieldValue.serverTimestamp(),
+            totalProcessed: (harvesterState.totalProcessed || 0) + pagesProcessed,
+            totalIdsFound: (harvesterState.totalIdsFound || 0) + totalFound,
+            totalIdsSaved: (harvesterState.totalIdsSaved || 0) + totalSaved
+          });
+        }
+
+        return {
+          pagesProcessed,
+          totalFound,
+          totalSaved,
+          totalSkipped,
+          cycleComplete: true
+        };
       }
     }
 
@@ -406,9 +440,18 @@ async function showStats() {
   const position = (state.currentStateIndex || 0) * COMPANIES.length + (state.currentCompanyIndex || 0);
   const progress = ((position / TOTAL_COMBINATIONS) * 100).toFixed(1);
 
+  // Show cycle status prominently
+  if (state.cycleComplete) {
+    console.log('*** CYCLE STATUS: COMPLETE ***');
+    console.log(`  Completed on: ${state.cycleCompletedAt?.toDate?.() || 'unknown'}`);
+    console.log('  To restart: set cycleComplete=false in Firestore\n');
+  } else {
+    console.log(`*** CYCLE STATUS: IN PROGRESS (${progress}%) ***\n`);
+  }
+
   console.log('Harvester Progress:');
   console.log(`  Current position: ${position}/${TOTAL_COMBINATIONS} (${progress}%)`);
-  console.log(`  Current state: ${PRIORITY_STATES[state.currentStateIndex || 0]?.toUpperCase() || 'TX'}`);
+  console.log(`  Current state: ${PRIORITY_STATES[state.currentStateIndex || 0]?.toUpperCase() || 'CA'}`);
   console.log(`  Current company: ${COMPANIES[state.currentCompanyIndex || 0] || '3000bc'}`);
   console.log(`  Pages processed: ${state.totalProcessed || 0}`);
   console.log(`  Total IDs found: ${state.totalIdsFound || 0}`);
@@ -478,6 +521,24 @@ async function main() {
     return;
   }
 
+  // Reset cycle - no browser needed
+  if (args.reset) {
+    console.log('\nResetting harvester cycle...');
+    await updateHarvesterState({
+      currentStateIndex: 0,
+      currentCompanyIndex: 0,
+      cycleComplete: false,
+      cycleCompletedAt: null,
+      totalProcessed: 0,
+      totalIdsFound: 0,
+      totalIdsSaved: 0,
+      lastState: null,
+      lastCompany: null
+    });
+    console.log('Cycle reset complete. Harvester will start from CA/3000bc on next run.');
+    return;
+  }
+
   // Launch browser for harvesting
   await launchBrowser();
 
@@ -497,17 +558,24 @@ Rapidly extracts user IDs from state+company listing pages.
 No CAPTCHA solving needed - runs much faster than the contact scraper.
 
 Usage:
-  node scripts/fsr-id-harvester.js --harvest --max-pages=20
+  node scripts/fsr-id-harvester.js --harvest --max-pages=50
   node scripts/fsr-id-harvester.js --harvest --state=tx --max-pages=50
   node scripts/fsr-id-harvester.js --stats
+  node scripts/fsr-id-harvester.js --reset
   node scripts/fsr-id-harvester.js --dry-run --max-pages=5
 
 Options:
   --harvest          Start harvesting user IDs
-  --max-pages=N      Maximum pages to process (default: 20)
+  --max-pages=N      Maximum pages to process (default: 50)
   --state=XX         Start from specific state (tx, ca, fl, etc.)
   --stats            Show statistics
+  --reset            Reset cycle to start from beginning
   --dry-run          Preview only, no Firestore writes
+
+Cycle Behavior:
+  - Harvester processes all ${TOTAL_COMBINATIONS} state+company combinations once
+  - After full cycle, sets cycleComplete=true and stops
+  - Use --reset to start a new cycle
 
 Coverage:
   States: ${PRIORITY_STATES.join(', ').toUpperCase()}
