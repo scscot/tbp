@@ -1,8 +1,9 @@
-name: FindSalesRep Scraper
+name: FindSalesRep Contact Scraper
 
 on:
   schedule:
-    # Run 4x daily for moderate throughput
+    # Run 4x daily - scrapes contact info from fsr_user_ids queue
+    # ID discovery is handled separately by fsr-id-harvester.yml
     - cron: '0 14 * * *'   # 6am PT
     - cron: '0 18 * * *'   # 10am PT
     - cron: '0 22 * * *'   # 2pm PT
@@ -70,10 +71,8 @@ jobs:
         env:
           TWOCAPTCHA_API_KEY: ${{ secrets.TWOCAPTCHA_API_KEY }}
         run: |
-          # Discover from next company in rotation (272 companies, Firestore-tracked)
-          node scripts/fsr-scraper.js --discover-next --max=30
-
-          # Scrape pending contacts
+          # Scrape contact info for pending user IDs from fsr_user_ids queue
+          # Discovery is now handled by separate fsr-id-harvester.yml workflow
           node scripts/fsr-scraper.js --scrape --max=75
 
       - name: Run scraper (manual - scrape mode)

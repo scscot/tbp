@@ -1,0 +1,90 @@
+name: FSR ID Harvester
+
+on:
+  schedule:
+    # Run 6x daily for aggressive ID harvesting (no CAPTCHA = fast)
+    - cron: '0 12 * * *'   # 4am PT
+    - cron: '0 15 * * *'   # 7am PT
+    - cron: '0 18 * * *'   # 10am PT
+    - cron: '0 21 * * *'   # 1pm PT
+    - cron: '0 0 * * *'    # 4pm PT
+    - cron: '0 3 * * *'    # 7pm PT
+
+  workflow_dispatch:
+    inputs:
+      max_pages:
+        description: 'Maximum pages to process'
+        default: '30'
+      state:
+        description: 'Start from specific state (optional)'
+        default: ''
+      dry_run:
+        description: 'Dry run mode (no Firestore writes)'
+        default: false
+        type: boolean
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  harvest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: 'scripts/package.json'
+
+      - name: Install dependencies
+        run: cd scripts && npm ci
+
+      - name: Install Chrome dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libnss3 libatk-bridge2.0-0 libdrm2 \
+            libxkbcommon0 libgbm1 libasound2t64 libxshmfence1
+
+      - name: Setup Firebase credentials
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          mkdir -p secrets
+          echo "$FIREBASE_SERVICE_ACCOUNT" > secrets/serviceAccountKey.json
+
+      - name: Run harvester (scheduled)
+        if: github.event_name == 'schedule'
+        run: |
+          # Harvest user IDs from state+company pages (10 states × 272 companies = 2,720 combinations)
+          # No CAPTCHA needed - runs fast, 30 pages per run
+          node scripts/fsr-id-harvester.js --harvest --max-pages=30
+
+      - name: Run harvester (manual)
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          MAX_PAGES: ${{ github.event.inputs.max_pages }}
+          STATE: ${{ github.event.inputs.state }}
+          DRY_RUN: ${{ github.event.inputs.dry_run }}
+        run: |
+          ARGS="--harvest --max-pages=$MAX_PAGES"
+          if [ -n "$STATE" ]; then
+            ARGS="$ARGS --state=$STATE"
+          fi
+          if [ "$DRY_RUN" = "true" ]; then
+            ARGS="$ARGS --dry-run"
+          fi
+          node scripts/fsr-id-harvester.js $ARGS
+
+      - name: Show stats
+        if: always()
+        run: node scripts/fsr-id-harvester.js --stats || true
+
+      - name: Cleanup
+        if: always()
+        run: rm -rf secrets/
