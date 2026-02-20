@@ -161,6 +161,13 @@ const {
 } = require('./email-campaign-zinzino');
 
 // ==============================
+// Import Email Campaign for FSR (FindSalesRep) Contacts
+// ==============================
+const {
+  sendFsrContactsCampaign,
+} = require('./email-campaign-fsr');
+
+// ==============================
 // Import Email Tracking Functions (SMTP Migration)
 // ==============================
 const {
@@ -421,6 +428,9 @@ module.exports = {
 
   // Email campaign for Zinzino contacts (scheduled)
   sendHourlyZinzinoCampaign,
+
+  // Email campaign for FSR (FindSalesRep) contacts (scheduled)
+  sendFsrContactsCampaign,
 
   // Email tracking endpoints (SMTP migration)
   trackEmailOpen,
