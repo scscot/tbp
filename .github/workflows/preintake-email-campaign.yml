@@ -98,12 +98,9 @@ jobs:
       - name: Send email batch
         env:
           BATCH_SIZE: ${{ github.event.inputs.batch_size || steps.warming.outputs.batch_size }}
-          # Exclude Yahoo/AOL during domain warming (remove this line when warming is complete)
-          EXCLUDE_YAHOO_AOL: 'true'
         run: |
           echo "Starting PreIntake email campaign..."
           echo "Batch size: $BATCH_SIZE"
-          echo "Yahoo/AOL exclusion: $EXCLUDE_YAHOO_AOL"
           node scripts/send-preintake-campaign.js
 
       - name: Notify on failure
