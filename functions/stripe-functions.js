@@ -32,10 +32,8 @@ const NOTIFY_EMAIL = 'stephen@preintake.ai';
 
 // Stripe configuration
 // LIVE MODE price IDs
-const STRIPE_SETUP_FEE_PRICE_ID = 'price_1SksYAJBdoLMDposleabMPli'; // $149 one-time setup fee
 const STRIPE_SUBSCRIPTION_PRICE_ID = 'price_1SmPbhJBdoLMDposfgTFIJSA'; // $99/month subscription
 // TEST MODE price IDs (for testing with 4242 4242 4242 4242)
-// const STRIPE_SETUP_FEE_PRICE_ID = 'price_1SjQ1aJaJO3EHqOSH5tYPJOB';
 // const STRIPE_SUBSCRIPTION_PRICE_ID = 'price_1SjNpAJaJO3EHqOSHh4DbhNM';
 const STRIPE_PUBLISHABLE_KEY = 'pk_live_51SjNi9JBdoLMDposKpLCGI1NRg0cDPmKwRhDQfZ1kkiVlGxFyYi6OBUyLhfFkIpgFlrX2kJR8kR6uS4Wy7VGXVQR00M7hdJJkG';
 
@@ -88,16 +86,11 @@ const createCheckoutSession = onRequest(
                 customerId = customer.id;
             }
 
-            // Create checkout session with setup fee + subscription
+            // Create checkout session with subscription only (no setup fee)
             const session = await stripe.checkout.sessions.create({
                 customer: customerId,
                 payment_method_types: ['card'],
                 line_items: [
-                    {
-                        // One-time setup fee
-                        price: STRIPE_SETUP_FEE_PRICE_ID,
-                        quantity: 1,
-                    },
                     {
                         // Monthly subscription
                         price: STRIPE_SUBSCRIPTION_PRICE_ID,
@@ -152,10 +145,8 @@ const getStripeConfig = onRequest(
     async (req, res) => {
         return res.json({
             publishableKey: STRIPE_PUBLISHABLE_KEY,
-            setupFeePriceId: STRIPE_SETUP_FEE_PRICE_ID,
             subscriptionPriceId: STRIPE_SUBSCRIPTION_PRICE_ID,
-            setupFeeAmount: 399,
-            subscriptionAmount: 129,
+            subscriptionAmount: 99,
         });
     }
 );
@@ -498,7 +489,7 @@ function generateActivationNotifyEmail(firmName, customerEmail, firmId) {
         </tr>
         <tr>
             <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; color: #64748b;">Amount</td>
-            <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-weight: 600; color: #48bb78;">$228 ($149 + $79/mo)</td>
+            <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-weight: 600; color: #48bb78;">$99/month</td>
         </tr>
     </table>
 

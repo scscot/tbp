@@ -208,9 +208,9 @@ Discovery → Demo → Payment → Onboarding → Implementation → Lead Flow �
 **Page:** `/create-account.html?firm={leadId}`
 
 **Flow:**
-1. User reviews pricing ($149 setup + $99/month)
-2. Clicks "Complete Setup" → Stripe Checkout
-3. Stripe processes payment (setup fee + first month subscription)
+1. User reviews pricing ($99/month)
+2. Clicks "Continue to Payment" → Stripe Checkout
+3. Stripe processes payment (monthly subscription)
 4. Webhook (`checkout.session.completed`) → Updates Firestore
 5. Redirect to `/payment-success.html`
 
@@ -276,7 +276,7 @@ Discovery → Demo → Payment → Onboarding → Implementation → Lead Flow �
 
 ### Phase 7: Subscription Management
 
-**Billing:** Monthly via Stripe ($99/month after initial $248)
+**Billing:** Monthly via Stripe ($99/month, no setup fee)
 
 **Customer Portal:** (Future)
 - Manage payment method
@@ -360,25 +360,18 @@ The generic template leverages Claude AI to ask intelligent follow-up questions 
 
 | Component | Amount |
 |-----------|--------|
-| **One-time Setup Fee** | $149 |
 | **Monthly Subscription** | $99/mo |
-| **Total Due Today** | **$248** |
 
-### Setup Fee Includes:
-- Practice-area template configuration
-- Firm branding (logo, colors, messaging)
-- Email delivery setup (webhook/CRM optional)
-- Compliance review for your jurisdiction
-- Working demo for approval
+**No setup fees. No long-term contracts.** Cancel anytime.
 
-### Monthly Subscription Includes:
+### Subscription Includes:
+- Custom AI intake tailored to your firm's practice areas and branding
+- Unlimited AI-powered intake screenings
+- Real-time delivery via email or CRM
 - Hosting and AI infrastructure
-- Unlimited intakes
 - Email support
 - Ongoing updates and improvements
-- Analytics dashboard (when available)
-
-**No long-term contracts.** Cancel anytime.
+- Analytics dashboard
 
 ### The Math (ROI)
 
@@ -581,10 +574,10 @@ When you're spending $300-500 per lead, even small conversion improvements mean 
 - [ ] CRM credentials input for direct integrations - Future
 
 **Stripe Price IDs:**
-| Environment | Setup Fee | Monthly Subscription |
-|-------------|-------------------|---------------------|
-| **Test** | `price_1SjQ1aJaJO3EHqOSH5tYPJOB` | `price_1SjNpAJaJO3EHqOSHh4DbhNM` |
-| **Live** | `price_1SksYAJBdoLMDposleabMPli` | `price_1SmPbhJBdoLMDposfgTFIJSA` |
+| Environment | Monthly Subscription |
+|-------------|---------------------|
+| **Test** | `price_1SjNpAJaJO3EHqOSHh4DbhNM` |
+| **Live** | `price_1SmPbhJBdoLMDposfgTFIJSA` |
 
 **Firestore Subscription Fields** (in `preintake_leads` collection):
 | Field | Description |
@@ -664,7 +657,7 @@ When you're spending $300-500 per lead, even small conversion improvements mean 
 - [x] **Frontend HTML Audit** - Validated all 11 HTML files for structure and consistency
 - [x] **Frontend JavaScript Audit** - Checked 4 JS files for syntax errors and patterns
 - [x] **Backend Cloud Functions Audit** - Verified 8 function files and index.js exports
-- [x] **Cross-file Consistency Check** - Confirmed pricing ($99/month + $149 setup) and email consistency
+- [x] **Cross-file Consistency Check** - Confirmed pricing ($99/month, no setup fee) and email consistency
 - [x] **Security Review** - Verified no hardcoded secrets, all use Firebase `defineSecret`
 - [x] **Schema.org Fix** - Updated `priceValidUntil` from "2025-12-31" to "2026-12-31" (was expiring)
 - [x] **OG Image Created** - Created `/preintake/images/og-image.png` (1200x630) for social sharing previews
