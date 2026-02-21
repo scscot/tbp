@@ -1793,26 +1793,39 @@ Demo is deleted if ALL conditions are true:
   - Demo page now displays sample intake report card first (iframe deferred)
   - Sample report shows realistic Personal Injury case assessment:
     - GREEN "QUALIFIED — High Confidence" badge
-    - Blurred contact info (privacy simulation)
+    - Contact name visible (Sarah Mitchell - matches transcript)
     - Case summary narrative
     - 4 positive factors (checkmarks), 1 concern (warning)
     - Recommended action
   - Firm name personalized from database
   - "Start Demo" CTA button loads iframe only when clicked
+- [x] **Collapsible Conversation Transcript** - Full conversation supporting the report
+  - "View Full Conversation Transcript" toggle link after Recommended Action
+  - Expands to reveal complete PI intake conversation (15 exchanges)
+  - Conversation matches all report data points:
+    - Rear-ended at stoplight, 3 weeks ago
+    - Neck pain, seeing chiropractor
+    - Police report filed, other driver cited
+    - Photos of vehicle damage
+    - Pre-existing back condition mentioned
+  - Styling matches intake email format (Visitor/Intake speaker labels)
+  - Smooth CSS expand/collapse animation with rotating chevron
 - [x] **Tracking Flow Update** - Separated visit and view events
   - `visit` tracked on page load (user saw sample report)
   - `view` tracked on CTA click (user engaged with demo)
   - Enables measurement of sample report → demo start conversion
 - [x] **CSS/JS Updates** - `/preintake/demo/index.html`
-  - Added ~180 lines of preview mode CSS (`.preview-container`, `.sample-report`, etc.)
+  - Added ~260 lines of preview mode CSS (`.preview-container`, `.sample-report`, `.transcript-*`, etc.)
   - Iframe container hidden by default, shown on CTA click
   - JavaScript refactored: `init()` shows preview, `startDemo()` loads iframe
+  - Transcript toggle handled via `setupEventListeners()`
 
 **New Campaign Visitor Flow:**
 ```
 Email click → homepage (?demo=) → REDIRECT to /demo/?demo={id}
   → Demo page loads → visit tracked → Sample report card displayed
   → User sees what they'll receive (qualification badge, factors, summary)
+  → User can expand transcript to see full conversation
   → User clicks "Start Demo" CTA
     → view tracked → iframe loads with skip_onboarding=true
     → Demo conversation starts
@@ -1822,7 +1835,7 @@ Email click → homepage (?demo=) → REDIRECT to /demo/?demo={id}
 **Files Modified:**
 | File | Changes |
 |------|---------|
-| `/preintake/demo/index.html` | Preview mode HTML, CSS, JS; deferred iframe loading |
+| `/preintake/demo/index.html` | Preview mode HTML, CSS, JS; deferred iframe loading; conversation transcript |
 
 ---
 
