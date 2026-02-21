@@ -1,7 +1,7 @@
 # PreIntake.ai: Comprehensive Project Documentation
 
 **Last Updated**: 2026-02-21
-**Version**: 6.9 (preview mode - show sample report before demo)
+**Version**: 7.0 (Stripe renewal emails disabled)
 
 ---
 
@@ -578,6 +578,10 @@ When you're spending $300-500 per lead, even small conversion improvements mean 
 |-------------|---------------------|
 | **Test** | `price_1SjNpAJaJO3EHqOSHh4DbhNM` |
 | **Live** | `price_1SmPbhJBdoLMDposfgTFIJSA` |
+
+**Stripe Email Settings** (Dashboard → Settings → Emails):
+- "Send emails about upcoming renewals" — **Disabled** (Feb 21, 2026)
+- Stripe auto-renewal reminder emails were unnecessary and confusing for auto-renewing subscriptions
 
 **Firestore Subscription Fields** (in `preintake_leads` collection):
 | Field | Description |
@@ -1836,6 +1840,13 @@ Email click → homepage (?demo=) → REDIRECT to /demo/?demo={id}
 | File | Changes |
 |------|---------|
 | `/preintake/demo/index.html` | Preview mode HTML, CSS, JS; deferred iframe loading; conversation transcript |
+
+### Phase 75: Stripe Renewal Email Disabled (2026-02-21)
+- [x] **Stripe Dashboard Setting** - Disabled "Send emails about upcoming renewals"
+  - Stripe was sending automatic renewal reminder emails 7 days before billing
+  - These emails are unnecessary for auto-renewing subscriptions
+  - Setting location: Stripe Dashboard → Settings → Emails → Customer emails
+  - No code changes required - this is a Stripe Dashboard configuration
 
 ---
 
