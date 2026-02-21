@@ -70,7 +70,8 @@ function validateSubscription(data) {
 
 /**
  * Get public widget configuration for a firm
- * Returns ONLY public data - no prompts, tools, or qualification criteria
+ * Returns all data needed for the master intake template to render
+ * Replaces the need for both getWidgetConfig AND getPreIntakeFirmStatus
  */
 const getWidgetConfig = onRequest(
     {
@@ -145,21 +146,59 @@ const getWidgetConfig = onRequest(
                 firmName = analysis.firmName || data.firmName || data.name || 'Law Firm';
             }
 
-            // Return ONLY public data
+            // Determine mode and access flags
+            const isActiveSubscription = data.subscriptionStatus === 'active';
+            const isDemoMode = !isActiveSubscription;
+            const isStephenTestAccount = (data.deliveryEmail || data.email) === 'stephen@teambuildpro.com';
+
+            // Hide header for paid subscribers (white-label), show for demos and Stephen's test
+            const showHeader = isDemoMode || isStephenTestAccount;
+
+            // Only track visits/views for demo mode (not paid subscribers)
+            const trackingEnabled = isDemoMode;
+
+            // Return full configuration for master template
             return res.json({
+                // Core firm info
+                leadId: firmId,
                 firmName: firmName,
                 logoUrl: analysis.logo || null,
                 colors: {
                     primary: analysis.primaryColor || '#0c1f3f',
                     accent: analysis.accentColor || '#c9a962',
                 },
+
+                // Practice areas
                 practiceAreas: practiceAreasList.map(a => a.name),
-                welcomeMessage: `Hello! I'm here to help you with your legal matter. Let's start by getting some basic information.`,
+                practiceAreasWithPercentages: practiceAreasList,
+
+                // Location
                 state: analysis.state || data.state || 'California',
-                // UI hints
+
+                // Subscription and mode
+                subscriptionStatus: data.subscriptionStatus || null,
+                isActiveSubscription: isActiveSubscription,
+                isDemoMode: isDemoMode,
+
+                // UI flags
+                showHeader: showHeader,
+                trackingEnabled: trackingEnabled,
                 totalSteps: practiceAreasList.length > 1 ? 5 : 4,
-                // Demo URL for campaign personalization
+
+                // Delivery config
+                deliveryEmail: data.deliveryEmail || data.email || null,
+
+                // Website info
+                hasWebsite: data.hasWebsite !== false,
+                firmWebsite: data.website || null,
+
+                // URLs
                 demoUrl: data.demoUrl || null,
+                hostedIntakeUrl: data.hostedIntakeUrl || null,
+                intakeCode: data.intakeCode || null,
+
+                // Config version for cache busting
+                configVersion: '1.0.0',
             });
 
         } catch (error) {
@@ -459,22 +498,35 @@ const serveDemo = onRequest(
                 return res.status(400).send('Invalid firm ID');
             }
 
-            // Get the demo HTML from Firebase Storage
-            const bucket = getStorage().bucket('teambuilder-plus-fe74d.firebasestorage.app');
-            const file = bucket.file(`preintake-demos/${firmId}/index.html`);
-
-            // Check if file exists
-            const [exists] = await file.exists();
-            if (!exists) {
+            // Verify lead exists before redirecting
+            const leadDoc = await db.collection('preintake_leads').doc(firmId).get();
+            if (!leadDoc.exists) {
                 return res.status(404).send('Demo not found for this firm');
             }
 
-            // Download and serve the HTML
-            const [contents] = await file.download();
+            // Validate subscription status
+            const data = leadDoc.data();
+            const subscriptionCheck = validateSubscription(data);
+            if (!subscriptionCheck.valid) {
+                return res.status(403).send(
+                    subscriptionCheck.reason === 'subscription_cancelled'
+                        ? 'This demo has been deactivated because the subscription was cancelled.'
+                        : 'This demo has been deactivated because the subscription has expired.'
+                );
+            }
 
-            res.setHeader('Content-Type', 'text/html; charset=utf-8');
-            res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
-            res.send(contents.toString());
+            // Redirect to master template with firmId
+            // Preserve query parameters (embed, skip_onboarding, etc.)
+            const preservedParams = [];
+            if (req.query.embed) preservedParams.push(`embed=${req.query.embed}`);
+            if (req.query.skip_onboarding) preservedParams.push(`skip_onboarding=${req.query.skip_onboarding}`);
+            if (req.query._t) preservedParams.push(`_t=${req.query._t}`);
+
+            const queryString = preservedParams.length > 0
+                ? `&${preservedParams.join('&')}`
+                : '';
+
+            return res.redirect(302, `/intake.html?demo=${firmId}${queryString}`);
 
         } catch (error) {
             console.error('serveDemo error:', error);
@@ -578,43 +630,9 @@ const serveHostedIntake = onRequest(
                 return res.redirect(302, `/demo/?demo=${leadId}`);
             }
 
-            // Get the demo HTML from Firebase Storage
-            const bucket = getStorage().bucket('teambuilder-plus-fe74d.firebasestorage.app');
-            const file = bucket.file(`preintake-demos/${leadId}/index.html`);
-
-            // Check if file exists
-            const [exists] = await file.exists();
-            if (!exists) {
-                return res.status(404).send('Intake page not found');
-            }
-
-            // Download the HTML
-            const [contents] = await file.download();
-            let html = contents.toString();
-
-            // Modify HTML to indicate LIVE mode (not demo mode)
-            // This disables the "demo sent to {email}" confirmation modal
-            html = html.replace(
-                'window.PREINTAKE_DEMO_MODE = true',
-                'window.PREINTAKE_DEMO_MODE = false'
-            );
-
-            // Also update any explicit demo mode checks
-            html = html.replace(
-                'const DEMO_MODE = true;',
-                'const DEMO_MODE = false;'
-            );
-
-            // Skip onboarding modal for hosted intake (live mode)
-            // The onboarding modal is for demo users; live customers should see intake directly
-            html = html.replace(
-                "if (urlParams.get('skip_onboarding') === 'true') {",
-                "if (true) { // Live mode: always skip onboarding"
-            );
-
-            res.setHeader('Content-Type', 'text/html; charset=utf-8');
-            res.setHeader('Cache-Control', 'public, max-age=300'); // 5 minute cache
-            res.send(html);
+            // Redirect to master template with firm param (indicates live mode)
+            // The master template will fetch config via getWidgetConfig and render appropriately
+            return res.redirect(302, `/intake.html?firm=${leadId}`);
 
         } catch (error) {
             console.error('serveHostedIntake error:', error);

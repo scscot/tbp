@@ -355,17 +355,20 @@ body {
     transition: all 0.2s ease;
     white-space: nowrap;
     display: none; /* Hidden by default, shown for campaign demo visitors */
+    text-decoration: none; /* For anchor tag usage */
 }
 
 .campaign-welcome-cta.visible {
     display: inline-block;
 }
 
-#campaign-welcome-suffix {
+#campaign-welcome-suffix,
+.campaign-welcome-suffix {
     display: none; /* Hidden by default, shown for campaign demo visitors */
 }
 
-#campaign-welcome-suffix.visible {
+#campaign-welcome-suffix.visible,
+.campaign-welcome-suffix.visible {
     display: inline;
 }
 

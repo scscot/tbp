@@ -38,10 +38,9 @@ const path = require('path');
 // Import demo generation functions first
 const { analyzeWebsite } = require('../functions/preintake-analysis-functions');
 const { performDeepResearch } = require('../functions/deep-research-functions');
-const { generateDemoFiles, uploadToStorage, initFirebaseAdmin, generateBarProfileDemo, generateUniqueIntakeCode } = require('../functions/demo-generator-functions');
+const { initFirebaseAdmin, generateUniqueIntakeCode } = require('../functions/demo-generator-functions');
 
 // Initialize Firebase Admin using the functions' firebase-admin instance
-// This ensures uploadToStorage uses the same initialized app
 const serviceAccount = require('../secrets/serviceAccountKey.json');
 const admin = initFirebaseAdmin(serviceAccount, 'teambuilder-plus-fe74d.firebasestorage.app');
 
@@ -299,25 +298,16 @@ async function generateDemoForContact(contactData) {
             }
         };
 
-        // Step 4: Generate demo files
-        console.log(`   🏗️ Generating demo...`);
-        const { htmlContent, configContent } = generateDemoFiles(
-            leadId,
-            leadData,
-            analysis,
-            deepResearch
-        );
-
-        // Step 5: Upload to Firebase Storage
-        const demoUrl = await uploadToStorage(leadId, htmlContent, configContent);
-        console.log(`   ✓ Demo uploaded: ${demoUrl}`);
-
-        // Step 6: Generate unique 6-digit intake code for short URL
+        // Step 4: Generate unique 6-digit intake code for short URL
+        // (Demo HTML is now served dynamically via master template)
+        console.log(`   🏗️ Setting up demo...`);
         const intakeCode = await generateUniqueIntakeCode(db);
         const hostedIntakeUrl = `https://preintake.ai/${intakeCode}`;
+        // Dynamic demo URL (redirects to master template)
+        const demoUrl = `https://preintake.ai/demo/${leadId}`;
         console.log(`   ✓ Generated intake code: ${intakeCode}`);
 
-        // Step 7: Save lead document with demo URL and intake code
+        // Step 5: Save lead document with demo URL and intake code
         leadData.demoUrl = demoUrl;
         leadData.intakeCode = intakeCode;
         leadData.hostedIntakeUrl = hostedIntakeUrl;
@@ -359,32 +349,20 @@ async function generateBarProfileDemoForContact(contactData) {
         // Step 1: Create lead document
         const leadId = db.collection(LEADS_COLLECTION).doc().id;
 
-        // Step 2: Generate demo using bar profile data
-        console.log(`   🏗️ Generating demo from bar profile...`);
-        const { htmlContent, configContent } = generateBarProfileDemo(leadId, {
-            firstName,
-            lastName,
-            practiceArea: practiceArea || 'General Practice',
-            email,
-            state: state || null,
-            firmName,
-            barNumber
-        });
-
-        // Step 3: Upload to Firebase Storage
-        const demoUrl = await uploadToStorage(leadId, htmlContent, configContent);
-        console.log(`   ✓ Demo uploaded: ${demoUrl}`);
-
-        // Step 4: Generate unique 6-digit intake code for short URL
+        // Step 2: Generate unique 6-digit intake code for short URL
+        // (Demo HTML is now served dynamically via master template)
+        console.log(`   🏗️ Setting up demo...`);
         const intakeCode = await generateUniqueIntakeCode(db);
         const hostedIntakeUrl = `https://preintake.ai/${intakeCode}`;
+        // Dynamic demo URL (redirects to master template)
+        const demoUrl = `https://preintake.ai/demo/${leadId}`;
         console.log(`   ✓ Generated intake code: ${intakeCode}`);
 
-        // Step 5: Build firm name (clean any address info from scraper data)
+        // Step 3: Build firm name (clean any address info from scraper data)
         const cleanedFirmName = cleanFirmName(firmName);
         const generatedFirmName = cleanedFirmName || `${firstName} ${lastName}, Attorney at Law`;
 
-        // Step 6: Save lead document with demo URL and intake code
+        // Step 4: Save lead document with demo URL and intake code
         const leadData = {
             name: generatedFirmName,
             email: email,

@@ -1,7 +1,7 @@
 # PreIntake.ai: Comprehensive Project Documentation
 
-**Last Updated**: 2026-02-20
-**Version**: 6.7 (analytics benchmark reset, Haiku 4.5 model, 15-day cleanup)
+**Last Updated**: 2026-02-21
+**Version**: 6.8 (dynamic demo architecture complete, scheduled cleanup March 1, 2026)
 
 ---
 
@@ -1759,6 +1759,39 @@ Demo is deleted if ALL conditions are true:
 | `functions/widget-functions.js` | Added `ANALYTICS_BENCHMARK_DATE`, filtered queries |
 | `preintake/CLAUDE.md` | Updated all filename references |
 
+### Phase 73: Dynamic Demo Architecture & Scheduled Cleanup (2026-02-21)
+- [x] **Dynamic Demo Architecture Complete** - Migrated from static files to dynamic serving
+  - Single master template (`/preintake/intake.html`) served dynamically
+  - Firm-specific data fetched via `getWidgetConfig` API at runtime
+  - `serveDemo()` redirects to `/intake.html?demo={leadId}`
+  - Eliminates need for 3,400+ static HTML files in Storage (~680MB)
+- [x] **Scheduled Cleanup Workflow** - `.github/workflows/cleanup-preintake-storage.yml`
+  - Scheduled for March 1, 2026 at 6am PT (14:00 UTC)
+  - Year check prevents recurring execution (only runs in 2026)
+  - Manual trigger available via `workflow_dispatch`
+  - **Storage cleanup**: Deletes all static demo files from `gs://teambuilder-plus-fe74d.firebasestorage.app/preintake-demos/`
+  - **Script cleanup**: Deletes 5 regeneration scripts no longer needed:
+    - `scripts/force-regen-demo.js`
+    - `scripts/regenerate-bar-profile-demos.js`
+    - `scripts/regenerate-demo.js`
+    - `scripts/regenerate-preintake-demos.js`
+    - `scripts/update-demo-postmessage.js`
+  - Auto-commits and pushes script deletions
+
+**Benefits After Migration:**
+| Before | After |
+|--------|-------|
+| 3,400+ static files | 1 master template |
+| ~680MB Storage usage | ~200KB |
+| Bulk patching for updates | Instant deploys |
+| 45+ min regeneration | Zero regeneration |
+| gsutil scripts needed | Standard deploy workflow |
+
+**Files Created:**
+| File | Purpose |
+|------|---------|
+| `.github/workflows/cleanup-preintake-storage.yml` | Scheduled cleanup for March 1, 2026 |
+
 ---
 
 ## Architecture
@@ -1821,8 +1854,8 @@ pending → analyzing → researching → generating_demo → demo_ready
     └── demo-config.js               # Demo config template
 
 /scripts/
-├── regenerate-preintake-demos.js    # Regenerate demos with latest template
-├── regenerate-bar-profile-demos.js  # Regenerate bar profile demos
+├── regenerate-preintake-demos.js    # DEPRECATED - Scheduled for deletion March 1, 2026
+├── regenerate-bar-profile-demos.js  # DEPRECATED - Scheduled for deletion March 1, 2026
 ├── analyze-click-rate.js            # Email click rate analysis
 ├── send-preintake-campaign.js       # Email campaign sender
 ├── scrape-calbar-attorneys.js       # California Bar attorney scraper (CSS email obfuscation)
@@ -1903,9 +1936,15 @@ pending → analyzing → researching → generating_demo → demo_ready
 7. **Deep research runs** → `performDeepResearch`
 8. **Additional pages scraped** → Attorneys, case results, testimonials
 9. **Claude structures data** → Using Haiku for cost efficiency
-10. **Demo generated** → `generatePreIntakeDemo` (Firestore onUpdate)
-11. **HTML uploaded** → Firebase Storage at `preintake-demos/{leadId}/index.html`
-12. **Demo ready emails** → Sent to BOTH prospect (`sendProspectDemoReadyEmail`) AND Stephen
+10. **Status updated** → `demo_ready` status set in Firestore
+11. **Demo ready emails** → Sent to BOTH prospect (`sendProspectDemoReadyEmail`) AND Stephen
+
+**Dynamic Serving (Post Phase 73):**
+- User visits `preintake.ai/demo/{leadId}`
+- `serveDemo()` redirects to `/intake.html?demo={leadId}`
+- Master template loads, calls `getWidgetConfig?firmId={leadId}`
+- API returns firm config (name, colors, practice areas, mode flags)
+- JavaScript renders firm-specific UI dynamically
 
 ---
 
@@ -2006,7 +2045,9 @@ For firms with strict data residency requirements, self-hosted option at custom 
 
 ## Operations & Maintenance
 
-### Fast Demo Patching (gsutil)
+> **DEPRECATION NOTICE (Phase 73):** The gsutil patching and regeneration sections below are only relevant until March 1, 2026. After that date, all static demo files will be deleted and demos will be served dynamically via `/intake.html?demo={leadId}`. Template updates will deploy instantly via `firebase deploy --only hosting:preintake-ai`.
+
+### Fast Demo Patching (gsutil) — DEPRECATED
 
 For simple text changes to demo templates (CSS, copy, JS snippets), use **gsutil parallel operations** instead of sequential regeneration. This is **15x faster** (~3 min vs ~45 min for 1,400+ demos).
 
@@ -2057,7 +2098,7 @@ chmod +x /tmp/fast-patch-demos.sh
 - Cache-Control is 5 minutes, so changes propagate quickly
 - For `active` leads that need full regeneration, use manual regeneration (see below)
 
-### Full Demo Regeneration
+### Full Demo Regeneration — DEPRECATED
 
 For structural template changes requiring `generateDemoFiles()`:
 
@@ -2167,9 +2208,11 @@ EOF
 
 ### Firebase Storage
 
-| Path | Purpose |
-|------|---------|
-| `preintake-demos/{leadId}/index.html` | Generated demo intake pages |
+| Path | Purpose | Status |
+|------|---------|--------|
+| `preintake-demos/{leadId}/index.html` | Legacy static demo pages | **DEPRECATED** - Scheduled for deletion March 1, 2026 |
+
+**Note:** As of Phase 73, demos are served dynamically via `/intake.html?demo={leadId}`. Static files in Storage are no longer generated and will be deleted on March 1, 2026.
 
 ---
 

@@ -83,12 +83,12 @@
     }
 
     // =========================================================================
-    // HELPER: Check if on demo page
+    // HELPER: Check if on demo/intake page
     // =========================================================================
     function isOnDemoPage() {
         const path = window.location.pathname;
-        // Match /demo, /demo/, /demo/index.html, or any /demo/* path
-        return path === '/demo' || path.startsWith('/demo/') || path.startsWith('/demo?');
+        // Match /demo, /demo/, /demo/index.html, /demo/*, or /intake.html (master template)
+        return path === '/demo' || path.startsWith('/demo/') || path.startsWith('/demo?') || path === '/intake.html';
     }
 
     // =========================================================================
@@ -113,11 +113,12 @@
         banner.id = 'campaign-welcome';
         banner.className = 'campaign-welcome visible';
         banner.innerHTML = `
-            <p class="campaign-welcome-text">Welcome, <strong>${firmName || 'Demo User'}</strong></p>
+            <p class="campaign-welcome-text">Welcome, <strong>${firmName || 'Demo User'}</strong><span class="campaign-welcome-suffix visible"> — Your demo is ready</span></p>
+            <a href="/intake.html?demo=${demoId}" class="campaign-welcome-cta visible">View Demo →</a>
         `;
 
-        // Insert after header
-        const header = document.querySelector('.site-header');
+        // Insert after header (check multiple possible header selectors)
+        const header = document.querySelector('.site-header') || document.getElementById('preintake-header');
         if (header && header.parentNode) {
             header.parentNode.insertBefore(banner, header.nextSibling);
         } else {
@@ -154,11 +155,11 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
             </a>
-            <a href="/demo/?demo=${demoViewedId}" class="view-demo-btn" id="view-demo-btn">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                </svg>
+            <a href="/intake.html?demo=${demoViewedId}" class="view-demo-btn" id="view-demo-btn">
                 View Demo
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
             </a>
         `;
 
@@ -514,14 +515,44 @@
     }
 
     // =========================================================================
+    // HIDE CTA SECTIONS FOR DEMO VISITORS
+    // =========================================================================
+    function hideCtaSectionsForDemoVisitors() {
+        // Don't hide on demo page or intake page
+        if (isOnDemoPage()) return;
+        if (window.location.pathname.includes('intake.html')) return;
+
+        // Check if user has demo context
+        const tbpDemoViewed = sessionStorage.getItem('tbp_demo_viewed');
+        const tbpDemoId = sessionStorage.getItem('tbp_demo_id');
+        if (!tbpDemoViewed && !tbpDemoId) return;
+
+        // Hide CTA sections that ask users to request a demo
+        const ctaSections = document.querySelectorAll('.cta-section');
+        ctaSections.forEach(section => {
+            // Check if this section contains demo-related CTAs
+            const links = section.querySelectorAll('a');
+            links.forEach(link => {
+                const href = link.getAttribute('href') || '';
+                const text = link.textContent.toLowerCase();
+                if (href.includes('#demo') || href.includes('demo') ||
+                    text.includes('demo') || text.includes('free demo')) {
+                    section.style.display = 'none';
+                }
+            });
+        });
+    }
+
+    // =========================================================================
     // INITIALIZATION
     // =========================================================================
     function init() {
         injectStyles();
         renderHeader();
-        renderWelcomeBanner();
+        // Welcome banner only shown on homepage (index.html has its own implementation)
         renderFooter();
         renderFloatingButtons();
+        hideCtaSectionsForDemoVisitors();
     }
 
     // Run on DOM ready
