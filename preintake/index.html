@@ -2036,13 +2036,8 @@
 
                 if (floatingButtons && getStartedBtn && viewDemoBtn) {
                     getStartedBtn.href = `/create-account.html?firm=${leadId}`;
-                    viewDemoBtn.textContent = 'View Demo Again';
-                    viewDemoBtn.href = '#';
-                    viewDemoBtn.onclick = (e) => {
-                        e.preventDefault();
-                        // Redirect back to demo with autoopen to launch modal immediately
-                        window.location.href = `/?demo=${leadId}&firm=${encodeURIComponent(firmName || '')}&autoopen=true`;
-                    };
+                    viewDemoBtn.innerHTML = `View Demo <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>`;
+                    viewDemoBtn.href = `/demo/?demo=${leadId}`;
                     floatingButtons.classList.add('visible');
                 }
 
@@ -2537,7 +2532,7 @@
 
             if (floatingButtons && getStartedBtn && viewDemoBtn) {
                 getStartedBtn.href = `/create-account.html?firm=${demoId}`;
-                viewDemoBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg> View Demo`;
+                viewDemoBtn.innerHTML = `View Demo <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>`;
                 viewDemoBtn.href = `/demo/?demo=${demoId}`;
                 floatingButtons.classList.add('visible');
             }
@@ -2568,6 +2563,12 @@
                 defaultHeroCta.style.display = 'none';
             }
 
+            // Hide the demo request form (they already have a demo)
+            const demoSection = document.getElementById('demo');
+            if (demoSection) {
+                demoSection.style.display = 'none';
+            }
+
             // Show floating buttons with correct demo link
             const floatingButtons = document.getElementById('floating-demo-buttons');
             const getStartedBtn = document.getElementById('get-started-btn');
@@ -2576,7 +2577,7 @@
             if (floatingButtons && getStartedBtn && viewDemoBtn) {
                 const firmName = sessionStorage.getItem('tbp_demo_firm');
                 getStartedBtn.href = `/create-account.html?firm=${viewedDemoId}`;
-                viewDemoBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg> View Demo Again`;
+                viewDemoBtn.innerHTML = `View Demo <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>`;
                 viewDemoBtn.href = `/demo/?demo=${viewedDemoId}`;
                 floatingButtons.classList.add('visible');
             }
@@ -2707,12 +2708,12 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
             </svg>
         </a>
-        <button class="view-demo-btn" id="view-demo-btn">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-            </svg>
+        <a href="#" class="view-demo-btn" id="view-demo-btn">
             View Demo
-        </button>
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
+        </a>
     </div>
 
     <!-- Account Already Active Modal (for subscribers who visit demo URL) -->
