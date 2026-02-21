@@ -1619,7 +1619,7 @@
             <p class="landing-subheadline">
                 Find out if {{FIRM_NAME}} can help with your case in under 5 minutes. Your unique situation will be reviewed quickly, carefully, and confidentially.
             </p>
-            <button class="cta-button" onclick="showConsentScreen()">
+            <button id="landing-cta-button" class="cta-button" onclick="showConsentScreen()">
                 Start My Review
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
@@ -2069,6 +2069,16 @@
                             body.innerHTML = 'Complete this intake demo in <strong>~2-3 minutes</strong> to receive a full case review report at <strong>' + email + '</strong>. See exactly what your team receives for every inquiry.';
 
                             notice.style.display = 'block';
+                        }
+
+                        // Update button text and headline for demo accounts
+                        const ctaButton = document.getElementById('landing-cta-button');
+                        if (ctaButton) {
+                            ctaButton.innerHTML = 'Start Demo <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>';
+                        }
+                        const landingHeadline = document.querySelector('.landing-headline');
+                        if (landingHeadline) {
+                            landingHeadline.textContent = 'Preliminary Case Review';
                         }
                     }
                 }
