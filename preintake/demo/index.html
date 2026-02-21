@@ -220,6 +220,94 @@
             color: #f59e0b;
         }
 
+        /* Transcript Toggle */
+        .transcript-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1.25rem;
+            padding: 0.75rem;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .transcript-toggle:hover {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+        }
+
+        .transcript-toggle-text {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .transcript-toggle-arrow {
+            width: 16px;
+            height: 16px;
+            color: #64748b;
+            transition: transform 0.3s ease;
+        }
+
+        .transcript-toggle.expanded .transcript-toggle-arrow {
+            transform: rotate(180deg);
+        }
+
+        /* Transcript Content */
+        .transcript-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease, margin-top 0.3s ease, padding 0.3s ease;
+            background: #f8fafc;
+            border-radius: 8px;
+            margin-top: 0;
+        }
+
+        .transcript-content.expanded {
+            max-height: 800px;
+            margin-top: 1rem;
+            padding: 1rem;
+            border: 1px solid #e2e8f0;
+        }
+
+        .transcript-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.75rem;
+        }
+
+        .transcript-entry {
+            margin-bottom: 0.75rem;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            color: #475569;
+        }
+
+        .transcript-entry:last-child {
+            margin-bottom: 0;
+        }
+
+        .transcript-entry .speaker {
+            font-weight: 600;
+        }
+
+        .transcript-entry .speaker.visitor {
+            color: #0c1f3f;
+        }
+
+        .transcript-entry .speaker.intake {
+            color: #c9a962;
+        }
+
         /* Personalization note */
         .preview-note {
             text-align: center;
@@ -540,6 +628,94 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                             </svg>
                             Schedule consultation within 48 hours
+                        </div>
+
+                        <!-- Transcript Toggle -->
+                        <div class="transcript-toggle" id="transcript-toggle">
+                            <span class="transcript-toggle-text">View Full Conversation Transcript</span>
+                            <svg class="transcript-toggle-arrow" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </div>
+
+                        <!-- Transcript Content (collapsed by default) -->
+                        <div class="transcript-content" id="transcript-content">
+                            <div class="transcript-label">Full Conversation Transcript</div>
+                            <div class="transcript-entry">
+                                <span class="speaker intake">Intake:</span> Welcome! I'm here to help you get started with a free case evaluation. To begin, what is your name?
+                            </div>
+                            <div class="transcript-entry">
+                                <span class="speaker visitor">Visitor:</span> Sarah Mitchell
+                            </div>
+                            <div class="transcript-entry">
+                                <span class="speaker intake">Intake:</span> Nice to meet you, Sarah. What's the best phone number to reach you?
+                            </div>
+                            <div class="transcript-entry">
+                                <span class="speaker visitor">Visitor:</span> 555-234-8901
+                            </div>
+                            <div class="transcript-entry">
+                                <span class="speaker intake">Intake:</span> Thank you. And your email address?
+                            </div>
+                            <div class="transcript-entry">
+                                <span class="speaker visitor">Visitor:</span> sarah.mitchell@email.com
+                            </div>
+                            <div class="transcript-entry">
+                                <span class="speaker intake">Intake:</span> Perfect. What type of legal matter brings you in today?
+                            </div>
+                            <div class="transcript-entry">
+                                <span class="speaker visitor">Visitor:</span> Personal Injury
+                            </div>
+                            <div class="transcript-entry">
+                                <span class="speaker intake">Intake:</span> I understand you're dealing with a personal injury matter. Can you briefly describe what happened?
+                            </div>
+                            <div class="transcript-entry">
+                                <span class="speaker visitor">Visitor:</span> I was rear-ended at a stoplight about 3 weeks ago. The other driver hit me from behind while I was stopped.
+                            </div>
+                            <div class="transcript-entry">
+                                <span class="speaker intake">Intake:</span> I'm sorry to hear that. Were you injured in the accident?
+                            </div>
+                            <div class="transcript-entry">
+                                <span class="speaker visitor">Visitor:</span> Yes, I've been having neck pain since the accident.
+                            </div>
+                            <div class="transcript-entry">
+                                <span class="speaker intake">Intake:</span> Have you received any medical treatment for your injuries?
+                            </div>
+                            <div class="transcript-entry">
+                                <span class="speaker visitor">Visitor:</span> Yes, I've been seeing a chiropractor for the past two weeks.
+                            </div>
+                            <div class="transcript-entry">
+                                <span class="speaker intake">Intake:</span> Good that you're getting treatment. Was a police report filed at the scene?
+                            </div>
+                            <div class="transcript-entry">
+                                <span class="speaker visitor">Visitor:</span> Yes, the police came and the other driver was cited for following too closely. I have the police report number.
+                            </div>
+                            <div class="transcript-entry">
+                                <span class="speaker intake">Intake:</span> That's helpful documentation. Do you have any photos or other evidence from the accident?
+                            </div>
+                            <div class="transcript-entry">
+                                <span class="speaker visitor">Visitor:</span> Yes, I took photos of the damage to both vehicles at the scene.
+                            </div>
+                            <div class="transcript-entry">
+                                <span class="speaker intake">Intake:</span> Do you currently have an attorney representing you on this matter?
+                            </div>
+                            <div class="transcript-entry">
+                                <span class="speaker visitor">Visitor:</span> No, not yet.
+                            </div>
+                            <div class="transcript-entry">
+                                <span class="speaker intake">Intake:</span> Did you have any pre-existing medical conditions or prior injuries to the same area?
+                            </div>
+                            <div class="transcript-entry">
+                                <span class="speaker visitor">Visitor:</span> I did have some back issues before this, but the neck pain is completely new from this accident.
+                            </div>
+                            <div class="transcript-entry">
+                                <span class="speaker intake">Intake:</span> Thank you for that information, Sarah. Is there anything else you'd like to add about your situation?
+                            </div>
+                            <div class="transcript-entry">
+                                <span class="speaker visitor">Visitor:</span> No, that covers everything.
+                            </div>
+                            <div class="transcript-entry">
+                                <span class="speaker intake">Intake:</span> Thank you. Based on the information you've provided, I've prepared a case summary for our team to review. Someone will be in touch with you shortly.
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -890,6 +1066,16 @@
             // Exit modal buttons
             document.getElementById('exit-modal-continue').addEventListener('click', handleContinueDemo);
             document.getElementById('exit-modal-leave').addEventListener('click', handleLeaveDemo);
+
+            // Transcript toggle
+            const transcriptToggle = document.getElementById('transcript-toggle');
+            const transcriptContent = document.getElementById('transcript-content');
+            if (transcriptToggle && transcriptContent) {
+                transcriptToggle.addEventListener('click', function() {
+                    transcriptToggle.classList.toggle('expanded');
+                    transcriptContent.classList.toggle('expanded');
+                });
+            }
         }
 
         // =========================================================================
