@@ -1,7 +1,7 @@
 # PreIntake.ai: Comprehensive Project Documentation
 
 **Last Updated**: 2026-02-21
-**Version**: 6.8 (dynamic demo architecture complete, scheduled cleanup March 1, 2026)
+**Version**: 6.9 (preview mode - show sample report before demo)
 
 ---
 
@@ -1316,19 +1316,18 @@ Email click → homepage loads with ?demo= → REDIRECT to /demo/?demo={id}&firm
   - Removed "Demo Starts" column from Lead Details table
   - Consistent terminology across all dashboard sections
 
-**Updated Campaign Visitor Flow:**
+**Updated Campaign Visitor Flow (Phase 57 - superseded by Phase 74):**
 ```
-Email click → homepage loads with ?demo= → REDIRECT to /demo/?demo={id}
-  → Demo page loads → visit + view tracked simultaneously
-  → Demo iframe auto-loads with skip_onboarding=true
-  → Demo conversation starts immediately (no button click required)
-  → OR User clicks header nav / "Explore" link → explore flow unchanged
+NOTE: Phase 57 implemented auto-load demo on page visit.
+Phase 74 replaced this with Preview Mode (sample report shown first).
+See Phase 74 for current architecture.
 ```
 
-**Updated Tracking Flow:**
-1. `trackDemoView?type=visit` + `type=view` - Both on `/demo/` page load (merged)
-2. `trackDemoView?type=explore` - When user leaves demo to explore site
-3. `intakeDelivery.success` - When intake report is sent to firm's email
+**Current Tracking Flow (as of Phase 74):**
+1. `trackDemoView?type=visit` - On `/demo/` page load (sample report displayed)
+2. `trackDemoView?type=view` - On "Start Demo" CTA click (iframe loads)
+3. `trackDemoView?type=explore` - When user leaves demo to explore site
+4. `intakeDelivery.success` - When intake report is sent to firm's email
 
 ### Phase 58: firmName Data Quality Cleanup (2026-02-10)
 - [x] **Kentucky Bar firmName Fix** - Scraper was storing "Official Address Information" placeholder text
@@ -1791,6 +1790,46 @@ Demo is deleted if ALL conditions are true:
 | File | Purpose |
 |------|---------|
 | `.github/workflows/cleanup-preintake-storage.yml` | Scheduled cleanup for March 1, 2026 |
+
+### Phase 74: Preview Mode - Sample Report Before Demo (2026-02-21)
+- [x] **Problem Analysis** - 23 demo views with 0 completions (0% completion rate)
+  - Root cause: Users asked to invest time before seeing any value
+  - Demo auto-loaded immediately but users abandoned before engaging
+  - No preview of what they would receive for completing the demo
+- [x] **Preview Mode Implementation** - Show OUTPUT before asking for INPUT
+  - Demo page now displays sample intake report card first (iframe deferred)
+  - Sample report shows realistic Personal Injury case assessment:
+    - GREEN "QUALIFIED — High Confidence" badge
+    - Blurred contact info (privacy simulation)
+    - Case summary narrative
+    - 4 positive factors (checkmarks), 1 concern (warning)
+    - Recommended action
+  - Firm name personalized from database
+  - "Start Demo" CTA button loads iframe only when clicked
+- [x] **Tracking Flow Update** - Separated visit and view events
+  - `visit` tracked on page load (user saw sample report)
+  - `view` tracked on CTA click (user engaged with demo)
+  - Enables measurement of sample report → demo start conversion
+- [x] **CSS/JS Updates** - `/preintake/demo/index.html`
+  - Added ~180 lines of preview mode CSS (`.preview-container`, `.sample-report`, etc.)
+  - Iframe container hidden by default, shown on CTA click
+  - JavaScript refactored: `init()` shows preview, `startDemo()` loads iframe
+
+**New Campaign Visitor Flow:**
+```
+Email click → homepage (?demo=) → REDIRECT to /demo/?demo={id}
+  → Demo page loads → visit tracked → Sample report card displayed
+  → User sees what they'll receive (qualification badge, factors, summary)
+  → User clicks "Start Demo" CTA
+    → view tracked → iframe loads with skip_onboarding=true
+    → Demo conversation starts
+  → OR User explores site first → explore flow unchanged
+```
+
+**Files Modified:**
+| File | Changes |
+|------|---------|
+| `/preintake/demo/index.html` | Preview mode HTML, CSS, JS; deferred iframe loading |
 
 ---
 
