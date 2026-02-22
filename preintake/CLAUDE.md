@@ -1,7 +1,7 @@
 # PreIntake.ai: Comprehensive Project Documentation
 
 **Last Updated**: 2026-02-21
-**Version**: 7.0 (Stripe renewal emails disabled)
+**Version**: 7.1 (intake.html header simplification)
 
 ---
 
@@ -1848,6 +1848,25 @@ Email click → homepage (?demo=) → REDIRECT to /demo/?demo={id}
   - Setting location: Stripe Dashboard → Settings → Emails → Customer emails
   - No code changes required - this is a Stripe Dashboard configuration
 
+### Phase 76: Demo Header Simplification (2026-02-21)
+- [x] **Simplified intake.html Header** - Reduced nav menu to focus on conversion
+  - Removed: Pricing, About, FAQs, Contact links
+  - Kept: Home, Create Account button
+  - Rationale: Demo is a critical conversion point; fewer nav options reduces distraction
+  - Users who want to explore go to Homepage first, where full navigation is available
+- [x] **Fixed "My Account" Button Issue** - Header was showing wrong button text on initial load
+  - Problem: `components.js` was overwriting the inline header because it matched `id="preintake-header"`
+  - Solution: Changed header id from `preintake-header` to `intake-header` in 3 places:
+    - CSS selector (line 49): `body.embed-mode #intake-header`
+    - HTML element (line 1569): `<header class="intake-header" id="intake-header">`
+    - JavaScript (line 3131): `document.getElementById('intake-header')`
+  - Result: Header now correctly shows "Create Account" on initial page load
+
+**UX Design Decision:**
+- Demo page has minimal navigation (Home + Create Account) to focus on conversion
+- Homepage serves as the hub for users who want to explore the full offering
+- This follows conversion funnel best practices: reduce distractions at critical conversion points
+
 ---
 
 ## Architecture
@@ -1874,6 +1893,7 @@ pending → analyzing → researching → generating_demo → demo_ready
 ├── terms-of-service.html   # Terms of service
 ├── unsubscribe.html        # Email unsubscribe confirmation page
 ├── preintake.html          # Legacy intake page (standalone)
+├── intake.html             # Master demo intake template (simplified header: Home + Create Account)
 ├── debug-flow.html         # Debug tool for demo/explore flow testing
 ├── sitemap.xml             # SEO sitemap (6 pages)
 ├── robots.txt              # Search engine directives
