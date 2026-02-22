@@ -1,0 +1,212 @@
+name: Domain Warming - Update TBP Batch Sizes
+
+on:
+  schedule:
+    # Run every Monday at 6am PT (2pm UTC during PST, 1pm UTC during PDT)
+    # Using 2pm UTC covers both scenarios
+    - cron: '0 14 * * 1'
+  workflow_dispatch:
+    inputs:
+      force_week:
+        description: 'Force specific week number (optional)'
+        required: false
+        type: number
+
+jobs:
+  update-batch-sizes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Calculate current warming week
+        id: week
+        run: |
+          CONFIG=$(cat .github/warming-config.json)
+
+          # Use TBP start date for week calculation (both campaigns start same date)
+          START_DATE=$(echo $CONFIG | jq -r '.tbp.startDate')
+
+          # Calculate weeks since start
+          START_EPOCH=$(date -d "$START_DATE" +%s)
+          NOW_EPOCH=$(date +%s)
+          DAYS_ELAPSED=$(( (NOW_EPOCH - START_EPOCH) / 86400 ))
+
+          # Handle negative days (before start date)
+          if [ $DAYS_ELAPSED -lt 0 ]; then
+            WEEK_NUM=1
+          else
+            WEEK_NUM=$(( (DAYS_ELAPSED / 7) + 1 ))
+          fi
+
+          # Override if force_week provided
+          if [ -n "${{ inputs.force_week }}" ]; then
+            WEEK_NUM=${{ inputs.force_week }}
+          fi
+
+          echo "week=$WEEK_NUM" >> $GITHUB_OUTPUT
+          echo "Current warming week: $WEEK_NUM"
+
+      - name: Get batch sizes for current week
+        id: batch
+        run: |
+          CONFIG=$(cat .github/warming-config.json)
+          WEEK=${{ steps.week.outputs.week }}
+
+          # Get TBP schedule entry for current week (or last available)
+          TBP_SCHEDULE=$(echo $CONFIG | jq -r --argjson week "$WEEK" '
+            .tbp.schedule |
+            map(select(.week <= $week)) |
+            last
+          ')
+
+          # Extract all TBP batch sizes (use last week's values if beyond schedule)
+          TBP_BATCH=$(echo $TBP_SCHEDULE | jq -r '.batchSize // 50')
+          TBP_PURCHASED=$(echo $TBP_SCHEDULE | jq -r '.batchSizePurchased // 75')
+          TBP_BFH=$(echo $TBP_SCHEDULE | jq -r '.batchSizeBfh // 50')
+          TBP_ZINZINO=$(echo $TBP_SCHEDULE | jq -r '.batchSizeZinzino // 50')
+          TBP_FSR=$(echo $TBP_SCHEDULE | jq -r '.batchSizeFsr // 50')
+          TBP_DAILY=$(echo $TBP_SCHEDULE | jq -r '.dailyTotal // 1100')
+
+          # PreIntake batch size
+          PREINTAKE_MAX_BATCH=$(echo $CONFIG | jq -r '.preintake.maxBatchSize')
+          PREINTAKE_BATCH_SIZE=$(echo $CONFIG | jq -r --argjson week "$WEEK" '
+            .preintake.schedule |
+            map(select(.week <= $week)) |
+            last |
+            .batchSize
+          ')
+          if [ "$PREINTAKE_BATCH_SIZE" = "null" ] || [ -z "$PREINTAKE_BATCH_SIZE" ]; then
+            PREINTAKE_BATCH_SIZE=$PREINTAKE_MAX_BATCH
+          fi
+
+          # Output all values
+          echo "batch_size=$TBP_BATCH" >> $GITHUB_OUTPUT
+          echo "batch_size_purchased=$TBP_PURCHASED" >> $GITHUB_OUTPUT
+          echo "batch_size_bfh=$TBP_BFH" >> $GITHUB_OUTPUT
+          echo "batch_size_zinzino=$TBP_ZINZINO" >> $GITHUB_OUTPUT
+          echo "batch_size_fsr=$TBP_FSR" >> $GITHUB_OUTPUT
+          echo "daily_total=$TBP_DAILY" >> $GITHUB_OUTPUT
+          echo "preintake_batch_size=$PREINTAKE_BATCH_SIZE" >> $GITHUB_OUTPUT
+
+          echo "Week $WEEK TBP batch sizes:"
+          echo "  Main: $TBP_BATCH, Purchased: $TBP_PURCHASED, BFH: $TBP_BFH"
+          echo "  Zinzino: $TBP_ZINZINO, FSR: $TBP_FSR"
+          echo "  Daily total: $TBP_DAILY"
+          echo "PreIntake batch size: $PREINTAKE_BATCH_SIZE"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install firebase-admin
+
+      - name: Update Firestore config document
+        id: update
+        run: |
+          node << 'EOF'
+          const admin = require('firebase-admin');
+
+          // Initialize with service account from secret
+          const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+          admin.initializeApp({
+            credential: admin.credential.cert(serviceAccount)
+          });
+
+          const db = admin.firestore();
+          const week = parseInt(process.env.WEEK);
+
+          // TBP batch sizes
+          const tbpBatch = parseInt(process.env.TBP_BATCH);
+          const tbpPurchased = parseInt(process.env.TBP_PURCHASED);
+          const tbpBfh = parseInt(process.env.TBP_BFH);
+          const tbpZinzino = parseInt(process.env.TBP_ZINZINO);
+          const tbpFsr = parseInt(process.env.TBP_FSR);
+          const dailyTotal = parseInt(process.env.DAILY_TOTAL);
+
+          // PreIntake batch size
+          const preintakeBatch = parseInt(process.env.PREINTAKE_BATCH);
+
+          async function updateConfig() {
+            const configRef = db.collection('config').doc('emailCampaign');
+
+            // Get current values
+            const doc = await configRef.get();
+            const current = doc.exists ? doc.data() : {};
+
+            console.log('Current values:');
+            console.log(`  batchSize: ${current.batchSize || 'not_set'}`);
+            console.log(`  batchSizePurchased: ${current.batchSizePurchased || 'not_set'}`);
+            console.log(`  batchSizeBfh: ${current.batchSizeBfh || 'not_set'}`);
+            console.log(`  batchSizeZinzino: ${current.batchSizeZinzino || 'not_set'}`);
+            console.log(`  batchSizeFsr: ${current.batchSizeFsr || 'not_set'}`);
+            console.log(`  preintakeBatchSize: ${current.preintakeBatchSize || 'not_set'}`);
+
+            // Update Firestore with all batch sizes
+            await configRef.set({
+              batchSize: tbpBatch,
+              batchSizePurchased: tbpPurchased,
+              batchSizeBfh: tbpBfh,
+              batchSizeZinzino: tbpZinzino,
+              batchSizeFsr: tbpFsr,
+              preintakeBatchSize: preintakeBatch,
+              warmingWeek: week,
+              updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+              updatedBy: 'github-actions'
+            }, { merge: true });
+
+            console.log('');
+            console.log('Updated Firestore config:');
+            console.log(`  Week: ${week}`);
+            console.log(`  TBP Daily Total: ${dailyTotal}`);
+            console.log(`  - Main: ${tbpBatch}`);
+            console.log(`  - Purchased: ${tbpPurchased}`);
+            console.log(`  - BFH: ${tbpBfh}`);
+            console.log(`  - Zinzino: ${tbpZinzino}`);
+            console.log(`  - FSR: ${tbpFsr}`);
+            console.log(`  - PreIntake: ${preintakeBatch}`);
+          }
+
+          updateConfig()
+            .then(() => process.exit(0))
+            .catch(err => {
+              console.error('Error:', err);
+              process.exit(1);
+            });
+          EOF
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          TBP_BATCH: ${{ steps.batch.outputs.batch_size }}
+          TBP_PURCHASED: ${{ steps.batch.outputs.batch_size_purchased }}
+          TBP_BFH: ${{ steps.batch.outputs.batch_size_bfh }}
+          TBP_ZINZINO: ${{ steps.batch.outputs.batch_size_zinzino }}
+          TBP_FSR: ${{ steps.batch.outputs.batch_size_fsr }}
+          DAILY_TOTAL: ${{ steps.batch.outputs.daily_total }}
+          PREINTAKE_BATCH: ${{ steps.batch.outputs.preintake_batch_size }}
+          WEEK: ${{ steps.week.outputs.week }}
+
+      - name: Summary
+        run: |
+          echo "## Domain Warming Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Warming Week**: ${{ steps.week.outputs.week }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### TBP Campaigns (Daily Total: ${{ steps.batch.outputs.daily_total }})" >> $GITHUB_STEP_SUMMARY
+          echo "| Campaign | Batch Size | Daily (×4 runs) |" >> $GITHUB_STEP_SUMMARY
+          echo "|----------|------------|-----------------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Main | ${{ steps.batch.outputs.batch_size }} | $(( ${{ steps.batch.outputs.batch_size }} * 4 )) |" >> $GITHUB_STEP_SUMMARY
+          echo "| Purchased | ${{ steps.batch.outputs.batch_size_purchased }} | $(( ${{ steps.batch.outputs.batch_size_purchased }} * 4 )) |" >> $GITHUB_STEP_SUMMARY
+          echo "| BFH | ${{ steps.batch.outputs.batch_size_bfh }} | $(( ${{ steps.batch.outputs.batch_size_bfh }} * 4 )) |" >> $GITHUB_STEP_SUMMARY
+          echo "| Zinzino | ${{ steps.batch.outputs.batch_size_zinzino }} | $(( ${{ steps.batch.outputs.batch_size_zinzino }} * 4 )) |" >> $GITHUB_STEP_SUMMARY
+          echo "| FSR | ${{ steps.batch.outputs.batch_size_fsr }} | $(( ${{ steps.batch.outputs.batch_size_fsr }} * 4 )) |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### PreIntake" >> $GITHUB_STEP_SUMMARY
+          echo "- **Batch Size**: ${{ steps.batch.outputs.preintake_batch_size }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Updated Firestore config/emailCampaign document" >> $GITHUB_STEP_SUMMARY

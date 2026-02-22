@@ -10,10 +10,35 @@
     ]
   },
   "tbp": {
-    "startDate": "2026-02-09",
-    "maxBatchSize": 60,
+    "startDate": "2026-02-22",
     "schedule": [
-      { "week": 1, "batchSize": 60 }
+      {
+        "week": 1,
+        "batchSize": 20,
+        "batchSizePurchased": 20,
+        "batchSizeBfh": 20,
+        "batchSizeZinzino": 20,
+        "batchSizeFsr": 20,
+        "dailyTotal": 400
+      },
+      {
+        "week": 2,
+        "batchSize": 35,
+        "batchSizePurchased": 35,
+        "batchSizeBfh": 35,
+        "batchSizeZinzino": 35,
+        "batchSizeFsr": 35,
+        "dailyTotal": 700
+      },
+      {
+        "week": 3,
+        "batchSize": 50,
+        "batchSizePurchased": 75,
+        "batchSizeBfh": 50,
+        "batchSizeZinzino": 50,
+        "batchSizeFsr": 50,
+        "dailyTotal": 1100
+      }
     ]
   }
 }
