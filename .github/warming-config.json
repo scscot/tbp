@@ -11,32 +11,33 @@
   },
   "tbp": {
     "startDate": "2026-02-22",
+    "notes": "Main campaign deprioritized (underperforming). Others scaled proportionally by queue size.",
     "schedule": [
       {
         "week": 1,
-        "batchSize": 20,
-        "batchSizePurchased": 20,
-        "batchSizeBfh": 20,
-        "batchSizeZinzino": 20,
-        "batchSizeFsr": 20,
+        "batchSize": 10,
+        "batchSizePurchased": 30,
+        "batchSizeBfh": 27,
+        "batchSizeZinzino": 31,
+        "batchSizeFsr": 2,
         "dailyTotal": 400
       },
       {
         "week": 2,
-        "batchSize": 35,
-        "batchSizePurchased": 35,
-        "batchSizeBfh": 35,
-        "batchSizeZinzino": 35,
-        "batchSizeFsr": 35,
-        "dailyTotal": 700
+        "batchSize": 10,
+        "batchSizePurchased": 55,
+        "batchSizeBfh": 50,
+        "batchSizeZinzino": 57,
+        "batchSizeFsr": 4,
+        "dailyTotal": 704
       },
       {
         "week": 3,
-        "batchSize": 50,
-        "batchSizePurchased": 75,
-        "batchSizeBfh": 50,
-        "batchSizeZinzino": 50,
-        "batchSizeFsr": 50,
+        "batchSize": 10,
+        "batchSizePurchased": 88,
+        "batchSizeBfh": 80,
+        "batchSizeZinzino": 91,
+        "batchSizeFsr": 6,
         "dailyTotal": 1100
       }
     ]
