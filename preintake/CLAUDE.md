@@ -1,7 +1,7 @@
 # PreIntake.ai: Comprehensive Project Documentation
 
-**Last Updated**: 2026-02-21
-**Version**: 7.1 (intake.html header simplification)
+**Last Updated**: 2026-02-22
+**Version**: 7.3 (corrected dynamic architecture documentation)
 
 ---
 
@@ -16,7 +16,7 @@
 PreIntake.ai has reached a mature, fully-automated state:
 - ✅ 8 active bar scrapers continuously adding attorney contacts (7 disabled after completion)
 - ✅ Email campaign runs 4x daily Mon-Fri (PST: 8:30am, 10:30am, 12:30pm, 2:30pm) - domain warming complete
-- ✅ Demo generation fully automated (website + bar profile)
+- ✅ Dynamic demo serving via master template (`/intake.html?demo={leadId}`)
 - ✅ Analytics dashboard operational (GA4 + Firestore)
 - ✅ Customer portal implemented (magic link auth, settings, billing)
 - ✅ Stale demo cleanup runs daily (15+ day never-accessed)
@@ -33,9 +33,14 @@ PreIntake.ai has reached a mature, fully-automated state:
 | Metric | Check Frequency | Red Flag |
 |--------|-----------------|----------|
 | Email bounces/spam complaints | Weekly | >2% bounce or any spam complaints |
-| Demo start rate | Bi-weekly | Drops below 2% sustained |
+| Demo view rate | Bi-weekly | Drops below 2% sustained |
+| Intake completion rate | Bi-weekly | 0% sustained over 50+ demo views |
 | Scraper failures (8 active) | Weekly (GitHub Actions) | Multiple consecutive failures |
 | First paying customer | Passive | 🎉 Celebrate and re-engage |
+
+**Note on Demo Metrics:** The important engagement metrics are:
+- **Demo Viewed**: Recipient clicked email CTA and loaded demo page
+- **Intake Completed**: User finished the demo conversation and received screening report
 
 ### Resume Development When
 
@@ -137,10 +142,12 @@ Your CRM manages leads. We make sure only real cases get there in the first plac
 **Analytics Dashboard** (`preintake-analytics.html`)
 - ✅ AI Strategic Insights (Claude-powered analysis with actionable recommendations)
 - ✅ GA4 website traffic (users, sessions, bounce rate, traffic sources)
-- ✅ Email campaign metrics (sent, delivered, visits, demo starts)
-- ✅ Engagement funnel tracking (emails → visits → demo starts → leads)
+- ✅ Email campaign metrics (sent, demo viewed, intake completed)
+- ✅ Engagement funnel tracking (emails sent → demo viewed → intake completed)
 - ✅ Source/state breakdown by bar association
 - 🔮 Future: Green/Yellow/Red distribution, question flow A/B testing, ROI reporting
+
+**Note:** "Demos generated" is not tracked as a metric because demos are auto-generated for all recipients before email send (~94% rate). The meaningful engagement metrics start at "demo viewed" (recipient clicked CTA).
 
 ---
 
@@ -1926,8 +1933,8 @@ pending → analyzing → researching → generating_demo → demo_ready
 ├── fix-firmname-issues.js           # Fix clear firmName errors (N/A, emails, URLs, etc.)
 ├── fix-ncbar-firmnames.js           # Extract firm names from NC Bar concatenated addresses
 └── templates/
-    ├── demo-intake.html.template    # Demo intake template
-    └── demo-config.js               # Demo config template
+    ├── demo-intake.html.template    # LEGACY - Static demo template (no longer used for serving)
+    └── demo-config.js               # LEGACY - Demo config template
 
 /scripts/
 ├── regenerate-preintake-demos.js    # DEPRECATED - Scheduled for deletion March 1, 2026
@@ -1991,7 +1998,7 @@ pending → analyzing → researching → generating_demo → demo_ready
 - Email validation with MX record lookup
 - Disposable email domain blocking (20+ domains)
 
-### Demo Intake (`demo-intake.html.template`)
+### Demo Intake (`/preintake/intake.html`)
 - Email validation in chat interface
 - Phone validation (US and international)
 - Typo detection and suggestions
@@ -2003,6 +2010,7 @@ pending → analyzing → researching → generating_demo → demo_ready
 
 ## Demo Generation Flow
 
+### Lead Analysis (Firestore-based)
 1. **Lead submits form** → `submitDemoRequest` function
 2. **Validation passes** → Store in Firestore with status `pending`
 3. **Confirmation email** → Sent to prospect immediately
@@ -2015,12 +2023,15 @@ pending → analyzing → researching → generating_demo → demo_ready
 10. **Status updated** → `demo_ready` status set in Firestore
 11. **Demo ready emails** → Sent to BOTH prospect (`sendProspectDemoReadyEmail`) AND Stephen
 
-**Dynamic Serving (Post Phase 73):**
+### Dynamic Serving (Phase 73+)
+Demos are served dynamically from a master template—no static files generated:
 - User visits `preintake.ai/demo/{leadId}`
 - `serveDemo()` redirects to `/intake.html?demo={leadId}`
 - Master template loads, calls `getWidgetConfig?firmId={leadId}`
 - API returns firm config (name, colors, practice areas, mode flags)
 - JavaScript renders firm-specific UI dynamically
+
+**Note:** Legacy static file generation code still exists but is scheduled for removal on March 1, 2026.
 
 ---
 
@@ -2294,12 +2305,14 @@ EOF
 
 ## Success Metrics
 
-1. **Landing page**: Conversion rate from visitor → demo request
-2. **Demo generator**: % of demos viewed after generation
-3. **Sales pipeline**: Demo → sales call → signed customer
-4. **Activation**: Payment → first embedded widget
+1. **Email campaign**: Demo view rate (% of emails sent that result in demo page visit)
+2. **Demo engagement**: Intake completion rate (% of demo views that complete the conversation)
+3. **Sales pipeline**: Demo completion → account creation → payment
+4. **Activation**: Payment → first embedded widget on live site
 5. **Retention**: Monthly churn rate
 6. **Platform**: Practice areas supported, firms onboarded, intakes processed
+
+**Note:** "Demo generation" is not a success metric. Demos are pre-generated for all email recipients as part of the send pipeline. The first meaningful engagement metric is "demo viewed" (recipient clicked the email CTA).
 
 ---
 
