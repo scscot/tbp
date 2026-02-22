@@ -46,7 +46,7 @@
         }
 
         /* Hide header and sidebar CTA when embedded in modal */
-        body.embed-mode #preintake-header,
+        body.embed-mode #intake-header,
         body.embed-mode .sidebar-cta {
             display: none;
         }
@@ -1566,7 +1566,7 @@
 </head>
 <body>
     <!-- Site Header (hidden in embed mode) -->
-    <header class="intake-header" id="preintake-header">
+    <header class="intake-header" id="intake-header">
         <div class="header-container">
             <a href="/" class="logo" id="header-logo">
                 <img src="/images/icon.svg" alt="PreIntake.ai" class="logo-icon">
@@ -1574,10 +1574,6 @@
             </a>
             <nav class="nav-menu">
                 <a href="/" id="nav-home">Home</a>
-                <a href="/#pricing" id="nav-pricing">Pricing</a>
-                <a href="/about-us.html" id="nav-about">About</a>
-                <a href="/faq.html" id="nav-faq">FAQs</a>
-                <a href="/contact-us.html" id="nav-contact">Contact</a>
                 <a href="#" class="nav-account" id="nav-account">Create Account</a>
             </nav>
             <button class="menu-toggle" aria-label="Toggle menu" aria-expanded="false">
@@ -3132,7 +3128,7 @@
         }
 
         function interceptHeaderNavigation() {
-            const header = document.getElementById('preintake-header');
+            const header = document.getElementById('intake-header');
             if (!header) return;
 
             // Intercept all nav links except the account/create button
