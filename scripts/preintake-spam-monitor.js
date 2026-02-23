@@ -52,37 +52,75 @@ const CHECK_DELAY_MS = 3 * 60 * 1000; // 3 minutes (Gmail typically delivers in 
 // TEST EMAIL CONTENT
 // =============================================================================
 
+// Test firm name for the email template
+const TEST_FIRM_NAME = 'Test Law Firm';
+
 /**
  * Generate test email HTML content
- * Simplified version of bar profile email for spam testing
+ * IDENTICAL to generateBarProfileEmailHTML() in send-preintake-campaign.js
+ * to ensure spam testing reflects actual campaign emails
  */
 function generateTestEmailHtml(subjectSuffix) {
-  const testDemoUrl = 'https://preintake.ai/demo/?demo=spam_test';
+  const testDemoUrl = 'https://preintake.ai/demo/?demo=spam_test&utm_source=email&utm_medium=outreach&utm_campaign=bar_profile&utm_content=cta_button';
   const unsubscribeUrl = `https://preintake.ai/unsubscribe.html?email=${encodeURIComponent(TEST_EMAIL)}`;
+  const firstName = TEST_RECIPIENT_NAME.split(' ')[0];
 
   return `<!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PreIntake.ai</title>
+    <!--[if !mso]><!-->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!--<![endif]-->
 </head>
-<body style="margin:0; padding:0; font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #0c1f3f; color: #e5e7eb;">
-    <div style="max-width:600px; margin:0 auto; padding:40px 20px;">
-      <p style="font-size: 16px; margin-top: 0;">
-          <span style="color: #c9a962; font-weight: 600; font-size: 24px;">PreIntake.ai</span><br>
-          <span style="color: #94a3b8; font-size: 14px;">Pre-Screen Every Inquiry — Tailored to Your Practice Area</span>
+<body style="margin:0; padding:0; background-color:#f8fafc;">
+  <div style="display:none; max-height:0; overflow:hidden;">
+    Pre-screen every inquiry before it reaches you—see how it works for ${TEST_FIRM_NAME}.
+  </div>
+  <div style="max-width:600px; margin:0 auto; padding:20px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; line-height:1.6; color:#1a1a2e;">
+
+    <div style="background-color:#0c1f3f; background:linear-gradient(135deg,#0c1f3f 0%,#1a3a5c 100%); padding:20px; border-radius:12px 12px 0 0; text-align:center;">
+      <h1 style="margin:0; padding:0; font-weight:600; line-height:1.2;">
+        <span style="display:block; font-size:24px; color:#c9a962;">
+          <span style="color:#ffffff;">Pre</span>Intake<span style="color:#ffffff;">.ai</span>
+        </span>
+        <span style="display:block; margin-top:4px; font-size:14px; font-weight:400; color:#ffffff; line-height:1.4;">
+          Pre-Screen Every Inquiry — Tailored to Your Practice Area
+        </span>
+      </h1>
+    </div>
+
+    <div style="background:#ffffff; padding:30px; border-radius:0 0 12px 12px; box-shadow:0 4px 6px rgba(0,0,0,0.1);">
+      <p style="font-size: 16px;">Hello ${firstName},</p>
+
+      <p style="font-size: 16px;">Every law firm has the same intake problem: too many inquiries, not enough signal. Strong cases wait alongside weak or misdirected submissions, and staff time gets burned sorting it out.</p>
+
+      <p style="font-size: 16px;"><strong>PreIntake.ai</strong> ensures your most important matters surface immediately—screened, summarized, and prioritized before you ever review them.</p>
+
+      <p style="font-size: 16px;">Instead of reviewing raw submissions in the order they arrive, you focus on what matters most first. Strong inquiries are clear, weak ones are obvious, and misdirected matters don't steal attention they don't deserve.</p>
+
+      <p style="font-size: 16px;">Every inquiry is reviewed and delivered with:</p>
+
+      <ul style="color: #1a1a2e; padding-left: 20px; font-size: 16px;">
+          <li>A case summary tailored to your practice area</li>
+          <li>A qualification rating: <strong>qualified</strong>, <strong>needs review</strong>, or <strong>not a fit</strong></li>
+          <li>A plain-English explanation of why</li>
+      </ul>
+
+      <p style="font-size: 16px; margin-top: 16px;">
+          <strong style="color: #c9a962;">Zero Data Retention</strong> — Inquiry content is processed and delivered, not retained.
       </p>
 
-      <p style="font-size: 16px; margin-top: 30px;">Hello ${TEST_RECIPIENT_NAME},</p>
+      <p style="font-size: 16px; margin-top: 8px;">Most intake systems assume you have a website. This one doesn't. It works as a simple hosted intake link you can share anywhere you currently accept inquiries—email signature, referral partners, even a text message.</p>
 
-      <p style="font-size: 16px;">This is a <strong>spam monitoring test email</strong> sent at ${new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })} PT ${subjectSuffix || ''}.</p>
-
-      <p style="font-size: 16px;">PreIntake.ai ensures your most important matters surface immediately—screened, summarized, and prioritized before you ever review them.</p>
+      <p style="font-size: 16px;">We've prepared a demo tailored specifically to your practice:</p>
 
       <div style="text-align: center; margin: 20px 0 30px 0;">
-          <a href="${testDemoUrl}" style="display: inline-block; background: linear-gradient(135deg, #c9a962 0%, #b8944f 100%); color: #0c1f3f; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-size: 16px;">View Demo</a>
+          <a href="${testDemoUrl}" style="display: inline-block; background: linear-gradient(135deg, #c9a962 0%, #b8944f 100%); color: #0c1f3f; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-size: 16px;">View Your Customized Demo</a>
       </div>
+
+      <p style="font-size: 16px; margin-top: 16px;">No commitment. Review it on your own — no calls required.</p>
 
       <p style="font-size: 16px; margin-top: 20px;">
           Best,<br>
@@ -106,18 +144,39 @@ function generateTestEmailHtml(subjectSuffix) {
 
 /**
  * Generate test email plain text content
+ * IDENTICAL to generateBarProfileEmailPlainText() in send-preintake-campaign.js
  */
 function generateTestEmailText(subjectSuffix) {
+  const testDemoUrl = 'https://preintake.ai/demo/?demo=spam_test&utm_source=email&utm_medium=outreach&utm_campaign=bar_profile&utm_content=cta_button';
+  const unsubscribeUrl = `https://preintake.ai/unsubscribe.html?email=${encodeURIComponent(TEST_EMAIL)}`;
+  const firstName = TEST_RECIPIENT_NAME.split(' ')[0];
+
   return `PreIntake.ai
 Pre-Screen Every Inquiry — Tailored to Your Practice Area
 
-Hello ${TEST_RECIPIENT_NAME},
+Hello ${firstName},
 
-This is a SPAM MONITORING TEST EMAIL sent at ${new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })} PT ${subjectSuffix || ''}.
+Every law firm has the same intake problem: too many inquiries, not enough signal. Strong cases wait alongside weak or misdirected submissions, and staff time gets burned sorting it out.
 
 PreIntake.ai ensures your most important matters surface immediately—screened, summarized, and prioritized before you ever review them.
 
-View Demo: https://preintake.ai/demo/?demo=spam_test
+Instead of reviewing raw submissions in the order they arrive, you focus on what matters most first. Strong inquiries are clear, weak ones are obvious, and misdirected matters don't steal attention they don't deserve.
+
+Every inquiry is reviewed and delivered with:
+
+• A case summary tailored to your practice area
+• A qualification rating: qualified, needs review, or not a fit
+• A plain-English explanation of why
+
+ZERO DATA RETENTION — Inquiry content is processed and delivered, not retained.
+
+Most intake systems assume you have a website. This one doesn't. It works as a simple hosted intake link you can share anywhere you currently accept inquiries—email signature, referral partners, even a text message.
+
+We've prepared a demo tailored specifically to your practice:
+
+View Your Customized Demo: ${testDemoUrl}
+
+No commitment. Review it on your own — no calls required.
 
 Best,
 Stephen Scott
@@ -125,7 +184,7 @@ Founder, PreIntake.ai
 
 ---
 PreIntake.ai · Los Angeles, California
-Unsubscribe: https://preintake.ai/unsubscribe.html?email=${encodeURIComponent(TEST_EMAIL)}`;
+Unsubscribe: ${unsubscribeUrl}`;
 }
 
 // =============================================================================
