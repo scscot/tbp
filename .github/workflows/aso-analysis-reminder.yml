@@ -1,0 +1,67 @@
+name: ASO Impact Analysis Reminder
+
+on:
+  schedule:
+    # February 26, 2026 at 9:00 AM PST (17:00 UTC)
+    - cron: '0 17 26 2 *'
+  workflow_dispatch:
+
+jobs:
+  reminder:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Create reminder issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = '📊 Run ASO Impact Analysis - App Store Description Change';
+            const body = `## ASO Impact Analysis Ready
+
+            It's been 10+ days since the App Store description optimization on **February 16, 2026**.
+            App Store Connect engagement data should now be available for analysis.
+
+            ### What Changed (Feb 16, 2026)
+            - Reduced descriptions from ~900 to ~190 words (EN, ES, PT, DE)
+            - Added Promotional Text field in all 4 languages
+            - Lead with "Pre-Build Advantage" hook
+
+            ### Run the Analysis
+            \`\`\`bash
+            cd /Users/sscott/tbp/scripts
+            npm install
+            GOOGLE_APPLICATION_CREDENTIALS="../secrets/serviceAccountKey.json" node analyze-aso-impact.js
+            \`\`\`
+
+            ### Analysis Script Location
+            \`/Users/sscott/tbp/scripts/analyze-aso-impact.js\`
+
+            ### What to Look For
+            - **Impressions**: Are more people seeing the app in search results?
+            - **Product Page Views**: Are more people clicking through?
+            - **Conversion Rate**: Is the ratio of installs to impressions improving?
+            - **By Language**: Compare EN, ES, PT, DE performance
+
+            ---
+            *This is an automated reminder. Disable the \`aso-analysis-reminder.yml\` workflow after running the analysis.*`;
+
+            // Check if issue already exists
+            const issues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'aso-analysis'
+            });
+
+            if (issues.data.length === 0) {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: title,
+                body: body,
+                labels: ['aso-analysis', 'analytics']
+              });
+              console.log('Created ASO analysis reminder issue');
+            } else {
+              console.log('ASO analysis reminder issue already exists');
+            }
