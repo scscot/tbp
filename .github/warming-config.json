@@ -11,34 +11,37 @@
   },
   "tbp": {
     "startDate": "2026-02-22",
-    "notes": "Main campaign deprioritized (underperforming). Others scaled proportionally by queue size.",
+    "notes": "Main campaign disabled (batchSize=0) - historically underperformed. Its allocation redistributed to FSR and Paparazzi. Re-enable manually when FSR/Paparazzi queues exhaust.",
     "schedule": [
       {
         "week": 1,
-        "batchSize": 10,
+        "batchSize": 0,
         "batchSizePurchased": 30,
         "batchSizeBfh": 27,
         "batchSizeZinzino": 31,
-        "batchSizeFsr": 2,
-        "dailyTotal": 400
+        "batchSizeFsr": 7,
+        "batchSizePaparazzi": 7,
+        "dailyTotal": 408
       },
       {
         "week": 2,
-        "batchSize": 10,
+        "batchSize": 0,
         "batchSizePurchased": 55,
         "batchSizeBfh": 50,
         "batchSizeZinzino": 57,
-        "batchSizeFsr": 4,
-        "dailyTotal": 704
+        "batchSizeFsr": 9,
+        "batchSizePaparazzi": 8,
+        "dailyTotal": 716
       },
       {
         "week": 3,
-        "batchSize": 10,
+        "batchSize": 0,
         "batchSizePurchased": 88,
         "batchSizeBfh": 80,
         "batchSizeZinzino": 91,
-        "batchSizeFsr": 6,
-        "dailyTotal": 1100
+        "batchSizeFsr": 11,
+        "batchSizePaparazzi": 10,
+        "dailyTotal": 1120
       }
     ]
   }

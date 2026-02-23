@@ -39,13 +39,13 @@ const mailgunDomain = defineString("TBP_MAILGUN_DOMAIN", { default: "news.teambu
 const TEMPLATE_NAME = 'mailer';
 const FROM_ADDRESS = 'Stephen Scott <stephen@news.teambuildpro.com>';
 const SEND_DELAY_MS = 1000;
-const TRACKING_BASE_URL = 'https://us-central1-teambuilder-plus-fe74d.cloudfunctions.net';
 const LANDING_PAGE_URL = 'https://teambuildpro.com';
 
 // =============================================================================
 // A/B TEST CONFIGURATIONS
 // =============================================================================
 
+// Subject "Not an opportunity. Just a tool." triggers Gmail spam filter - using safe alternatives
 const AB_TEST_VARIANTS = {
   v3: {
     templateVersion: 'v3',
@@ -55,9 +55,9 @@ const AB_TEST_VARIANTS = {
   },
   v4: {
     templateVersion: 'v4',
-    subject: 'Not an opportunity. Just a tool.',
+    subject: 'AI is changing how teams grow',
     subjectTag: 'mobile_first_v4',
-    description: 'Flip the script - confidence before joining (legacy)'
+    description: 'AI curiosity hook (legacy)'
   },
   v5: {
     templateVersion: 'v5',
@@ -79,9 +79,9 @@ const AB_TEST_VARIANTS = {
   },
   v8: {
     templateVersion: 'v8',
-    subject: 'Not an opportunity. Just a tool.',
+    subject: 'Your AI-powered recruiting assistant',
     subjectTag: 'mobile_first_v8',
-    description: 'Direct value proposition - tool focus'
+    description: 'AI assistant value proposition'
   }
 };
 
@@ -128,14 +128,6 @@ async function getDynamicBatchSize() {
 // =============================================================================
 // TRACKING URL BUILDERS
 // =============================================================================
-
-/**
- * Build a click-tracked URL that redirects through our Cloud Function
- */
-function buildClickUrl(trackingId, destinationUrl) {
-  const encodedUrl = encodeURIComponent(destinationUrl);
-  return `${TRACKING_BASE_URL}/trackEmailClick?id=${trackingId}&url=${encodedUrl}`;
-}
 
 /**
  * Build destination URL with UTM parameters and optional contact personalization
@@ -190,9 +182,8 @@ async function sendEmailViaMailgun(contact, docId, config, index) {
   // Company name still used in template body for personalization
   const companyName = contact.company || 'your company';
 
-  // Build tracking URLs (includes contact name for personalized welcome on landing page)
+  // Build URLs (direct links for better deliverability)
   const landingPageUrl = buildLandingPageUrl(config.utmCampaign, variant.subjectTag, contact);
-  const trackedCtaUrl = buildClickUrl(docId, landingPageUrl);
   const unsubscribeUrl = `${LANDING_PAGE_URL}/unsubscribe.html?email=${encodeURIComponent(contact.email)}`;
 
   // Build form data for Mailgun API
@@ -219,11 +210,11 @@ async function sendEmailViaMailgun(contact, docId, config, index) {
   form.append('h:List-Unsubscribe', `<mailto:${unsubscribeEmail}?subject=Unsubscribe>, <${unsubscribeUrl}>`);
   form.append('h:List-Unsubscribe-Post', 'List-Unsubscribe=One-Click');
 
-  // Template variables
+  // Template variables (using direct landing page URL for deliverability)
   const templateVars = {
     first_name: contact.firstName,
     company: companyName,
-    tracked_cta_url: trackedCtaUrl,
+    tracked_cta_url: landingPageUrl,
     unsubscribe_url: unsubscribeUrl
   };
   form.append('h:X-Mailgun-Variables', JSON.stringify(templateVars));

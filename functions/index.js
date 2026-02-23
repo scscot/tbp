@@ -168,6 +168,14 @@ const {
 } = require('./email-campaign-fsr');
 
 // ==============================
+// Import Email Campaign for Paparazzi Contacts
+// ==============================
+const {
+  sendHourlyPaparazziCampaign,
+  testPaparazziEmail,
+} = require('./email-campaign-paparazzi');
+
+// ==============================
 // Import Email Tracking Functions (SMTP Migration)
 // ==============================
 const {
@@ -432,6 +440,10 @@ module.exports = {
 
   // Email campaign for FSR (FindSalesRep) contacts (scheduled)
   sendFsrContactsCampaign,
+
+  // Email campaign for Paparazzi contacts (scheduled)
+  sendHourlyPaparazziCampaign,
+  testPaparazziEmail,
 
   // Email tracking endpoints (SMTP migration)
   trackEmailOpen,

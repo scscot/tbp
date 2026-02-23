@@ -1,6 +1,6 @@
 # Team Build Pro - Comprehensive Knowledge Base
 
-**Last Updated**: 2026-02-18
+**Last Updated**: 2026-02-23
 **Purpose**: Persistent knowledge base for AI assistants across sessions
 
 ---
@@ -587,11 +587,12 @@ The email campaign system consists of two parallel campaigns targeting different
   - V9-es/V10-es: Spanish translations, V9-de/V10-de: German translations
   - V11/V12: Deprecated (were personalized_intro variants, now consolidated into v9/v10)
 - **Main Campaign A/B Test** (4-way): V9/V10 templates × 2 subject lines
-  - V9a: V9 template + "Not an opportunity. Just a tool."
-  - V9b: V9 template + "AI is changing how teams grow"
-  - V10a: V10 template + "Not an opportunity. Just a tool."
-  - V10b: V10 template + "AI is changing how teams grow"
+  - V9a: V9 template + "AI is changing how teams grow"
+  - V9b: V9 template + "Your AI-powered recruiting assistant"
+  - V10a: V10 template + "AI is changing how teams grow"
+  - V10b: V10 template + "Your AI-powered recruiting assistant"
   - Tags: `main_v9a`, `main_v9b`, `main_v10a`, `main_v10b`
+  - **Note**: Subject "Not an opportunity. Just a tool." triggers Gmail spam filter - REMOVED Feb 23, 2026
 - **Contacts Campaign A/B Test**: V7/V8 (legacy - `mobile_first_v7` / `mobile_first_v8`)
 - **Tracking**: Click tracking via `trackEmailClick` Cloud Function endpoint; open tracking disabled (pixel removed for deliverability)
 - **DNS**: SPF + DKIM + DMARC configured for 10/10 mail-tester.com score
@@ -645,10 +646,27 @@ The email campaign system consists of two parallel campaigns targeting different
 - **Control Variable**: FSR_CAMPAIGN_ENABLED
 - **Batch Size**: Dynamic via Firestore `config/emailCampaign.batchSizeFsr`
 - **Subject**: V9/V10 A/B test with 2-way rotation (`fsr_v9a`, `fsr_v10a`)
-  - V9a: "Not an opportunity. Just a tool."
-  - V10a: "AI is changing how teams grow"
+  - V9a: "AI is changing how teams grow"
+  - V10a: "Your AI-powered recruiting assistant"
 - **Query**: `sent == false && email != null`, ordered by randomIndex
 - **Template Variables**: `first_name`, `tracked_cta_url`, `unsubscribe_url`
+
+### Paparazzi Campaign (Mailgun API - Automated)
+- **Function**: `sendHourlyPaparazziCampaign` in `functions/email-campaign-paparazzi.js`
+- **Tags**: `paparazzi_campaign`, `tracked`
+- **Schedule**: 10:30am, 1:30pm, 4:30pm, 7:30pm PT (4 runs/day)
+- **Data Source**: Firestore `paparazzi_contacts` collection (scraped from Paparazzi distributor pages)
+- **Control Variable**: PAPARAZZI_CAMPAIGN_ENABLED
+- **Batch Size**: Dynamic via Firestore `config/emailCampaign.batchSizePaparazzi`
+- **Subject**: V9/V10 A/B test with 4-way rotation (`paparazzi_v9a`, `paparazzi_v9b`, `paparazzi_v10a`, `paparazzi_v10b`)
+  - V9a: "AI is changing how teams grow"
+  - V9b: "Your AI-powered recruiting assistant"
+  - V10a: "AI is changing how teams grow"
+  - V10b: "Your AI-powered recruiting assistant"
+- **Query**: `sent == false && email != null`, ordered by randomIndex
+- **Template Variables**: `first_name`, `tracked_cta_url`, `unsubscribe_url`
+- **Test Endpoint**: `testPaparazziEmail` - HTTP endpoint for spam monitoring workflow
+
 - **Two-Script Architecture** (Feb 2026):
   - `scripts/fsr-id-harvester.js` - Fast ID harvester (no CAPTCHA, 12x daily, 50 pages/run)
   - `scripts/fsr-scraper.js` - Contact scraper with 2Captcha reCAPTCHA solver (4x daily, 75/run)
@@ -662,8 +680,9 @@ The email campaign system consists of two parallel campaigns targeting different
   | Purchased (`batchSizePurchased`) | 15 | 4 | 60 | 1,402 | **Primary focus** |
   | BFH (`batchSizeBfh`) | 10 | 4 | 40 | 776 | **Primary focus** |
   | FSR (`batchSizeFsr`) | 5 | 4 | 20 | 17 | New (Feb 19) |
+  | Paparazzi (`batchSizePaparazzi`) | TBD | 4 | TBD | TBD | New (Feb 23) |
   | Contacts (`batchSizeContacts`) | 0 | - | - | 826 (paused) | Complete |
-  | **Total** | - | 16 | **128** | - | - |
+  | **Total** | - | 20 | **TBD** | - | - |
 
 ### Automated Domain Warming System
 - **Workflow**: `.github/workflows/domain-warming-update.yml`
@@ -1183,6 +1202,7 @@ Corporate email domains are excluded from all contact collections using a **blac
 - `functions/email-campaign-functions.js` - Main Campaign (emailCampaigns/master/contacts)
 - `functions/email-campaign-contacts.js` - Contacts Campaign (direct_sales_contacts)
 - `functions/email-campaign-bfh.js` - BFH Campaign (bfh_contacts)
+- `functions/email-campaign-paparazzi.js` - Paparazzi Campaign + testPaparazziEmail spam test endpoint
 - `functions/email-stats-functions.js` - Email campaign stats API (Firestore + GA4)
 - `functions/analytics-dashboard-functions.js` - TBP analytics dashboard API (GA4 + iOS + Android + Firestore)
 - `functions/email-smtp-sender.js` - SMTP transporter with connection pooling
@@ -1225,12 +1245,18 @@ Corporate email domains are excluded from all contact collections using a **blac
   - Outputs refresh token for GMAIL_OAUTH_TOKEN secret
   - Requires GMAIL_OAUTH_CREDENTIALS secret (OAuth client JSON)
 - `spam-monitor.js` - Email spam detection and auto-disable system
-  - Sends test emails from Main, Purchased, BFH campaigns
+  - **Calls `testPaparazziEmail` Cloud Function endpoint** to test actual campaign code (prevents drift)
+  - Tests variants v9a and v10b to cover both subject lines
   - Checks Gmail API for inbox vs spam placement
-  - Auto-disables campaigns (sets batchSize to 0) if spam detected
-  - Sends alert email via SMTP on spam detection
-  - Stores previous value for recovery
+  - Auto-disables **ALL 6 campaigns** if spam detected:
+    - `batchSize`, `batchSizePurchased`, `batchSizeBfh`, `batchSizePaparazzi`, `batchSizeFsr`, `batchSizeZinzino`
+  - Sends alert email via Mailgun on spam detection
+  - Stores previous batch size values for recovery
   - Schedule: Daily 6am PT via `.github/workflows/spam-monitor.yml`
+- `testPaparazziEmail` - HTTP endpoint for spam monitoring (in `email-campaign-paparazzi.js`)
+  - POST body: `{ email, variants: ['v9a', 'v10b'], subjectSuffix: "(Feb 23, 6:00 AM)" }`
+  - Uses same `sendEmailViaMailgun` function as production campaign
+  - Accepts `subjectSuffix` parameter for accurate Gmail search identification
 
 **Contact Data Management:**
 - `analyze-apollo-personal-emails.js` - Extract contacts with personal emails from Apollo CSV
@@ -1444,6 +1470,26 @@ Corporate email domains are excluded from all contact collections using a **blac
   - purchased_leads: 1,427 → 1,402 (25 removed)
   - emailCampaigns/master/contacts: 0 corporate emails (already clean)
 
+**Email Spam Fix & Monitoring Infrastructure (Feb 23, 2026)**
+- ✅ **Spam-Triggering Subject Removed**: Subject "Not an opportunity. Just a tool." identified as Gmail spam trigger
+  - All campaigns updated to use safe alternatives: "AI is changing how teams grow" and "Your AI-powered recruiting assistant"
+  - Affected files: `email-campaign-functions.js`, `email-campaign-purchased.js`, `email-campaign-bfh.js`, `email-campaign-fsr.js`, `email-campaign-paparazzi.js`, `email-campaign-zinzino.js`
+- ✅ **Click Tracking Removed from Campaigns**: Direct landing page URLs now used instead of Cloud Function redirect URLs
+  - Reduces spam triggers from multiple redirects
+  - Tracking still works via Firestore `trackEmailClick` endpoint for manual attribution
+- ✅ **Spam Monitor Endpoint Created**: `testPaparazziEmail` HTTP endpoint in `email-campaign-paparazzi.js`
+  - Tests actual campaign code (prevents code drift between monitor and campaigns)
+  - Accepts `subjectSuffix` parameter for Gmail search identification
+  - Returns sent emails with full subject lines and message IDs
+- ✅ **Spam Monitor Script Updated**: `scripts/spam-monitor.js` now uses Cloud Function endpoint
+  - Calls `testPaparazziEmail` instead of sending emails directly
+  - Tests variants v9a and v10b to cover both safe subjects
+  - Disables ALL 6 campaigns if spam detected (batchSize, batchSizePurchased, batchSizeBfh, batchSizePaparazzi, batchSizeFsr, batchSizeZinzino)
+- ✅ **Paparazzi Campaign Added**: New campaign for `paparazzi_contacts` collection
+  - Schedule: 10:30am, 1:30pm, 4:30pm, 7:30pm PT (4 runs/day)
+  - 4-way A/B test: V9/V10 × 2 subjects
+  - Batch size controlled via `config/emailCampaign.batchSizePaparazzi`
+
 **FSR Campaign & Subscription Updates (Feb 19, 2026)**
 - ✅ **FSR Email Campaign Created**: New campaign for FindSalesRep contacts
   - File: `functions/email-campaign-fsr.js`
@@ -1460,20 +1506,21 @@ Corporate email domains are excluded from all contact collections using a **blac
   - Reminders unnecessary and potentially confusing for auto-renewing subscriptions
   - Users don't need to take action - billing happens automatically
 
-### Current System Status (Feb 20, 2026)
+### Current System Status (Feb 23, 2026)
 
 **PROJECT STATUS: FOCUSED CAMPAIGNS (Feb 19, 2026)**
-Main Campaign reduced due to underperformance. Focus shifted to BFH, Purchased, and FSR campaigns for Team Build Pro promotion.
+Main Campaign reduced due to underperformance. Focus shifted to BFH, Purchased, FSR, and Paparazzi campaigns for Team Build Pro promotion.
 
 | Component | Status | Notes |
 |-----------|--------|-------|
 | Main Campaign | Reduced | 8am, 11am, 2pm, 5pm PT · **2/batch** · underperforming click-through |
 | Purchased Campaign | **Primary** | 9:30am, 12:30pm, 3:30pm, 6:30pm PT · 15/batch · 1,402 contacts |
 | BFH Campaign | **Primary** | 10am, 1pm, 4pm, 7pm PT · 10/batch · 776 contacts |
+| Paparazzi Campaign | Active | 10:30am, 1:30pm, 4:30pm, 7:30pm PT · uses `paparazzi_contacts` |
 | FSR Campaign | Active | 10am, 1pm, 4pm, 7pm PT · 5/batch · 17 contacts (new Feb 19) |
 | Contacts Campaign | Complete | 826 contacts (cleaned Feb 15) |
 | Email Sending | Mailgun API | Via Mailgun, news.teambuildpro.com |
-| Email A/B Testing | Active | Main: V9/V10 × 2 subjects; FSR: V9a/V10a; BFH: V9/V10 |
+| Email A/B Testing | Active | Safe subjects only (spam-trigger removed Feb 23) |
 | Yahoo Campaign | Removed | File and function deleted (Jan 31) |
 | Android Campaign | Removed | Function and all references deleted |
 | Subscription Reminders | Disabled | Auto-renewal handled by app stores (Feb 19) |

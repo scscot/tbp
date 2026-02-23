@@ -1,30 +1,22 @@
 /**
- * Team Build Pro Email Campaign for Zinzino Contacts
+ * Team Build Pro Email Campaign for Paparazzi Contacts
  *
- * Sends emails to scraped zinzino_contacts (distributors from Zinzino partner finder).
- * Uses Mailgun API with template versioning and language-based template selection.
+ * Sends emails to scraped paparazzi_contacts (representatives from paparazziexp.com).
+ * Uses Mailgun API with template versioning.
  *
  * Templates stored in Mailgun under 'mailer' template:
- * - v9: English minimal version (no bullets)
- * - v10: English version with bullets
- * - v9-es: Spanish minimal version
- * - v10-es: Spanish version with bullets
- * - v9-de: German minimal version
- * - v10-de: German version with bullets
+ * - v9: Minimal version (no bullets)
+ * - v10: Version with bullets
  *
- * Language Selection:
- * - Spanish (es): Spain, Mexico, Colombia, Peru
- * - German (de): Germany, Austria, Switzerland
- * - English (en): All other countries (default)
+ * A/B Test: 4-way (v9a, v9b, v10a, v10b)
  *
- * A/B Test: 4-way per language (v9a, v9b, v10a, v10b)
- *
- * Collection: zinzino_contacts
+ * Collection: paparazzi_contacts
  * Query: status == 'pending', sent == false
- * Schedule: 11am, 2pm, 5pm, 8pm PT (staggered from other campaigns)
+ * Schedule: 10:30am, 1:30pm, 4:30pm, 7:30pm PT (staggered from other campaigns)
  */
 
 const { onSchedule } = require("firebase-functions/v2/scheduler");
+const { onRequest } = require("firebase-functions/v2/https");
 const { defineString } = require("firebase-functions/params");
 const axios = require('axios');
 const FormData = require('form-data');
@@ -34,7 +26,7 @@ const { db } = require('./shared/utilities');
 // PARAMETERS
 // =============================================================================
 
-const zinzinoCampaignEnabled = defineString("ZINZINO_CAMPAIGN_ENABLED", { default: "false" });
+const paparazziCampaignEnabled = defineString("PAPARAZZI_CAMPAIGN_ENABLED", { default: "true" });
 const emailCampaignBatchSize = defineString("EMAIL_CAMPAIGN_BATCH_SIZE", { default: "1" });
 const mailgunApiKey = defineString("TBP_MAILGUN_API_KEY");
 const mailgunDomain = defineString("TBP_MAILGUN_DOMAIN", { default: "news.teambuildpro.com" });
@@ -46,142 +38,42 @@ const mailgunDomain = defineString("TBP_MAILGUN_DOMAIN", { default: "news.teambu
 const TEMPLATE_NAME = 'mailer';
 const FROM_ADDRESS = 'Stephen Scott <stephen@news.teambuildpro.com>';
 const SEND_DELAY_MS = 1000;
+const CTA_DOMAIN = 'teambuildpro.com';
 
 // =============================================================================
-// LANGUAGE CONFIGURATION
+// A/B TEST CONFIGURATION
 // =============================================================================
 
-/**
- * Country to language mapping
- * Countries not listed default to English
- */
-const COUNTRY_LANGUAGE_MAP = {
-  // Spanish-speaking countries
-  'Spain': 'es',
-  'Mexico': 'es',
-  'Colombia': 'es',
-  'Peru': 'es',
-
-  // German-speaking countries
-  'Germany': 'de',
-  'Austria': 'de',
-  'Switzerland': 'de'
-};
-
-/**
- * CTA domains by language
- */
-const CTA_DOMAINS = {
-  en: 'teambuildpro.com',
-  es: 'es.teambuildpro.com',
-  de: 'de.teambuildpro.com'
-};
-
-// =============================================================================
-// A/B TEST CONFIGURATIONS BY LANGUAGE
-// =============================================================================
-
-/**
- * English variants (default)
- * Subject "Not an opportunity. Just a tool." triggers Gmail spam filter - using safe alternatives
- */
-const VARIANTS_EN = {
+// Subject "Not an opportunity. Just a tool." triggers Gmail spam filter
+// Using safe subject lines proven to land in inbox
+const VARIANTS = {
   v9a: {
     templateVersion: 'v9',
     subject: 'AI is changing how teams grow',
-    subjectTag: 'zinzino_v9a_en',
+    subjectTag: 'paparazzi_v9a',
     description: 'V9 (no bullets) + AI curiosity'
   },
   v9b: {
     templateVersion: 'v9',
     subject: 'Your AI-powered recruiting assistant',
-    subjectTag: 'zinzino_v9b_en',
+    subjectTag: 'paparazzi_v9b',
     description: 'V9 (no bullets) + AI assistant'
   },
   v10a: {
     templateVersion: 'v10',
     subject: 'AI is changing how teams grow',
-    subjectTag: 'zinzino_v10a_en',
+    subjectTag: 'paparazzi_v10a',
     description: 'V10 (with bullets) + AI curiosity'
   },
   v10b: {
     templateVersion: 'v10',
     subject: 'Your AI-powered recruiting assistant',
-    subjectTag: 'zinzino_v10b_en',
+    subjectTag: 'paparazzi_v10b',
     description: 'V10 (with bullets) + AI assistant'
   }
 };
 
-/**
- * Spanish variants (Mexico style)
- * Avoiding spam-triggering phrases
- */
-const VARIANTS_ES = {
-  v9a: {
-    templateVersion: 'v9-es',
-    subject: 'La IA esta cambiando como crecen los equipos',
-    subjectTag: 'zinzino_v9a_es',
-    description: 'V9-ES (no bullets) + AI curiosity'
-  },
-  v9b: {
-    templateVersion: 'v9-es',
-    subject: 'Tu asistente de reclutamiento con IA',
-    subjectTag: 'zinzino_v9b_es',
-    description: 'V9-ES (no bullets) + AI assistant'
-  },
-  v10a: {
-    templateVersion: 'v10-es',
-    subject: 'La IA esta cambiando como crecen los equipos',
-    subjectTag: 'zinzino_v10a_es',
-    description: 'V10-ES (with bullets) + AI curiosity'
-  },
-  v10b: {
-    templateVersion: 'v10-es',
-    subject: 'Tu asistente de reclutamiento con IA',
-    subjectTag: 'zinzino_v10b_es',
-    description: 'V10-ES (with bullets) + AI assistant'
-  }
-};
-
-/**
- * German variants (formal Sie form)
- * Avoiding spam-triggering phrases
- */
-const VARIANTS_DE = {
-  v9a: {
-    templateVersion: 'v9-de',
-    subject: 'KI verandert, wie Teams wachsen',
-    subjectTag: 'zinzino_v9a_de',
-    description: 'V9-DE (no bullets) + AI curiosity'
-  },
-  v9b: {
-    templateVersion: 'v9-de',
-    subject: 'Ihr KI-gesteuerter Recruiting-Assistent',
-    subjectTag: 'zinzino_v9b_de',
-    description: 'V9-DE (no bullets) + AI assistant'
-  },
-  v10a: {
-    templateVersion: 'v10-de',
-    subject: 'KI verandert, wie Teams wachsen',
-    subjectTag: 'zinzino_v10a_de',
-    description: 'V10-DE (with bullets) + AI curiosity'
-  },
-  v10b: {
-    templateVersion: 'v10-de',
-    subject: 'Ihr KI-gesteuerter Recruiting-Assistent',
-    subjectTag: 'zinzino_v10b_de',
-    description: 'V10-DE (with bullets) + AI assistant'
-  }
-};
-
-// Map language code to variants
-const VARIANTS_BY_LANGUAGE = {
-  en: VARIANTS_EN,
-  es: VARIANTS_ES,
-  de: VARIANTS_DE
-};
-
-// Active variant keys for A/B testing (same for all languages)
+// Active variant keys for A/B testing
 const ACTIVE_VARIANT_KEYS = ['v9a', 'v9b', 'v10a', 'v10b'];
 
 // =============================================================================
@@ -189,13 +81,13 @@ const ACTIVE_VARIANT_KEYS = ['v9a', 'v9b', 'v10a', 'v10b'];
 // =============================================================================
 
 const CAMPAIGN_CONFIG = {
-  name: 'ZINZINO EMAIL CAMPAIGN',
-  logPrefix: '🧬',
-  batchIdPrefix: 'zinzino_batch',
+  name: 'PAPARAZZI EMAIL CAMPAIGN',
+  logPrefix: '💎',
+  batchIdPrefix: 'paparazzi_batch',
   sentField: 'sent',
-  utmCampaign: 'zinzino_outreach_feb',
-  campaignTag: 'zinzino_campaign',
-  collection: 'zinzino_contacts'
+  utmCampaign: 'paparazzi_outreach_feb',
+  campaignTag: 'paparazzi_campaign',
+  collection: 'paparazzi_contacts'
 };
 
 // =============================================================================
@@ -204,19 +96,19 @@ const CAMPAIGN_CONFIG = {
 
 /**
  * Get batch size from Firestore config document, falling back to .env value
- * Uses batchSizeZinzino field if available, otherwise uses shared batchSize
+ * Uses batchSizePaparazzi field if available, otherwise uses shared batchSize
  */
 async function getDynamicBatchSize(envFallback) {
   try {
     const configDoc = await db.collection('config').doc('emailCampaign').get();
     if (configDoc.exists) {
-      // Try Zinzino-specific batch size first, then fall back to shared
-      const zinzinoBatchSize = configDoc.data().batchSizeZinzino;
+      // Try Paparazzi-specific batch size first, then fall back to shared
+      const paparazziBatchSize = configDoc.data().batchSizePaparazzi;
       const sharedBatchSize = configDoc.data().batchSize;
 
-      if (zinzinoBatchSize !== undefined) {
-        console.log(`Using Firestore Zinzino batch size: ${zinzinoBatchSize}`);
-        return zinzinoBatchSize;
+      if (paparazziBatchSize !== undefined) {
+        console.log(`Using Firestore Paparazzi batch size: ${paparazziBatchSize}`);
+        return paparazziBatchSize;
       }
       if (sharedBatchSize) {
         console.log(`Using Firestore shared batch size: ${sharedBatchSize}`);
@@ -237,19 +129,10 @@ async function getDynamicBatchSize(envFallback) {
 // =============================================================================
 
 /**
- * Determine language for a contact based on country
+ * Build destination URL with UTM parameters
  */
-function getContactLanguage(contact) {
-  const country = contact.country || '';
-  return COUNTRY_LANGUAGE_MAP[country] || 'en';
-}
-
-/**
- * Build destination URL with UTM parameters and language-specific domain
- */
-function buildLandingPageUrl(utmCampaign, utmContent, language = 'en') {
-  const domain = CTA_DOMAINS[language] || CTA_DOMAINS.en;
-  const baseUrl = `https://${domain}`;
+function buildLandingPageUrl(utmCampaign, utmContent) {
+  const baseUrl = `https://${CTA_DOMAIN}`;
   const params = new URLSearchParams({
     utm_source: 'mailgun',
     utm_medium: 'email',
@@ -264,15 +147,16 @@ function buildLandingPageUrl(utmCampaign, utmContent, language = 'en') {
 // =============================================================================
 
 /**
- * Send email via Mailgun API using language-appropriate templates
+ * Send email via Mailgun API
  *
- * @param {object} contact - Contact data { firstName, lastName, email, country, ... }
+ * @param {object} contact - Contact data { firstName, lastName, email, ... }
  * @param {string} docId - Firestore document ID (used as tracking ID)
  * @param {object} config - Campaign configuration
  * @param {number} index - Batch index for strict A/B alternation
+ * @param {string} subjectSuffix - Optional suffix to append to subject (for spam monitoring)
  * @returns {Promise<object>} Send result
  */
-async function sendEmailViaMailgun(contact, docId, config, index) {
+async function sendEmailViaMailgun(contact, docId, config, index, subjectSuffix = '') {
   const apiKey = mailgunApiKey.value();
   const domain = mailgunDomain.value();
 
@@ -280,18 +164,13 @@ async function sendEmailViaMailgun(contact, docId, config, index) {
     throw new Error('TBP_MAILGUN_API_KEY not configured');
   }
 
-  // Determine language and get appropriate variants
-  const language = getContactLanguage(contact);
-  const variants = VARIANTS_BY_LANGUAGE[language] || VARIANTS_BY_LANGUAGE.en;
-
   // Select variant based on index (4-way A/B test)
   const variantKey = ACTIVE_VARIANT_KEYS[index % ACTIVE_VARIANT_KEYS.length];
-  const variant = variants[variantKey];
+  const variant = VARIANTS[variantKey];
 
   // Build URLs (direct links for better deliverability)
-  const ctaDomain = CTA_DOMAINS[language] || CTA_DOMAINS.en;
-  const unsubscribeUrl = `https://${ctaDomain}/unsubscribe.html?email=${encodeURIComponent(contact.email)}`;
-  const landingPageUrl = buildLandingPageUrl(config.utmCampaign, variant.subjectTag, language);
+  const unsubscribeUrl = `https://${CTA_DOMAIN}/unsubscribe.html?email=${encodeURIComponent(contact.email)}`;
+  const landingPageUrl = buildLandingPageUrl(config.utmCampaign, variant.subjectTag);
 
   // Build form data for Mailgun API
   const form = new FormData();
@@ -303,7 +182,8 @@ async function sendEmailViaMailgun(contact, docId, config, index) {
     : contact.firstName;
   form.append('to', `${recipientName} <${contact.email}>`);
 
-  form.append('subject', variant.subject);
+  const fullSubject = subjectSuffix ? `${variant.subject} ${subjectSuffix}` : variant.subject;
+  form.append('subject', fullSubject);
   form.append('template', TEMPLATE_NAME);
   form.append('t:version', variant.templateVersion);
 
@@ -323,7 +203,6 @@ async function sendEmailViaMailgun(contact, docId, config, index) {
   // Tags for analytics
   form.append('o:tag', config.campaignTag);
   form.append('o:tag', variant.subjectTag);
-  form.append('o:tag', `lang_${language}`);
   form.append('o:tag', 'tracked');
 
   // List-Unsubscribe headers (required by Gmail for bulk senders)
@@ -331,7 +210,7 @@ async function sendEmailViaMailgun(contact, docId, config, index) {
   form.append('h:List-Unsubscribe', `<mailto:${unsubscribeEmail}?subject=Unsubscribe>, <${unsubscribeUrl}>`);
   form.append('h:List-Unsubscribe-Post', 'List-Unsubscribe=One-Click');
 
-  console.log(`   Lang: ${language.toUpperCase()} | Template: ${variantKey.toUpperCase()} (${variant.templateVersion}) | CTA: ${ctaDomain}`);
+  console.log(`   Template: ${variantKey.toUpperCase()} (${variant.templateVersion})`);
 
   // Send via Mailgun API
   const mailgunBaseUrl = `https://api.mailgun.net/v3/${domain}`;
@@ -349,8 +228,7 @@ async function sendEmailViaMailgun(contact, docId, config, index) {
     subjectTag: variant.subjectTag,
     templateVariant: variantKey,
     templateVersion: variant.templateVersion,
-    language: language,
-    usedSubject: variant.subject
+    usedSubject: fullSubject
   };
 }
 
@@ -358,13 +236,13 @@ async function sendEmailViaMailgun(contact, docId, config, index) {
 // CAMPAIGN PROCESSOR
 // =============================================================================
 
-async function processZinzinoCampaignBatch(batchSize) {
+async function processPaparazziCampaignBatch(batchSize) {
   const config = CAMPAIGN_CONFIG;
   const { name, logPrefix, batchIdPrefix, sentField, collection } = config;
 
   console.log(`${logPrefix} ${name}: Starting batch email send`);
 
-  const campaignEnabled = zinzinoCampaignEnabled.value().toLowerCase() === 'true';
+  const campaignEnabled = paparazziCampaignEnabled.value().toLowerCase() === 'true';
 
   if (!campaignEnabled) {
     console.log(`${logPrefix} ${name}: Disabled via environment variable. Skipping.`);
@@ -373,7 +251,7 @@ async function processZinzinoCampaignBatch(batchSize) {
 
   // Check if batch size is 0 (effectively paused)
   if (batchSize === 0) {
-    console.log(`${logPrefix} ${name}: Paused (batchSizeZinzino set to 0)`);
+    console.log(`${logPrefix} ${name}: Paused (batchSizePaparazzi set to 0)`);
     return { status: 'paused', sent: 0 };
   }
 
@@ -408,15 +286,7 @@ async function processZinzinoCampaignBatch(batchSize) {
       return { status: 'complete', sent: 0 };
     }
 
-    // Count by language
-    const langCounts = { en: 0, es: 0, de: 0 };
-    docsWithEmail.forEach(doc => {
-      const lang = getContactLanguage(doc.data());
-      langCounts[lang] = (langCounts[lang] || 0) + 1;
-    });
-
     console.log(`${logPrefix} ${name}: Processing ${docsWithEmail.length} emails in ${batchId}`);
-    console.log(`   By language: EN=${langCounts.en} | ES=${langCounts.es} | DE=${langCounts.de}`);
 
     let sent = 0;
     let failed = 0;
@@ -441,16 +311,13 @@ async function processZinzinoCampaignBatch(batchSize) {
             subjectTag: result.subjectTag,
             templateVariant: result.templateVariant,
             templateVersion: result.templateVersion,
-            sentLanguage: result.language,
             sentSubject: result.usedSubject,
             mailgunResponse: result.response || ''
           };
 
           await doc.ref.update(updateData);
 
-          const langEmoji = result.language === 'es' ? '🇪🇸' :
-            result.language === 'de' ? '🇩🇪' : '🇺🇸';
-          console.log(`${langEmoji} Sent to ${contact.email} (${result.templateVariant}): ${result.messageId}`);
+          console.log(`💎 Sent to ${contact.email} (${result.templateVariant}): ${result.messageId}`);
           sent++;
         } else {
           throw new Error(result.error || 'Unknown Mailgun error');
@@ -483,15 +350,13 @@ async function processZinzinoCampaignBatch(batchSize) {
     if (sent > 0) {
       console.log(`   Success rate: ${((sent / (sent + failed)) * 100).toFixed(1)}%`);
     }
-    console.log(`   By language: EN=${langCounts.en} | ES=${langCounts.es} | DE=${langCounts.de}`);
 
     return {
       status: 'success',
       sent,
       failed,
       total: docsWithEmail.length,
-      batchId,
-      languageCounts: langCounts
+      batchId
     };
 
   } catch (error) {
@@ -505,11 +370,11 @@ async function processZinzinoCampaignBatch(batchSize) {
 // =============================================================================
 
 /**
- * Zinzino Email Campaign
- * Schedule: 11am, 2pm, 5pm, 8pm PT (staggered from Main/Contacts/BFH campaigns)
+ * Paparazzi Email Campaign
+ * Schedule: 10:30am, 1:30pm, 4:30pm, 7:30pm PT (staggered from other campaigns)
  */
-const sendHourlyZinzinoCampaign = onSchedule({
-  schedule: "0 11,14,17,20 * * *",
+const sendHourlyPaparazziCampaign = onSchedule({
+  schedule: "30 10,13,16,19 * * *",
   timeZone: "America/Los_Angeles",
   region: "us-central1",
   memory: "512MiB",
@@ -518,7 +383,133 @@ const sendHourlyZinzinoCampaign = onSchedule({
   // Get batch size from Firestore (updated by GitHub Actions) or fall back to .env
   const batchSize = await getDynamicBatchSize(emailCampaignBatchSize.value());
 
-  return processZinzinoCampaignBatch(batchSize);
+  return processPaparazziCampaignBatch(batchSize);
+});
+
+// =============================================================================
+// HTTP TEST ENDPOINT
+// =============================================================================
+
+/**
+ * Test endpoint for spam monitoring workflow
+ * Sends test emails using actual campaign code to verify inbox placement
+ *
+ * Usage: POST /testPaparazziEmail
+ * Body: {
+ *   "email": "test@example.com",
+ *   "variants": ["v9a", "v10a"],
+ *   "subjectSuffix": "(Feb 23, 6:00 AM)"
+ * }
+ *
+ * If variants not specified, sends all 4 variants (v9a, v9b, v10a, v10b)
+ * subjectSuffix is optional - appended to subject for Gmail search accuracy
+ */
+const testPaparazziEmail = onRequest({
+  region: "us-central1",
+  memory: "256MiB",
+  timeoutSeconds: 60
+}, async (req, res) => {
+  // CORS
+  res.set('Access-Control-Allow-Origin', '*');
+  if (req.method === 'OPTIONS') {
+    res.set('Access-Control-Allow-Methods', 'POST');
+    res.set('Access-Control-Allow-Headers', 'Content-Type');
+    res.status(204).send('');
+    return;
+  }
+
+  if (req.method !== 'POST') {
+    res.status(405).json({ error: 'Method not allowed. Use POST.' });
+    return;
+  }
+
+  const { email, variants, subjectSuffix } = req.body || {};
+
+  if (!email) {
+    res.status(400).json({ error: 'Missing required field: email' });
+    return;
+  }
+
+  const apiKey = mailgunApiKey.value();
+  if (!apiKey) {
+    res.status(500).json({ error: 'TBP_MAILGUN_API_KEY not configured' });
+    return;
+  }
+
+  // Determine which variants to test
+  const variantsToTest = variants && Array.isArray(variants)
+    ? variants.filter(v => ACTIVE_VARIANT_KEYS.includes(v))
+    : ACTIVE_VARIANT_KEYS;
+
+  if (variantsToTest.length === 0) {
+    res.status(400).json({ error: 'No valid variants specified', validVariants: ACTIVE_VARIANT_KEYS });
+    return;
+  }
+
+  console.log(`💎 PAPARAZZI TEST: Sending ${variantsToTest.length} test email(s) to ${email}`);
+
+  const results = [];
+
+  for (let i = 0; i < variantsToTest.length; i++) {
+    const variantKey = variantsToTest[i];
+
+    // Create test contact data (use real name for deliverability testing)
+    const testContact = {
+      firstName: 'Stephen',
+      lastName: 'Scott',
+      email: email
+    };
+
+    // Create mock config matching campaign config
+    const testConfig = {
+      ...CAMPAIGN_CONFIG,
+      utmCampaign: 'paparazzi_test'
+    };
+
+    try {
+      // Override the variant selection by using index that maps to desired variant
+      const variantIndex = ACTIVE_VARIANT_KEYS.indexOf(variantKey);
+      const result = await sendEmailViaMailgun(testContact, `test_${Date.now()}`, testConfig, variantIndex, subjectSuffix || '');
+
+      results.push({
+        variant: variantKey,
+        success: true,
+        messageId: result.messageId,
+        subject: result.usedSubject,
+        templateVersion: result.templateVersion
+      });
+
+      console.log(`💎 Test sent (${variantKey}): ${result.messageId}`);
+
+      // Small delay between sends
+      if (i < variantsToTest.length - 1) {
+        await new Promise(resolve => setTimeout(resolve, 500));
+      }
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || error.message;
+      results.push({
+        variant: variantKey,
+        success: false,
+        error: errorMessage
+      });
+      console.error(`💎 Test failed (${variantKey}): ${errorMessage}`);
+    }
+  }
+
+  const successful = results.filter(r => r.success).length;
+  const failed = results.filter(r => !r.success).length;
+
+  res.json({
+    success: failed === 0,
+    timestamp: new Date().toISOString(),
+    email,
+    summary: {
+      sent: successful,
+      failed: failed,
+      total: variantsToTest.length
+    },
+    results
+  });
 });
 
 // =============================================================================
@@ -526,5 +517,6 @@ const sendHourlyZinzinoCampaign = onSchedule({
 // =============================================================================
 
 module.exports = {
-  sendHourlyZinzinoCampaign
+  sendHourlyPaparazziCampaign,
+  testPaparazziEmail
 };

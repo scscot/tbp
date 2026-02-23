@@ -10,10 +10,10 @@
  * - v10: Version with specific value prop bullets (active)
  *
  * Current A/B Test (4-way):
- * - v9a: V9 template + "Not an opportunity. Just a tool."
- * - v9b: V9 template + "AI is changing how teams grow"
- * - v10a: V10 template + "Not an opportunity. Just a tool."
- * - v10b: V10 template + "AI is changing how teams grow"
+ * - v9a: V9 template + "AI is changing how teams grow"
+ * - v9b: V9 template + "Your AI-powered recruiting assistant"
+ * - v10a: V10 template + "AI is changing how teams grow"
+ * - v10b: V10 template + "Your AI-powered recruiting assistant"
  */
 
 const { onSchedule } = require("firebase-functions/v2/scheduler");
@@ -39,7 +39,6 @@ const mailgunDomain = defineString("TBP_MAILGUN_DOMAIN", { default: "news.teambu
 const TEMPLATE_NAME = 'mailer';
 const FROM_ADDRESS = 'Stephen Scott <stephen@news.teambuildpro.com>';
 const SEND_DELAY_MS = 1000;
-const TRACKING_BASE_URL = 'https://us-central1-teambuilder-plus-fe74d.cloudfunctions.net';
 const LANDING_PAGE_URL = 'https://teambuildpro.com';
 
 // =============================================================================
@@ -47,30 +46,31 @@ const LANDING_PAGE_URL = 'https://teambuildpro.com';
 // =============================================================================
 
 // A/B Test Variants - V9 vs V10 template with subject line testing (4 combinations)
+// Subject "Not an opportunity. Just a tool." triggers Gmail spam filter - using safe alternatives
 const AB_TEST_VARIANTS = {
   v9a: {
     templateVersion: 'v9',
-    subject: 'Not an opportunity. Just a tool.',
+    subject: 'AI is changing how teams grow',
     subjectTag: 'main_v9a',
-    description: 'V9 (no bullets) + Pattern interrupt'
+    description: 'V9 (no bullets) + AI curiosity'
   },
   v9b: {
     templateVersion: 'v9',
-    subject: 'AI is changing how teams grow',
+    subject: 'Your AI-powered recruiting assistant',
     subjectTag: 'main_v9b',
-    description: 'V9 (no bullets) + AI curiosity'
+    description: 'V9 (no bullets) + AI assistant'
   },
   v10a: {
     templateVersion: 'v10',
-    subject: 'Not an opportunity. Just a tool.',
+    subject: 'AI is changing how teams grow',
     subjectTag: 'main_v10a',
-    description: 'V10 (with bullets) + Pattern interrupt'
+    description: 'V10 (with bullets) + AI curiosity'
   },
   v10b: {
     templateVersion: 'v10',
-    subject: 'AI is changing how teams grow',
+    subject: 'Your AI-powered recruiting assistant',
     subjectTag: 'main_v10b',
-    description: 'V10 (with bullets) + AI curiosity'
+    description: 'V10 (with bullets) + AI assistant'
   }
 };
 
@@ -122,14 +122,6 @@ async function getDynamicBatchSize(envFallback) {
 // =============================================================================
 
 /**
- * Build a click-tracked URL that redirects through our Cloud Function
- */
-function buildClickUrl(trackingId, destinationUrl) {
-  const encodedUrl = encodeURIComponent(destinationUrl);
-  return `${TRACKING_BASE_URL}/trackEmailClick?id=${trackingId}&url=${encodedUrl}`;
-}
-
-/**
  * Build destination URL with UTM parameters
  */
 function buildLandingPageUrl(utmCampaign, utmContent) {
@@ -167,9 +159,8 @@ async function sendEmailViaMailgun(contact, docId, config, index) {
   const templateVariant = ACTIVE_VARIANTS[index % ACTIVE_VARIANTS.length];
   const variant = AB_TEST_VARIANTS[templateVariant];
 
-  // Build tracking URLs
+  // Build URLs (direct links for better deliverability)
   const landingPageUrl = buildLandingPageUrl(config.utmCampaign, variant.subjectTag);
-  const trackedCtaUrl = buildClickUrl(docId, landingPageUrl);
   const unsubscribeUrl = `${LANDING_PAGE_URL}/unsubscribe.html?email=${encodeURIComponent(contact.email)}`;
 
   // Build form data for Mailgun API
@@ -196,10 +187,10 @@ async function sendEmailViaMailgun(contact, docId, config, index) {
   form.append('h:List-Unsubscribe', `<mailto:${unsubscribeEmail}?subject=Unsubscribe>, <${unsubscribeUrl}>`);
   form.append('h:List-Unsubscribe-Post', 'List-Unsubscribe=One-Click');
 
-  // Template variables
+  // Template variables (using direct landing page URL for deliverability)
   const templateVars = {
     first_name: contact.firstName,
-    tracked_cta_url: trackedCtaUrl,
+    tracked_cta_url: landingPageUrl,
     unsubscribe_url: unsubscribeUrl
   };
   form.append('h:X-Mailgun-Variables', JSON.stringify(templateVars));

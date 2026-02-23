@@ -46,7 +46,6 @@ const mailgunDomain = defineString("TBP_MAILGUN_DOMAIN", { default: "news.teambu
 const TEMPLATE_NAME = 'mailer';
 const FROM_ADDRESS = 'Stephen Scott <stephen@news.teambuildpro.com>';
 const SEND_DELAY_MS = 1000;
-const TRACKING_BASE_URL = 'https://us-central1-teambuilder-plus-fe74d.cloudfunctions.net';
 const LANDING_PAGE_URL = 'https://teambuildpro.com';
 
 // =============================================================================
@@ -54,46 +53,48 @@ const LANDING_PAGE_URL = 'https://teambuildpro.com';
 // =============================================================================
 
 // A/B Test Variants - Standard (no personalization)
+// Subject "Not an opportunity. Just a tool." triggers Gmail spam filter - using safe alternatives
 const STANDARD_VARIANTS = {
   v9a: {
     templateVersion: 'v9',
-    subject: 'Not an opportunity. Just a tool.',
+    subject: 'AI is changing how teams grow',
     subjectTag: 'bfh_v9a',
-    description: 'V9 (no bullets) + Pattern interrupt'
+    description: 'V9 (no bullets) + AI curiosity'
   },
   v9b: {
     templateVersion: 'v9',
-    subject: 'AI is changing how teams grow',
+    subject: 'Your AI-powered recruiting assistant',
     subjectTag: 'bfh_v9b',
-    description: 'V9 (no bullets) + AI curiosity'
+    description: 'V9 (no bullets) + AI assistant'
   },
   v10a: {
     templateVersion: 'v10',
-    subject: 'Not an opportunity. Just a tool.',
+    subject: 'AI is changing how teams grow',
     subjectTag: 'bfh_v10a',
-    description: 'V10 (with bullets) + Pattern interrupt'
+    description: 'V10 (with bullets) + AI curiosity'
   },
   v10b: {
     templateVersion: 'v10',
-    subject: 'AI is changing how teams grow',
+    subject: 'Your AI-powered recruiting assistant',
     subjectTag: 'bfh_v10b',
-    description: 'V10 (with bullets) + AI curiosity'
+    description: 'V10 (with bullets) + AI assistant'
   }
 };
 
 // A/B Test Variants - Personalized (English only)
+// Subject "Not an opportunity. Just a tool." triggers Gmail spam filter - using safe alternatives
 const PERSONALIZED_VARIANTS = {
   v11a: {
     templateVersion: 'v11',
-    subject: 'Not an opportunity. Just a tool.',
+    subject: 'AI is changing how teams grow',
     subjectTag: 'bfh_v11a_personalized',
-    description: 'V11 (personalized) + Pattern interrupt'
+    description: 'V11 (personalized) + AI curiosity'
   },
   v12a: {
     templateVersion: 'v12',
-    subject: 'Not an opportunity. Just a tool.',
+    subject: 'Your AI-powered recruiting assistant',
     subjectTag: 'bfh_v12a_personalized',
-    description: 'V12 (personalized) + Pattern interrupt'
+    description: 'V12 (personalized) + AI assistant'
   }
 };
 
@@ -163,14 +164,6 @@ async function getDynamicBatchSize(envFallback) {
 // =============================================================================
 // TRACKING URL BUILDERS
 // =============================================================================
-
-/**
- * Build a click-tracked URL that redirects through our Cloud Function
- */
-function buildClickUrl(trackingId, destinationUrl) {
-  const encodedUrl = encodeURIComponent(destinationUrl);
-  return `${TRACKING_BASE_URL}/trackEmailClick?id=${trackingId}&url=${encodedUrl}`;
-}
 
 /**
  * Build destination URL with UTM parameters and language-specific domain
@@ -255,17 +248,16 @@ async function sendEmailViaMailgun(contact, docId, config, index) {
     subjectTag = hasPersonalizedSubject ? `${variant.subjectTag}_ai_subject` : variant.subjectTag;
 
     const landingPageUrl = buildLandingPageUrl(config.utmCampaign, subjectTag, language);
-    const trackedCtaUrl = buildClickUrl(docId, landingPageUrl);
 
     form.append('subject', usedSubject);
     form.append('template', TEMPLATE_NAME);
     form.append('t:version', variant.templateVersion);
 
-    // Template variables with personalized_intro
+    // Template variables with personalized_intro (using direct landing page URL for deliverability)
     const templateVars = {
       first_name: contact.firstName,
       personalized_intro: contact.personalizedIntro,
-      tracked_cta_url: trackedCtaUrl,
+      tracked_cta_url: landingPageUrl,
       unsubscribe_url: unsubscribeUrl
     };
     form.append('h:X-Mailgun-Variables', JSON.stringify(templateVars));
@@ -279,21 +271,20 @@ async function sendEmailViaMailgun(contact, docId, config, index) {
     subjectTag = `bfh_personalized_${language}`;
 
     const landingPageUrl = buildLandingPageUrl(config.utmCampaign, subjectTag, language);
-    const trackedCtaUrl = buildClickUrl(docId, landingPageUrl);
 
-    // Replace placeholders in the HTML
+    // Replace placeholders in the HTML (using direct landing page URL for deliverability)
     let html = contact.personalizedHtml;
-    html = html.replace(/\{\{tracked_cta_url\}\}/g, trackedCtaUrl);
+    html = html.replace(/\{\{tracked_cta_url\}\}/g, landingPageUrl);
     html = html.replace(/\{\{unsubscribe_url\}\}/g, unsubscribeUrl);
     html = html.replace(/\{\{first_name\}\}/g, contact.firstName);
 
-    // Subject line in recipient's language
+    // Subject line in recipient's language (using spam-safe subjects)
     const localizedSubjects = {
-      es: 'Una herramienta para tu equipo, no una oportunidad.',
-      pt: 'Uma ferramenta para sua equipe, não uma oportunidade.',
-      de: 'Ein Werkzeug für Ihr Team, keine Gelegenheit.'
+      es: 'La IA esta cambiando como crecen los equipos',
+      pt: 'A IA esta mudando como as equipes crescem',
+      de: 'KI verandert, wie Teams wachsen'
     };
-    usedSubject = localizedSubjects[language] || 'Not an opportunity. Just a tool.';
+    usedSubject = localizedSubjects[language] || 'AI is changing how teams grow';
     form.append('subject', usedSubject);
     form.append('html', html);
 
@@ -306,17 +297,16 @@ async function sendEmailViaMailgun(contact, docId, config, index) {
     subjectTag = variant.subjectTag;
 
     const landingPageUrl = buildLandingPageUrl(config.utmCampaign, subjectTag, language);
-    const trackedCtaUrl = buildClickUrl(docId, landingPageUrl);
 
     usedSubject = variant.subject;
     form.append('subject', usedSubject);
     form.append('template', TEMPLATE_NAME);
     form.append('t:version', variant.templateVersion);
 
-    // Template variables
+    // Template variables (using direct landing page URL for deliverability)
     const templateVars = {
       first_name: contact.firstName,
-      tracked_cta_url: trackedCtaUrl,
+      tracked_cta_url: landingPageUrl,
       unsubscribe_url: unsubscribeUrl
     };
     form.append('h:X-Mailgun-Variables', JSON.stringify(templateVars));
