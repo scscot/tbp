@@ -143,30 +143,6 @@
       .share-btn{width:100%;justify-content:center}
     }
   </style>
-
-<!-- Podcast Audio Schema for SEO -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "AudioObject",
-  "name": "Listen: MLM Recruiting Burnout: How Pre-Qualification Protects Your Mental Health in 2026",
-  "description": "Learn how pre-qualification in MLM recruiting reduces burnout, prevents rejection fatigue, and builds stronger teams while protecting your mental health.",
-  "contentUrl": "https://storage.googleapis.com/teambuilder-plus-fe74d.firebasestorage.app/podcasts/en/mlm-recruiting-burnout-pre-qualification-protects.mp3",
-  "encodingFormat": "audio/mpeg",
-  "duration": "PT5M",
-  "uploadDate": "2026-02-19",
-  "inLanguage": "en",
-  "publisher": {
-    "@type": "Organization",
-    "name": "Team Build Pro",
-    "url": "https://teambuildpro.com",
-    "logo": {
-      "@type": "ImageObject",
-      "url": "https://teambuildpro.com/assets/icons/team-build-pro.png"
-    }
-  }
-}
-</script>
 </head>
 <body>
   <!-- Header -->
@@ -216,22 +192,6 @@
       </div>
 
       <article>
-
-<!-- Podcast Player Section -->
-<div class="podcast-player-section">
-  <div class="podcast-player-wrapper">
-    <span class="podcast-icon">🎧</span>
-    <div class="podcast-info">
-      <span class="podcast-label">Listen to this article</span>
-      <span class="podcast-duration">5 min</span>
-    </div>
-    <audio controls preload="metadata" class="podcast-audio" data-slug="mlm-recruiting-burnout-pre-qualification-protects" data-lang="en">
-      <source src="https://storage.googleapis.com/teambuilder-plus-fe74d.firebasestorage.app/podcasts/en/mlm-recruiting-burnout-pre-qualification-protects.mp3" type="audio/mpeg">
-      Your browser does not support the audio element.
-    </audio>
-  </div>
-</div>
-
         <p>The statistics are staggering: 75% of MLM recruits quit within their first year, but what's even more concerning is the toll this takes on the recruiters themselves. If you've ever felt the crushing weight of constant rejection, the exhaustion of explaining your opportunity for the hundredth time only to watch another recruit disappear, or the creeping doubt that maybe you're not cut out for this business—you're not alone.</p>
 
 <p>The traditional approach to MLM recruiting has created an epidemic of burnout among network marketers. The constant cycle of cold outreach, immediate pitch, rejection, and repeat has left countless professionals questioning their worth and abilities. But there's a better way, and it starts with understanding how pre-qualification can transform both your business results and your mental health.</p>
@@ -496,52 +456,5 @@
   </script>
 
   <script src="/js/referral-tracking.js"></script>
-
-<script>
-// Podcast tracking for GA4
-document.addEventListener('DOMContentLoaded', function() {
-  const audioElements = document.querySelectorAll('.podcast-audio');
-  audioElements.forEach(function(audio) {
-    const slug = audio.dataset.slug || 'unknown';
-    const lang = audio.dataset.lang || 'en';
-
-    audio.addEventListener('play', function() {
-      if (typeof gtag === 'function') {
-        gtag('event', 'podcast_play', {
-          'event_category': 'engagement',
-          'event_label': slug,
-          'language': lang
-        });
-      }
-    });
-
-    audio.addEventListener('ended', function() {
-      if (typeof gtag === 'function') {
-        gtag('event', 'podcast_complete', {
-          'event_category': 'engagement',
-          'event_label': slug,
-          'language': lang
-        });
-      }
-    });
-
-    // Track 50% completion
-    let halfTracked = false;
-    audio.addEventListener('timeupdate', function() {
-      if (!halfTracked && audio.currentTime > audio.duration / 2) {
-        halfTracked = true;
-        if (typeof gtag === 'function') {
-          gtag('event', 'podcast_halfway', {
-            'event_category': 'engagement',
-            'event_label': slug,
-            'language': lang
-          });
-        }
-      }
-    });
-  });
-});
-</script>
-
 </body>
 </html>
