@@ -19,6 +19,7 @@ const PURCHASED_CAMPAIGN_COLLECTION = 'purchased_leads';
 const BFH_CAMPAIGN_COLLECTION = 'bfh_contacts';
 const ZINZINO_CAMPAIGN_COLLECTION = 'zinzino_contacts';
 const FSR_CAMPAIGN_COLLECTION = 'fsr_contacts';
+const PAPARAZZI_CAMPAIGN_COLLECTION = 'paparazzi_contacts';
 const MONITORING_PASSWORD = process.env.MONITORING_PASSWORD || 'TeamBuildPro2024!';
 const GA4_PROPERTY_ID = '485651473';
 
@@ -196,7 +197,7 @@ async function fetchGA4Stats(serviceAccountJson) {
  */
 async function fetchCampaignStats(collectionPath, now, twentyFourHoursAgo, startOfTodayUTC, options = {}) {
   const contactsRef = db.collection(collectionPath);
-  const { isContactsCampaign = false, isZinzinoCampaign = false, isFsrCampaign = false } = options;
+  const { isContactsCampaign = false, isZinzinoCampaign = false, isFsrCampaign = false, isPaparazziCampaign = false } = options;
 
   // Get total count
   let totalSnapshot;
@@ -281,9 +282,9 @@ async function fetchCampaignStats(collectionPath, now, twentyFourHoursAgo, start
     }
   }
 
-  // Get company/state distribution for FSR campaign
+  // Get company/state distribution for FSR and Paparazzi campaigns
   let distribution = null;
-  if (isFsrCampaign) {
+  if (isFsrCampaign || isPaparazziCampaign) {
     try {
       const sentDocs = await contactsRef
         .where('sent', '==', true)
@@ -302,7 +303,7 @@ async function fetchCampaignStats(collectionPath, now, twentyFourHoursAgo, start
         states: states.size
       };
     } catch (distError) {
-      console.error('Error fetching FSR distribution:', distError.message);
+      console.error('Error fetching campaign distribution:', distError.message);
     }
   }
 
@@ -358,13 +359,14 @@ const getEmailCampaignStats = onRequest({
     const startOfTodayUTC = new Date(startOfTodayPT.getTime() - (ptOffset + now.getTimezoneOffset()) * 60 * 1000);
 
     // Fetch stats for all campaigns in parallel
-    const [mainCampaignStats, contactsCampaignStats, purchasedCampaignStats, bfhCampaignStats, zinzinoCampaignStats, fsrCampaignStats] = await Promise.all([
+    const [mainCampaignStats, contactsCampaignStats, purchasedCampaignStats, bfhCampaignStats, zinzinoCampaignStats, fsrCampaignStats, paparazziCampaignStats] = await Promise.all([
       fetchCampaignStats(MAIN_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC),
       fetchCampaignStats(CONTACTS_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC, { isContactsCampaign: true }),
       fetchCampaignStats(PURCHASED_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC),
       fetchCampaignStats(BFH_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC),
       fetchCampaignStats(ZINZINO_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC, { isZinzinoCampaign: true }),
-      fetchCampaignStats(FSR_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC, { isFsrCampaign: true })
+      fetchCampaignStats(FSR_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC, { isFsrCampaign: true }),
+      fetchCampaignStats(PAPARAZZI_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC, { isPaparazziCampaign: true })
     ]);
 
     // Get GA4 stats (shared across campaigns)
@@ -439,6 +441,17 @@ const getEmailCampaignStats = onRequest({
         subjectLines: fsrCampaignStats.subjectLines,
         recentSends: fsrCampaignStats.recentSends,
         distribution: fsrCampaignStats.distribution
+      },
+
+      // Paparazzi Accessories campaign data
+      paparazziCampaign: {
+        campaign: paparazziCampaignStats.campaign,
+        last24h: paparazziCampaignStats.last24h,
+        today: paparazziCampaignStats.today,
+        tracking: paparazziCampaignStats.tracking,
+        subjectLines: paparazziCampaignStats.subjectLines,
+        recentSends: paparazziCampaignStats.recentSends,
+        distribution: paparazziCampaignStats.distribution
       },
 
       // GA4 stats (shared)

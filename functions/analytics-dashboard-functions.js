@@ -1307,6 +1307,7 @@ const PURCHASED_CAMPAIGN_COLLECTION = 'purchased_leads';
 const BFH_CAMPAIGN_COLLECTION = 'bfh_contacts';
 const ZINZINO_CAMPAIGN_COLLECTION = 'zinzino_contacts';
 const FSR_CAMPAIGN_COLLECTION = 'fsr_contacts';
+const PAPARAZZI_CAMPAIGN_COLLECTION = 'paparazzi_contacts';
 
 /**
  * Fetch email campaign stats from Firestore
@@ -1515,17 +1516,18 @@ async function fetchSingleCampaignStats(collectionPath, campaignName, benchmarkT
  */
 async function fetchAllEmailCampaignStats(benchmarkTimestamp = null) {
   try {
-    const [mainStats, contactsStats, purchasedStats, bfhStats, zinzinoStats, fsrStats] = await Promise.all([
+    const [mainStats, contactsStats, purchasedStats, bfhStats, zinzinoStats, fsrStats, paparazziStats] = await Promise.all([
       fetchSingleCampaignStats(CONTACTS_COLLECTION, 'Main', benchmarkTimestamp),
       fetchSingleCampaignStats(CONTACTS_CAMPAIGN_COLLECTION, 'Contacts', benchmarkTimestamp),
       fetchSingleCampaignStats(PURCHASED_CAMPAIGN_COLLECTION, 'Purchased', benchmarkTimestamp),
       fetchSingleCampaignStats(BFH_CAMPAIGN_COLLECTION, 'BFH', benchmarkTimestamp),
       fetchSingleCampaignStats(ZINZINO_CAMPAIGN_COLLECTION, 'Zinzino', benchmarkTimestamp),
-      fetchSingleCampaignStats(FSR_CAMPAIGN_COLLECTION, 'FSR', benchmarkTimestamp)
+      fetchSingleCampaignStats(FSR_CAMPAIGN_COLLECTION, 'FSR', benchmarkTimestamp),
+      fetchSingleCampaignStats(PAPARAZZI_CAMPAIGN_COLLECTION, 'Paparazzi', benchmarkTimestamp)
     ]);
 
     // Calculate totals across all campaigns
-    const campaigns = [mainStats, contactsStats, purchasedStats, bfhStats, zinzinoStats, fsrStats];
+    const campaigns = [mainStats, contactsStats, purchasedStats, bfhStats, zinzinoStats, fsrStats, paparazziStats];
     const totals = {
       totalSent: campaigns.reduce((sum, c) => sum + c.sent, 0),
       totalClicked: campaigns.reduce((sum, c) => sum + c.clicked, 0),
@@ -1558,7 +1560,8 @@ async function fetchAllEmailCampaignStats(benchmarkTimestamp = null) {
         purchased: purchasedStats,
         bfh: bfhStats,
         zinzino: zinzinoStats,
-        fsr: fsrStats
+        fsr: fsrStats,
+        paparazzi: paparazziStats
       },
       totals,
       bestCampaign: {
@@ -1885,6 +1888,7 @@ Contacts Campaign: ${campaigns.contacts?.clickRate || 'N/A'} click rate, ${campa
 Purchased Leads: ${campaigns.purchased?.clickRate || 'N/A'} click rate, ${campaigns.purchased?.sent || 0} sent
 BFH Campaign: ${campaigns.bfh?.clickRate || 'N/A'} click rate, ${campaigns.bfh?.sent || 0} sent
 FSR Campaign: ${campaigns.fsr?.clickRate || 'N/A'} click rate, ${campaigns.fsr?.sent || 0} sent
+Paparazzi Campaign: ${campaigns.paparazzi?.clickRate || 'N/A'} click rate, ${campaigns.paparazzi?.sent || 0} sent
 
 PURCHASED LEADS ROI (by source):
 ${Object.entries(roi.bySource || {}).map(([source, data]) =>

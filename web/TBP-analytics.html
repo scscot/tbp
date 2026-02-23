@@ -741,6 +741,11 @@
             color: #0d9488;
         }
 
+        .campaign-label.paparazzi {
+            background: #fef9c3;
+            color: #a16207;
+        }
+
         .source-label {
             display: inline-block;
             font-size: 0.7rem;
@@ -1616,6 +1621,29 @@
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Paparazzi Campaign -->
+                        <div style="background: #f8f9fa; border-radius: 12px; padding: 15px; border-left: 4px solid #a16207;">
+                            <h4 style="margin: 0 0 12px 0; color: #a16207; font-size: 0.9rem;">PAPARAZZI CAMPAIGN</h4>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                <div>
+                                    <div style="font-size: 0.7rem; color: #666; text-transform: uppercase;">Sent</div>
+                                    <div style="font-size: 1.3rem; font-weight: 600; color: #34c759;" id="execPaparazziSent">-</div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 0.7rem; color: #666; text-transform: uppercase;">Remaining</div>
+                                    <div style="font-size: 1.3rem; font-weight: 600; color: #a16207;" id="execPaparazziRemaining">-</div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 0.7rem; color: #666; text-transform: uppercase;">Clicked</div>
+                                    <div style="font-size: 1.3rem; font-weight: 600; color: #34c759;" id="execPaparazziClicked">-</div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 0.7rem; color: #666; text-transform: uppercase;">Click Rate</div>
+                                    <div style="font-size: 1.3rem; font-weight: 600;" id="execPaparazziClickRate">-</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- GA4 Campaign Traffic -->
@@ -1894,6 +1922,9 @@
                     </div>
                     <div class="campaign-tab" onclick="switchEmailTab('fsr')">
                         FSR <span class="tab-badge" id="emailFsrTabBadge">-</span>
+                    </div>
+                    <div class="campaign-tab" onclick="switchEmailTab('paparazzi')">
+                        Paparazzi <span class="tab-badge" id="emailPaparazziTabBadge">-</span>
                     </div>
                     <div class="campaign-tab comparison" onclick="switchEmailTab('comparison')">
                         &#128202; Comparison
@@ -2349,6 +2380,100 @@
                     </div>
                 </div>
 
+                <!-- Paparazzi Campaign Sub-Tab Content -->
+                <div id="emailPaparazziTab" class="campaign-content">
+                    <!-- Campaign Progress -->
+                    <h2 class="section-title">Campaign Progress <span class="campaign-label paparazzi">Paparazzi</span></h2>
+                    <div class="section-card" style="margin-bottom: 30px;">
+                        <h3>Overall Send Progress</h3>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar" id="emailPaparazziProgressBar" style="width: 0%;">0%</div>
+                        </div>
+                        <div class="progress-stats">
+                            <span><strong id="emailPaparazziTotalSent">0</strong> sent</span>
+                            <span><strong id="emailPaparazziTotalRemaining">0</strong> remaining</span>
+                            <span><strong id="emailPaparazziTotalContacts">0</strong> total</span>
+                        </div>
+                    </div>
+
+                    <div class="section-card">
+                        <h3>Email Statistics</h3>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-value green" id="emailPaparazziSentToday">-</div>
+                                <div class="stat-label">Sent Today</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="emailPaparazziSent24h">-</div>
+                                <div class="stat-label">Last 24 Hours</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value red" id="emailPaparazziFailed">-</div>
+                                <div class="stat-label">Failed</div>
+                            </div>
+                        </div>
+                        <div class="stats-grid" style="margin-top: 15px;">
+                            <div class="stat-card">
+                                <div class="stat-value green" id="emailPaparazziTotalClicked">-</div>
+                                <div class="stat-label">Clicked</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="emailPaparazziClickRate">-</div>
+                                <div class="stat-label">Click Rate</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-card" style="margin-top: 30px;">
+                        <h3>Distribution</h3>
+                        <div class="stats-grid" id="emailPaparazziDistributionStats">
+                            <div class="stat-card">
+                                <div class="stat-value" id="emailPaparazziCompanyCount">-</div>
+                                <div class="stat-label">Companies</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="emailPaparazziStateCount">-</div>
+                                <div class="stat-label">States</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-card" style="margin-top: 30px;">
+                        <h3>A/B Test Performance</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Variant</th>
+                                    <th>Sent</th>
+                                    <th>Clicked</th>
+                                    <th>Rate</th>
+                                </tr>
+                            </thead>
+                            <tbody id="emailPaparazziAbTestBody">
+                                <tr><td colspan="4" class="no-data-message">Loading...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="section-card" style="margin-top: 30px;">
+                        <h3>Recent Sends</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Time (PT)</th>
+                                    <th>Email</th>
+                                    <th>Company</th>
+                                    <th>Variant</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="emailPaparazziRecentSendsBody">
+                                <tr><td colspan="5" class="no-data-message">Loading...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
                 <!-- Campaign Comparison Tab Content -->
                 <div id="emailComparisonTab" class="campaign-content">
                     <h2 class="section-title">&#128202; Campaign Performance Comparison</h2>
@@ -2478,7 +2603,12 @@
             'purchased_v10b': 'V10b: "AI is changing how teams grow"',
             // FSR campaign
             'fsr_v9a': 'V9a: "Not an opportunity. Just a tool."',
-            'fsr_v10a': 'V10a: "AI is changing how teams grow"'
+            'fsr_v10a': 'V10a: "AI is changing how teams grow"',
+            // Paparazzi campaign
+            'paparazzi_v9a': 'V9a: "AI is changing how teams grow"',
+            'paparazzi_v9b': 'V9b: "Your AI-powered recruiting assistant"',
+            'paparazzi_v10a': 'V10a: "AI is changing how teams grow"',
+            'paparazzi_v10b': 'V10b: "Your AI-powered recruiting assistant"'
         };
 
         // Authentication
@@ -2963,6 +3093,9 @@
                 document.getElementById('emailMainTabBadge').textContent = '-';
                 document.getElementById('emailPurchasedTabBadge').textContent = '-';
                 document.getElementById('emailBfhTabBadge').textContent = '-';
+                document.getElementById('emailZinzinoTabBadge').textContent = '-';
+                document.getElementById('emailFsrTabBadge').textContent = '-';
+                document.getElementById('emailPaparazziTabBadge').textContent = '-';
                 return;
             }
 
@@ -3389,6 +3522,98 @@
                 document.getElementById('execFsrClickRate').textContent = fsr.tracking?.clickRate || '0%';
             }
 
+            // ==================== PAPARAZZI CAMPAIGN ====================
+            if (emailStatsData.paparazziCampaign) {
+                const pap = emailStatsData.paparazziCampaign;
+
+                // Campaign progress
+                const papTotal = pap.campaign?.total || 1;
+                const papSent = pap.campaign?.sent || 0;
+                const papProgress = (papSent / papTotal * 100);
+
+                document.getElementById('emailPaparazziProgressBar').style.width = papProgress + '%';
+                document.getElementById('emailPaparazziProgressBar').textContent = papProgress.toFixed(1) + '%';
+                document.getElementById('emailPaparazziTotalSent').textContent = formatNumber(papSent);
+                document.getElementById('emailPaparazziTotalRemaining').textContent = formatNumber(pap.campaign?.remaining || 0);
+                document.getElementById('emailPaparazziTotalContacts').textContent = formatNumber(pap.campaign?.total || 0);
+
+                // Sending activity
+                document.getElementById('emailPaparazziSentToday').textContent = formatNumber(pap.today?.sent || 0);
+                document.getElementById('emailPaparazziSent24h').textContent = formatNumber(pap.last24h?.sent || 0);
+
+                // Click performance
+                if (pap.tracking) {
+                    document.getElementById('emailPaparazziFailed').textContent = formatNumber(pap.tracking.failed || 0);
+                    document.getElementById('emailPaparazziTotalClicked').textContent = formatNumber(pap.tracking.clicked || 0);
+                    document.getElementById('emailPaparazziClickRate').textContent = pap.tracking.clickRate || '0%';
+                }
+
+                // Company/State distribution
+                if (pap.distribution) {
+                    document.getElementById('emailPaparazziCompanyCount').textContent = formatNumber(pap.distribution.companies || 0);
+                    document.getElementById('emailPaparazziStateCount').textContent = formatNumber(pap.distribution.states || 0);
+                }
+
+                // A/B test performance
+                const papAbBody = document.getElementById('emailPaparazziAbTestBody');
+                const papSubjectLines = (pap.subjectLines || []).filter(sl =>
+                    sl.subjectTag?.startsWith('paparazzi_v9') || sl.subjectTag?.startsWith('paparazzi_v10')
+                );
+                if (papSubjectLines.length > 0) {
+                    const sorted = [...papSubjectLines].sort((a, b) => {
+                        return parseFloat(b.clickRate) - parseFloat(a.clickRate);
+                    });
+                    const winnerTag = sorted[0].subjectTag;
+
+                    papAbBody.innerHTML = papSubjectLines.map(sl => {
+                        const label = SUBJECT_LABELS[sl.subjectTag] || sl.subjectTag || 'Unknown';
+                        const isWinner = sl.subjectTag === winnerTag && papSubjectLines.length > 1;
+                        const badgeClass = getBadgeClass(sl.subjectTag);
+                        return `
+                            <tr class="${isWinner ? 'ab-winner' : ''}">
+                                <td>${escapeHtml(label)} ${isWinner ? '<span class="badge badge-clicked">LEADING</span>' : ''}</td>
+                                <td>${formatNumber(sl.sent)}</td>
+                                <td>${formatNumber(sl.clicked)}</td>
+                                <td><span class="badge ${badgeClass}">${sl.clickRate}</span></td>
+                            </tr>
+                        `;
+                    }).join('');
+                } else {
+                    papAbBody.innerHTML = '<tr><td colspan="4" class="no-data-message">No A/B test data</td></tr>';
+                }
+
+                // Recent sends (includes company column)
+                const papTbody = document.getElementById('emailPaparazziRecentSendsBody');
+                if (pap.recentSends && pap.recentSends.length > 0) {
+                    papTbody.innerHTML = pap.recentSends.map(send => {
+                        const variantBadge = getVariantBadge(send.subjectTag);
+                        const statusBadge = send.clicked
+                            ? '<span class="badge badge-clicked">Clicked</span>'
+                            : '<span class="badge badge-sent">Sent</span>';
+                        return `
+                            <tr>
+                                <td>${escapeHtml(send.time || '')}</td>
+                                <td>${escapeHtml(send.email || '')}</td>
+                                <td>${escapeHtml(send.company || '-')}</td>
+                                <td>${variantBadge}</td>
+                                <td>${statusBadge}</td>
+                            </tr>
+                        `;
+                    }).join('');
+                } else {
+                    papTbody.innerHTML = '<tr><td colspan="5" class="no-data-message">No recent sends</td></tr>';
+                }
+
+                // Update tab badge
+                document.getElementById('emailPaparazziTabBadge').textContent = formatNumber(papSent) + ' sent';
+
+                // Update executive summary card
+                document.getElementById('execPaparazziSent').textContent = formatNumber(papSent);
+                document.getElementById('execPaparazziRemaining').textContent = formatNumber(pap.campaign?.remaining || 0);
+                document.getElementById('execPaparazziClicked').textContent = formatNumber(pap.tracking?.clicked || 0);
+                document.getElementById('execPaparazziClickRate').textContent = pap.tracking?.clickRate || '0%';
+            }
+
             // ==================== GA4 EMAIL TRAFFIC ====================
             if (emailStatsData.ga4) {
                 const trafficContent = document.getElementById('emailCampaignTrafficContent');
@@ -3555,7 +3780,8 @@
                     { key: 'purchased', name: 'Purchased', data: campaigns.purchased },
                     { key: 'bfh', name: 'BFH', data: campaigns.bfh },
                     { key: 'zinzino', name: 'Zinzino', data: campaigns.zinzino },
-                    { key: 'fsr', name: 'FSR', data: campaigns.fsr }
+                    { key: 'fsr', name: 'FSR', data: campaigns.fsr },
+                    { key: 'paparazzi', name: 'Paparazzi', data: campaigns.paparazzi }
                 ];
 
                 campaignList.forEach(c => {

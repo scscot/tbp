@@ -52,6 +52,7 @@ scripts/gmail-token.json
 # eMail Lists
 emails/
 leads/
+lahd/
 functions-old/
 colabs/
 Build_*
