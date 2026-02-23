@@ -1,6 +1,6 @@
 # PreIntake.ai: Comprehensive Project Documentation
 
-**Last Updated**: 2026-02-22
+**Last Updated**: 2026-02-23
 **Version**: 7.3 (corrected dynamic architecture documentation)
 
 ---
@@ -41,6 +41,25 @@ PreIntake.ai has reached a mature, fully-automated state:
 **Note on Demo Metrics:** The important engagement metrics are:
 - **Demo Viewed**: Recipient clicked email CTA and loaded demo page
 - **Intake Completed**: User finished the demo conversation and received screening report
+
+### Email Spam Monitoring (Automated)
+
+**Daily automated spam test** ensures email deliverability:
+- **Schedule**: Daily at 7:00 AM PT (GitHub Actions)
+- **Workflow**: `.github/workflows/preintake-spam-monitor.yml`
+- **Script**: `scripts/preintake-spam-monitor.js`
+
+**How it works:**
+1. Sends test email via Mailgun API (same pattern as campaign)
+2. Waits 3 minutes for Gmail delivery
+3. Uses Gmail API to check if email landed in inbox or spam
+4. If spam detected: Sets `preintakeBatchSize` to 0 (disables campaign)
+5. Sends alert email to `scscot@gmail.com`
+
+**Re-enabling after spam issue resolved:**
+1. Go to Firebase Console > Firestore > config > emailCampaign
+2. Set `preintakeBatchSize` to previous value (stored in `preintakeBatchSize_previous_value`)
+3. Delete the `preintakeBatchSize_disabled_*` fields
 
 ### Resume Development When
 

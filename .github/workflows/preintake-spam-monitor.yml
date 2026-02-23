@@ -1,0 +1,72 @@
+name: PreIntake Email Spam Monitor
+
+on:
+  schedule:
+    # Daily at 7:00 AM PT (15:00 UTC)
+    # PST: 7:00 AM, PDT: 6:00 AM (shifts 1 hour earlier in summer)
+    - cron: '0 15 * * *'
+
+  # Allow manual trigger for testing
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  spam-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: 'functions/package.json'
+
+      - name: Install dependencies
+        run: |
+          cd functions && npm install && cd ..
+          npm install --prefix scripts googleapis
+          echo "Dependencies installed"
+
+      - name: Setup Firebase credentials
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          mkdir -p secrets
+          echo "$FIREBASE_SERVICE_ACCOUNT" > secrets/serviceAccountKey.json
+          echo "Firebase credentials configured"
+
+      - name: Run PreIntake spam monitor
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: secrets/serviceAccountKey.json
+          MAILGUN_API_KEY: ${{ secrets.TBP_MAILGUN_API_KEY }}
+          GMAIL_OAUTH_CREDENTIALS: ${{ secrets.GMAIL_OAUTH_CREDENTIALS }}
+          GMAIL_OAUTH_TOKEN: ${{ secrets.GMAIL_OAUTH_TOKEN }}
+        run: |
+          echo "Starting PreIntake email spam monitor..."
+          node scripts/preintake-spam-monitor.js
+
+      - name: Notify on failure
+        if: failure()
+        env:
+          MAILGUN_API_KEY: ${{ secrets.TBP_MAILGUN_API_KEY }}
+        run: |
+          curl -s --user "api:$MAILGUN_API_KEY" \
+            "https://api.mailgun.net/v3/law.preintake.ai/messages" \
+            -F from="Stephen Scott <stephen@law.preintake.ai>" \
+            -F to="scscot@gmail.com" \
+            -F subject="GitHub Actions: PreIntake Spam Monitor FAILED" \
+            -F text="Workflow failed: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+            && echo "Failure notification sent" || echo "Failed to send notification"
+
+      - name: Clean up
+        if: always()
+        run: |
+          rm -rf secrets/
+          echo "Cleanup complete"
