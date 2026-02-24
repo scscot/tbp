@@ -55,14 +55,14 @@ const CONFIG = {
   USER_AGENT: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
 };
 
-// Country code to Scentsy country dropdown mapping
+// Country code to Scentsy country dropdown VALUE mapping (numeric IDs)
 const COUNTRY_DROPDOWN_MAP = {
-  'US': 'U.S.A.',
-  'CA': 'Canada',
-  'GB': 'United Kingdom',
-  'DE': 'Germany',
-  'NL': 'Netherlands',
-  'AU': 'Australia',
+  'US': '1',
+  'CA': '2',
+  'GB': '4',
+  'DE': '3',
+  'NL': '6',
+  'AU': '15',
 };
 
 // Country code to full name
@@ -224,57 +224,31 @@ async function searchByPostalCode(page, postalCode, countryCode) {
   console.log(`  Searching for postal code: ${postalCode} (${countryCode})...`);
 
   try {
-    // Click on "Search by Location" tab if present
-    // Try standard CSS selectors first
-    let locationTab = await page.$('a[href="#searchByLocation"], [data-target="#searchByLocation"]');
-
-    // If not found, search for button containing "Location" text
-    if (!locationTab) {
-      locationTab = await page.evaluateHandle(() => {
-        const buttons = Array.from(document.querySelectorAll('button, a, [role="tab"], .tab'));
-        return buttons.find(el => el.textContent?.toLowerCase().includes('location'));
-      });
-      // Check if the handle is valid
-      const isValid = await locationTab.evaluate(el => !!el).catch(() => false);
-      if (!isValid) locationTab = null;
-    }
-
-    if (locationTab) {
-      await locationTab.click();
+    // Step 1: Click the "Search by location" radio button to show the postal code form
+    const locationRadio = await page.$('#search-by-location, [data-systestid="radio-search-by-location"]');
+    if (locationRadio) {
+      await locationRadio.click();
       await sleep(500);
+    } else {
+      console.log('    Could not find location radio button');
     }
 
-    // Find and fill the postal code field
-    // Try different possible selectors for the postal code input
-    const postalCodeSelectors = [
-      'input[name="postalCode"]',
-      'input[id*="postalCode"]',
-      'input[id*="postal"]',
-      'input[id*="zipCode"]',
-      'input[id*="zip"]',
-      'input[placeholder*="Postal"]',
-      'input[placeholder*="postal"]',
-      'input[placeholder*="ZIP"]',
-      'input[placeholder*="zip"]',
-    ];
-
-    let postalInput = null;
-    for (const selector of postalCodeSelectors) {
-      postalInput = await page.$(selector);
-      if (postalInput) break;
-    }
+    // Step 2: Find and fill the postal code field
+    // Use the specific Scentsy selector first
+    let postalInput = await page.$('#by-location-postal-code, [data-systestid="text-by-location-postal-code"]');
 
     if (!postalInput) {
-      // Try to find by evaluating page content
-      postalInput = await page.evaluateHandle(() => {
-        const inputs = Array.from(document.querySelectorAll('input[type="text"]'));
-        return inputs.find(input =>
-          input.placeholder?.toLowerCase().includes('postal') ||
-          input.placeholder?.toLowerCase().includes('zip') ||
-          input.name?.toLowerCase().includes('postal') ||
-          input.name?.toLowerCase().includes('zip')
-        );
-      });
+      // Fallback to generic selectors
+      const postalCodeSelectors = [
+        'input[name="postalCode"]',
+        'input[id*="postal"]',
+        'input[id*="zip"]',
+      ];
+
+      for (const selector of postalCodeSelectors) {
+        postalInput = await page.$(selector);
+        if (postalInput) break;
+      }
     }
 
     if (!postalInput) {
@@ -286,47 +260,32 @@ async function searchByPostalCode(page, postalCode, countryCode) {
     await postalInput.click({ clickCount: 3 });
     await postalInput.type(postalCode, { delay: 50 });
 
-    // Try to select country if dropdown exists
-    const countryName = COUNTRY_DROPDOWN_MAP[countryCode];
-    if (countryName) {
-      const countrySelectors = [
-        'select[name="country"]',
-        'select[id*="country"]',
-        'select[id*="Country"]',
-      ];
-
-      for (const selector of countrySelectors) {
-        const countrySelect = await page.$(selector);
-        if (countrySelect) {
-          await page.select(selector, countryName);
-          await sleep(300);
-          break;
-        }
+    // Step 3: Select country from dropdown (uses numeric value IDs)
+    const countryValue = COUNTRY_DROPDOWN_MAP[countryCode];
+    if (countryValue) {
+      // Use specific Scentsy selector
+      const countrySelect = await page.$('#by-location-country, select[name="consultantCountryId"]');
+      if (countrySelect) {
+        await page.select('#by-location-country, select[name="consultantCountryId"]', countryValue);
+        await sleep(300);
       }
     }
 
-    // Click search button
-    // Try standard CSS selectors first
-    const searchBtnSelectors = [
-      'button[type="submit"]',
-      'input[type="submit"]',
-      '.search-button',
-      '#search-btn',
-    ];
+    // Step 4: Click search button (use specific Scentsy selector)
+    let searchBtn = await page.$('[data-systestid="btn-by-location-search"]');
 
-    let searchBtn = null;
-    for (const selector of searchBtnSelectors) {
-      searchBtn = await page.$(selector);
-      if (searchBtn) break;
-    }
-
-    // If not found, search for button containing "Search" text
     if (!searchBtn) {
+      // Fallback: find submit button in the visible form
       searchBtn = await page.evaluateHandle(() => {
-        const elements = Array.from(document.querySelectorAll('button, input[type="button"], a.btn, .btn'));
-        return elements.find(el => el.textContent?.toLowerCase().includes('search'));
+        // Find the form that's visible (by-location form)
+        const forms = Array.from(document.querySelectorAll('form'));
+        for (const form of forms) {
+          if (form.style.display !== 'none' && form.action?.includes('search-by-address')) {
+            return form.querySelector('button[type="submit"]');
+          }
+        }
+        return null;
       });
-      // Check if the handle is valid
       const isValid = await searchBtn.evaluate(el => !!el).catch(() => false);
       if (!isValid) searchBtn = null;
     }
@@ -342,10 +301,13 @@ async function searchByPostalCode(page, postalCode, countryCode) {
     await sleep(3000);
 
     // Wait for consultant cards to appear
+    // Scentsy uses Knockout.js, so we need to wait for the results to be populated
     try {
-      await page.waitForSelector('[data-systestid="consultant-card"], .card, .consultant-card', {
+      await page.waitForSelector('[data-systestid="consultant-card"], [data-systestid="consultant-results"]', {
         timeout: 10000,
       });
+      // Give Knockout a moment to render the results
+      await sleep(1000);
     } catch (e) {
       console.log('    No results found or timeout waiting for cards');
       return [];
@@ -365,25 +327,8 @@ async function extractConsultants(page, postalCode, countryCode) {
   const consultants = await page.evaluate((postalCode, countryCode, countryNames) => {
     const results = [];
 
-    // Try multiple card selectors
-    const cardSelectors = [
-      '[data-systestid="consultant-card"]',
-      '.card.consultant-card',
-      '.consultant-card',
-      '.card[data-consultant]',
-      '.search-result-card',
-    ];
-
-    let cards = [];
-    for (const selector of cardSelectors) {
-      cards = document.querySelectorAll(selector);
-      if (cards.length > 0) break;
-    }
-
-    // If no specific cards found, try generic cards
-    if (cards.length === 0) {
-      cards = document.querySelectorAll('.card');
-    }
+    // Scentsy uses [data-systestid="consultant-card"] for result cards
+    const cards = document.querySelectorAll('[data-systestid="consultant-card"]');
 
     cards.forEach(card => {
       const consultant = {
@@ -394,32 +339,34 @@ async function extractConsultants(page, postalCode, countryCode) {
         state: '',
       };
 
-      // Extract name - try multiple patterns
-      const nameSelectors = [
-        '.card-title',
-        '.consultant-name',
-        'h3',
-        'h4',
-        'h5',
-        '.name',
-        '[data-name]',
-      ];
+      // Extract name from the card-body paragraph with class text-20px
+      // Structure: <p class="text-20px mb-0" data-bind="text: fullName">Name Here</p>
+      const nameEl = card.querySelector('.card-body .text-20px, .card-body p:first-of-type');
+      if (nameEl && nameEl.textContent.trim()) {
+        consultant.fullName = nameEl.textContent.trim();
+      }
 
-      for (const selector of nameSelectors) {
-        const nameEl = card.querySelector(selector);
-        if (nameEl && nameEl.textContent.trim()) {
-          consultant.fullName = nameEl.textContent.trim();
-          break;
+      // Fallback: Try the card-header button which has "fullName — city, state"
+      if (!consultant.fullName) {
+        const headerBtn = card.querySelector('.card-header button');
+        if (headerBtn && headerBtn.textContent.trim()) {
+          const headerText = headerBtn.textContent.trim();
+          // Format: "Name — City, State"
+          const namePart = headerText.split('—')[0];
+          if (namePart) {
+            consultant.fullName = namePart.trim();
+          }
         }
       }
 
-      // Extract email
+      // Extract email from mailto link
+      // Structure: <a data-bind="text: email, attr: {href: 'mailto:' + email}">email@example.com</a>
       const emailEl = card.querySelector('a[href^="mailto:"]');
       if (emailEl) {
         consultant.email = emailEl.href.replace('mailto:', '').split('?')[0].trim().toLowerCase();
       }
 
-      // Try to find email in text
+      // Fallback: find email in text
       if (!consultant.email) {
         const cardText = card.textContent;
         const emailMatch = cardText.match(/[\w.-]+@[\w.-]+\.\w+/);
@@ -428,45 +375,39 @@ async function extractConsultants(page, postalCode, countryCode) {
         }
       }
 
-      // Extract phone
-      const phoneEl = card.querySelector('a[href^="tel:"]');
-      if (phoneEl) {
-        consultant.phone = phoneEl.href.replace('tel:', '').trim();
-      }
-
-      // Try to find phone in text
-      if (!consultant.phone) {
-        const cardText = card.textContent;
-        const phoneMatch = cardText.match(/[\d\s\-\.\(\)]{10,}/);
-        if (phoneMatch) {
-          consultant.phone = phoneMatch[0].trim();
+      // Extract location from consultant-results-location element
+      // Structure: <p data-systestid="consultant-results-location" data-bind="text: city + ', ' + state + ' ' + postalCode">City, State 12345</p>
+      const locationEl = card.querySelector('[data-systestid="consultant-results-location"]');
+      if (locationEl && locationEl.textContent.trim()) {
+        const locText = locationEl.textContent.trim();
+        // Format: "City, State PostalCode"
+        const parts = locText.split(',').map(p => p.trim());
+        if (parts.length >= 2) {
+          consultant.city = parts[0];
+          // State is before the postal code
+          const stateAndZip = parts[1].split(/\s+/);
+          consultant.state = stateAndZip[0] || '';
+        } else {
+          consultant.city = locText;
         }
       }
 
-      // Extract location
-      const locationSelectors = [
-        '.location',
-        '.city',
-        '.address',
-        '[data-location]',
-        '.card-subtitle',
-      ];
-
-      for (const selector of locationSelectors) {
-        const locEl = card.querySelector(selector);
-        if (locEl && locEl.textContent.trim()) {
-          const locText = locEl.textContent.trim();
-          // Try to parse city, state from location text
-          const parts = locText.split(',').map(p => p.trim());
-          if (parts.length >= 2) {
-            consultant.city = parts[0];
-            consultant.state = parts[1];
-          } else {
-            consultant.city = locText;
+      // Fallback: parse location from header button text
+      if (!consultant.city) {
+        const headerBtn = card.querySelector('.card-header button');
+        if (headerBtn && headerBtn.textContent.includes('—')) {
+          const locationPart = headerBtn.textContent.split('—')[1];
+          if (locationPart) {
+            const parts = locationPart.trim().split(',').map(p => p.trim());
+            if (parts.length >= 2) {
+              consultant.city = parts[0];
+              consultant.state = parts[1];
+            }
           }
-          break;
         }
       }
+
+      // Note: Scentsy doesn't show phone numbers in search results
 
       // Only add if we have a name
       if (consultant.fullName) {
