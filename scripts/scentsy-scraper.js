@@ -107,11 +107,46 @@ function randomDelay(baseDelay) {
   return baseDelay + jitter;
 }
 
+function cleanName(rawName) {
+  if (!rawName) return '';
+
+  let name = rawName;
+
+  // Remove star ratings (⭐️, ★, ☆, etc.) and other rating symbols
+  name = name.replace(/[⭐★☆✩✪✫✬✭✮✯🌟💫⚝✡︎]/g, '');
+
+  // Remove all emojis (comprehensive emoji regex)
+  name = name.replace(/[\u{1F300}-\u{1F9FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]|[\u{1F600}-\u{1F64F}]|[\u{1F680}-\u{1F6FF}]|[\u{1F1E0}-\u{1F1FF}]/gu, '');
+
+  // Remove any remaining non-printable or special Unicode characters
+  name = name.replace(/[^\p{L}\p{N}\s\-'.]/gu, '');
+
+  // Normalize whitespace (collapse multiple spaces, trim)
+  name = name.replace(/\s+/g, ' ').trim();
+
+  // Title case each word (First Letter Uppercase, rest lowercase)
+  name = name.split(' ')
+    .filter(word => word.length > 0)
+    .map(word => {
+      // Handle hyphenated names (Mary-Jane -> Mary-Jane)
+      return word.split('-')
+        .map(part => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
+        .join('-');
+    })
+    .join(' ');
+
+  return name;
+}
+
 function parseName(fullName) {
   if (!fullName) return { firstName: '', lastName: '' };
 
-  const normalized = fullName.trim().replace(/\s+/g, ' ');
-  const parts = normalized.split(' ');
+  // Clean the name first
+  const cleaned = cleanName(fullName);
+
+  if (!cleaned) return { firstName: '', lastName: '' };
+
+  const parts = cleaned.split(' ');
 
   if (parts.length === 0) {
     return { firstName: '', lastName: '' };
@@ -128,7 +163,9 @@ function parseName(fullName) {
 }
 
 function generateDocId(name, postalCode, countryCode) {
-  const normalized = name.toLowerCase().replace(/[^a-z0-9]/g, '_');
+  // Clean the name first, then normalize for doc ID
+  const cleaned = cleanName(name);
+  const normalized = cleaned.toLowerCase().replace(/[^a-z0-9]/g, '_').replace(/_+/g, '_').replace(/^_|_$/g, '');
   return `${countryCode.toLowerCase()}_${postalCode}_${normalized}`.substring(0, 100);
 }
 
@@ -427,11 +464,13 @@ async function extractConsultants(page, postalCode, countryCode) {
     return results;
   }, postalCode, countryCode, COUNTRY_NAMES);
 
-  // Enrich with additional data
+  // Enrich with additional data and clean names
   const enriched = consultants.map(c => {
+    const cleanedFullName = cleanName(c.fullName);
     const { firstName, lastName } = parseName(c.fullName);
     return {
       ...c,
+      fullName: cleanedFullName,  // Store cleaned version
       firstName,
       lastName,
       postalCode,
