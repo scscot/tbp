@@ -314,7 +314,7 @@ async function sendEmailViaMailgun(contact, docId, config, index) {
     console.log(`   Mode: STANDARD | Template: ${templateVariant.toUpperCase()} | Subject: "${usedSubject}"`);
   }
 
-  // Tracking disabled — using Firestore-based tracking via trackEmailClick Cloud Function
+  // Mailgun tracking disabled — clicks tracked via GA4 using UTM parameters in direct landing page URLs
   form.append('o:tracking', 'no');
   form.append('o:tracking-opens', 'no');
   form.append('o:tracking-clicks', 'no');

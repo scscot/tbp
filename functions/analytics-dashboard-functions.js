@@ -1276,6 +1276,18 @@ async function fetchGooglePlayMetrics(benchmarkDate = null, serviceAccountJson =
 // ==============================
 
 /**
+ * CLICK TRACKING NOTE:
+ * Email click tracking uses GA4 (via UTM parameters), NOT Firestore.
+ * Direct CTA links are used for better email deliverability (avoiding spam filters).
+ * The `clickedAt` field in Firestore is NOT populated since we don't use
+ * the trackEmailClick redirect endpoint.
+ *
+ * To see email click data:
+ * - GA4 Dashboard: Filter by sessionMedium='email' to see email traffic
+ * - UTM parameters: utm_source=mailgun, utm_medium=email, utm_campaign=..., utm_content=subjectTag
+ */
+
+/**
  * Get analytics benchmark date from Firestore config
  * Returns null if no benchmark is set (show all data)
  */
@@ -1379,104 +1391,72 @@ async function fetchFirestoreEmailStats() {
  * @param {string} collectionPath - Firestore collection path
  * @param {string} campaignName - Display name for the campaign
  * @param {Date|null} benchmarkTimestamp - Optional benchmark date to filter from
+ *
+ * NOTE: Click tracking is GA4-based (via UTM parameters), NOT Firestore.
+ * The clicked/clickRate fields are set to 0 since we use direct CTA links
+ * for better deliverability. View email traffic in GA4 filtered by sessionMedium='email'.
  */
 async function fetchSingleCampaignStats(collectionPath, campaignName, benchmarkTimestamp = null) {
   try {
     const contactsRef = db.collection(collectionPath);
 
-    let sent = 0, failed = 0, clicked = 0, total = 0, remaining = 0;
+    let sent = 0, failed = 0, total = 0, remaining = 0;
 
     if (benchmarkTimestamp) {
-      // Filter by benchmark date - need to query differently
-      // For sent: sentTimestamp >= benchmark
-      // For clicked: clickedAt >= benchmark
-      const [sentDocs, failedSnap, totalSnap, unsentSnap] = await Promise.all([
+      // Filter by benchmark date
+      const [sentDocs, failedSnap, totalSnap] = await Promise.all([
         contactsRef
           .where('sent', '==', true)
           .where('sentTimestamp', '>=', benchmarkTimestamp)
-          .select('subjectTag', 'clickedAt')
+          .select('subjectTag')
           .get(),
-        // Failed contacts are separate from sent contacts - count all failures
         contactsRef.where('status', '==', 'failed').count().get(),
-        contactsRef.count().get(),
-        contactsRef.where('sent', '==', false).count().get()
+        contactsRef.count().get()
       ]);
 
       sent = sentDocs.size;
-      sentDocs.forEach(doc => {
-        const data = doc.data();
-        if (data.clickedAt && data.clickedAt.toDate() >= benchmarkTimestamp) {
-          clicked++;
-        }
-      });
       failed = failedSnap.data().count;
       total = totalSnap.data().count;
-      // Remaining = unsent contacts minus failed (available to send)
-      const unsent = unsentSnap.data().count;
-      remaining = Math.max(0, unsent - failed);
+      // Calculate remaining from total - don't rely on sent == false query
+      // (documents without 'sent' field won't match sent == false)
+      remaining = Math.max(0, total - sent - failed);
     } else {
-      // No benchmark - use original fast count queries
-      const [sentSnap, failedSnap, clickedSnap, totalSnap, unsentSnap] = await Promise.all([
+      // No benchmark - use fast count queries
+      const [sentSnap, failedSnap, totalSnap] = await Promise.all([
         contactsRef.where('sent', '==', true).count().get(),
         contactsRef.where('status', '==', 'failed').count().get(),
-        contactsRef.where('clickedAt', '!=', null).count().get(),
-        contactsRef.count().get(),
-        contactsRef.where('sent', '==', false).count().get()
+        contactsRef.count().get()
       ]);
 
       sent = sentSnap.data().count;
       failed = failedSnap.data().count;
-      clicked = clickedSnap.data().count;
       total = totalSnap.data().count;
-      // Remaining = unsent contacts minus failed (available to send)
-      const unsent = unsentSnap.data().count;
-      remaining = Math.max(0, unsent - failed);
+      // Calculate remaining from total - don't rely on sent == false query
+      // (documents without 'sent' field won't match sent == false)
+      remaining = Math.max(0, total - sent - failed);
     }
 
-    const clickRate = sent > 0 ? ((clicked / sent) * 100).toFixed(2) : '0.00';
-
-    // A/B test breakdown (also filtered by benchmark if set)
+    // A/B test breakdown (sent counts only - clicks tracked via GA4)
     const EXCLUDED_TAGS = new Set(['subject_recruiting_app', 'unknown']);
     let sentDocsQuery = contactsRef.where('sent', '==', true);
     if (benchmarkTimestamp) {
       sentDocsQuery = sentDocsQuery.where('sentTimestamp', '>=', benchmarkTimestamp);
     }
-    const sentDocs = await sentDocsQuery.select('subjectTag', 'clickedAt').get();
+    const sentDocs = await sentDocsQuery.select('subjectTag').get();
 
     const subjectStats = {};
     sentDocs.docs.forEach(doc => {
       const data = doc.data();
       const tag = data.subjectTag || 'unknown';
       if (EXCLUDED_TAGS.has(tag)) return;
-      if (!subjectStats[tag]) subjectStats[tag] = { sent: 0, clicked: 0 };
+      if (!subjectStats[tag]) subjectStats[tag] = { sent: 0 };
       subjectStats[tag].sent++;
-      // For benchmark mode, only count clicks after benchmark
-      if (data.clickedAt) {
-        if (benchmarkTimestamp) {
-          const clickTime = data.clickedAt.toDate ? data.clickedAt.toDate() : new Date(data.clickedAt);
-          if (clickTime >= benchmarkTimestamp) {
-            subjectStats[tag].clicked++;
-          }
-        } else {
-          subjectStats[tag].clicked++;
-        }
-      }
     });
 
     const subjectLines = Object.entries(subjectStats).map(([tag, stats]) => ({
       subjectTag: tag,
-      sent: stats.sent,
-      clicked: stats.clicked,
-      clickRate: stats.sent > 0 ? ((stats.clicked / stats.sent) * 100).toFixed(2) : '0.00'
+      sent: stats.sent
     }));
-
-    // Find best performing variant
-    let bestVariant = null;
-    if (subjectLines.length > 0) {
-      bestVariant = subjectLines.reduce((best, current) => {
-        return parseFloat(current.clickRate) > parseFloat(best.clickRate) ? current : best;
-      }, subjectLines[0]);
-    }
 
     return {
       campaign: campaignName,
@@ -1485,11 +1465,12 @@ async function fetchSingleCampaignStats(collectionPath, campaignName, benchmarkT
       sent,
       remaining,
       failed,
-      clicked,
-      clickRate: clickRate + '%',
-      clickRateNum: parseFloat(clickRate),
-      subjectLines,
-      bestVariant
+      // Click tracking is GA4-based (via UTM parameters) - see website.emailCampaign data
+      tracking: {
+        method: 'GA4',
+        note: 'View email clicks in GA4 filtered by sessionMedium=email'
+      },
+      subjectLines
     };
   } catch (error) {
     logger.error(`Error fetching ${campaignName} stats:`, error.message);
@@ -1501,18 +1482,18 @@ async function fetchSingleCampaignStats(collectionPath, campaignName, benchmarkT
       sent: 0,
       remaining: 0,
       failed: 0,
-      clicked: 0,
-      clickRate: '0.00%',
-      clickRateNum: 0,
-      subjectLines: [],
-      bestVariant: null
+      tracking: { method: 'GA4', note: 'Error fetching stats' },
+      subjectLines: []
     };
   }
 }
 
 /**
- * Fetch all email campaign stats across all 6 campaigns
+ * Fetch all email campaign stats across all 7 campaigns
  * @param {Date|null} benchmarkTimestamp - Optional benchmark date to filter from
+ *
+ * NOTE: Click tracking is GA4-based (via UTM parameters), NOT Firestore.
+ * View email clicks in GA4 data filtered by sessionMedium='email'.
  */
 async function fetchAllEmailCampaignStats(benchmarkTimestamp = null) {
   try {
@@ -1530,28 +1511,16 @@ async function fetchAllEmailCampaignStats(benchmarkTimestamp = null) {
     const campaigns = [mainStats, contactsStats, purchasedStats, bfhStats, zinzinoStats, fsrStats, paparazziStats];
     const totals = {
       totalSent: campaigns.reduce((sum, c) => sum + c.sent, 0),
-      totalClicked: campaigns.reduce((sum, c) => sum + c.clicked, 0),
       totalRemaining: campaigns.reduce((sum, c) => sum + c.remaining, 0),
-      totalFailed: campaigns.reduce((sum, c) => sum + c.failed, 0)
+      totalFailed: campaigns.reduce((sum, c) => sum + c.failed, 0),
+      // Click tracking is GA4-based - see website.emailCampaign data
+      trackingMethod: 'GA4'
     };
-    totals.overallClickRate = totals.totalSent > 0
-      ? ((totals.totalClicked / totals.totalSent) * 100).toFixed(2) + '%'
-      : '0.00%';
 
-    // Find best performing campaign
-    const bestCampaign = campaigns.reduce((best, current) => {
-      return current.clickRateNum > best.clickRateNum ? current : best;
+    // Find campaign with most sent emails
+    const mostActiveCampaign = campaigns.reduce((best, current) => {
+      return current.sent > best.sent ? current : best;
     }, campaigns[0]);
-
-    // Find best overall variant across all campaigns
-    let bestOverallVariant = null;
-    campaigns.forEach(c => {
-      if (c.bestVariant) {
-        if (!bestOverallVariant || parseFloat(c.bestVariant.clickRate) > parseFloat(bestOverallVariant.clickRate)) {
-          bestOverallVariant = { ...c.bestVariant, campaign: c.campaign };
-        }
-      }
-    });
 
     return {
       campaigns: {
@@ -1564,11 +1533,12 @@ async function fetchAllEmailCampaignStats(benchmarkTimestamp = null) {
         paparazzi: paparazziStats
       },
       totals,
-      bestCampaign: {
-        name: bestCampaign.campaign,
-        clickRate: bestCampaign.clickRate
+      mostActiveCampaign: {
+        name: mostActiveCampaign.campaign,
+        sent: mostActiveCampaign.sent
       },
-      bestOverallVariant
+      // Click tracking note for dashboard
+      trackingNote: 'Email clicks are tracked via GA4 (UTM parameters). View email traffic in Website tab filtered by sessionMedium=email.'
     };
   } catch (error) {
     logger.error('Error fetching all campaign stats:', error.message);
@@ -1660,14 +1630,28 @@ async function fetchPurchasedLeadsROI() {
 
 /**
  * Build executive summary aggregating all data sources
+ *
+ * NOTE: Email click tracking is GA4-based (via UTM parameters).
+ * The emailFromGA4 metrics show actual website visits from email campaigns.
  */
 function buildExecutiveSummary(ga4Data, iosData, androidData, emailStats) {
   const overview = ga4Data?.overview || {};
   const iosMetrics = iosData?.actualMetrics || {};
   const androidMetrics = androidData?.metrics || {};
 
-  // Calculate email metrics
+  // Calculate email metrics from Firestore (sent counts)
   const emailTotals = emailStats?.totals || {};
+
+  // Calculate email traffic from GA4 (actual clicks/visits)
+  const emailCampaignData = ga4Data?.emailCampaign?.data || [];
+  const emailVisitsFromGA4 = emailCampaignData.reduce((sum, c) => sum + (c.activeUsers || 0), 0);
+  const emailSessionsFromGA4 = emailCampaignData.reduce((sum, c) => sum + (c.sessions || 0), 0);
+
+  // Calculate click rate from GA4 data (visits / sent)
+  const totalSent = emailTotals.totalSent || 0;
+  const ga4ClickRate = totalSent > 0
+    ? ((emailVisitsFromGA4 / totalSent) * 100).toFixed(2) + '%'
+    : '0.00%';
 
   // Calculate iOS conversion rate (downloads / impressions)
   const iosDownloads = iosMetrics.downloads?.total || 0;
@@ -1677,13 +1661,13 @@ function buildExecutiveSummary(ga4Data, iosData, androidData, emailStats) {
     : 'N/A';
 
   // Calculate performance score (0-100)
-  // Based on: email click rate, website engagement, iOS conversion, Android growth
+  // Based on: GA4 email visits, website engagement, iOS conversion, Android growth
   let score = 50; // Base score
 
-  const emailClickRate = parseFloat(emailTotals.overallClickRate || '0');
-  if (emailClickRate >= 4) score += 15;
-  else if (emailClickRate >= 3) score += 10;
-  else if (emailClickRate >= 2) score += 5;
+  const emailClickRateNum = parseFloat(ga4ClickRate) || 0;
+  if (emailClickRateNum >= 4) score += 15;
+  else if (emailClickRateNum >= 3) score += 10;
+  else if (emailClickRateNum >= 2) score += 5;
 
   const engagementRate = overview.engagementRate || 0;
   if (engagementRate >= 50) score += 15;
@@ -1704,11 +1688,13 @@ function buildExecutiveSummary(ga4Data, iosData, androidData, emailStats) {
   return {
     performanceScore: score,
     email: {
-      totalSent: emailTotals.totalSent || 0,
-      totalClicked: emailTotals.totalClicked || 0,
-      overallClickRate: emailTotals.overallClickRate || '0.00%',
-      bestCampaign: emailStats?.bestCampaign || null,
-      bestVariant: emailStats?.bestOverallVariant || null
+      totalSent: totalSent,
+      // GA4-based click tracking (actual website visits from email)
+      websiteVisits: emailVisitsFromGA4,
+      websiteSessions: emailSessionsFromGA4,
+      clickRate: ga4ClickRate,
+      trackingMethod: 'GA4',
+      mostActiveCampaign: emailStats?.mostActiveCampaign || null
     },
     website: {
       users: overview.activeUsers || 0,

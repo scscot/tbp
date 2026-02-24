@@ -120,7 +120,7 @@ async function sendEmailViaMailgun(lead, docId, index) {
   form.append('template', TEMPLATE_NAME);
   form.append('t:version', variant.templateVersion);
 
-  // Tracking disabled — using Firestore-based tracking
+  // Mailgun tracking disabled — clicks tracked via GA4 using UTM parameters in direct landing page URLs
   form.append('o:tracking', 'no');
   form.append('o:tracking-opens', 'no');
   form.append('o:tracking-clicks', 'no');

@@ -195,7 +195,7 @@ async function sendEmailViaMailgun(contact, docId, config, index, subjectSuffix 
   };
   form.append('h:X-Mailgun-Variables', JSON.stringify(templateVars));
 
-  // Tracking disabled - using Firestore-based tracking via trackEmailClick
+  // Mailgun tracking disabled — clicks tracked via GA4 using UTM parameters in direct landing page URLs
   form.append('o:tracking', 'no');
   form.append('o:tracking-opens', 'no');
   form.append('o:tracking-clicks', 'no');

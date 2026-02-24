@@ -101,8 +101,8 @@ The Team Build Pro ecosystem is a comprehensive, interconnected network of digit
 **6. Email Campaign Integration**
 - Three campaigns: Main (reduced, underperforming), Purchased (1.3K, primary focus), BFH (776, primary focus)
 - Main Campaign reduced to 2/batch due to low click-through; focus shifted to BFH and Purchased campaigns
-- Mailgun API via news.teambuildpro.com with Firestore tracking
-- Click tracking via trackEmailClick endpoint; open tracking disabled for deliverability
+- Mailgun API via news.teambuildpro.com with Firestore send tracking
+- Click tracking via GA4 UTM parameters (direct landing page URLs); open tracking disabled for deliverability
 - Drives traffic to landing page → app downloads
 
 **7. Legacy Brand (teambuildingproject.com)**
@@ -114,7 +114,7 @@ The Team Build Pro ecosystem is a comprehensive, interconnected network of digit
 
 | Metric | Current Value | Target |
 |--------|---------------|--------|
-| Email Click Rate | Tracked via Firestore | 3%+ |
+| Email Click Rate | Tracked via GA4 UTM parameters | 3%+ |
 | Email Open Rate | N/A (disabled for deliverability) | - |
 | Website Languages | 4 (EN, ES, PT, DE) | 4 |
 | Blog Posts (per language) | 23-24 | 25+ |
@@ -479,10 +479,10 @@ All four main sites have identical structure:
 - Three tabs: Website (GA4), iOS App Store, Android Play Store
 - **Website tab**: GA4 metrics (users, sessions, engagement, traffic sources, top pages, top countries, device/domain breakdown)
 - **Date range selector**: Today, Yesterday, 7 Days, 30 Days options
-- **Email Campaign section**: Three campaign cards (Main/Purchased/BFH) showing sent/remaining/clicked/click rate
+- **Email Campaign section**: Six campaign cards (Main/Purchased/BFH/Paparazzi/FSR/Zinzino) showing sent/remaining
   - Removed Contacts Campaign from dashboard (Feb 14, 2026 - campaign complete)
-  - Each campaign card shows individual stats from Firestore
-  - Campaign comparison table with A/B test winners
+  - Each campaign card shows Firestore send stats; click tracking moved to GA4
+  - Clicks tracked via GA4 UTM parameters in direct landing page URLs
 - **iOS tab**: App Store Connect metrics (downloads, impressions, reviews, versions)
 - **Android tab**: Google Play metrics from GCS bucket + CSV import fallback
 - AI-generated observations via OpenAI
@@ -490,9 +490,9 @@ All four main sites have identical structure:
 
 **Email Stats Dashboard** (`web/email-stats.html` + `functions/email-stats-functions.js`)
 - Password-protected dashboard at `/email-stats.html`
-- **Data sources**: Firestore (`emailCampaigns/master/contacts`) + GA4 (filtered by `sessionMedium: 'email'`)
-- **Tracking**: Click tracking via `trackEmailClick` Cloud Function; open tracking disabled for deliverability
-- **Metrics**: Campaign progress (sent/remaining/failed), click tracking, A/B test subject line breakdown
+- **Data sources**: Firestore (send tracking) + GA4 (click tracking via `sessionMedium: 'email'`)
+- **Tracking**: Sends tracked via Firestore; clicks tracked via GA4 UTM parameters; open tracking disabled
+- **Metrics**: Campaign progress (sent/remaining/failed), A/B test subject line breakdown
 - **A/B test tags**: Main campaign: `main_v9a`, `main_v9b`, `main_v10a`, `main_v10b` (4-way V9/V10 test); Contacts: `mobile_first_v7`, `mobile_first_v8`; legacy tags supported for historical data
 - Backend: `getEmailCampaignStats` Cloud Function
 
@@ -576,7 +576,7 @@ git add . && git commit -m "message" && git push
 
 ### Campaign Architecture Overview
 
-The email campaign system consists of two parallel campaigns targeting different audience segments, using Mailgun API with Firestore-based tracking.
+The email campaign system consists of multiple parallel campaigns targeting different audience segments, using Mailgun API with Firestore send tracking and GA4 click tracking via UTM parameters.
 
 **Email Configuration:**
 - **Sending Domain**: `news.teambuildpro.com`
@@ -594,7 +594,7 @@ The email campaign system consists of two parallel campaigns targeting different
   - Tags: `main_v9a`, `main_v9b`, `main_v10a`, `main_v10b`
   - **Note**: Subject "Not an opportunity. Just a tool." triggers Gmail spam filter - REMOVED Feb 23, 2026
 - **Contacts Campaign A/B Test**: V7/V8 (legacy - `mobile_first_v7` / `mobile_first_v8`)
-- **Tracking**: Click tracking via `trackEmailClick` Cloud Function endpoint; open tracking disabled (pixel removed for deliverability)
+- **Tracking**: Click tracking via GA4 UTM parameters in direct landing page URLs; open tracking disabled (pixel removed for deliverability)
 - **DNS**: SPF + DKIM + DMARC configured for 10/10 mail-tester.com score
 - **Mailgun Credentials**: `functions/.env.teambuilder-plus-fe74d` (TBP_MAILGUN_* variables)
 
@@ -699,12 +699,12 @@ The email campaign system consists of two parallel campaigns targeting different
 - **Manual Override**: `workflow_dispatch` with `force_week` input to test specific week
 
 ### Campaign Tracking
-- **Sent/Failed/Remaining**: Tracked in Firestore `emailCampaigns/master/contacts` (sent, status fields)
-- **Click Tracking**: Firestore `clickedAt` timestamp via `trackEmailClick` Cloud Function endpoint
+- **Sent/Failed/Remaining**: Tracked in Firestore (sent, status fields per collection)
+- **Click Tracking**: GA4 via UTM parameters in direct landing page URLs (utm_source=mailgun, utm_medium=email, utm_campaign, utm_content)
 - **Open Tracking**: Disabled (tracking pixel removed for deliverability)
-- **GA4 Campaign Traffic**: Filtered by `sessionMedium: 'email'` (UTM parameters in email links)
+- **GA4 Campaign Traffic**: Filtered by `sessionMedium: 'email'`
 - **A/B Test Breakdown**: By `subjectTag` field - Main: `main_v9a`, `main_v9b`, `main_v10a`, `main_v10b`; Contacts: `mobile_first_v7`, `mobile_first_v8`
-- **Dashboards**: `email-stats.html` (email-focused) and `TBP-analytics.html` (unified analytics)
+- **Dashboards**: `email-stats.html` (email-focused) and `TBP-analytics.html` (unified analytics with GA4 click tracking)
 
 ### Android Launch Campaign (REMOVED - Jan 2026)
 - **Status**: REMOVED - Function and all references deleted
@@ -714,7 +714,7 @@ The email campaign system consists of two parallel campaigns targeting different
 - **Function**: `syncMailgunEvents` in `functions/email-campaign-functions.js`
 - **Purpose**: Was used to sync Mailgun delivery/engagement data to Firestore before 24-hour log expiration
 - **Status**: Disabled after SMTP migration (Jan 2026). Mailgun open/click tracking also disabled.
-- **Current tracking**: Firestore-native via `trackEmailClick` Cloud Function endpoint
+- **Current tracking**: GA4 via UTM parameters in direct landing page URLs
 
 ### Launch Campaign (Mailgun - Manual Trigger)
 - **Function**: `sendLaunchCampaign` in `functions/sendLaunchCampaign.js`
@@ -1334,13 +1334,13 @@ Corporate email domains are excluded from all contact collections using a **blac
   - Updated v9-es, v9-de, v10-es, v10-de translations to match new English templates
 - ✅ **Email Campaigns via Mailgun API**: Both Main and Contacts campaigns use Mailgun API with template versioning
   - Sending domain: `news.teambuildpro.com` with 10/10 mail-tester.com score (SPF/DKIM/DMARC configured)
-  - Open tracking disabled for deliverability; click tracking via Firestore `trackEmailClick` endpoint
+  - Open tracking disabled for deliverability; click tracking via GA4 UTM parameters
   - SMTP sender utility (`email-smtp-sender.js`) exists but is used only for blog notifications, not campaigns
 - ✅ **A/B Testing Active**: Main campaign uses 4-way V9/V10 test (Feb 12, 2026)
-  - V9a: V9 template + "Not an opportunity. Just a tool." (`main_v9a`)
-  - V9b: V9 template + "AI is changing how teams grow" (`main_v9b`)
-  - V10a: V10 template + "Not an opportunity. Just a tool." (`main_v10a`)
-  - V10b: V10 template + "AI is changing how teams grow" (`main_v10b`)
+  - V9a: V9 template + "AI is changing how teams grow" (`main_v9a`)
+  - V9b: V9 template + "Your AI-powered recruiting assistant" (`main_v9b`)
+  - V10a: V10 template + "AI is changing how teams grow" (`main_v10a`)
+  - V10b: V10 template + "Your AI-powered recruiting assistant" (`main_v10b`)
   - Contacts campaign still uses V7/V8 (`mobile_first_v7`/`mobile_first_v8`)
 - ✅ **A/B Test Template Update** (Feb 11, 2026): Migrated from v3/v4 to v7/v8 Mailgun templates
   - Simplified HTML template with text link CTA (improved inbox placement vs Promotions/Spam)
@@ -1361,7 +1361,7 @@ Corporate email domains are excluded from all contact collections using a **blac
   - Revisit mid-March 2026 for data-driven optimization
 - ✅ **Domain Warming Automation**: GitHub Actions workflow manages batch sizes via Firestore config
 - ✅ **SMTP Email Validation**: 18,334 Gmail addresses validated, 89.3% valid
-- ✅ **Analytics Dashboards Migrated to Firestore**: Both `email-stats.html` and `TBP-analytics.html` now use Firestore for email stats (sent/failed/clicked/A/B test) and GA4 filtered by `sessionMedium: 'email'` for website traffic.
+- ✅ **Analytics Dashboards Updated**: Both `email-stats.html` and `TBP-analytics.html` use Firestore for send stats and GA4 for click tracking via UTM parameters (sessionMedium: 'email').
 
 **Contacts Discovery Pipeline** (Feb 2026)
 - ✅ **BFH Company Scraper** (`scripts/scrape-bfh-companies.js`): Scrapes BusinessForHome.org sitemap (~710 companies), extracts website URLs, appends to `base_urls.txt`
@@ -1474,9 +1474,9 @@ Corporate email domains are excluded from all contact collections using a **blac
 - ✅ **Spam-Triggering Subject Removed**: Subject "Not an opportunity. Just a tool." identified as Gmail spam trigger
   - All campaigns updated to use safe alternatives: "AI is changing how teams grow" and "Your AI-powered recruiting assistant"
   - Affected files: `email-campaign-functions.js`, `email-campaign-purchased.js`, `email-campaign-bfh.js`, `email-campaign-fsr.js`, `email-campaign-paparazzi.js`, `email-campaign-zinzino.js`
-- ✅ **Click Tracking Removed from Campaigns**: Direct landing page URLs now used instead of Cloud Function redirect URLs
+- ✅ **Click Tracking Changed to GA4**: Direct landing page URLs with UTM parameters now used instead of Cloud Function redirect URLs
   - Reduces spam triggers from multiple redirects
-  - Tracking still works via Firestore `trackEmailClick` endpoint for manual attribution
+  - Click tracking via GA4 (sessionMedium: 'email') instead of Firestore trackEmailClick endpoint
 - ✅ **Spam Monitor Endpoint Created**: `testPaparazziEmail` HTTP endpoint in `email-campaign-paparazzi.js`
   - Tests actual campaign code (prevents code drift between monitor and campaigns)
   - Accepts `subjectSuffix` parameter for Gmail search identification
@@ -1524,8 +1524,8 @@ Main Campaign reduced due to underperformance. Focus shifted to BFH, Purchased, 
 | Yahoo Campaign | Removed | File and function deleted (Jan 31) |
 | Android Campaign | Removed | Function and all references deleted |
 | Subscription Reminders | Disabled | Auto-renewal handled by app stores (Feb 19) |
-| Email Tracking | Firestore | Clicks via trackEmailClick; opens disabled |
-| Analytics Dashboard | Enhanced | 3 campaign cards, improved remaining counts |
+| Email Tracking | GA4 | Clicks via UTM parameters; opens disabled |
+| Analytics Dashboard | Enhanced | 6 campaign cards, GA4 click tracking, improved remaining counts |
 | Push Notifications | Working | profile_reminder, trial_expired verified |
 | Blog Automation | Running | Mon/Thu schedule, 4 languages (24/24/24/23 posts) |
 | Sitemap Pings | Active | Google + Bing pinged after each blog deploy |
