@@ -1489,6 +1489,10 @@ Corporate email domains are excluded from all contact collections using a **blac
   - Schedule: 10:30am, 1:30pm, 4:30pm, 7:30pm PT (4 runs/day)
   - 4-way A/B test: V9/V10 × 2 subjects
   - Batch size controlled via `config/emailCampaign.batchSizePaparazzi`
+- ✅ **Paparazzi Firestore Indexes Added**: 3 composite indexes for `paparazzi_contacts` collection
+  - `status + sent + randomIndex` (for campaign email send query)
+  - `sent + sentTimestamp DESC` (for benchmark filtering)
+  - `sent + sentTimestamp ASC` (for benchmark filtering)
 
 **FSR Campaign & Subscription Updates (Feb 19, 2026)**
 - ✅ **FSR Email Campaign Created**: New campaign for FindSalesRep contacts
