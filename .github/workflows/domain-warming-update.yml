@@ -71,6 +71,8 @@ jobs:
           TBP_ZINZINO=$(echo $TBP_SCHEDULE | jq -r '.batchSizeZinzino // 50')
           TBP_FSR=$(echo $TBP_SCHEDULE | jq -r '.batchSizeFsr // 50')
           TBP_PAPARAZZI=$(echo $TBP_SCHEDULE | jq -r '.batchSizePaparazzi // 15')
+          TBP_PRUVIT=$(echo $TBP_SCHEDULE | jq -r '.batchSizePruvit // 0')
+          TBP_SCENTSY=$(echo $TBP_SCHEDULE | jq -r '.batchSizeScentsy // 10')
           TBP_DAILY=$(echo $TBP_SCHEDULE | jq -r '.dailyTotal // 1160')
 
           # PreIntake batch size
@@ -92,12 +94,15 @@ jobs:
           echo "batch_size_zinzino=$TBP_ZINZINO" >> $GITHUB_OUTPUT
           echo "batch_size_fsr=$TBP_FSR" >> $GITHUB_OUTPUT
           echo "batch_size_paparazzi=$TBP_PAPARAZZI" >> $GITHUB_OUTPUT
+          echo "batch_size_pruvit=$TBP_PRUVIT" >> $GITHUB_OUTPUT
+          echo "batch_size_scentsy=$TBP_SCENTSY" >> $GITHUB_OUTPUT
           echo "daily_total=$TBP_DAILY" >> $GITHUB_OUTPUT
           echo "preintake_batch_size=$PREINTAKE_BATCH_SIZE" >> $GITHUB_OUTPUT
 
           echo "Week $WEEK TBP batch sizes:"
           echo "  Main: $TBP_BATCH, Purchased: $TBP_PURCHASED, BFH: $TBP_BFH"
           echo "  Zinzino: $TBP_ZINZINO, FSR: $TBP_FSR, Paparazzi: $TBP_PAPARAZZI"
+          echo "  Pruvit: $TBP_PRUVIT, Scentsy: $TBP_SCENTSY"
           echo "  Daily total: $TBP_DAILY"
           echo "PreIntake batch size: $PREINTAKE_BATCH_SIZE"
 
@@ -131,6 +136,8 @@ jobs:
           const tbpZinzino = parseInt(process.env.TBP_ZINZINO);
           const tbpFsr = parseInt(process.env.TBP_FSR);
           const tbpPaparazzi = parseInt(process.env.TBP_PAPARAZZI);
+          const tbpPruvit = parseInt(process.env.TBP_PRUVIT);
+          const tbpScentsy = parseInt(process.env.TBP_SCENTSY);
           const dailyTotal = parseInt(process.env.DAILY_TOTAL);
 
           // PreIntake batch size
@@ -150,6 +157,8 @@ jobs:
             console.log(`  batchSizeZinzino: ${current.batchSizeZinzino || 'not_set'}`);
             console.log(`  batchSizeFsr: ${current.batchSizeFsr || 'not_set'}`);
             console.log(`  batchSizePaparazzi: ${current.batchSizePaparazzi || 'not_set'}`);
+            console.log(`  batchSizePruvit: ${current.batchSizePruvit || 'not_set'}`);
+            console.log(`  scentsyBatchSize: ${current.scentsyBatchSize || 'not_set'}`);
             console.log(`  preintakeBatchSize: ${current.preintakeBatchSize || 'not_set'}`);
 
             // Update Firestore with all batch sizes
@@ -160,6 +169,8 @@ jobs:
               batchSizeZinzino: tbpZinzino,
               batchSizeFsr: tbpFsr,
               batchSizePaparazzi: tbpPaparazzi,
+              batchSizePruvit: tbpPruvit,
+              scentsyBatchSize: tbpScentsy,
               preintakeBatchSize: preintakeBatch,
               warmingWeek: week,
               updatedAt: admin.firestore.FieldValue.serverTimestamp(),
@@ -176,6 +187,8 @@ jobs:
             console.log(`  - Zinzino: ${tbpZinzino}`);
             console.log(`  - FSR: ${tbpFsr}`);
             console.log(`  - Paparazzi: ${tbpPaparazzi}`);
+            console.log(`  - Pruvit: ${tbpPruvit}`);
+            console.log(`  - Scentsy: ${tbpScentsy}`);
             console.log(`  - PreIntake: ${preintakeBatch}`);
           }
 
@@ -194,6 +207,8 @@ jobs:
           TBP_ZINZINO: ${{ steps.batch.outputs.batch_size_zinzino }}
           TBP_FSR: ${{ steps.batch.outputs.batch_size_fsr }}
           TBP_PAPARAZZI: ${{ steps.batch.outputs.batch_size_paparazzi }}
+          TBP_PRUVIT: ${{ steps.batch.outputs.batch_size_pruvit }}
+          TBP_SCENTSY: ${{ steps.batch.outputs.batch_size_scentsy }}
           DAILY_TOTAL: ${{ steps.batch.outputs.daily_total }}
           PREINTAKE_BATCH: ${{ steps.batch.outputs.preintake_batch_size }}
           WEEK: ${{ steps.week.outputs.week }}
@@ -213,6 +228,8 @@ jobs:
           echo "| Zinzino | ${{ steps.batch.outputs.batch_size_zinzino }} | $(( ${{ steps.batch.outputs.batch_size_zinzino }} * 4 )) |" >> $GITHUB_STEP_SUMMARY
           echo "| FSR | ${{ steps.batch.outputs.batch_size_fsr }} | $(( ${{ steps.batch.outputs.batch_size_fsr }} * 4 )) |" >> $GITHUB_STEP_SUMMARY
           echo "| Paparazzi | ${{ steps.batch.outputs.batch_size_paparazzi }} | $(( ${{ steps.batch.outputs.batch_size_paparazzi }} * 4 )) |" >> $GITHUB_STEP_SUMMARY
+          echo "| Pruvit | ${{ steps.batch.outputs.batch_size_pruvit }} | $(( ${{ steps.batch.outputs.batch_size_pruvit }} * 4 )) |" >> $GITHUB_STEP_SUMMARY
+          echo "| Scentsy | ${{ steps.batch.outputs.batch_size_scentsy }} | $(( ${{ steps.batch.outputs.batch_size_scentsy }} * 4 )) |" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### PreIntake" >> $GITHUB_STEP_SUMMARY
           echo "- **Batch Size**: ${{ steps.batch.outputs.preintake_batch_size }}" >> $GITHUB_STEP_SUMMARY

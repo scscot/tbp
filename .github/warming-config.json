@@ -11,7 +11,7 @@
   },
   "tbp": {
     "startDate": "2026-02-22",
-    "notes": "Main campaign disabled (batchSize=0) - historically underperformed. Its allocation redistributed to FSR and Paparazzi. Re-enable manually when FSR/Paparazzi queues exhaust.",
+    "notes": "Main campaign disabled (batchSize=0). FSR nearly exhausted, Pruvit exhausted. Scentsy added as new campaign.",
     "schedule": [
       {
         "week": 1,
@@ -19,9 +19,11 @@
         "batchSizePurchased": 30,
         "batchSizeBfh": 27,
         "batchSizeZinzino": 31,
-        "batchSizeFsr": 7,
+        "batchSizeFsr": 3,
         "batchSizePaparazzi": 7,
-        "dailyTotal": 408
+        "batchSizePruvit": 0,
+        "batchSizeScentsy": 10,
+        "dailyTotal": 432
       },
       {
         "week": 2,
@@ -29,9 +31,11 @@
         "batchSizePurchased": 55,
         "batchSizeBfh": 50,
         "batchSizeZinzino": 57,
-        "batchSizeFsr": 9,
-        "batchSizePaparazzi": 8,
-        "dailyTotal": 716
+        "batchSizeFsr": 0,
+        "batchSizePaparazzi": 12,
+        "batchSizePruvit": 0,
+        "batchSizeScentsy": 15,
+        "dailyTotal": 756
       },
       {
         "week": 3,
@@ -39,9 +43,11 @@
         "batchSizePurchased": 88,
         "batchSizeBfh": 80,
         "batchSizeZinzino": 91,
-        "batchSizeFsr": 11,
-        "batchSizePaparazzi": 10,
-        "dailyTotal": 1120
+        "batchSizeFsr": 0,
+        "batchSizePaparazzi": 18,
+        "batchSizePruvit": 0,
+        "batchSizeScentsy": 23,
+        "dailyTotal": 1200
       }
     ]
   }
