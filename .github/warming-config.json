@@ -11,44 +11,53 @@
   },
   "tbp": {
     "startDate": "2026-02-22",
-    "notes": "Main campaign disabled (batchSize=0). All scraper-fed campaigns maintain batch sizes as scrapers continuously add contacts.",
-    "schedule": [
-      {
-        "week": 1,
-        "batchSize": 0,
-        "batchSizePurchased": 30,
-        "batchSizeBfh": 27,
-        "batchSizeZinzino": 31,
-        "batchSizeFsr": 3,
-        "batchSizePaparazzi": 7,
-        "batchSizePruvit": 10,
-        "batchSizeScentsy": 10,
-        "dailyTotal": 472
+    "notes": "Dynamic batch sizing: calculates based on unsent counts and warming multiplier. Main campaign disabled.",
+    "targetCompletionDays": 30,
+    "runsPerDay": 4,
+    "minBatchSize": 1,
+    "maxBatchSize": 100,
+    "warmingSchedule": [0.40, 0.60, 0.80, 1.0],
+    "campaigns": {
+      "main": {
+        "collection": "emailCampaigns/master/contacts",
+        "firestoreField": "batchSize",
+        "enabled": false
       },
-      {
-        "week": 2,
-        "batchSize": 0,
-        "batchSizePurchased": 55,
-        "batchSizeBfh": 50,
-        "batchSizeZinzino": 57,
-        "batchSizeFsr": 5,
-        "batchSizePaparazzi": 12,
-        "batchSizePruvit": 18,
-        "batchSizeScentsy": 15,
-        "dailyTotal": 848
+      "purchased": {
+        "collection": "purchased_leads",
+        "firestoreField": "batchSizePurchased",
+        "enabled": true
       },
-      {
-        "week": 3,
-        "batchSize": 0,
-        "batchSizePurchased": 88,
-        "batchSizeBfh": 80,
-        "batchSizeZinzino": 91,
-        "batchSizeFsr": 8,
-        "batchSizePaparazzi": 18,
-        "batchSizePruvit": 29,
-        "batchSizeScentsy": 23,
-        "dailyTotal": 1348
+      "bfh": {
+        "collection": "bfh_contacts",
+        "firestoreField": "batchSizeBfh",
+        "enabled": true
+      },
+      "zinzino": {
+        "collection": "zinzino_contacts",
+        "firestoreField": "batchSizeZinzino",
+        "enabled": true
+      },
+      "fsr": {
+        "collection": "fsr_contacts",
+        "firestoreField": "batchSizeFsr",
+        "enabled": true
+      },
+      "paparazzi": {
+        "collection": "paparazzi_contacts",
+        "firestoreField": "batchSizePaparazzi",
+        "enabled": true
+      },
+      "pruvit": {
+        "collection": "pruvit_contacts",
+        "firestoreField": "batchSizePruvit",
+        "enabled": true
+      },
+      "scentsy": {
+        "collection": "scentsy_contacts",
+        "firestoreField": "scentsyBatchSize",
+        "enabled": true
       }
-    ]
+    }
   }
 }

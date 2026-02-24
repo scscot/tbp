@@ -11,6 +11,11 @@ on:
         description: 'Force specific week number (optional)'
         required: false
         type: number
+      dry_run:
+        description: 'Dry run - show calculations without updating Firestore'
+        required: false
+        type: boolean
+        default: false
 
 jobs:
   update-batch-sizes:
@@ -28,7 +33,7 @@ jobs:
         run: |
           CONFIG=$(cat .github/warming-config.json)
 
-          # Use TBP start date for week calculation (both campaigns start same date)
+          # Use TBP start date for week calculation
           START_DATE=$(echo $CONFIG | jq -r '.tbp.startDate')
 
           # Calculate weeks since start
@@ -51,61 +56,6 @@ jobs:
           echo "week=$WEEK_NUM" >> $GITHUB_OUTPUT
           echo "Current warming week: $WEEK_NUM"
 
-      - name: Get batch sizes for current week
-        id: batch
-        run: |
-          CONFIG=$(cat .github/warming-config.json)
-          WEEK=${{ steps.week.outputs.week }}
-
-          # Get TBP schedule entry for current week (or last available)
-          TBP_SCHEDULE=$(echo $CONFIG | jq -r --argjson week "$WEEK" '
-            .tbp.schedule |
-            map(select(.week <= $week)) |
-            last
-          ')
-
-          # Extract all TBP batch sizes (use last week's values if beyond schedule)
-          TBP_BATCH=$(echo $TBP_SCHEDULE | jq -r '.batchSize // 50')
-          TBP_PURCHASED=$(echo $TBP_SCHEDULE | jq -r '.batchSizePurchased // 75')
-          TBP_BFH=$(echo $TBP_SCHEDULE | jq -r '.batchSizeBfh // 50')
-          TBP_ZINZINO=$(echo $TBP_SCHEDULE | jq -r '.batchSizeZinzino // 50')
-          TBP_FSR=$(echo $TBP_SCHEDULE | jq -r '.batchSizeFsr // 50')
-          TBP_PAPARAZZI=$(echo $TBP_SCHEDULE | jq -r '.batchSizePaparazzi // 15')
-          TBP_PRUVIT=$(echo $TBP_SCHEDULE | jq -r '.batchSizePruvit // 0')
-          TBP_SCENTSY=$(echo $TBP_SCHEDULE | jq -r '.batchSizeScentsy // 10')
-          TBP_DAILY=$(echo $TBP_SCHEDULE | jq -r '.dailyTotal // 1160')
-
-          # PreIntake batch size
-          PREINTAKE_MAX_BATCH=$(echo $CONFIG | jq -r '.preintake.maxBatchSize')
-          PREINTAKE_BATCH_SIZE=$(echo $CONFIG | jq -r --argjson week "$WEEK" '
-            .preintake.schedule |
-            map(select(.week <= $week)) |
-            last |
-            .batchSize
-          ')
-          if [ "$PREINTAKE_BATCH_SIZE" = "null" ] || [ -z "$PREINTAKE_BATCH_SIZE" ]; then
-            PREINTAKE_BATCH_SIZE=$PREINTAKE_MAX_BATCH
-          fi
-
-          # Output all values
-          echo "batch_size=$TBP_BATCH" >> $GITHUB_OUTPUT
-          echo "batch_size_purchased=$TBP_PURCHASED" >> $GITHUB_OUTPUT
-          echo "batch_size_bfh=$TBP_BFH" >> $GITHUB_OUTPUT
-          echo "batch_size_zinzino=$TBP_ZINZINO" >> $GITHUB_OUTPUT
-          echo "batch_size_fsr=$TBP_FSR" >> $GITHUB_OUTPUT
-          echo "batch_size_paparazzi=$TBP_PAPARAZZI" >> $GITHUB_OUTPUT
-          echo "batch_size_pruvit=$TBP_PRUVIT" >> $GITHUB_OUTPUT
-          echo "batch_size_scentsy=$TBP_SCENTSY" >> $GITHUB_OUTPUT
-          echo "daily_total=$TBP_DAILY" >> $GITHUB_OUTPUT
-          echo "preintake_batch_size=$PREINTAKE_BATCH_SIZE" >> $GITHUB_OUTPUT
-
-          echo "Week $WEEK TBP batch sizes:"
-          echo "  Main: $TBP_BATCH, Purchased: $TBP_PURCHASED, BFH: $TBP_BFH"
-          echo "  Zinzino: $TBP_ZINZINO, FSR: $TBP_FSR, Paparazzi: $TBP_PAPARAZZI"
-          echo "  Pruvit: $TBP_PRUVIT, Scentsy: $TBP_SCENTSY"
-          echo "  Daily total: $TBP_DAILY"
-          echo "PreIntake batch size: $PREINTAKE_BATCH_SIZE"
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -114,11 +64,12 @@ jobs:
       - name: Install dependencies
         run: npm install firebase-admin
 
-      - name: Update Firestore config document
+      - name: Calculate dynamic batch sizes and update Firestore
         id: update
         run: |
           node << 'EOF'
           const admin = require('firebase-admin');
+          const fs = require('fs');
 
           // Initialize with service account from secret
           const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
@@ -128,71 +79,151 @@ jobs:
 
           const db = admin.firestore();
           const week = parseInt(process.env.WEEK);
+          const dryRun = process.env.DRY_RUN === 'true';
 
-          // TBP batch sizes
-          const tbpBatch = parseInt(process.env.TBP_BATCH);
-          const tbpPurchased = parseInt(process.env.TBP_PURCHASED);
-          const tbpBfh = parseInt(process.env.TBP_BFH);
-          const tbpZinzino = parseInt(process.env.TBP_ZINZINO);
-          const tbpFsr = parseInt(process.env.TBP_FSR);
-          const tbpPaparazzi = parseInt(process.env.TBP_PAPARAZZI);
-          const tbpPruvit = parseInt(process.env.TBP_PRUVIT);
-          const tbpScentsy = parseInt(process.env.TBP_SCENTSY);
-          const dailyTotal = parseInt(process.env.DAILY_TOTAL);
+          // Load config
+          const config = JSON.parse(fs.readFileSync('.github/warming-config.json', 'utf8'));
+          const tbpConfig = config.tbp;
+          const preintakeConfig = config.preintake;
 
-          // PreIntake batch size
-          const preintakeBatch = parseInt(process.env.PREINTAKE_BATCH);
+          // Get warming multiplier for current week
+          const warmingSchedule = tbpConfig.warmingSchedule;
+          const warmingMultiplier = week <= warmingSchedule.length
+            ? warmingSchedule[week - 1]
+            : warmingSchedule[warmingSchedule.length - 1];
 
-          async function updateConfig() {
-            const configRef = db.collection('config').doc('emailCampaign');
+          const targetDays = tbpConfig.targetCompletionDays;
+          const runsPerDay = tbpConfig.runsPerDay;
+          const minBatch = tbpConfig.minBatchSize;
+          const maxBatch = tbpConfig.maxBatchSize;
 
-            // Get current values
-            const doc = await configRef.get();
-            const current = doc.exists ? doc.data() : {};
+          console.log('='.repeat(60));
+          console.log('DOMAIN WARMING - DYNAMIC BATCH SIZE CALCULATION');
+          console.log('='.repeat(60));
+          console.log(`Week: ${week}`);
+          console.log(`Warming Multiplier: ${(warmingMultiplier * 100).toFixed(0)}%`);
+          console.log(`Target Completion: ${targetDays} days`);
+          console.log(`Runs Per Day: ${runsPerDay}`);
+          console.log(`Batch Size Range: ${minBatch} - ${maxBatch}`);
+          console.log(`Mode: ${dryRun ? 'DRY RUN' : 'LIVE'}`);
+          console.log('');
 
-            console.log('Current values:');
-            console.log(`  batchSize: ${current.batchSize || 'not_set'}`);
-            console.log(`  batchSizePurchased: ${current.batchSizePurchased || 'not_set'}`);
-            console.log(`  batchSizeBfh: ${current.batchSizeBfh || 'not_set'}`);
-            console.log(`  batchSizeZinzino: ${current.batchSizeZinzino || 'not_set'}`);
-            console.log(`  batchSizeFsr: ${current.batchSizeFsr || 'not_set'}`);
-            console.log(`  batchSizePaparazzi: ${current.batchSizePaparazzi || 'not_set'}`);
-            console.log(`  batchSizePruvit: ${current.batchSizePruvit || 'not_set'}`);
-            console.log(`  scentsyBatchSize: ${current.scentsyBatchSize || 'not_set'}`);
-            console.log(`  preintakeBatchSize: ${current.preintakeBatchSize || 'not_set'}`);
+          async function getUnsentCount(collectionPath) {
+            try {
+              // Handle subcollection paths like "emailCampaigns/master/contacts"
+              let collectionRef;
+              if (collectionPath.includes('/')) {
+                const parts = collectionPath.split('/');
+                collectionRef = db.collection(parts[0]).doc(parts[1]).collection(parts[2]);
+              } else {
+                collectionRef = db.collection(collectionPath);
+              }
 
-            // Update Firestore with all batch sizes
-            await configRef.set({
-              batchSize: tbpBatch,
-              batchSizePurchased: tbpPurchased,
-              batchSizeBfh: tbpBfh,
-              batchSizeZinzino: tbpZinzino,
-              batchSizeFsr: tbpFsr,
-              batchSizePaparazzi: tbpPaparazzi,
-              batchSizePruvit: tbpPruvit,
-              scentsyBatchSize: tbpScentsy,
-              preintakeBatchSize: preintakeBatch,
-              warmingWeek: week,
-              updatedAt: admin.firestore.FieldValue.serverTimestamp(),
-              updatedBy: 'github-actions'
-            }, { merge: true });
-
-            console.log('');
-            console.log('Updated Firestore config:');
-            console.log(`  Week: ${week}`);
-            console.log(`  TBP Daily Total: ${dailyTotal}`);
-            console.log(`  - Main: ${tbpBatch}`);
-            console.log(`  - Purchased: ${tbpPurchased}`);
-            console.log(`  - BFH: ${tbpBfh}`);
-            console.log(`  - Zinzino: ${tbpZinzino}`);
-            console.log(`  - FSR: ${tbpFsr}`);
-            console.log(`  - Paparazzi: ${tbpPaparazzi}`);
-            console.log(`  - Pruvit: ${tbpPruvit}`);
-            console.log(`  - Scentsy: ${tbpScentsy}`);
-            console.log(`  - PreIntake: ${preintakeBatch}`);
+              const snapshot = await collectionRef
+                .where('sent', '==', false)
+                .count()
+                .get();
+              return snapshot.data().count;
+            } catch (error) {
+              console.error(`  Error counting ${collectionPath}: ${error.message}`);
+              return 0;
+            }
           }
 
-          updateConfig()
+          function calculateBatchSize(unsentCount, warmingMultiplier) {
+            if (unsentCount === 0) return 0;
+
+            // Base batch size to complete in targetDays
+            const baseBatch = Math.ceil(unsentCount / (targetDays * runsPerDay));
+
+            // Apply warming multiplier
+            const warmedBatch = Math.ceil(baseBatch * warmingMultiplier);
+
+            // Clamp to min/max
+            return Math.max(minBatch, Math.min(warmedBatch, maxBatch));
+          }
+
+          async function main() {
+            const campaigns = tbpConfig.campaigns;
+            const results = {};
+            const firestoreUpdates = {};
+            let totalDaily = 0;
+
+            console.log('CAMPAIGN BATCH SIZES:');
+            console.log('-'.repeat(60));
+            console.log(`${'Campaign'.padEnd(12)} | ${'Unsent'.padStart(8)} | ${'Base'.padStart(6)} | ${'Final'.padStart(6)} | ${'Daily'.padStart(6)} | Status`);
+            console.log('-'.repeat(60));
+
+            for (const [name, campaignConfig] of Object.entries(campaigns)) {
+              const { collection, firestoreField, enabled } = campaignConfig;
+
+              if (!enabled) {
+                console.log(`${name.padEnd(12)} | ${'N/A'.padStart(8)} | ${'N/A'.padStart(6)} | ${'0'.padStart(6)} | ${'0'.padStart(6)} | Disabled`);
+                firestoreUpdates[firestoreField] = 0;
+                results[name] = { unsent: 0, base: 0, final: 0, daily: 0, status: 'disabled' };
+                continue;
+              }
+
+              const unsentCount = await getUnsentCount(collection);
+              const baseBatch = unsentCount > 0 ? Math.ceil(unsentCount / (targetDays * runsPerDay)) : 0;
+              const finalBatch = calculateBatchSize(unsentCount, warmingMultiplier);
+              const dailyEmails = finalBatch * runsPerDay;
+
+              const status = unsentCount === 0 ? 'Empty' : 'Active';
+              console.log(`${name.padEnd(12)} | ${unsentCount.toString().padStart(8)} | ${baseBatch.toString().padStart(6)} | ${finalBatch.toString().padStart(6)} | ${dailyEmails.toString().padStart(6)} | ${status}`);
+
+              firestoreUpdates[firestoreField] = finalBatch;
+              results[name] = { unsent: unsentCount, base: baseBatch, final: finalBatch, daily: dailyEmails, status };
+              totalDaily += dailyEmails;
+            }
+
+            console.log('-'.repeat(60));
+            console.log(`${'TOTAL'.padEnd(12)} | ${''.padStart(8)} | ${''.padStart(6)} | ${''.padStart(6)} | ${totalDaily.toString().padStart(6)} |`);
+            console.log('');
+
+            // Handle PreIntake (static schedule)
+            const preintakeSchedule = preintakeConfig.schedule;
+            const preintakeWeekConfig = preintakeSchedule.find(w => w.week === week)
+              || preintakeSchedule[preintakeSchedule.length - 1];
+            const preintakeBatch = preintakeWeekConfig.batchSize;
+
+            console.log('PREINTAKE (Static Schedule):');
+            console.log(`  Week ${week} batch size: ${preintakeBatch}`);
+            console.log('');
+
+            // Update Firestore
+            if (!dryRun) {
+              const configRef = db.collection('config').doc('emailCampaign');
+
+              await configRef.set({
+                ...firestoreUpdates,
+                preintakeBatchSize: preintakeBatch,
+                warmingWeek: week,
+                warmingMultiplier: warmingMultiplier,
+                calculatedAt: admin.firestore.FieldValue.serverTimestamp(),
+                updatedBy: 'github-actions-dynamic'
+              }, { merge: true });
+
+              console.log('✅ Firestore config/emailCampaign updated successfully');
+            } else {
+              console.log('🔍 DRY RUN - Firestore NOT updated');
+              console.log('Would update:', JSON.stringify(firestoreUpdates, null, 2));
+            }
+
+            // Output for GitHub summary
+            const summaryData = {
+              week,
+              warmingMultiplier,
+              campaigns: results,
+              totalDaily,
+              preintakeBatch
+            };
+
+            // Write to file for summary step
+            fs.writeFileSync('/tmp/batch-results.json', JSON.stringify(summaryData, null, 2));
+          }
+
+          main()
             .then(() => process.exit(0))
             .catch(err => {
               console.error('Error:', err);
@@ -201,37 +232,52 @@ jobs:
           EOF
         env:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-          TBP_BATCH: ${{ steps.batch.outputs.batch_size }}
-          TBP_PURCHASED: ${{ steps.batch.outputs.batch_size_purchased }}
-          TBP_BFH: ${{ steps.batch.outputs.batch_size_bfh }}
-          TBP_ZINZINO: ${{ steps.batch.outputs.batch_size_zinzino }}
-          TBP_FSR: ${{ steps.batch.outputs.batch_size_fsr }}
-          TBP_PAPARAZZI: ${{ steps.batch.outputs.batch_size_paparazzi }}
-          TBP_PRUVIT: ${{ steps.batch.outputs.batch_size_pruvit }}
-          TBP_SCENTSY: ${{ steps.batch.outputs.batch_size_scentsy }}
-          DAILY_TOTAL: ${{ steps.batch.outputs.daily_total }}
-          PREINTAKE_BATCH: ${{ steps.batch.outputs.preintake_batch_size }}
           WEEK: ${{ steps.week.outputs.week }}
+          DRY_RUN: ${{ inputs.dry_run }}
 
-      - name: Summary
+      - name: Generate Summary
+        if: always()
         run: |
-          echo "## Domain Warming Summary" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "- **Warming Week**: ${{ steps.week.outputs.week }}" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### TBP Campaigns (Daily Total: ${{ steps.batch.outputs.daily_total }})" >> $GITHUB_STEP_SUMMARY
-          echo "| Campaign | Batch Size | Daily (×4 runs) |" >> $GITHUB_STEP_SUMMARY
-          echo "|----------|------------|-----------------|" >> $GITHUB_STEP_SUMMARY
-          echo "| Main | ${{ steps.batch.outputs.batch_size }} | $(( ${{ steps.batch.outputs.batch_size }} * 4 )) |" >> $GITHUB_STEP_SUMMARY
-          echo "| Purchased | ${{ steps.batch.outputs.batch_size_purchased }} | $(( ${{ steps.batch.outputs.batch_size_purchased }} * 4 )) |" >> $GITHUB_STEP_SUMMARY
-          echo "| BFH | ${{ steps.batch.outputs.batch_size_bfh }} | $(( ${{ steps.batch.outputs.batch_size_bfh }} * 4 )) |" >> $GITHUB_STEP_SUMMARY
-          echo "| Zinzino | ${{ steps.batch.outputs.batch_size_zinzino }} | $(( ${{ steps.batch.outputs.batch_size_zinzino }} * 4 )) |" >> $GITHUB_STEP_SUMMARY
-          echo "| FSR | ${{ steps.batch.outputs.batch_size_fsr }} | $(( ${{ steps.batch.outputs.batch_size_fsr }} * 4 )) |" >> $GITHUB_STEP_SUMMARY
-          echo "| Paparazzi | ${{ steps.batch.outputs.batch_size_paparazzi }} | $(( ${{ steps.batch.outputs.batch_size_paparazzi }} * 4 )) |" >> $GITHUB_STEP_SUMMARY
-          echo "| Pruvit | ${{ steps.batch.outputs.batch_size_pruvit }} | $(( ${{ steps.batch.outputs.batch_size_pruvit }} * 4 )) |" >> $GITHUB_STEP_SUMMARY
-          echo "| Scentsy | ${{ steps.batch.outputs.batch_size_scentsy }} | $(( ${{ steps.batch.outputs.batch_size_scentsy }} * 4 )) |" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### PreIntake" >> $GITHUB_STEP_SUMMARY
-          echo "- **Batch Size**: ${{ steps.batch.outputs.preintake_batch_size }}" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "✅ Updated Firestore config/emailCampaign document" >> $GITHUB_STEP_SUMMARY
+          if [ -f /tmp/batch-results.json ]; then
+            RESULTS=$(cat /tmp/batch-results.json)
+            WEEK=$(echo $RESULTS | jq -r '.week')
+            MULTIPLIER=$(echo $RESULTS | jq -r '.warmingMultiplier * 100 | floor')
+            TOTAL=$(echo $RESULTS | jq -r '.totalDaily')
+            PREINTAKE=$(echo $RESULTS | jq -r '.preintakeBatch')
+
+            echo "## Domain Warming Summary" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "- **Warming Week**: $WEEK" >> $GITHUB_STEP_SUMMARY
+            echo "- **Warming Multiplier**: ${MULTIPLIER}%" >> $GITHUB_STEP_SUMMARY
+            echo "- **Mode**: ${{ inputs.dry_run == 'true' && 'DRY RUN' || 'LIVE' }}" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+
+            echo "### TBP Campaigns (Total Daily: $TOTAL emails)" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "| Campaign | Unsent | Base | Final | Daily | Status |" >> $GITHUB_STEP_SUMMARY
+            echo "|----------|--------|------|-------|-------|--------|" >> $GITHUB_STEP_SUMMARY
+
+            for campaign in main purchased bfh zinzino fsr paparazzi pruvit scentsy; do
+              UNSENT=$(echo $RESULTS | jq -r ".campaigns.${campaign}.unsent // 0")
+              BASE=$(echo $RESULTS | jq -r ".campaigns.${campaign}.base // 0")
+              FINAL=$(echo $RESULTS | jq -r ".campaigns.${campaign}.final // 0")
+              DAILY=$(echo $RESULTS | jq -r ".campaigns.${campaign}.daily // 0")
+              STATUS=$(echo $RESULTS | jq -r ".campaigns.${campaign}.status // \"unknown\"")
+              echo "| ${campaign^} | $UNSENT | $BASE | $FINAL | $DAILY | $STATUS |" >> $GITHUB_STEP_SUMMARY
+            done
+
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "### PreIntake (Static Schedule)" >> $GITHUB_STEP_SUMMARY
+            echo "- **Batch Size**: $PREINTAKE" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+
+            if [ "${{ inputs.dry_run }}" != "true" ]; then
+              echo "✅ Updated Firestore config/emailCampaign document" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "🔍 Dry run - no changes made to Firestore" >> $GITHUB_STEP_SUMMARY
+            fi
+          else
+            echo "## Domain Warming Summary" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "⚠️ Results file not found - check workflow logs" >> $GITHUB_STEP_SUMMARY
+          fi
