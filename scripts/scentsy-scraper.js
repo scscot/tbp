@@ -225,7 +225,20 @@ async function searchByPostalCode(page, postalCode, countryCode) {
 
   try {
     // Click on "Search by Location" tab if present
-    const locationTab = await page.$('a[href="#searchByLocation"], [data-target="#searchByLocation"], button:has-text("Location")');
+    // Try standard CSS selectors first
+    let locationTab = await page.$('a[href="#searchByLocation"], [data-target="#searchByLocation"]');
+
+    // If not found, search for button containing "Location" text
+    if (!locationTab) {
+      locationTab = await page.evaluateHandle(() => {
+        const buttons = Array.from(document.querySelectorAll('button, a, [role="tab"], .tab'));
+        return buttons.find(el => el.textContent?.toLowerCase().includes('location'));
+      });
+      // Check if the handle is valid
+      const isValid = await locationTab.evaluate(el => !!el).catch(() => false);
+      if (!isValid) locationTab = null;
+    }
+
     if (locationTab) {
       await locationTab.click();
       await sleep(500);
@@ -293,9 +306,9 @@ async function searchByPostalCode(page, postalCode, countryCode) {
     }
 
     // Click search button
+    // Try standard CSS selectors first
     const searchBtnSelectors = [
       'button[type="submit"]',
-      'button:has-text("Search")',
       'input[type="submit"]',
       '.search-button',
       '#search-btn',
@@ -305,6 +318,17 @@ async function searchByPostalCode(page, postalCode, countryCode) {
     for (const selector of searchBtnSelectors) {
       searchBtn = await page.$(selector);
       if (searchBtn) break;
+    }
+
+    // If not found, search for button containing "Search" text
+    if (!searchBtn) {
+      searchBtn = await page.evaluateHandle(() => {
+        const elements = Array.from(document.querySelectorAll('button, input[type="button"], a.btn, .btn'));
+        return elements.find(el => el.textContent?.toLowerCase().includes('search'));
+      });
+      // Check if the handle is valid
+      const isValid = await searchBtn.evaluate(el => !!el).catch(() => false);
+      if (!isValid) searchBtn = null;
     }
 
     if (searchBtn) {
