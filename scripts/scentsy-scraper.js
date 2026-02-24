@@ -224,77 +224,53 @@ async function searchByPostalCode(page, postalCode, countryCode) {
   console.log(`  Searching for postal code: ${postalCode} (${countryCode})...`);
 
   try {
-    // Step 1: Click the "Search by location" radio button to show the postal code form
-    const locationRadio = await page.$('#search-by-location, [data-systestid="radio-search-by-location"]');
-    if (locationRadio) {
-      await locationRadio.click();
-      await sleep(500);
-    } else {
-      console.log('    Could not find location radio button');
+    // Step 1: Wait for the page locator to become visible (Knockout.js initialization)
+    try {
+      await page.waitForSelector('#page-locator:not([style*="display: none"])', { timeout: 5000 });
+    } catch (e) {
+      // Try to wait for the radio button instead
+      await page.waitForSelector('#search-by-location', { timeout: 5000 });
+    }
+    await sleep(500);
+
+    // Step 2: Click the "Search by location" radio button to show the postal code form
+    // Use page.click() with the selector directly for more reliable clicking
+    try {
+      await page.click('#search-by-location');
+      await sleep(800); // Wait for Knockout to show the location form
+    } catch (e) {
+      console.log('    Could not click location radio button:', e.message);
     }
 
-    // Step 2: Find and fill the postal code field
-    // Use the specific Scentsy selector first
-    let postalInput = await page.$('#by-location-postal-code, [data-systestid="text-by-location-postal-code"]');
-
-    if (!postalInput) {
-      // Fallback to generic selectors
-      const postalCodeSelectors = [
-        'input[name="postalCode"]',
-        'input[id*="postal"]',
-        'input[id*="zip"]',
-      ];
-
-      for (const selector of postalCodeSelectors) {
-        postalInput = await page.$(selector);
-        if (postalInput) break;
-      }
-    }
-
-    if (!postalInput) {
-      console.log('    Could not find postal code input field');
+    // Step 3: Wait for the postal code input to be visible
+    try {
+      await page.waitForSelector('#by-location-postal-code', { visible: true, timeout: 5000 });
+    } catch (e) {
+      console.log('    Postal code field not visible');
       return [];
     }
 
-    // Clear and fill postal code
-    await postalInput.click({ clickCount: 3 });
-    await postalInput.type(postalCode, { delay: 50 });
+    // Step 4: Fill the postal code field
+    await page.click('#by-location-postal-code');
+    await page.type('#by-location-postal-code', postalCode, { delay: 50 });
 
-    // Step 3: Select country from dropdown (uses numeric value IDs)
+    // Step 5: Select country from dropdown (uses numeric value IDs)
     const countryValue = COUNTRY_DROPDOWN_MAP[countryCode];
     if (countryValue) {
-      // Use specific Scentsy selector
-      const countrySelect = await page.$('#by-location-country, select[name="consultantCountryId"]');
-      if (countrySelect) {
-        await page.select('#by-location-country, select[name="consultantCountryId"]', countryValue);
+      try {
+        await page.select('#by-location-country', countryValue);
         await sleep(300);
+      } catch (e) {
+        console.log('    Could not select country:', e.message);
       }
     }
 
-    // Step 4: Click search button (use specific Scentsy selector)
-    let searchBtn = await page.$('[data-systestid="btn-by-location-search"]');
-
-    if (!searchBtn) {
-      // Fallback: find submit button in the visible form
-      searchBtn = await page.evaluateHandle(() => {
-        // Find the form that's visible (by-location form)
-        const forms = Array.from(document.querySelectorAll('form'));
-        for (const form of forms) {
-          if (form.style.display !== 'none' && form.action?.includes('search-by-address')) {
-            return form.querySelector('button[type="submit"]');
-          }
-        }
-        return null;
-      });
-      const isValid = await searchBtn.evaluate(el => !!el).catch(() => false);
-      if (!isValid) searchBtn = null;
-    }
-
-    if (searchBtn) {
-      await searchBtn.click();
-    } else {
-      // Try pressing Enter in the postal code field
-      await postalInput.press('Enter');
+    // Step 6: Click search button
+    try {
+      await page.click('[data-systestid="btn-by-location-search"]');
+    } catch (e) {
+      // Fallback: try pressing Enter
+      await page.keyboard.press('Enter');
     }
 
     // Wait for results to load
