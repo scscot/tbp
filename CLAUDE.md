@@ -667,6 +667,18 @@ The email campaign system consists of multiple parallel campaigns targeting diff
 - **Template Variables**: `first_name`, `tracked_cta_url`, `unsubscribe_url`
 - **Test Endpoint**: `testPaparazziEmail` - HTTP endpoint for spam monitoring workflow
 
+### Pruvit Campaign (Mailgun API - Automated)
+- **Function**: `sendHourlyPruvitCampaign` in `functions/email-campaign-pruvit.js`
+- **Tags**: `pruvit_campaign`, `tracked`
+- **Schedule**: 11:30am, 2:30pm, 5:30pm, 8:30pm PT (4 runs/day)
+- **Data Source**: Firestore `pruvit_contacts` collection (scraped from Pruvit referral pages)
+- **Control Variable**: PRUVIT_CAMPAIGN_ENABLED
+- **Batch Size**: Dynamic via Firestore `config/emailCampaign.batchSizePruvit`
+- **Subject**: V9/V10 A/B test with 4-way rotation (`pruvit_v9a`, `pruvit_v9b`, `pruvit_v10a`, `pruvit_v10b`)
+- **Query**: `sent == false && email != null`, ordered by randomIndex
+- **Template Variables**: `first_name`, `tracked_cta_url`, `unsubscribe_url`
+- **Language Selection**: Based on country field (EN default, ES for Spain/Mexico/etc., DE for Germany/Austria/etc.)
+
 - **Two-Script Architecture** (Feb 2026):
   - `scripts/fsr-id-harvester.js` - Fast ID harvester (no CAPTCHA, 12x daily, 50 pages/run)
   - `scripts/fsr-scraper.js` - Contact scraper with 2Captcha reCAPTCHA solver (4x daily, 75/run)
@@ -681,6 +693,7 @@ The email campaign system consists of multiple parallel campaigns targeting diff
   | BFH (`batchSizeBfh`) | 10 | 4 | 40 | 776 | **Primary focus** |
   | FSR (`batchSizeFsr`) | 5 | 4 | 20 | 17 | New (Feb 19) |
   | Paparazzi (`batchSizePaparazzi`) | TBD | 4 | TBD | TBD | New (Feb 23) |
+  | Pruvit (`batchSizePruvit`) | TBD | 4 | TBD | 5 | New (Feb 24) |
   | Contacts (`batchSizeContacts`) | 0 | - | - | 826 (paused) | Complete |
   | **Total** | - | 20 | **TBD** | - | - |
 
@@ -1041,6 +1054,91 @@ const PRIORITY_STATES = [
 | `fsr-id-harvester.yml` | Every 2 hours (12x daily) | Harvest user IDs, 50 pages/run |
 | `fsr-scraper.yml` | 4x daily | Scrape contacts from queue, 75/run |
 
+### Pruvit Data Pipeline
+
+Discovers Pruvit referral codes from the web and scrapes contact information from referral pages.
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│  Stage 1: URL Discovery                                             │
+│  scripts/pruvit-url-discovery.js                                    │
+│  Sources: Common Crawl + Wayback Machine + SerpAPI + Seed File     │
+│  Schedule: Every 6 hours via GitHub Actions                         │
+│  Extracts referral codes from: pruvit.com/en-us?ref={CODE}         │
+│  Output: pruvit_discovered_refs collection                          │
+├─────────────────────────────────────────────────────────────────────┤
+│  Stage 2: Contact Scraping                                          │
+│  scripts/pruvit-scraper.js                                          │
+│  Puppeteer + Stealth plugin for JavaScript modal extraction         │
+│  Schedule: Every 4 hours via GitHub Actions                         │
+│  Clicks referrer name → extracts name, email, phone from modal     │
+│  Detects invalid codes ("Who told you about Prüvit?" placeholder)  │
+│  Infers country from phone prefix (+1=US, +49=DE, etc.)            │
+│  Output: pruvit_contacts collection                                 │
+└─────────────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+              Pruvit Campaign (email-campaign-pruvit.js)
+              Schedule: 11:30am, 2:30pm, 5:30pm, 8:30pm PT
+              V9/V10 A/B test with language selection by country
+```
+
+**SerpAPI Search Strategy**: Google doesn't index query parameters (`?ref=xyz`), so the discovery script searches for referral links shared on *external* sites using queries like:
+- `"pruvit.com" "ref=" -site:pruvit.com` (links shared on blogs, forums)
+- `pruvit keto promoter referral link` (promoters sharing links)
+- `pruvit distributor "my link"` (distributors sharing)
+
+### Pruvit Collection Schemas
+
+**`pruvit_discovered_refs`** - Discovered referral codes
+```javascript
+{
+  referralCode: string,      // e.g., 'karen'
+  discoveredAt: timestamp,
+  source: string,            // 'common_crawl' | 'wayback' | 'serpapi' | 'seed'
+  scraped: boolean,
+  scrapedAt: timestamp | null
+}
+```
+
+**`pruvit_contacts`** - Scraped contact information
+```javascript
+{
+  firstName: string,
+  lastName: string,
+  fullName: string,
+  email: string | null,
+  phone: string | null,
+  country: string | null,    // Inferred from phone prefix
+  referralCode: string,
+  profileUrl: string,
+  company: 'Pruvit',
+  source: 'pruvit_referral',
+  sent: boolean,
+  sentTimestamp: timestamp | null,
+  status: string,            // 'pending' | 'sent' | 'failed' | 'no_email'
+  subjectTag: string | null,
+  randomIndex: number,
+  clickedAt: timestamp | null,
+  createdAt: timestamp,
+  updatedAt: timestamp
+}
+```
+
+### Pruvit Scripts
+
+| Script | Purpose | Usage |
+|--------|---------|-------|
+| `pruvit-url-discovery.js` | Discover referral codes from web | `--discover`, `--seed`, `--stats`, `--reset` |
+| `pruvit-scraper.js` | Scrape contacts from referral pages | `--scrape`, `--test --code=X`, `--stats`, `--reset` |
+
+### Pruvit GitHub Actions Workflows
+
+| Workflow | Schedule | Purpose |
+|----------|----------|---------|
+| `pruvit-url-discovery.yml` | Every 6 hours | Discover referral codes (unlimited) |
+| `pruvit-scraper.yml` | Every 4 hours | Scrape contacts, 50/run |
+
 ### Purchased Leads Data Pipeline
 
 The `purchased_leads` collection consolidates contacts from multiple sources for email campaigns. This collection uses the existing campaign infrastructure (`sendHourlyPurchasedLeadsCampaign`).
@@ -1203,6 +1301,7 @@ Corporate email domains are excluded from all contact collections using a **blac
 - `functions/email-campaign-contacts.js` - Contacts Campaign (direct_sales_contacts)
 - `functions/email-campaign-bfh.js` - BFH Campaign (bfh_contacts)
 - `functions/email-campaign-paparazzi.js` - Paparazzi Campaign + testPaparazziEmail spam test endpoint
+- `functions/email-campaign-pruvit.js` - Pruvit Campaign (pruvit_contacts)
 - `functions/email-stats-functions.js` - Email campaign stats API (Firestore + GA4)
 - `functions/analytics-dashboard-functions.js` - TBP analytics dashboard API (GA4 + iOS + Android + Firestore)
 - `functions/email-smtp-sender.js` - SMTP transporter with connection pooling
@@ -1220,6 +1319,8 @@ Corporate email domains are excluded from all contact collections using a **blac
 - `scripts/bfh-profile-enricher.js` - BFH profile enrichment (bio, reviews, language detection)
 - `scripts/bfh-personalization-generator.js` - Claude AI personalization with two-pass validation
 - `scripts/mlm500-scraper.js` - MLM500 rankings scraper with BFH migration
+- `scripts/pruvit-url-discovery.js` - Pruvit referral code discovery (Common Crawl + Wayback + SerpAPI)
+- `scripts/pruvit-scraper.js` - Pruvit contact scraper (Puppeteer modal extraction)
 
 ### Utility Scripts (functions/)
 - `count-todays-emails.js` - Query Firestore for daily email send counts
@@ -1522,6 +1623,7 @@ Main Campaign reduced due to underperformance. Focus shifted to BFH, Purchased, 
 | BFH Campaign | **Primary** | 10am, 1pm, 4pm, 7pm PT · 10/batch · 776 contacts |
 | Paparazzi Campaign | Active | 10:30am, 1:30pm, 4:30pm, 7:30pm PT · uses `paparazzi_contacts` |
 | FSR Campaign | Active | 10am, 1pm, 4pm, 7pm PT · 5/batch · 17 contacts (new Feb 19) |
+| Pruvit Campaign | Active | 11:30am, 2:30pm, 5:30pm, 8:30pm PT · uses `pruvit_contacts` (new Feb 24) |
 | Contacts Campaign | Complete | 826 contacts (cleaned Feb 15) |
 | Email Sending | Mailgun API | Via Mailgun, news.teambuildpro.com |
 | Email A/B Testing | Active | Safe subjects only (spam-trigger removed Feb 23) |
@@ -1540,6 +1642,9 @@ Main Campaign reduced due to underperformance. Focus shifted to BFH, Purchased, 
 | FSR ID Harvester | Active | Every 2h (12x daily), 50 pages/run, 6,800 combinations |
 | FSR Contact Scraper | Active | 4x daily, 75/run, consumes fsr_user_ids queue |
 | FSR Collection | 17+ contacts | Two-script architecture (Feb 20) |
+| Pruvit Discovery | Active | Every 6h, Common Crawl + Wayback + SerpAPI + seed file |
+| Pruvit Scraper | Active | Every 4h, 50/run, Puppeteer modal extraction |
+| Pruvit Collection | 5 contacts | 5 with emails (new Feb 24) |
 | Spam Monitor | Active | Daily 6am PT, Gmail API check, auto-disable on spam |
 | PreIntake.ai | Autonomous | See `preintake/CLAUDE.md` for details |
 

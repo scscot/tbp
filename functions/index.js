@@ -176,6 +176,13 @@ const {
 } = require('./email-campaign-paparazzi');
 
 // ==============================
+// Import Email Campaign for Pruvit Contacts
+// ==============================
+const {
+  sendHourlyPruvitCampaign,
+} = require('./email-campaign-pruvit');
+
+// ==============================
 // Import Email Tracking Functions (SMTP Migration)
 // ==============================
 const {
@@ -444,6 +451,9 @@ module.exports = {
   // Email campaign for Paparazzi contacts (scheduled)
   sendHourlyPaparazziCampaign,
   testPaparazziEmail,
+
+  // Email campaign for Pruvit contacts (scheduled)
+  sendHourlyPruvitCampaign,
 
   // Email tracking endpoints (SMTP migration)
   trackEmailOpen,
