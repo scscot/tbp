@@ -2,9 +2,9 @@ name: Domain Warming - Update TBP Batch Sizes
 
 on:
   schedule:
-    # Run every Monday at 6am PT (2pm UTC during PST, 1pm UTC during PDT)
-    # Using 2pm UTC covers both scenarios
-    - cron: '0 14 * * 1'
+    # Run daily at 6am PT (2pm UTC during PST, 1pm UTC during PDT)
+    # Daily recalculation keeps batch sizes aligned with current queue sizes
+    - cron: '0 14 * * *'
   workflow_dispatch:
     inputs:
       force_week:

@@ -11,7 +11,7 @@
   },
   "tbp": {
     "startDate": "2026-02-22",
-    "notes": "Dynamic batch sizing: calculates based on unsent counts and warming multiplier. Main campaign disabled.",
+    "notes": "Dynamic batch sizing runs daily at 6am PT. Calculates based on unsent counts and warming multiplier. Main campaign disabled.",
     "targetCompletionDays": 30,
     "runsPerDay": 4,
     "minBatchSize": 1,
