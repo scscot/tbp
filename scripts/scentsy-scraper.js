@@ -217,6 +217,23 @@ async function navigateToSearchPage(page) {
     // No cookie dialog, continue
   }
 
+  // Wait for Knockout.js to initialize and make the page-locator visible
+  // Knockout.js loads with 'defer' so we need to wait for it to process bindings
+  try {
+    await page.waitForFunction(() => {
+      // Check if Knockout has initialized (ko global exists)
+      if (typeof window.ko === 'undefined') return false;
+      // Check if page-locator is visible (Knockout sets style.display via binding)
+      const pageLocator = document.getElementById('page-locator');
+      if (!pageLocator) return false;
+      const style = window.getComputedStyle(pageLocator);
+      return style.display !== 'none';
+    }, { timeout: 10000 });
+    console.log('  Knockout.js initialized');
+  } catch (e) {
+    console.log('  Warning: Knockout.js may not have fully initialized');
+  }
+
   return true;
 }
 
@@ -224,54 +241,69 @@ async function searchByPostalCode(page, postalCode, countryCode) {
   console.log(`  Searching for postal code: ${postalCode} (${countryCode})...`);
 
   try {
-    // Step 1: Wait for the page locator to become visible (Knockout.js initialization)
-    try {
-      await page.waitForSelector('#page-locator:not([style*="display: none"])', { timeout: 5000 });
-    } catch (e) {
-      // Try to wait for the radio button instead
-      await page.waitForSelector('#search-by-location', { timeout: 5000 });
-    }
-    await sleep(500);
+    // Step 1: Wait for the radio button to exist and be clickable
+    await page.waitForSelector('#search-by-location', { timeout: 5000 });
+    await sleep(300);
 
-    // Step 2: Click the "Search by location" radio button to show the postal code form
-    // Use page.click() with the selector directly for more reliable clicking
-    try {
-      await page.click('#search-by-location');
-      await sleep(800); // Wait for Knockout to show the location form
-    } catch (e) {
-      console.log('    Could not click location radio button:', e.message);
-    }
+    // Step 2: Click the "Search by location" radio button using JavaScript execution
+    // This is more reliable than page.click() for Knockout-bound elements
+    await page.evaluate(() => {
+      const radio = document.getElementById('search-by-location');
+      if (radio) {
+        radio.click();
+        // Also trigger the change event for Knockout
+        radio.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+    });
+    console.log('    Clicked location radio button');
+    await sleep(1000); // Wait for Knockout to show the location form
 
-    // Step 3: Wait for the postal code input to be visible
+    // Step 3: Wait for the postal code form to become visible (check computed style)
     try {
-      await page.waitForSelector('#by-location-postal-code', { visible: true, timeout: 5000 });
+      await page.waitForFunction(() => {
+        const input = document.getElementById('by-location-postal-code');
+        if (!input) return false;
+        const style = window.getComputedStyle(input);
+        return style.display !== 'none' && style.visibility !== 'hidden';
+      }, { timeout: 5000 });
     } catch (e) {
-      console.log('    Postal code field not visible');
+      console.log('    Postal code field not visible after clicking radio');
       return [];
     }
 
-    // Step 4: Fill the postal code field
-    await page.click('#by-location-postal-code');
-    await page.type('#by-location-postal-code', postalCode, { delay: 50 });
+    // Step 4: Fill the postal code field using JavaScript
+    await page.evaluate((code) => {
+      const input = document.getElementById('by-location-postal-code');
+      if (input) {
+        input.value = code;
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+        input.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+    }, postalCode);
+    console.log(`    Entered postal code: ${postalCode}`);
 
     // Step 5: Select country from dropdown (uses numeric value IDs)
     const countryValue = COUNTRY_DROPDOWN_MAP[countryCode];
     if (countryValue) {
-      try {
-        await page.select('#by-location-country', countryValue);
-        await sleep(300);
-      } catch (e) {
-        console.log('    Could not select country:', e.message);
-      }
+      await page.evaluate((value) => {
+        const select = document.getElementById('by-location-country');
+        if (select) {
+          select.value = value;
+          select.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+      }, countryValue);
+      console.log(`    Selected country: ${countryCode} (value: ${countryValue})`);
+      await sleep(300);
     }
 
-    // Step 6: Click search button
-    try {
-      await page.click('[data-systestid="btn-by-location-search"]');
-    } catch (e) {
-      // Fallback: try pressing Enter
-      await page.keyboard.press('Enter');
-    }
+    // Step 6: Click search button using JavaScript
+    await page.evaluate(() => {
+      const btn = document.querySelector('[data-systestid="btn-by-location-search"]');
+      if (btn) {
+        btn.click();
+      }
+    });
+    console.log('    Clicked search button');
 
     // Wait for results to load
     await sleep(3000);
@@ -279,9 +311,10 @@ async function searchByPostalCode(page, postalCode, countryCode) {
     // Wait for consultant cards to appear
     // Scentsy uses Knockout.js, so we need to wait for the results to be populated
     try {
-      await page.waitForSelector('[data-systestid="consultant-card"], [data-systestid="consultant-results"]', {
-        timeout: 10000,
-      });
+      await page.waitForFunction(() => {
+        const cards = document.querySelectorAll('[data-systestid="consultant-card"]');
+        return cards.length > 0;
+      }, { timeout: 10000 });
       // Give Knockout a moment to render the results
       await sleep(1000);
     } catch (e) {
