@@ -703,34 +703,47 @@ The email campaign system consists of multiple parallel campaigns targeting diff
   - `scripts/fsr-id-harvester.js` - Fast ID harvester (no CAPTCHA, 12x daily, 50 pages/run)
   - `scripts/fsr-scraper.js` - Contact scraper with 2Captcha reCAPTCHA solver (4x daily, 75/run)
 
-### Batch Size Configuration
-- **Firestore Config**: `config/emailCampaign` document stores batch sizes per campaign
-- **Current Settings** (updated Feb 19, 2026 - FSR campaign added):
-  | Campaign | Batch Size | Runs/Day | Emails/Day | Collection Size | Status |
-  |----------|------------|----------|------------|-----------------|--------|
-  | Main (`batchSize`) | 2 | 4 | 8 | ~17,900 | Reduced (underperforming) |
-  | Purchased (`batchSizePurchased`) | 15 | 4 | 60 | 1,402 | **Primary focus** |
-  | BFH (`batchSizeBfh`) | 10 | 4 | 40 | 776 | **Primary focus** |
-  | FSR (`batchSizeFsr`) | 5 | 4 | 20 | 17 | New (Feb 19) |
-  | Paparazzi (`batchSizePaparazzi`) | TBD | 4 | TBD | TBD | New (Feb 23) |
-  | Pruvit (`batchSizePruvit`) | TBD | 4 | TBD | 5 | New (Feb 24) |
-  | Scentsy (`scentsyBatchSize`) | 0 | 4 | 0 | TBD | New (Feb 24) |
-  | Contacts (`batchSizeContacts`) | 0 | - | - | 826 (paused) | Complete |
-  | **Total** | - | 20 | **TBD** | - | - |
-
-### Automated Domain Warming System
+### Dynamic Batch Size System (Feb 24, 2026)
+- **Firestore Config**: `config/emailCampaign` document stores calculated batch sizes per campaign
 - **Workflow**: `.github/workflows/domain-warming-update.yml`
 - **Config**: `.github/warming-config.json`
-- **Schedule**: Runs every Monday at 6am PT
-- **Mechanism**: GitHub Actions calculates current week, looks up batch size from config, updates Firestore
-- **PreIntake Warming Schedule** (reset 2026-02-09, 4 runs/day Mon-Fri):
+- **Schedule**: Runs **daily at 6am PT** to keep batch sizes aligned with current queue sizes
+- **Formula**: `batchSize = ceil(unsentCount / (targetDays × runsPerDay)) × warmingMultiplier`
+- **Parameters**:
+  - `targetCompletionDays`: 30 (aim to complete queue in 30 days)
+  - `runsPerDay`: 4 (campaigns run 4x daily)
+  - `minBatchSize`: 1, `maxBatchSize`: 100
+- **4-Week Warming Schedule** (TBP campaigns):
+  | Week | Multiplier | Effect |
+  |------|------------|--------|
+  | 1 | 40% | Conservative start |
+  | 2 | 60% | Ramping up |
+  | 3 | 80% | Near full capacity |
+  | 4+ | 100% | Full calculated rate |
+- **Campaign Configuration** (in `warming-config.json`):
+  | Campaign | Collection | Firestore Field | Status |
+  |----------|------------|-----------------|--------|
+  | Main | `emailCampaigns/master/contacts` | `batchSize` | Disabled |
+  | Purchased | `purchased_leads` | `batchSizePurchased` | Active |
+  | BFH | `bfh_contacts` | `batchSizeBfh` | Active |
+  | Zinzino | `zinzino_contacts` | `batchSizeZinzino` | Active |
+  | FSR | `fsr_contacts` | `batchSizeFsr` | Active |
+  | Paparazzi | `paparazzi_contacts` | `batchSizePaparazzi` | Active |
+  | Pruvit | `pruvit_contacts` | `batchSizePruvit` | Active |
+  | Scentsy | `scentsy_contacts` | `scentsyBatchSize` | Active |
+- **Benefits**:
+  - Self-balancing: campaigns with more contacts automatically get higher batch sizes
+  - Auto-adjusts as scrapers add contacts or queues deplete
+  - No manual batch size maintenance needed
+  - Empty queues automatically get batch size 0
+- **Manual Override**: `workflow_dispatch` with `force_week` or `dry_run` inputs
+- **PreIntake Warming Schedule** (static, reset 2026-02-09, 4 runs/day Mon-Fri):
   | Week | Batch Size | Emails/Day |
   |------|------------|------------|
   | 1 | 100 | 400 |
   | 2 | 150 | 600 |
   | 3 | 225 | 900 |
   | 4+ | 300 | 1,200 |
-- **Manual Override**: `workflow_dispatch` with `force_week` input to test specific week
 
 ### Campaign Tracking
 - **Sent/Failed/Remaining**: Tracked in Firestore (sent, status fields per collection)
@@ -1625,6 +1638,22 @@ Corporate email domains are excluded from all contact collections using a **blac
   - Batch size controlled via `config/emailCampaign.scentsyBatchSize`
 - ✅ **Scentsy Firestore Indexes Added**: 6 composite indexes for `scentsy_zipcodes` and `scentsy_contacts` collections
 
+**Dynamic Batch Sizing System (Feb 24, 2026)**
+- ✅ **Dynamic Batch Sizing Implemented**: Replaced hardcoded batch sizes with formula-based calculation
+  - Formula: `batchSize = ceil(unsentCount / (targetDays × runsPerDay)) × warmingMultiplier`
+  - Parameters: 30-day completion target, 4 runs/day, 1-100 batch range
+- ✅ **4-Week Warming Schedule**: Week 1=40%, Week 2=60%, Week 3=80%, Week 4+=100%
+  - Conservative ramp-up appropriate for domain with 3+ months sending history
+- ✅ **Daily Schedule Change**: Workflow now runs daily at 6am PT instead of weekly
+  - Better responsiveness to changing queue sizes from active scrapers
+- ✅ **Declarative Campaign Config**: `.github/warming-config.json` defines campaigns with:
+  - Collection paths, Firestore field names, enabled/disabled status
+  - Centralized control of all 8 TBP campaigns
+- ✅ **Firestore Aggregation Queries**: Efficient `.count().get()` for unsent contact counts
+- ✅ **Main Campaign Disabled**: Underperforming; batch size set to 0 via `enabled: false`
+- ✅ **All Scraper-fed Campaigns Active**: Purchased, BFH, Zinzino, FSR, Paparazzi, Pruvit, Scentsy
+  - Batch sizes auto-adjust as scrapers add contacts
+
 **FSR Campaign & Subscription Updates (Feb 19, 2026)**
 - ✅ **FSR Email Campaign Created**: New campaign for FindSalesRep contacts
   - File: `functions/email-campaign-fsr.js`
@@ -1641,20 +1670,22 @@ Corporate email domains are excluded from all contact collections using a **blac
   - Reminders unnecessary and potentially confusing for auto-renewing subscriptions
   - Users don't need to take action - billing happens automatically
 
-### Current System Status (Feb 23, 2026)
+### Current System Status (Feb 24, 2026)
 
-**PROJECT STATUS: FOCUSED CAMPAIGNS (Feb 19, 2026)**
-Main Campaign reduced due to underperformance. Focus shifted to BFH, Purchased, FSR, and Paparazzi campaigns for Team Build Pro promotion.
+**PROJECT STATUS: DYNAMIC BATCH SIZING LIVE**
+Main Campaign disabled. All scraper-fed campaigns now use dynamic batch sizing that auto-adjusts based on queue sizes. 4-week warming schedule (40%→60%→80%→100%).
 
 | Component | Status | Notes |
 |-----------|--------|-------|
-| Main Campaign | Reduced | 8am, 11am, 2pm, 5pm PT · **2/batch** · underperforming click-through |
-| Purchased Campaign | **Primary** | 9:30am, 12:30pm, 3:30pm, 6:30pm PT · 15/batch · 1,402 contacts |
-| BFH Campaign | **Primary** | 10am, 1pm, 4pm, 7pm PT · 10/batch · 776 contacts |
-| Paparazzi Campaign | Active | 10:30am, 1:30pm, 4:30pm, 7:30pm PT · uses `paparazzi_contacts` |
-| FSR Campaign | Active | 10am, 1pm, 4pm, 7pm PT · 5/batch · 17 contacts (new Feb 19) |
-| Pruvit Campaign | Active | 11:30am, 2:30pm, 5:30pm, 8:30pm PT · uses `pruvit_contacts` (new Feb 24) |
-| Scentsy Campaign | Active | 11:30am, 2:30pm, 5:30pm, 8:30pm PT · uses `scentsy_contacts` (new Feb 24) |
+| Main Campaign | Disabled | Batch size 0 (underperforming) |
+| Purchased Campaign | **Active** | Dynamic batch sizing · `purchased_leads` |
+| BFH Campaign | **Active** | Dynamic batch sizing · `bfh_contacts` |
+| Zinzino Campaign | Active | Dynamic batch sizing · `zinzino_contacts` |
+| Paparazzi Campaign | Active | Dynamic batch sizing · `paparazzi_contacts` |
+| FSR Campaign | Active | Dynamic batch sizing · `fsr_contacts` |
+| Pruvit Campaign | Active | Dynamic batch sizing · `pruvit_contacts` |
+| Scentsy Campaign | Active | Dynamic batch sizing · `scentsy_contacts` |
+| Domain Warming | **Daily** | 6am PT · 4-week schedule (40%→60%→80%→100%) |
 | Contacts Campaign | Complete | 826 contacts (cleaned Feb 15) |
 | Email Sending | Mailgun API | Via Mailgun, news.teambuildpro.com |
 | Email A/B Testing | Active | Safe subjects only (spam-trigger removed Feb 23) |
@@ -1685,6 +1716,7 @@ Main Campaign reduced due to underperformance. Focus shifted to BFH, Purchased, 
 - [ ] App store downloads (iOS/Android tabs)
 - [ ] Google Search Console for blog indexing
 - [ ] Spam monitor workflow runs (GitHub Actions)
+- [ ] Domain warming workflow runs (GitHub Actions → batch size updates)
 
 ---
 
