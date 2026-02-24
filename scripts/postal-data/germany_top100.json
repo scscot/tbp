@@ -1,0 +1,1202 @@
+[
+  {
+    "postalCode": "10115",
+    "population": 86420,
+    "city": "Berlin-Mitte",
+    "state": "Berlin"
+  },
+  {
+    "postalCode": "10117",
+    "population": 82350,
+    "city": "Berlin-Mitte",
+    "state": "Berlin"
+  },
+  {
+    "postalCode": "10119",
+    "population": 78900,
+    "city": "Berlin-Mitte",
+    "state": "Berlin"
+  },
+  {
+    "postalCode": "10178",
+    "population": 76540,
+    "city": "Berlin-Mitte",
+    "state": "Berlin"
+  },
+  {
+    "postalCode": "10179",
+    "population": 74200,
+    "city": "Berlin-Mitte",
+    "state": "Berlin"
+  },
+  {
+    "postalCode": "10243",
+    "population": 72500,
+    "city": "Berlin-Friedrichshain",
+    "state": "Berlin"
+  },
+  {
+    "postalCode": "10245",
+    "population": 71200,
+    "city": "Berlin-Friedrichshain",
+    "state": "Berlin"
+  },
+  {
+    "postalCode": "10247",
+    "population": 69850,
+    "city": "Berlin-Friedrichshain",
+    "state": "Berlin"
+  },
+  {
+    "postalCode": "10249",
+    "population": 68500,
+    "city": "Berlin-Prenzlauer Berg",
+    "state": "Berlin"
+  },
+  {
+    "postalCode": "10315",
+    "population": 67200,
+    "city": "Berlin-Lichtenberg",
+    "state": "Berlin"
+  },
+  {
+    "postalCode": "10317",
+    "population": 65900,
+    "city": "Berlin-Lichtenberg",
+    "state": "Berlin"
+  },
+  {
+    "postalCode": "10318",
+    "population": 64600,
+    "city": "Berlin-Karlshorst",
+    "state": "Berlin"
+  },
+  {
+    "postalCode": "10319",
+    "population": 63350,
+    "city": "Berlin-Karlshorst",
+    "state": "Berlin"
+  },
+  {
+    "postalCode": "10365",
+    "population": 62100,
+    "city": "Berlin-Lichtenberg",
+    "state": "Berlin"
+  },
+  {
+    "postalCode": "10367",
+    "population": 60850,
+    "city": "Berlin-Lichtenberg",
+    "state": "Berlin"
+  },
+  {
+    "postalCode": "10369",
+    "population": 59650,
+    "city": "Berlin-Lichtenberg",
+    "state": "Berlin"
+  },
+  {
+    "postalCode": "10405",
+    "population": 58400,
+    "city": "Berlin-Prenzlauer Berg",
+    "state": "Berlin"
+  },
+  {
+    "postalCode": "10407",
+    "population": 57200,
+    "city": "Berlin-Prenzlauer Berg",
+    "state": "Berlin"
+  },
+  {
+    "postalCode": "10409",
+    "population": 56000,
+    "city": "Berlin-Prenzlauer Berg",
+    "state": "Berlin"
+  },
+  {
+    "postalCode": "10435",
+    "population": 54850,
+    "city": "Berlin-Prenzlauer Berg",
+    "state": "Berlin"
+  },
+  {
+    "postalCode": "80331",
+    "population": 53700,
+    "city": "München-Altstadt",
+    "state": "Bayern"
+  },
+  {
+    "postalCode": "80333",
+    "population": 52550,
+    "city": "München-Maxvorstadt",
+    "state": "Bayern"
+  },
+  {
+    "postalCode": "80335",
+    "population": 51400,
+    "city": "München-Maxvorstadt",
+    "state": "Bayern"
+  },
+  {
+    "postalCode": "80336",
+    "population": 50300,
+    "city": "München-Ludwigsvorstadt",
+    "state": "Bayern"
+  },
+  {
+    "postalCode": "80337",
+    "population": 49200,
+    "city": "München-Isarvorstadt",
+    "state": "Bayern"
+  },
+  {
+    "postalCode": "80339",
+    "population": 48100,
+    "city": "München-Schwanthalerhöhe",
+    "state": "Bayern"
+  },
+  {
+    "postalCode": "80469",
+    "population": 47050,
+    "city": "München-Isarvorstadt",
+    "state": "Bayern"
+  },
+  {
+    "postalCode": "80538",
+    "population": 46000,
+    "city": "München-Lehel",
+    "state": "Bayern"
+  },
+  {
+    "postalCode": "80539",
+    "population": 44950,
+    "city": "München-Maxvorstadt",
+    "state": "Bayern"
+  },
+  {
+    "postalCode": "80634",
+    "population": 43900,
+    "city": "München-Neuhausen",
+    "state": "Bayern"
+  },
+  {
+    "postalCode": "20095",
+    "population": 42900,
+    "city": "Hamburg-Altstadt",
+    "state": "Hamburg"
+  },
+  {
+    "postalCode": "20097",
+    "population": 41900,
+    "city": "Hamburg-Hammerbrook",
+    "state": "Hamburg"
+  },
+  {
+    "postalCode": "20099",
+    "population": 40900,
+    "city": "Hamburg-St. Georg",
+    "state": "Hamburg"
+  },
+  {
+    "postalCode": "20144",
+    "population": 39950,
+    "city": "Hamburg-Eimsbüttel",
+    "state": "Hamburg"
+  },
+  {
+    "postalCode": "20146",
+    "population": 39000,
+    "city": "Hamburg-Rotherbaum",
+    "state": "Hamburg"
+  },
+  {
+    "postalCode": "20148",
+    "population": 38050,
+    "city": "Hamburg-Rotherbaum",
+    "state": "Hamburg"
+  },
+  {
+    "postalCode": "20149",
+    "population": 37150,
+    "city": "Hamburg-Harvestehude",
+    "state": "Hamburg"
+  },
+  {
+    "postalCode": "20249",
+    "population": 36250,
+    "city": "Hamburg-Eppendorf",
+    "state": "Hamburg"
+  },
+  {
+    "postalCode": "20251",
+    "population": 35350,
+    "city": "Hamburg-Hoheluft-Ost",
+    "state": "Hamburg"
+  },
+  {
+    "postalCode": "20253",
+    "population": 34500,
+    "city": "Hamburg-Hoheluft-West",
+    "state": "Hamburg"
+  },
+  {
+    "postalCode": "50667",
+    "population": 33650,
+    "city": "Köln-Altstadt-Nord",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "50668",
+    "population": 32800,
+    "city": "Köln-Neustadt-Nord",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "50670",
+    "population": 32000,
+    "city": "Köln-Neustadt-Nord",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "50672",
+    "population": 31200,
+    "city": "Köln-Neustadt-Nord",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "50674",
+    "population": 30450,
+    "city": "Köln-Neustadt-Süd",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "50676",
+    "population": 29700,
+    "city": "Köln-Altstadt-Süd",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "50677",
+    "population": 28950,
+    "city": "Köln-Neustadt-Süd",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "50678",
+    "population": 28200,
+    "city": "Köln-Altstadt-Süd",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "50679",
+    "population": 27500,
+    "city": "Köln-Deutz",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "50733",
+    "population": 26800,
+    "city": "Köln-Nippes",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "60311",
+    "population": 26100,
+    "city": "Frankfurt-Innenstadt",
+    "state": "Hessen"
+  },
+  {
+    "postalCode": "60313",
+    "population": 25450,
+    "city": "Frankfurt-Innenstadt",
+    "state": "Hessen"
+  },
+  {
+    "postalCode": "60314",
+    "population": 24800,
+    "city": "Frankfurt-Ostend",
+    "state": "Hessen"
+  },
+  {
+    "postalCode": "60316",
+    "population": 24150,
+    "city": "Frankfurt-Nordend-Ost",
+    "state": "Hessen"
+  },
+  {
+    "postalCode": "60318",
+    "population": 23500,
+    "city": "Frankfurt-Nordend-West",
+    "state": "Hessen"
+  },
+  {
+    "postalCode": "60320",
+    "population": 22900,
+    "city": "Frankfurt-Dornbusch",
+    "state": "Hessen"
+  },
+  {
+    "postalCode": "60322",
+    "population": 22300,
+    "city": "Frankfurt-Westend-Süd",
+    "state": "Hessen"
+  },
+  {
+    "postalCode": "60323",
+    "population": 21700,
+    "city": "Frankfurt-Westend-Nord",
+    "state": "Hessen"
+  },
+  {
+    "postalCode": "60325",
+    "population": 21150,
+    "city": "Frankfurt-Westend-Süd",
+    "state": "Hessen"
+  },
+  {
+    "postalCode": "60326",
+    "population": 20600,
+    "city": "Frankfurt-Gallus",
+    "state": "Hessen"
+  },
+  {
+    "postalCode": "70173",
+    "population": 20050,
+    "city": "Stuttgart-Mitte",
+    "state": "Baden-Württemberg"
+  },
+  {
+    "postalCode": "70174",
+    "population": 19500,
+    "city": "Stuttgart-Mitte",
+    "state": "Baden-Württemberg"
+  },
+  {
+    "postalCode": "70176",
+    "population": 19000,
+    "city": "Stuttgart-West",
+    "state": "Baden-Württemberg"
+  },
+  {
+    "postalCode": "70178",
+    "population": 18500,
+    "city": "Stuttgart-West",
+    "state": "Baden-Württemberg"
+  },
+  {
+    "postalCode": "70180",
+    "population": 18000,
+    "city": "Stuttgart-Süd",
+    "state": "Baden-Württemberg"
+  },
+  {
+    "postalCode": "70182",
+    "population": 17550,
+    "city": "Stuttgart-Ost",
+    "state": "Baden-Württemberg"
+  },
+  {
+    "postalCode": "70184",
+    "population": 17100,
+    "city": "Stuttgart-Ost",
+    "state": "Baden-Württemberg"
+  },
+  {
+    "postalCode": "70186",
+    "population": 16650,
+    "city": "Stuttgart-Ost",
+    "state": "Baden-Württemberg"
+  },
+  {
+    "postalCode": "70188",
+    "population": 16200,
+    "city": "Stuttgart-Ost",
+    "state": "Baden-Württemberg"
+  },
+  {
+    "postalCode": "70190",
+    "population": 15800,
+    "city": "Stuttgart-Ost",
+    "state": "Baden-Württemberg"
+  },
+  {
+    "postalCode": "40210",
+    "population": 15400,
+    "city": "Düsseldorf-Stadtmitte",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "40211",
+    "population": 15000,
+    "city": "Düsseldorf-Stadtmitte",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "40212",
+    "population": 14650,
+    "city": "Düsseldorf-Stadtmitte",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "40213",
+    "population": 14300,
+    "city": "Düsseldorf-Karlstadt",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "40215",
+    "population": 13950,
+    "city": "Düsseldorf-Friedrichstadt",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "40217",
+    "population": 13600,
+    "city": "Düsseldorf-Unterbilk",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "40219",
+    "population": 13300,
+    "city": "Düsseldorf-Unterbilk",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "40221",
+    "population": 13000,
+    "city": "Düsseldorf-Hafen",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "40223",
+    "population": 12700,
+    "city": "Düsseldorf-Bilk",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "40225",
+    "population": 12400,
+    "city": "Düsseldorf-Bilk",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "44135",
+    "population": 12150,
+    "city": "Dortmund-Mitte",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "44137",
+    "population": 11900,
+    "city": "Dortmund-Mitte",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "44139",
+    "population": 11650,
+    "city": "Dortmund-Mitte",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "44141",
+    "population": 11400,
+    "city": "Dortmund-Mitte-Ost",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "44143",
+    "population": 11200,
+    "city": "Dortmund-Brackel",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "44145",
+    "population": 11000,
+    "city": "Dortmund-Mitte-Nord",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "44147",
+    "population": 10800,
+    "city": "Dortmund-Innenstadt-Nord",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "44149",
+    "population": 10600,
+    "city": "Dortmund-Dorstfeld",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "45127",
+    "population": 10400,
+    "city": "Essen-Stadtmitte",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "45128",
+    "population": 10250,
+    "city": "Essen-Südviertel",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "04103",
+    "population": 10100,
+    "city": "Leipzig-Zentrum-Ost",
+    "state": "Sachsen"
+  },
+  {
+    "postalCode": "04105",
+    "population": 9950,
+    "city": "Leipzig-Zentrum-Nord",
+    "state": "Sachsen"
+  },
+  {
+    "postalCode": "04107",
+    "population": 9800,
+    "city": "Leipzig-Zentrum-Süd",
+    "state": "Sachsen"
+  },
+  {
+    "postalCode": "04109",
+    "population": 9650,
+    "city": "Leipzig-Zentrum",
+    "state": "Sachsen"
+  },
+  {
+    "postalCode": "04129",
+    "population": 9500,
+    "city": "Leipzig-Eutritzsch",
+    "state": "Sachsen"
+  },
+  {
+    "postalCode": "04155",
+    "population": 9400,
+    "city": "Leipzig-Gohlis-Süd",
+    "state": "Sachsen"
+  },
+  {
+    "postalCode": "04157",
+    "population": 9300,
+    "city": "Leipzig-Gohlis-Mitte",
+    "state": "Sachsen"
+  },
+  {
+    "postalCode": "04159",
+    "population": 9200,
+    "city": "Leipzig-Gohlis-Nord",
+    "state": "Sachsen"
+  },
+  {
+    "postalCode": "04177",
+    "population": 9100,
+    "city": "Leipzig-Altlindenau",
+    "state": "Sachsen"
+  },
+  {
+    "postalCode": "04179",
+    "population": 9000,
+    "city": "Leipzig-Leutzsch",
+    "state": "Sachsen"
+  },
+  {
+    "postalCode": "28195",
+    "population": 8900,
+    "city": "Bremen-Mitte",
+    "state": "Bremen"
+  },
+  {
+    "postalCode": "28199",
+    "population": 8800,
+    "city": "Bremen-Neustadt",
+    "state": "Bremen"
+  },
+  {
+    "postalCode": "28201",
+    "population": 8700,
+    "city": "Bremen-Neustadt",
+    "state": "Bremen"
+  },
+  {
+    "postalCode": "28203",
+    "population": 8600,
+    "city": "Bremen-Steintor",
+    "state": "Bremen"
+  },
+  {
+    "postalCode": "28205",
+    "population": 8500,
+    "city": "Bremen-Findorff",
+    "state": "Bremen"
+  },
+  {
+    "postalCode": "28207",
+    "population": 8400,
+    "city": "Bremen-Hastedt",
+    "state": "Bremen"
+  },
+  {
+    "postalCode": "28209",
+    "population": 8300,
+    "city": "Bremen-Schwachhausen",
+    "state": "Bremen"
+  },
+  {
+    "postalCode": "28211",
+    "population": 8200,
+    "city": "Bremen-Schwachhausen",
+    "state": "Bremen"
+  },
+  {
+    "postalCode": "28213",
+    "population": 8100,
+    "city": "Bremen-Schwachhausen",
+    "state": "Bremen"
+  },
+  {
+    "postalCode": "28215",
+    "population": 8000,
+    "city": "Bremen-Findorff",
+    "state": "Bremen"
+  },
+  {
+    "postalCode": "01067",
+    "population": 7900,
+    "city": "Dresden-Innere Altstadt",
+    "state": "Sachsen"
+  },
+  {
+    "postalCode": "01069",
+    "population": 7800,
+    "city": "Dresden-Seevorstadt",
+    "state": "Sachsen"
+  },
+  {
+    "postalCode": "01097",
+    "population": 7700,
+    "city": "Dresden-Innere Neustadt",
+    "state": "Sachsen"
+  },
+  {
+    "postalCode": "01099",
+    "population": 7600,
+    "city": "Dresden-Äußere Neustadt",
+    "state": "Sachsen"
+  },
+  {
+    "postalCode": "01127",
+    "population": 7500,
+    "city": "Dresden-Pieschen",
+    "state": "Sachsen"
+  },
+  {
+    "postalCode": "01129",
+    "population": 7400,
+    "city": "Dresden-Trachau",
+    "state": "Sachsen"
+  },
+  {
+    "postalCode": "01139",
+    "population": 7300,
+    "city": "Dresden-Gorbitz",
+    "state": "Sachsen"
+  },
+  {
+    "postalCode": "01157",
+    "population": 7200,
+    "city": "Dresden-Cotta",
+    "state": "Sachsen"
+  },
+  {
+    "postalCode": "01159",
+    "population": 7100,
+    "city": "Dresden-Löbtau",
+    "state": "Sachsen"
+  },
+  {
+    "postalCode": "01169",
+    "population": 7000,
+    "city": "Dresden-Gorbitz",
+    "state": "Sachsen"
+  },
+  {
+    "postalCode": "30159",
+    "population": 6900,
+    "city": "Hannover-Mitte",
+    "state": "Niedersachsen"
+  },
+  {
+    "postalCode": "30161",
+    "population": 6800,
+    "city": "Hannover-Oststadt",
+    "state": "Niedersachsen"
+  },
+  {
+    "postalCode": "30163",
+    "population": 6700,
+    "city": "Hannover-List",
+    "state": "Niedersachsen"
+  },
+  {
+    "postalCode": "30165",
+    "population": 6600,
+    "city": "Hannover-Vahrenwald",
+    "state": "Niedersachsen"
+  },
+  {
+    "postalCode": "30167",
+    "population": 6500,
+    "city": "Hannover-Nordstadt",
+    "state": "Niedersachsen"
+  },
+  {
+    "postalCode": "30169",
+    "population": 6400,
+    "city": "Hannover-Calenberger Neustadt",
+    "state": "Niedersachsen"
+  },
+  {
+    "postalCode": "30171",
+    "population": 6300,
+    "city": "Hannover-Südstadt",
+    "state": "Niedersachsen"
+  },
+  {
+    "postalCode": "30173",
+    "population": 6200,
+    "city": "Hannover-Südstadt",
+    "state": "Niedersachsen"
+  },
+  {
+    "postalCode": "30175",
+    "population": 6100,
+    "city": "Hannover-Zoo",
+    "state": "Niedersachsen"
+  },
+  {
+    "postalCode": "30177",
+    "population": 6000,
+    "city": "Hannover-List",
+    "state": "Niedersachsen"
+  },
+  {
+    "postalCode": "90402",
+    "population": 5900,
+    "city": "Nürnberg-Altstadt",
+    "state": "Bayern"
+  },
+  {
+    "postalCode": "90403",
+    "population": 5800,
+    "city": "Nürnberg-Lorenz",
+    "state": "Bayern"
+  },
+  {
+    "postalCode": "90408",
+    "population": 5700,
+    "city": "Nürnberg-Gärten hinter der Veste",
+    "state": "Bayern"
+  },
+  {
+    "postalCode": "90409",
+    "population": 5600,
+    "city": "Nürnberg-Gärten hinter der Veste",
+    "state": "Bayern"
+  },
+  {
+    "postalCode": "90411",
+    "population": 5500,
+    "city": "Nürnberg-Buchenbühl",
+    "state": "Bayern"
+  },
+  {
+    "postalCode": "90419",
+    "population": 5400,
+    "city": "Nürnberg-St. Johannis",
+    "state": "Bayern"
+  },
+  {
+    "postalCode": "90429",
+    "population": 5300,
+    "city": "Nürnberg-Großreuth",
+    "state": "Bayern"
+  },
+  {
+    "postalCode": "90431",
+    "population": 5200,
+    "city": "Nürnberg-Großreuth",
+    "state": "Bayern"
+  },
+  {
+    "postalCode": "90439",
+    "population": 5100,
+    "city": "Nürnberg-Schweinau",
+    "state": "Bayern"
+  },
+  {
+    "postalCode": "90441",
+    "population": 5000,
+    "city": "Nürnberg-Werderau",
+    "state": "Bayern"
+  },
+  {
+    "postalCode": "47051",
+    "population": 4950,
+    "city": "Duisburg-Altstadt",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "47053",
+    "population": 4900,
+    "city": "Duisburg-Hochfeld",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "47055",
+    "population": 4850,
+    "city": "Duisburg-Wanheimerort",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "47057",
+    "population": 4800,
+    "city": "Duisburg-Neudorf",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "47058",
+    "population": 4750,
+    "city": "Duisburg-Duissern",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "47059",
+    "population": 4700,
+    "city": "Duisburg-Kaßlerfeld",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "44787",
+    "population": 4650,
+    "city": "Bochum-Mitte",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "44789",
+    "population": 4600,
+    "city": "Bochum-Ehrenfeld",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "44791",
+    "population": 4550,
+    "city": "Bochum-Grumme",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "44793",
+    "population": 4500,
+    "city": "Bochum-Gleisdreieck",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "42103",
+    "population": 4450,
+    "city": "Wuppertal-Elberfeld",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "42105",
+    "population": 4400,
+    "city": "Wuppertal-Elberfeld",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "42107",
+    "population": 4350,
+    "city": "Wuppertal-Elberfeld-West",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "42109",
+    "population": 4300,
+    "city": "Wuppertal-Uellendahl",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "42111",
+    "population": 4250,
+    "city": "Wuppertal-Uellendahl-Katernberg",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "42113",
+    "population": 4200,
+    "city": "Wuppertal-Vohwinkel",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "42115",
+    "population": 4150,
+    "city": "Wuppertal-Vohwinkel",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "42117",
+    "population": 4100,
+    "city": "Wuppertal-Barmen",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "42119",
+    "population": 4050,
+    "city": "Wuppertal-Barmen",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "33602",
+    "population": 4000,
+    "city": "Bielefeld-Mitte",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "33604",
+    "population": 3950,
+    "city": "Bielefeld-Mitte",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "33605",
+    "population": 3900,
+    "city": "Bielefeld-Stieghorst",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "33607",
+    "population": 3850,
+    "city": "Bielefeld-Mitte",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "33609",
+    "population": 3800,
+    "city": "Bielefeld-Schildesche",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "33611",
+    "population": 3750,
+    "city": "Bielefeld-Schildesche",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "33613",
+    "population": 3700,
+    "city": "Bielefeld-Babenhausen",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "33615",
+    "population": 3650,
+    "city": "Bielefeld-Gadderbaum",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "33617",
+    "population": 3600,
+    "city": "Bielefeld-Gadderbaum",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "53111",
+    "population": 3550,
+    "city": "Bonn-Zentrum",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "53113",
+    "population": 3500,
+    "city": "Bonn-Zentrum",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "53115",
+    "population": 3450,
+    "city": "Bonn-Poppelsdorf",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "53117",
+    "population": 3400,
+    "city": "Bonn-Castell",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "53119",
+    "population": 3350,
+    "city": "Bonn-Tannenbusch",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "53121",
+    "population": 3300,
+    "city": "Bonn-Dransdorf",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "53123",
+    "population": 3250,
+    "city": "Bonn-Duisdorf",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "53125",
+    "population": 3200,
+    "city": "Bonn-Röttgen",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "53127",
+    "population": 3150,
+    "city": "Bonn-Ippendorf",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "53129",
+    "population": 3100,
+    "city": "Bonn-Kessenich",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "48143",
+    "population": 3050,
+    "city": "Münster-Mitte",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "48145",
+    "population": 3000,
+    "city": "Münster-Mauritz-Mitte",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "48147",
+    "population": 2950,
+    "city": "Münster-Mitte",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "48149",
+    "population": 2900,
+    "city": "Münster-Pluggendorf",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "48151",
+    "population": 2850,
+    "city": "Münster-Aaseestadt",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "48153",
+    "population": 2800,
+    "city": "Münster-Geist",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "48155",
+    "population": 2750,
+    "city": "Münster-Uppenberg",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "48157",
+    "population": 2700,
+    "city": "Münster-Wienburg",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "48159",
+    "population": 2650,
+    "city": "Münster-Kinderhaus",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "48161",
+    "population": 2600,
+    "city": "Münster-Nienberge",
+    "state": "Nordrhein-Westfalen"
+  },
+  {
+    "postalCode": "76131",
+    "population": 2550,
+    "city": "Karlsruhe-Innenstadt-Ost",
+    "state": "Baden-Württemberg"
+  },
+  {
+    "postalCode": "76133",
+    "population": 2500,
+    "city": "Karlsruhe-Innenstadt-West",
+    "state": "Baden-Württemberg"
+  },
+  {
+    "postalCode": "76135",
+    "population": 2450,
+    "city": "Karlsruhe-Weststadt",
+    "state": "Baden-Württemberg"
+  },
+  {
+    "postalCode": "76137",
+    "population": 2400,
+    "city": "Karlsruhe-Südweststadt",
+    "state": "Baden-Württemberg"
+  },
+  {
+    "postalCode": "76139",
+    "population": 2350,
+    "city": "Karlsruhe-Waldstadt",
+    "state": "Baden-Württemberg"
+  },
+  {
+    "postalCode": "68159",
+    "population": 2300,
+    "city": "Mannheim-Innenstadt",
+    "state": "Baden-Württemberg"
+  },
+  {
+    "postalCode": "68161",
+    "population": 2250,
+    "city": "Mannheim-Innenstadt",
+    "state": "Baden-Württemberg"
+  },
+  {
+    "postalCode": "68163",
+    "population": 2200,
+    "city": "Mannheim-Lindenhof",
+    "state": "Baden-Württemberg"
+  },
+  {
+    "postalCode": "68165",
+    "population": 2150,
+    "city": "Mannheim-Schwetzingerstadt",
+    "state": "Baden-Württemberg"
+  },
+  {
+    "postalCode": "68167",
+    "population": 2100,
+    "city": "Mannheim-Neckarstadt-Ost",
+    "state": "Baden-Württemberg"
+  },
+  {
+    "postalCode": "65183",
+    "population": 2050,
+    "city": "Wiesbaden-Mitte",
+    "state": "Hessen"
+  },
+  {
+    "postalCode": "65185",
+    "population": 2000,
+    "city": "Wiesbaden-Mitte",
+    "state": "Hessen"
+  }
+]

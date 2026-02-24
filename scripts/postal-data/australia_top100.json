@@ -1,0 +1,902 @@
+[
+  {
+    "postalCode": "2000",
+    "population": 52450,
+    "city": "Sydney CBD",
+    "state": "NSW"
+  },
+  {
+    "postalCode": "2010",
+    "population": 48750,
+    "city": "Surry Hills",
+    "state": "NSW"
+  },
+  {
+    "postalCode": "2011",
+    "population": 45200,
+    "city": "Potts Point",
+    "state": "NSW"
+  },
+  {
+    "postalCode": "2015",
+    "population": 42100,
+    "city": "Alexandria",
+    "state": "NSW"
+  },
+  {
+    "postalCode": "2016",
+    "population": 39500,
+    "city": "Redfern",
+    "state": "NSW"
+  },
+  {
+    "postalCode": "2017",
+    "population": 37250,
+    "city": "Waterloo",
+    "state": "NSW"
+  },
+  {
+    "postalCode": "2020",
+    "population": 35400,
+    "city": "Mascot",
+    "state": "NSW"
+  },
+  {
+    "postalCode": "2021",
+    "population": 33800,
+    "city": "Paddington",
+    "state": "NSW"
+  },
+  {
+    "postalCode": "2022",
+    "population": 32350,
+    "city": "Bondi Junction",
+    "state": "NSW"
+  },
+  {
+    "postalCode": "2025",
+    "population": 31000,
+    "city": "Woollahra",
+    "state": "NSW"
+  },
+  {
+    "postalCode": "2026",
+    "population": 29800,
+    "city": "Bondi",
+    "state": "NSW"
+  },
+  {
+    "postalCode": "2027",
+    "population": 28700,
+    "city": "Darling Point",
+    "state": "NSW"
+  },
+  {
+    "postalCode": "2028",
+    "population": 27650,
+    "city": "Double Bay",
+    "state": "NSW"
+  },
+  {
+    "postalCode": "2029",
+    "population": 26700,
+    "city": "Rose Bay",
+    "state": "NSW"
+  },
+  {
+    "postalCode": "2030",
+    "population": 25800,
+    "city": "Vaucluse",
+    "state": "NSW"
+  },
+  {
+    "postalCode": "2031",
+    "population": 24950,
+    "city": "Randwick",
+    "state": "NSW"
+  },
+  {
+    "postalCode": "2032",
+    "population": 24150,
+    "city": "Kingsford",
+    "state": "NSW"
+  },
+  {
+    "postalCode": "2033",
+    "population": 23400,
+    "city": "Kensington",
+    "state": "NSW"
+  },
+  {
+    "postalCode": "2034",
+    "population": 22700,
+    "city": "Coogee",
+    "state": "NSW"
+  },
+  {
+    "postalCode": "2035",
+    "population": 22050,
+    "city": "Maroubra",
+    "state": "NSW"
+  },
+  {
+    "postalCode": "2036",
+    "population": 21450,
+    "city": "Matraville",
+    "state": "NSW"
+  },
+  {
+    "postalCode": "2037",
+    "population": 20900,
+    "city": "Glebe",
+    "state": "NSW"
+  },
+  {
+    "postalCode": "2038",
+    "population": 20400,
+    "city": "Annandale",
+    "state": "NSW"
+  },
+  {
+    "postalCode": "2039",
+    "population": 19950,
+    "city": "Rozelle",
+    "state": "NSW"
+  },
+  {
+    "postalCode": "2040",
+    "population": 19500,
+    "city": "Leichhardt",
+    "state": "NSW"
+  },
+  {
+    "postalCode": "2041",
+    "population": 19100,
+    "city": "Balmain",
+    "state": "NSW"
+  },
+  {
+    "postalCode": "2042",
+    "population": 18750,
+    "city": "Newtown",
+    "state": "NSW"
+  },
+  {
+    "postalCode": "2043",
+    "population": 18400,
+    "city": "Erskineville",
+    "state": "NSW"
+  },
+  {
+    "postalCode": "2044",
+    "population": 18100,
+    "city": "St Peters",
+    "state": "NSW"
+  },
+  {
+    "postalCode": "2045",
+    "population": 17800,
+    "city": "Haberfield",
+    "state": "NSW"
+  },
+  {
+    "postalCode": "2046",
+    "population": 17550,
+    "city": "Five Dock",
+    "state": "NSW"
+  },
+  {
+    "postalCode": "2047",
+    "population": 17300,
+    "city": "Drummoyne",
+    "state": "NSW"
+  },
+  {
+    "postalCode": "2048",
+    "population": 17050,
+    "city": "Stanmore",
+    "state": "NSW"
+  },
+  {
+    "postalCode": "2049",
+    "population": 16850,
+    "city": "Petersham",
+    "state": "NSW"
+  },
+  {
+    "postalCode": "2050",
+    "population": 16650,
+    "city": "Camperdown",
+    "state": "NSW"
+  },
+  {
+    "postalCode": "2060",
+    "population": 16450,
+    "city": "North Sydney",
+    "state": "NSW"
+  },
+  {
+    "postalCode": "2061",
+    "population": 16250,
+    "city": "Kirribilli",
+    "state": "NSW"
+  },
+  {
+    "postalCode": "2062",
+    "population": 16100,
+    "city": "Cammeray",
+    "state": "NSW"
+  },
+  {
+    "postalCode": "2063",
+    "population": 15950,
+    "city": "Northbridge",
+    "state": "NSW"
+  },
+  {
+    "postalCode": "2064",
+    "population": 15800,
+    "city": "Artarmon",
+    "state": "NSW"
+  },
+  {
+    "postalCode": "3000",
+    "population": 51200,
+    "city": "Melbourne CBD",
+    "state": "VIC"
+  },
+  {
+    "postalCode": "3004",
+    "population": 47500,
+    "city": "St Kilda Road",
+    "state": "VIC"
+  },
+  {
+    "postalCode": "3006",
+    "population": 44100,
+    "city": "Southbank",
+    "state": "VIC"
+  },
+  {
+    "postalCode": "3008",
+    "population": 41050,
+    "city": "Docklands",
+    "state": "VIC"
+  },
+  {
+    "postalCode": "3011",
+    "population": 38200,
+    "city": "Footscray",
+    "state": "VIC"
+  },
+  {
+    "postalCode": "3012",
+    "population": 35700,
+    "city": "Brooklyn",
+    "state": "VIC"
+  },
+  {
+    "postalCode": "3013",
+    "population": 33500,
+    "city": "Yarraville",
+    "state": "VIC"
+  },
+  {
+    "postalCode": "3015",
+    "population": 31500,
+    "city": "Newport",
+    "state": "VIC"
+  },
+  {
+    "postalCode": "3016",
+    "population": 29800,
+    "city": "Williamstown",
+    "state": "VIC"
+  },
+  {
+    "postalCode": "3018",
+    "population": 28200,
+    "city": "Altona",
+    "state": "VIC"
+  },
+  {
+    "postalCode": "3019",
+    "population": 26750,
+    "city": "Braybrook",
+    "state": "VIC"
+  },
+  {
+    "postalCode": "3020",
+    "population": 25400,
+    "city": "Albion",
+    "state": "VIC"
+  },
+  {
+    "postalCode": "3021",
+    "population": 24200,
+    "city": "St Albans",
+    "state": "VIC"
+  },
+  {
+    "postalCode": "3022",
+    "population": 23100,
+    "city": "Ardeer",
+    "state": "VIC"
+  },
+  {
+    "postalCode": "3023",
+    "population": 22050,
+    "city": "Caroline Springs",
+    "state": "VIC"
+  },
+  {
+    "postalCode": "3024",
+    "population": 21100,
+    "city": "Wyndham Vale",
+    "state": "VIC"
+  },
+  {
+    "postalCode": "3025",
+    "population": 20200,
+    "city": "Altona North",
+    "state": "VIC"
+  },
+  {
+    "postalCode": "3026",
+    "population": 19350,
+    "city": "Laverton",
+    "state": "VIC"
+  },
+  {
+    "postalCode": "3027",
+    "population": 18550,
+    "city": "Williams Landing",
+    "state": "VIC"
+  },
+  {
+    "postalCode": "3028",
+    "population": 17800,
+    "city": "Altona Meadows",
+    "state": "VIC"
+  },
+  {
+    "postalCode": "3029",
+    "population": 17100,
+    "city": "Hoppers Crossing",
+    "state": "VIC"
+  },
+  {
+    "postalCode": "3030",
+    "population": 16450,
+    "city": "Werribee",
+    "state": "VIC"
+  },
+  {
+    "postalCode": "3031",
+    "population": 15850,
+    "city": "Flemington",
+    "state": "VIC"
+  },
+  {
+    "postalCode": "3032",
+    "population": 15300,
+    "city": "Ascot Vale",
+    "state": "VIC"
+  },
+  {
+    "postalCode": "3033",
+    "population": 14800,
+    "city": "Keilor East",
+    "state": "VIC"
+  },
+  {
+    "postalCode": "3034",
+    "population": 14350,
+    "city": "Avondale Heights",
+    "state": "VIC"
+  },
+  {
+    "postalCode": "3036",
+    "population": 13900,
+    "city": "Keilor",
+    "state": "VIC"
+  },
+  {
+    "postalCode": "3037",
+    "population": 13500,
+    "city": "Sydenham",
+    "state": "VIC"
+  },
+  {
+    "postalCode": "3038",
+    "population": 13150,
+    "city": "Taylors Lakes",
+    "state": "VIC"
+  },
+  {
+    "postalCode": "3039",
+    "population": 12800,
+    "city": "Moonee Ponds",
+    "state": "VIC"
+  },
+  {
+    "postalCode": "4000",
+    "population": 48900,
+    "city": "Brisbane CBD",
+    "state": "QLD"
+  },
+  {
+    "postalCode": "4005",
+    "population": 45100,
+    "city": "New Farm",
+    "state": "QLD"
+  },
+  {
+    "postalCode": "4006",
+    "population": 41700,
+    "city": "Fortitude Valley",
+    "state": "QLD"
+  },
+  {
+    "postalCode": "4007",
+    "population": 38600,
+    "city": "Hamilton",
+    "state": "QLD"
+  },
+  {
+    "postalCode": "4008",
+    "population": 35800,
+    "city": "Pinkenba",
+    "state": "QLD"
+  },
+  {
+    "postalCode": "4009",
+    "population": 33200,
+    "city": "Albion",
+    "state": "QLD"
+  },
+  {
+    "postalCode": "4010",
+    "population": 30900,
+    "city": "Windsor",
+    "state": "QLD"
+  },
+  {
+    "postalCode": "4011",
+    "population": 28800,
+    "city": "Clayfield",
+    "state": "QLD"
+  },
+  {
+    "postalCode": "4012",
+    "population": 26900,
+    "city": "Nundah",
+    "state": "QLD"
+  },
+  {
+    "postalCode": "4013",
+    "population": 25200,
+    "city": "Northgate",
+    "state": "QLD"
+  },
+  {
+    "postalCode": "4014",
+    "population": 23600,
+    "city": "Virginia",
+    "state": "QLD"
+  },
+  {
+    "postalCode": "4017",
+    "population": 22100,
+    "city": "Sandgate",
+    "state": "QLD"
+  },
+  {
+    "postalCode": "4018",
+    "population": 20750,
+    "city": "Boondall",
+    "state": "QLD"
+  },
+  {
+    "postalCode": "4019",
+    "population": 19500,
+    "city": "Clontarf",
+    "state": "QLD"
+  },
+  {
+    "postalCode": "4020",
+    "population": 18350,
+    "city": "Woody Point",
+    "state": "QLD"
+  },
+  {
+    "postalCode": "4021",
+    "population": 17300,
+    "city": "Kippa-Ring",
+    "state": "QLD"
+  },
+  {
+    "postalCode": "4022",
+    "population": 16300,
+    "city": "Rothwell",
+    "state": "QLD"
+  },
+  {
+    "postalCode": "4030",
+    "population": 15400,
+    "city": "Lutwyche",
+    "state": "QLD"
+  },
+  {
+    "postalCode": "4031",
+    "population": 14600,
+    "city": "Gordon Park",
+    "state": "QLD"
+  },
+  {
+    "postalCode": "4032",
+    "population": 13850,
+    "city": "Chermside",
+    "state": "QLD"
+  },
+  {
+    "postalCode": "6000",
+    "population": 46700,
+    "city": "Perth CBD",
+    "state": "WA"
+  },
+  {
+    "postalCode": "6003",
+    "population": 43100,
+    "city": "Northbridge",
+    "state": "WA"
+  },
+  {
+    "postalCode": "6004",
+    "population": 39800,
+    "city": "East Perth",
+    "state": "WA"
+  },
+  {
+    "postalCode": "6005",
+    "population": 36800,
+    "city": "West Perth",
+    "state": "WA"
+  },
+  {
+    "postalCode": "6006",
+    "population": 34100,
+    "city": "North Perth",
+    "state": "WA"
+  },
+  {
+    "postalCode": "6007",
+    "population": 31600,
+    "city": "Leederville",
+    "state": "WA"
+  },
+  {
+    "postalCode": "6008",
+    "population": 29300,
+    "city": "Subiaco",
+    "state": "WA"
+  },
+  {
+    "postalCode": "6009",
+    "population": 27200,
+    "city": "Nedlands",
+    "state": "WA"
+  },
+  {
+    "postalCode": "6010",
+    "population": 25300,
+    "city": "Claremont",
+    "state": "WA"
+  },
+  {
+    "postalCode": "6011",
+    "population": 23500,
+    "city": "Cottesloe",
+    "state": "WA"
+  },
+  {
+    "postalCode": "6012",
+    "population": 21900,
+    "city": "Mosman Park",
+    "state": "WA"
+  },
+  {
+    "postalCode": "6014",
+    "population": 20400,
+    "city": "Floreat",
+    "state": "WA"
+  },
+  {
+    "postalCode": "6015",
+    "population": 19050,
+    "city": "City Beach",
+    "state": "WA"
+  },
+  {
+    "postalCode": "6016",
+    "population": 17800,
+    "city": "Glendalough",
+    "state": "WA"
+  },
+  {
+    "postalCode": "6017",
+    "population": 16650,
+    "city": "Osborne Park",
+    "state": "WA"
+  },
+  {
+    "postalCode": "6018",
+    "population": 15550,
+    "city": "Tuart Hill",
+    "state": "WA"
+  },
+  {
+    "postalCode": "6019",
+    "population": 14550,
+    "city": "Innaloo",
+    "state": "WA"
+  },
+  {
+    "postalCode": "6020",
+    "population": 13600,
+    "city": "Karrinyup",
+    "state": "WA"
+  },
+  {
+    "postalCode": "6021",
+    "population": 12750,
+    "city": "Balcatta",
+    "state": "WA"
+  },
+  {
+    "postalCode": "6022",
+    "population": 11950,
+    "city": "Hamersley",
+    "state": "WA"
+  },
+  {
+    "postalCode": "5000",
+    "population": 44500,
+    "city": "Adelaide CBD",
+    "state": "SA"
+  },
+  {
+    "postalCode": "5006",
+    "population": 40900,
+    "city": "North Adelaide",
+    "state": "SA"
+  },
+  {
+    "postalCode": "5007",
+    "population": 37600,
+    "city": "Hindmarsh",
+    "state": "SA"
+  },
+  {
+    "postalCode": "5008",
+    "population": 34600,
+    "city": "Croydon",
+    "state": "SA"
+  },
+  {
+    "postalCode": "5009",
+    "population": 31900,
+    "city": "Beverley",
+    "state": "SA"
+  },
+  {
+    "postalCode": "5010",
+    "population": 29400,
+    "city": "Angle Park",
+    "state": "SA"
+  },
+  {
+    "postalCode": "5011",
+    "population": 27100,
+    "city": "Woodville",
+    "state": "SA"
+  },
+  {
+    "postalCode": "5012",
+    "population": 25000,
+    "city": "Cheltenham",
+    "state": "SA"
+  },
+  {
+    "postalCode": "5013",
+    "population": 23100,
+    "city": "West Hindmarsh",
+    "state": "SA"
+  },
+  {
+    "postalCode": "5014",
+    "population": 21400,
+    "city": "Albert Park",
+    "state": "SA"
+  },
+  {
+    "postalCode": "5015",
+    "population": 19850,
+    "city": "Ottoway",
+    "state": "SA"
+  },
+  {
+    "postalCode": "5016",
+    "population": 18400,
+    "city": "West Lakes",
+    "state": "SA"
+  },
+  {
+    "postalCode": "5017",
+    "population": 17050,
+    "city": "Grange",
+    "state": "SA"
+  },
+  {
+    "postalCode": "5018",
+    "population": 15800,
+    "city": "Semaphore",
+    "state": "SA"
+  },
+  {
+    "postalCode": "5019",
+    "population": 14650,
+    "city": "Exeter",
+    "state": "SA"
+  },
+  {
+    "postalCode": "5020",
+    "population": 13600,
+    "city": "West Beach",
+    "state": "SA"
+  },
+  {
+    "postalCode": "5021",
+    "population": 12600,
+    "city": "Glenelg North",
+    "state": "SA"
+  },
+  {
+    "postalCode": "5022",
+    "population": 11700,
+    "city": "Henley Beach",
+    "state": "SA"
+  },
+  {
+    "postalCode": "5023",
+    "population": 10900,
+    "city": "Kidman Park",
+    "state": "SA"
+  },
+  {
+    "postalCode": "5024",
+    "population": 10150,
+    "city": "Fulham",
+    "state": "SA"
+  },
+  {
+    "postalCode": "2600",
+    "population": 42200,
+    "city": "Canberra CBD",
+    "state": "ACT"
+  },
+  {
+    "postalCode": "2601",
+    "population": 38700,
+    "city": "Canberra City",
+    "state": "ACT"
+  },
+  {
+    "postalCode": "2602",
+    "population": 35500,
+    "city": "Ainslie",
+    "state": "ACT"
+  },
+  {
+    "postalCode": "2603",
+    "population": 32600,
+    "city": "Manuka",
+    "state": "ACT"
+  },
+  {
+    "postalCode": "2604",
+    "population": 29900,
+    "city": "Kingston",
+    "state": "ACT"
+  },
+  {
+    "postalCode": "2605",
+    "population": 27500,
+    "city": "Curtin",
+    "state": "ACT"
+  },
+  {
+    "postalCode": "2606",
+    "population": 25300,
+    "city": "Phillip",
+    "state": "ACT"
+  },
+  {
+    "postalCode": "2607",
+    "population": 23300,
+    "city": "Farrer",
+    "state": "ACT"
+  },
+  {
+    "postalCode": "2609",
+    "population": 21500,
+    "city": "Fyshwick",
+    "state": "ACT"
+  },
+  {
+    "postalCode": "2611",
+    "population": 19800,
+    "city": "Weston",
+    "state": "ACT"
+  },
+  {
+    "postalCode": "4217",
+    "population": 18200,
+    "city": "Surfers Paradise",
+    "state": "QLD"
+  },
+  {
+    "postalCode": "4218",
+    "population": 16700,
+    "city": "Broadbeach",
+    "state": "QLD"
+  },
+  {
+    "postalCode": "4220",
+    "population": 15300,
+    "city": "Burleigh Heads",
+    "state": "QLD"
+  },
+  {
+    "postalCode": "4221",
+    "population": 14050,
+    "city": "Palm Beach",
+    "state": "QLD"
+  },
+  {
+    "postalCode": "4222",
+    "population": 12900,
+    "city": "Southport",
+    "state": "QLD"
+  },
+  {
+    "postalCode": "4223",
+    "population": 11850,
+    "city": "Carrara",
+    "state": "QLD"
+  },
+  {
+    "postalCode": "4224",
+    "population": 10900,
+    "city": "Elanora",
+    "state": "QLD"
+  },
+  {
+    "postalCode": "4225",
+    "population": 10050,
+    "city": "Coolangatta",
+    "state": "QLD"
+  },
+  {
+    "postalCode": "4226",
+    "population": 9300,
+    "city": "Robina",
+    "state": "QLD"
+  },
+  {
+    "postalCode": "4227",
+    "population": 8600,
+    "city": "Reedy Creek",
+    "state": "QLD"
+  }
+]

@@ -1,0 +1,1602 @@
+[
+  {
+    "postalCode": "CR0",
+    "population": 153812,
+    "city": "Croydon",
+    "region": "Croydon",
+    "latitude": 51.3733,
+    "longitude": -0.0787503
+  },
+  {
+    "postalCode": "LE2",
+    "population": 119003,
+    "city": "Leicester",
+    "region": "Leicester",
+    "latitude": 52.6112,
+    "longitude": -1.11794
+  },
+  {
+    "postalCode": "E17",
+    "population": 103402,
+    "city": "London",
+    "region": "Waltham Forest",
+    "latitude": 51.5864,
+    "longitude": -0.0201245
+  },
+  {
+    "postalCode": "LE3",
+    "population": 101091,
+    "city": "Leicester",
+    "region": "Leicester",
+    "latitude": 52.6267,
+    "longitude": -1.1814
+  },
+  {
+    "postalCode": "LE4",
+    "population": 96921,
+    "city": "Leicester",
+    "region": "Leicester",
+    "latitude": 52.6628,
+    "longitude": -1.12284
+  },
+  {
+    "postalCode": "BN2",
+    "population": 93174,
+    "city": "Brighton",
+    "region": "Brighton and Hove",
+    "latitude": 50.8246,
+    "longitude": -0.107968
+  },
+  {
+    "postalCode": "NW10",
+    "population": 91959,
+    "city": "London",
+    "region": "Brent",
+    "latitude": 51.5392,
+    "longitude": -0.248878
+  },
+  {
+    "postalCode": "N1",
+    "population": 90964,
+    "city": "London",
+    "region": "Hackney",
+    "latitude": 51.5376,
+    "longitude": -0.098217
+  },
+  {
+    "postalCode": "NG5",
+    "population": 87171,
+    "city": "Nottingham",
+    "region": "Nottingham",
+    "latitude": 52.997,
+    "longitude": -1.14354
+  },
+  {
+    "postalCode": "CV6",
+    "population": 86375,
+    "city": "Coventry",
+    "region": "Coventry",
+    "latitude": 52.4313,
+    "longitude": -1.50661
+  },
+  {
+    "postalCode": "LE5",
+    "population": 85629,
+    "city": "Leicester",
+    "region": "Leicester",
+    "latitude": 52.636,
+    "longitude": -1.09729
+  },
+  {
+    "postalCode": "BN1",
+    "population": 84133,
+    "city": "Brighton",
+    "region": "Brighton and Hove",
+    "latitude": 50.8373,
+    "longitude": -0.139949
+  },
+  {
+    "postalCode": "E14",
+    "population": 82542,
+    "city": "London",
+    "region": "Tower Hamlets",
+    "latitude": 51.5076,
+    "longitude": -0.020404
+  },
+  {
+    "postalCode": "ST5",
+    "population": 82261,
+    "city": "Newcastle",
+    "region": "Staffordshire",
+    "latitude": 53.015,
+    "longitude": -2.23948
+  },
+  {
+    "postalCode": "SW16",
+    "population": 81560,
+    "city": "London",
+    "region": "Lambeth",
+    "latitude": 51.4238,
+    "longitude": -0.12959
+  },
+  {
+    "postalCode": "BN3",
+    "population": 79624,
+    "city": "Hove",
+    "region": "Brighton and Hove",
+    "latitude": 50.8344,
+    "longitude": -0.175361
+  },
+  {
+    "postalCode": "E6",
+    "population": 78955,
+    "city": "London",
+    "region": "Newham",
+    "latitude": 51.5252,
+    "longitude": 0.055197
+  },
+  {
+    "postalCode": "PR2",
+    "population": 78732,
+    "city": "Preston",
+    "region": "Preston",
+    "latitude": 53.7758,
+    "longitude": -2.70523
+  },
+  {
+    "postalCode": "SE18",
+    "population": 77895,
+    "city": "London",
+    "region": "Greenwich",
+    "latitude": 51.4856,
+    "longitude": 0.0714908
+  },
+  {
+    "postalCode": "CF14",
+    "population": 77766,
+    "city": "Cardiff",
+    "region": "Cardiff",
+    "latitude": 51.5204,
+    "longitude": -3.2019
+  },
+  {
+    "postalCode": "SL6",
+    "population": 77532,
+    "city": "Maidenhead",
+    "region": "South Buckinghamshire",
+    "latitude": 51.5229,
+    "longitude": -0.726446
+  },
+  {
+    "postalCode": "SW19",
+    "population": 77453,
+    "city": "London",
+    "region": "Merton",
+    "latitude": 51.422,
+    "longitude": -0.205455
+  },
+  {
+    "postalCode": "BS16",
+    "population": 75733,
+    "city": "Bristol",
+    "region": "Bristol",
+    "latitude": 51.4856,
+    "longitude": -2.51239
+  },
+  {
+    "postalCode": "BA2",
+    "population": 73927,
+    "city": "Bath",
+    "region": "Bath and North East Somerset",
+    "latitude": 51.362,
+    "longitude": -2.37618
+  },
+  {
+    "postalCode": "NG9",
+    "population": 73336,
+    "city": "Nottingham",
+    "region": "Broxtowe",
+    "latitude": 52.9264,
+    "longitude": -1.23255
+  },
+  {
+    "postalCode": "NG17",
+    "population": 72893,
+    "city": "Nottingham, Sutton-in-Ashfield",
+    "region": "Ashfield",
+    "latitude": 53.1162,
+    "longitude": -1.26109
+  },
+  {
+    "postalCode": "PR1",
+    "population": 72238,
+    "city": "Preston",
+    "region": "Preston",
+    "latitude": 53.7579,
+    "longitude": -2.70178
+  },
+  {
+    "postalCode": "HA3",
+    "population": 70816,
+    "city": "Harrow",
+    "region": "Harrow",
+    "latitude": 51.5914,
+    "longitude": -0.323097
+  },
+  {
+    "postalCode": "SW11",
+    "population": 70601,
+    "city": "London",
+    "region": "Wandsworth",
+    "latitude": 51.4672,
+    "longitude": -0.163737
+  },
+  {
+    "postalCode": "SL1",
+    "population": 70367,
+    "city": "Slough",
+    "region": "South Buckinghamshire",
+    "latitude": 51.516,
+    "longitude": -0.614316
+  },
+  {
+    "postalCode": "E1",
+    "population": 69523,
+    "city": "London",
+    "region": "Tower Hamlets",
+    "latitude": 51.5163,
+    "longitude": -0.0603356
+  },
+  {
+    "postalCode": "NN3",
+    "population": 68995,
+    "city": "Northampton",
+    "region": "Daventry",
+    "latitude": 52.2627,
+    "longitude": -0.843996
+  },
+  {
+    "postalCode": "N16",
+    "population": 68636,
+    "city": "London",
+    "region": "Hackney",
+    "latitude": 51.5645,
+    "longitude": -0.0767848
+  },
+  {
+    "postalCode": "ST3",
+    "population": 67689,
+    "city": "Stoke-on-Trent",
+    "region": "Staffordshire",
+    "latitude": 52.9811,
+    "longitude": -2.12275
+  },
+  {
+    "postalCode": "NW2",
+    "population": 67621,
+    "city": "London",
+    "region": "Barnet",
+    "latitude": 51.5595,
+    "longitude": -0.218287
+  },
+  {
+    "postalCode": "SE1",
+    "population": 66968,
+    "city": "London",
+    "region": "Southwark",
+    "latitude": 51.4982,
+    "longitude": -0.0903414
+  },
+  {
+    "postalCode": "BB1",
+    "population": 66805,
+    "city": "Blackburn",
+    "region": "Blackburn with Darwen",
+    "latitude": 53.7553,
+    "longitude": -2.46577
+  },
+  {
+    "postalCode": "HA8",
+    "population": 66380,
+    "city": "Edgware",
+    "region": "Harrow",
+    "latitude": 51.6116,
+    "longitude": -0.27526
+  },
+  {
+    "postalCode": "SO16",
+    "population": 66350,
+    "city": "Southampton",
+    "region": "Southampton",
+    "latitude": 50.9345,
+    "longitude": -1.43306
+  },
+  {
+    "postalCode": "CF5",
+    "population": 66021,
+    "city": "Cardiff",
+    "region": "Cardiff",
+    "latitude": 51.4832,
+    "longitude": -3.242
+  },
+  {
+    "postalCode": "RH10",
+    "population": 65902,
+    "city": "Crawley",
+    "region": "Crawley",
+    "latitude": 51.1196,
+    "longitude": -0.164287
+  },
+  {
+    "postalCode": "SW6",
+    "population": 65263,
+    "city": "London",
+    "region": "Hammersmith and Fulham",
+    "latitude": 51.4774,
+    "longitude": -0.200365
+  },
+  {
+    "postalCode": "ST6",
+    "population": 64695,
+    "city": "Stoke-on-Trent",
+    "region": "Staffordshire",
+    "latitude": 53.0564,
+    "longitude": -2.19209
+  },
+  {
+    "postalCode": "SW17",
+    "population": 64566,
+    "city": "London",
+    "region": "Wandsworth",
+    "latitude": 51.4304,
+    "longitude": -0.165274
+  },
+  {
+    "postalCode": "NW6",
+    "population": 64352,
+    "city": "London",
+    "region": "Brent",
+    "latitude": 51.5402,
+    "longitude": -0.195563
+  },
+  {
+    "postalCode": "SE15",
+    "population": 64134,
+    "city": "London",
+    "region": "Lewisham",
+    "latitude": 51.4727,
+    "longitude": -0.0670959
+  },
+  {
+    "postalCode": "BL3",
+    "population": 63944,
+    "city": "Bolton",
+    "region": "Bolton",
+    "latitude": 53.5661,
+    "longitude": -2.432
+  },
+  {
+    "postalCode": "NG8",
+    "population": 63920,
+    "city": "Nottingham",
+    "region": "Nottingham",
+    "latitude": 52.9636,
+    "longitude": -1.21489
+  },
+  {
+    "postalCode": "CV3",
+    "population": 63830,
+    "city": "Coventry",
+    "region": "Coventry",
+    "latitude": 52.3934,
+    "longitude": -1.48164
+  },
+  {
+    "postalCode": "NG16",
+    "population": 63697,
+    "city": "Nottingham",
+    "region": "Broxtowe",
+    "latitude": 53.0264,
+    "longitude": -1.29845
+  },
+  {
+    "postalCode": "IG1",
+    "population": 63585,
+    "city": "Ilford",
+    "region": "Redbridge",
+    "latitude": 51.5591,
+    "longitude": 0.0727632
+  },
+  {
+    "postalCode": "CV2",
+    "population": 63304,
+    "city": "Coventry",
+    "region": "Coventry",
+    "latitude": 52.4234,
+    "longitude": -1.46766
+  },
+  {
+    "postalCode": "BL1",
+    "population": 63209,
+    "city": "Bolton",
+    "region": "Bolton",
+    "latitude": 53.5889,
+    "longitude": -2.44058
+  },
+  {
+    "postalCode": "SE9",
+    "population": 63082,
+    "city": "London",
+    "region": "Greenwich",
+    "latitude": 51.4462,
+    "longitude": 0.0545895
+  },
+  {
+    "postalCode": "N17",
+    "population": 62963,
+    "city": "London",
+    "region": "Haringey",
+    "latitude": 51.5973,
+    "longitude": -0.070976
+  },
+  {
+    "postalCode": "WA7",
+    "population": 62819,
+    "city": "Runcorn",
+    "region": "Halton",
+    "latitude": 53.3304,
+    "longitude": -2.70293
+  },
+  {
+    "postalCode": "CM1",
+    "population": 62632,
+    "city": "Chelmsford",
+    "region": "Chelmsford",
+    "latitude": 51.746,
+    "longitude": 0.467168
+  },
+  {
+    "postalCode": "OX4",
+    "population": 62058,
+    "city": "Oxford",
+    "region": "Oxford",
+    "latitude": 51.7285,
+    "longitude": -1.21428
+  },
+  {
+    "postalCode": "LE12",
+    "population": 61909,
+    "city": "Loughborough",
+    "region": "Charnwood",
+    "latitude": 52.7688,
+    "longitude": -1.19222
+  },
+  {
+    "postalCode": "WA8",
+    "population": 61866,
+    "city": "Widnes",
+    "region": "Halton",
+    "latitude": 53.3725,
+    "longitude": -2.73929
+  },
+  {
+    "postalCode": "LU3",
+    "population": 61454,
+    "city": "Luton",
+    "region": "Luton",
+    "latitude": 51.9058,
+    "longitude": -0.44263
+  },
+  {
+    "postalCode": "BB5",
+    "population": 61420,
+    "city": "Accrington",
+    "region": "Hyndburn",
+    "latitude": 53.7545,
+    "longitude": -2.3723
+  },
+  {
+    "postalCode": "NW1",
+    "population": 60910,
+    "city": "London",
+    "region": "Camden",
+    "latitude": 51.5323,
+    "longitude": -0.142754
+  },
+  {
+    "postalCode": "NW9",
+    "population": 60680,
+    "city": "London",
+    "region": "Barnet",
+    "latitude": 51.5866,
+    "longitude": -0.253483
+  },
+  {
+    "postalCode": "SW15",
+    "population": 60665,
+    "city": "London",
+    "region": "Wandsworth",
+    "latitude": 51.458,
+    "longitude": -0.225674
+  },
+  {
+    "postalCode": "KY11",
+    "population": 60570,
+    "city": "Dunfermline, Inverkeithing",
+    "region": "Fife",
+    "latitude": 56.0495,
+    "longitude": -3.41191
+  },
+  {
+    "postalCode": "S5",
+    "population": 60467,
+    "city": "Sheffield",
+    "region": "Sheffield",
+    "latitude": 53.4224,
+    "longitude": -1.46224
+  },
+  {
+    "postalCode": "LE11",
+    "population": 60318,
+    "city": "Loughborough",
+    "region": "Charnwood",
+    "latitude": 52.7702,
+    "longitude": -1.22237
+  },
+  {
+    "postalCode": "E4",
+    "population": 60262,
+    "city": "London",
+    "region": "Waltham Forest",
+    "latitude": 51.6241,
+    "longitude": -0.00286269
+  },
+  {
+    "postalCode": "M33",
+    "population": 60011,
+    "city": "Manchester",
+    "region": "Trafford",
+    "latitude": 53.4227,
+    "longitude": -2.32476
+  },
+  {
+    "postalCode": "DE23",
+    "population": 59979,
+    "city": "Derby",
+    "region": "Derby",
+    "latitude": 52.8993,
+    "longitude": -1.49997
+  },
+  {
+    "postalCode": "BB2",
+    "population": 59842,
+    "city": "Blackburn",
+    "region": "Blackburn with Darwen",
+    "latitude": 53.7416,
+    "longitude": -2.49802
+  },
+  {
+    "postalCode": "SW18",
+    "population": 59838,
+    "city": "London",
+    "region": "Wandsworth",
+    "latitude": 51.4505,
+    "longitude": -0.191505
+  },
+  {
+    "postalCode": "BT47",
+    "population": 59747,
+    "city": "Londonderry",
+    "region": "Derry",
+    "latitude": 54.9803,
+    "longitude": -7.23125
+  },
+  {
+    "postalCode": "BT34",
+    "population": 59652,
+    "city": "Newry",
+    "region": "Newry and Mourne",
+    "latitude": 54.1532,
+    "longitude": -6.18173
+  },
+  {
+    "postalCode": "BT48",
+    "population": 59002,
+    "city": "Londonderry",
+    "region": "Derry",
+    "latitude": 55.0091,
+    "longitude": -7.32745
+  },
+  {
+    "postalCode": "LE67",
+    "population": 58824,
+    "city": "Coalville, Ibstock, Markfield",
+    "region": "Leicester",
+    "latitude": 52.7158,
+    "longitude": -1.36266
+  },
+  {
+    "postalCode": "NG2",
+    "population": 58658,
+    "city": "Nottingham",
+    "region": "Nottingham",
+    "latitude": 52.9375,
+    "longitude": -1.13723
+  },
+  {
+    "postalCode": "WA5",
+    "population": 58499,
+    "city": "Warrington",
+    "region": "Warrington",
+    "latitude": 53.3999,
+    "longitude": -2.63274
+  },
+  {
+    "postalCode": "SK8",
+    "population": 58434,
+    "city": "Cheadle",
+    "region": "Stockport",
+    "latitude": 53.3813,
+    "longitude": -2.20893
+  },
+  {
+    "postalCode": "CR4",
+    "population": 58289,
+    "city": "Mitcham",
+    "region": "Merton",
+    "latitude": 51.4026,
+    "longitude": -0.145395
+  },
+  {
+    "postalCode": "CM2",
+    "population": 58252,
+    "city": "Chelmsford",
+    "region": "Chelmsford",
+    "latitude": 51.7237,
+    "longitude": 0.484977
+  },
+  {
+    "postalCode": "S6",
+    "population": 58239,
+    "city": "Sheffield",
+    "region": "Sheffield",
+    "latitude": 53.4024,
+    "longitude": -1.50931
+  },
+  {
+    "postalCode": "PR4",
+    "population": 57802,
+    "city": "Preston",
+    "region": "Fylde",
+    "latitude": 53.7542,
+    "longitude": -2.83119
+  },
+  {
+    "postalCode": "NG7",
+    "population": 57680,
+    "city": "Nottingham",
+    "region": "Nottingham",
+    "latitude": 52.9585,
+    "longitude": -1.17827
+  },
+  {
+    "postalCode": "LN6",
+    "population": 57576,
+    "city": "Lincoln",
+    "region": "Lincoln",
+    "latitude": 53.2023,
+    "longitude": -0.597637
+  },
+  {
+    "postalCode": "B77",
+    "population": 57219,
+    "city": "Tamworth",
+    "region": "Tamworth",
+    "latitude": 52.6204,
+    "longitude": -1.67146
+  },
+  {
+    "postalCode": "ST4",
+    "population": 57096,
+    "city": "Stoke-on-Trent",
+    "region": "Staffordshire",
+    "latitude": 52.9978,
+    "longitude": -2.1835
+  },
+  {
+    "postalCode": "EN3",
+    "population": 57042,
+    "city": "Enfield",
+    "region": "Enfield",
+    "latitude": 51.6579,
+    "longitude": -0.0414666
+  },
+  {
+    "postalCode": "DE21",
+    "population": 57024,
+    "city": "Derby",
+    "region": "Derby",
+    "latitude": 52.9324,
+    "longitude": -1.43512
+  },
+  {
+    "postalCode": "LU2",
+    "population": 56481,
+    "city": "Luton",
+    "region": "Luton",
+    "latitude": 51.8908,
+    "longitude": -0.397811
+  },
+  {
+    "postalCode": "WV10",
+    "population": 56292,
+    "city": "Wolverhampton",
+    "region": "Wolverhampton",
+    "latitude": 52.616,
+    "longitude": -2.11397
+  },
+  {
+    "postalCode": "SO19",
+    "population": 55999,
+    "city": "Southampton",
+    "region": "Southampton",
+    "latitude": 50.9027,
+    "longitude": -1.35742
+  },
+  {
+    "postalCode": "BR1",
+    "population": 55962,
+    "city": "Bromley",
+    "region": "Bromley",
+    "latitude": 51.4107,
+    "longitude": 0.01946
+  },
+  {
+    "postalCode": "PR7",
+    "population": 55673,
+    "city": "Chorley",
+    "region": "Chorley",
+    "latitude": 53.6489,
+    "longitude": -2.65292
+  },
+  {
+    "postalCode": "HA2",
+    "population": 55524,
+    "city": "Harrow",
+    "region": "Harrow",
+    "latitude": 51.576,
+    "longitude": -0.354332
+  },
+  {
+    "postalCode": "CF83",
+    "population": 55304,
+    "city": "Caerphilly",
+    "region": "Caerphilly",
+    "latitude": 51.5855,
+    "longitude": -3.22069
+  },
+  {
+    "postalCode": "GU14",
+    "population": 55174,
+    "city": "Farnborough",
+    "region": "Rushmoor",
+    "latitude": 51.2909,
+    "longitude": -0.761376
+  },
+  {
+    "postalCode": "LE9",
+    "population": 55170,
+    "city": "Leicester",
+    "region": "Leicester",
+    "latitude": 52.5723,
+    "longitude": -1.27147
+  },
+  {
+    "postalCode": "CF24",
+    "population": 55163,
+    "city": "Cardiff",
+    "region": "Cardiff",
+    "latitude": 51.4848,
+    "longitude": -3.16638
+  },
+  {
+    "postalCode": "ML6",
+    "population": 55160,
+    "city": "Airdrie",
+    "region": "North Lanarkshire",
+    "latitude": 55.8679,
+    "longitude": -3.96332
+  },
+  {
+    "postalCode": "EX4",
+    "population": 55148,
+    "city": "Exeter",
+    "region": "Exeter",
+    "latitude": 50.7303,
+    "longitude": -3.5262
+  },
+  {
+    "postalCode": "E11",
+    "population": 55128,
+    "city": "London",
+    "region": "Waltham Forest",
+    "latitude": 51.5672,
+    "longitude": 0.0115868
+  },
+  {
+    "postalCode": "EH54",
+    "population": 54836,
+    "city": "Livingston",
+    "region": "West Lothian",
+    "latitude": 55.8917,
+    "longitude": -3.52495
+  },
+  {
+    "postalCode": "RH11",
+    "population": 54793,
+    "city": "Crawley",
+    "region": "Crawley",
+    "latitude": 51.1118,
+    "longitude": -0.204619
+  },
+  {
+    "postalCode": "E7",
+    "population": 54565,
+    "city": "London",
+    "region": "Newham",
+    "latitude": 51.5476,
+    "longitude": 0.0260421
+  },
+  {
+    "postalCode": "DE24",
+    "population": 54397,
+    "city": "Derby",
+    "region": "Derby",
+    "latitude": 52.8901,
+    "longitude": -1.45314
+  },
+  {
+    "postalCode": "SW2",
+    "population": 54382,
+    "city": "London",
+    "region": "Lambeth",
+    "latitude": 51.4509,
+    "longitude": -0.120676
+  },
+  {
+    "postalCode": "ML1",
+    "population": 54089,
+    "city": "Motherwell",
+    "region": "North Lanarkshire",
+    "latitude": 55.7977,
+    "longitude": -3.97715
+  },
+  {
+    "postalCode": "PR8",
+    "population": 53876,
+    "city": "Southport",
+    "region": "Sefton",
+    "latitude": 53.6276,
+    "longitude": -3.0048
+  },
+  {
+    "postalCode": "IG11",
+    "population": 53851,
+    "city": "Barking",
+    "region": "Barking and Dagenham",
+    "latitude": 51.5347,
+    "longitude": 0.0920945
+  },
+  {
+    "postalCode": "LU7",
+    "population": 53832,
+    "city": "Leighton Buzzard",
+    "region": "Central Bedfordshire",
+    "latitude": 51.9109,
+    "longitude": -0.661488
+  },
+  {
+    "postalCode": "CM3",
+    "population": 53826,
+    "city": "Chelmsford",
+    "region": "Chelmsford",
+    "latitude": 51.716,
+    "longitude": 0.586743
+  },
+  {
+    "postalCode": "B31",
+    "population": 53794,
+    "city": "Birmingham",
+    "region": "Birmingham",
+    "latitude": 52.4091,
+    "longitude": -1.97343
+  },
+  {
+    "postalCode": "NE3",
+    "population": 53772,
+    "city": "Newcastle upon Tyne",
+    "region": "Newcastle",
+    "latitude": 55.0098,
+    "longitude": -1.63354
+  },
+  {
+    "postalCode": "EH4",
+    "population": 53734,
+    "city": "Edinburgh",
+    "region": "Edinburgh",
+    "latitude": 55.9625,
+    "longitude": -3.25593
+  },
+  {
+    "postalCode": "DN4",
+    "population": 53723,
+    "city": "Doncaster",
+    "region": "Doncaster",
+    "latitude": 53.506,
+    "longitude": -1.12219
+  },
+  {
+    "postalCode": "ST7",
+    "population": 53470,
+    "city": "Stoke-on-Trent",
+    "region": "Staffordshire",
+    "latitude": 53.0881,
+    "longitude": -2.26739
+  },
+  {
+    "postalCode": "SL2",
+    "population": 53215,
+    "city": "Slough",
+    "region": "South Buckinghamshire",
+    "latitude": 51.5328,
+    "longitude": -0.602856
+  },
+  {
+    "postalCode": "M14",
+    "population": 53136,
+    "city": "Manchester",
+    "region": "Manchester",
+    "latitude": 53.4468,
+    "longitude": -2.22503
+  },
+  {
+    "postalCode": "TQ12",
+    "population": 53132,
+    "city": "Newton Abbot",
+    "region": "Teignbridge",
+    "latitude": 50.5299,
+    "longitude": -3.61064
+  },
+  {
+    "postalCode": "SE6",
+    "population": 53103,
+    "city": "London",
+    "region": "Lewisham",
+    "latitude": 51.4386,
+    "longitude": -0.0175656
+  },
+  {
+    "postalCode": "DA1",
+    "population": 53065,
+    "city": "Dartford",
+    "region": "Dartford",
+    "latitude": 51.4471,
+    "longitude": 0.209468
+  },
+  {
+    "postalCode": "BT23",
+    "population": 53059,
+    "city": "Newtownards",
+    "region": "Ards",
+    "latitude": 54.5717,
+    "longitude": -5.70744
+  },
+  {
+    "postalCode": "BH23",
+    "population": 52852,
+    "city": "Christchurch",
+    "region": "Christchurch",
+    "latitude": 50.7453,
+    "longitude": -1.7588
+  },
+  {
+    "postalCode": "WN2",
+    "population": 52672,
+    "city": "Wigan",
+    "region": "Wigan",
+    "latitude": 53.5363,
+    "longitude": -2.58478
+  },
+  {
+    "postalCode": "BS5",
+    "population": 52461,
+    "city": "Bristol",
+    "region": "Bristol",
+    "latitude": 51.4622,
+    "longitude": -2.55287
+  },
+  {
+    "postalCode": "NW3",
+    "population": 52376,
+    "city": "London",
+    "region": "Camden",
+    "latitude": 51.5526,
+    "longitude": -0.173185
+  },
+  {
+    "postalCode": "E15",
+    "population": 52244,
+    "city": "London",
+    "region": "Newham",
+    "latitude": 51.5382,
+    "longitude": 0.000217771
+  },
+  {
+    "postalCode": "NE34",
+    "population": 52220,
+    "city": "South Shields",
+    "region": "South Tyneside",
+    "latitude": 54.9728,
+    "longitude": -1.42327
+  },
+  {
+    "postalCode": "RG12",
+    "population": 52209,
+    "city": "Bracknell",
+    "region": "Bracknell Forest",
+    "latitude": 51.4119,
+    "longitude": -0.75269
+  },
+  {
+    "postalCode": "GL2",
+    "population": 52171,
+    "city": "Gloucester",
+    "region": "Gloucester",
+    "latitude": 51.8418,
+    "longitude": -2.26921
+  },
+  {
+    "postalCode": "LA1",
+    "population": 52136,
+    "city": "Lancaster",
+    "region": "Lancaster",
+    "latitude": 54.0469,
+    "longitude": -2.80034
+  },
+  {
+    "postalCode": "E3",
+    "population": 52097,
+    "city": "London",
+    "region": "Tower Hamlets",
+    "latitude": 51.5282,
+    "longitude": -0.0255784
+  },
+  {
+    "postalCode": "W3",
+    "population": 52043,
+    "city": "London",
+    "region": "Ealing",
+    "latitude": 51.5085,
+    "longitude": -0.270111
+  },
+  {
+    "postalCode": "ME5",
+    "population": 51800,
+    "city": "Chatham",
+    "region": "Medway",
+    "latitude": 51.3523,
+    "longitude": 0.531751
+  },
+  {
+    "postalCode": "NG19",
+    "population": 51663,
+    "city": "Mansfield",
+    "region": "Mansfield",
+    "latitude": 53.16,
+    "longitude": -1.19754
+  },
+  {
+    "postalCode": "SN3",
+    "population": 51663,
+    "city": "Swindon",
+    "region": "Swindon",
+    "latitude": 51.5598,
+    "longitude": -1.74262
+  },
+  {
+    "postalCode": "NP19",
+    "population": 51656,
+    "city": "Newport",
+    "region": "Newport",
+    "latitude": 51.5865,
+    "longitude": -2.96151
+  },
+  {
+    "postalCode": "ML3",
+    "population": 51585,
+    "city": "Hamilton",
+    "region": "South Lanarkshire",
+    "latitude": 55.7708,
+    "longitude": -4.05289
+  },
+  {
+    "postalCode": "LU4",
+    "population": 51547,
+    "city": "Luton",
+    "region": "Luton",
+    "latitude": 51.8985,
+    "longitude": -0.465151
+  },
+  {
+    "postalCode": "GL51",
+    "population": 51464,
+    "city": "Cheltenham",
+    "region": "Tewkesbury",
+    "latitude": 51.8968,
+    "longitude": -2.10833
+  },
+  {
+    "postalCode": "N9",
+    "population": 51449,
+    "city": "London",
+    "region": "Enfield",
+    "latitude": 51.6278,
+    "longitude": -0.0588924
+  },
+  {
+    "postalCode": "SG1",
+    "population": 51333,
+    "city": "Stevenage",
+    "region": "Stevenage",
+    "latitude": 51.9089,
+    "longitude": -0.197964
+  },
+  {
+    "postalCode": "ME7",
+    "population": 51311,
+    "city": "Gillingham",
+    "region": "Medway",
+    "latitude": 51.3804,
+    "longitude": 0.554771
+  },
+  {
+    "postalCode": "DE55",
+    "population": 51182,
+    "city": "Alfreton",
+    "region": "Amber Valley",
+    "latitude": 53.0997,
+    "longitude": -1.37254
+  },
+  {
+    "postalCode": "HU5",
+    "population": 51120,
+    "city": "Hull",
+    "region": "Kingston upon Hull",
+    "latitude": 53.7595,
+    "longitude": -0.374549
+  },
+  {
+    "postalCode": "UB6",
+    "population": 51088,
+    "city": "Greenford",
+    "region": "Ealing",
+    "latitude": 51.5403,
+    "longitude": -0.344118
+  },
+  {
+    "postalCode": "NE6",
+    "population": 50914,
+    "city": "Newcastle upon Tyne",
+    "region": "Newcastle",
+    "latitude": 54.9773,
+    "longitude": -1.56756
+  },
+  {
+    "postalCode": "WF2",
+    "population": 50906,
+    "city": "Wakefield",
+    "region": "Wakefield",
+    "latitude": 53.6732,
+    "longitude": -1.51207
+  },
+  {
+    "postalCode": "SK6",
+    "population": 50706,
+    "city": "Stockport",
+    "region": "Stockport",
+    "latitude": 53.4058,
+    "longitude": -2.08171
+  },
+  {
+    "postalCode": "NP20",
+    "population": 50668,
+    "city": "Newport",
+    "region": "Newport",
+    "latitude": 51.59,
+    "longitude": -3.00429
+  },
+  {
+    "postalCode": "CH7",
+    "population": 50264,
+    "city": "Buckley, Mold",
+    "region": "Flintshire",
+    "latitude": 53.1695,
+    "longitude": -3.13412
+  },
+  {
+    "postalCode": "GU21",
+    "population": 50243,
+    "city": "Woking",
+    "region": "Woking",
+    "latitude": 51.3199,
+    "longitude": -0.576949
+  },
+  {
+    "postalCode": "DY8",
+    "population": 50208,
+    "city": "Stourbridge",
+    "region": "Dudley",
+    "latitude": 52.4599,
+    "longitude": -2.15367
+  },
+  {
+    "postalCode": "HA4",
+    "population": 50128,
+    "city": "Ruislip",
+    "region": "Hillingdon",
+    "latitude": 51.5708,
+    "longitude": -0.410384
+  },
+  {
+    "postalCode": "WS3",
+    "population": 50116,
+    "city": "Walsall",
+    "region": "Walsall",
+    "latitude": 52.617,
+    "longitude": -1.99122
+  },
+  {
+    "postalCode": "W5",
+    "population": 50008,
+    "city": "London",
+    "region": "Ealing",
+    "latitude": 51.5122,
+    "longitude": -0.304002
+  },
+  {
+    "postalCode": "DE7",
+    "population": 50000,
+    "city": "Ilkeston",
+    "region": "Erewash",
+    "latitude": 52.9405,
+    "longitude": -1.34284
+  },
+  {
+    "postalCode": "DH1",
+    "population": 49987,
+    "city": "Durham",
+    "region": "County Durham",
+    "latitude": 54.7827,
+    "longitude": -1.56194
+  },
+  {
+    "postalCode": "CV10",
+    "population": 49986,
+    "city": "Nuneaton",
+    "region": "Nuneaton & Bedworth",
+    "latitude": 52.5257,
+    "longitude": -1.49979
+  },
+  {
+    "postalCode": "SS9",
+    "population": 49984,
+    "city": "Leigh-on-Sea",
+    "region": "Southend-on-Sea",
+    "latitude": 51.5536,
+    "longitude": 0.652207
+  },
+  {
+    "postalCode": "NR31",
+    "population": 49980,
+    "city": "Great Yarmouth",
+    "region": "Norfolk",
+    "latitude": 52.5767,
+    "longitude": 1.7097
+  },
+  {
+    "postalCode": "B98",
+    "population": 49783,
+    "city": "Redditch",
+    "region": "Redditch",
+    "latitude": 52.3037,
+    "longitude": -1.91586
+  },
+  {
+    "postalCode": "M20",
+    "population": 49328,
+    "city": "Manchester",
+    "region": "Manchester",
+    "latitude": 53.4251,
+    "longitude": -2.23167
+  },
+  {
+    "postalCode": "ME8",
+    "population": 49253,
+    "city": "Gillingham",
+    "region": "Medway",
+    "latitude": 51.3622,
+    "longitude": 0.595189
+  },
+  {
+    "postalCode": "PE1",
+    "population": 49188,
+    "city": "Peterborough",
+    "region": "Peterborough",
+    "latitude": 52.5912,
+    "longitude": -0.248592
+  },
+  {
+    "postalCode": "SS7",
+    "population": 49121,
+    "city": "Benfleet",
+    "region": "Castle Point",
+    "latitude": 51.5631,
+    "longitude": 0.577708
+  },
+  {
+    "postalCode": "NN8",
+    "population": 49069,
+    "city": "Wellingborough",
+    "region": "Wellingborough",
+    "latitude": 52.2984,
+    "longitude": -0.692336
+  },
+  {
+    "postalCode": "HA0",
+    "population": 48931,
+    "city": "Wembley",
+    "region": "Harrow",
+    "latitude": 51.5501,
+    "longitude": -0.304657
+  },
+  {
+    "postalCode": "WA9",
+    "population": 48831,
+    "city": "St. Helens",
+    "region": "St. Helens",
+    "latitude": 53.4371,
+    "longitude": -2.71999
+  },
+  {
+    "postalCode": "CM7",
+    "population": 48725,
+    "city": "Dunmow, Braintree",
+    "region": "Braintree",
+    "latitude": 51.8862,
+    "longitude": 0.547924
+  },
+  {
+    "postalCode": "PO9",
+    "population": 48666,
+    "city": "Havant, Rowland's Castle",
+    "region": "Hampshire",
+    "latitude": 50.8619,
+    "longitude": -0.982944
+  },
+  {
+    "postalCode": "CB1",
+    "population": 48585,
+    "city": "Cambridge",
+    "region": "Cambridge",
+    "latitude": 52.1847,
+    "longitude": 0.166879
+  },
+  {
+    "postalCode": "IV2",
+    "population": 48573,
+    "city": "Inverness",
+    "region": "Highland",
+    "latitude": 57.4686,
+    "longitude": -4.18923
+  },
+  {
+    "postalCode": "NG3",
+    "population": 48495,
+    "city": "Nottingham",
+    "region": "Gedling",
+    "latitude": 52.9677,
+    "longitude": -1.13017
+  },
+  {
+    "postalCode": "UB3",
+    "population": 48474,
+    "city": "Southall, Hayes",
+    "region": "Hillingdon",
+    "latitude": 51.5049,
+    "longitude": -0.421379
+  },
+  {
+    "postalCode": "CR2",
+    "population": 48428,
+    "city": "South Croydon",
+    "region": "Croydon",
+    "latitude": 51.346,
+    "longitude": -0.0957216
+  },
+  {
+    "postalCode": "NE5",
+    "population": 48390,
+    "city": "Newcastle upon Tyne",
+    "region": "Newcastle",
+    "latitude": 54.9955,
+    "longitude": -1.68894
+  },
+  {
+    "postalCode": "W12",
+    "population": 48327,
+    "city": "London",
+    "region": "Hammersmith and Fulham",
+    "latitude": 51.5095,
+    "longitude": -0.240069
+  },
+  {
+    "postalCode": "S10",
+    "population": 48217,
+    "city": "Sheffield",
+    "region": "Sheffield",
+    "latitude": 53.3771,
+    "longitude": -1.51676
+  },
+  {
+    "postalCode": "BA14",
+    "population": 48041,
+    "city": "Trowbridge",
+    "region": "Wiltshire",
+    "latitude": 51.319,
+    "longitude": -2.2033
+  },
+  {
+    "postalCode": "BS4",
+    "population": 47993,
+    "city": "Bristol",
+    "region": "Bristol",
+    "latitude": 51.4364,
+    "longitude": -2.56457
+  },
+  {
+    "postalCode": "PE28",
+    "population": 47969,
+    "city": "Huntingdon",
+    "region": "Huntingdonshire",
+    "latitude": 52.3582,
+    "longitude": -0.190713
+  },
+  {
+    "postalCode": "ME15",
+    "population": 47958,
+    "city": "Maidstone",
+    "region": "Maidstone",
+    "latitude": 51.2549,
+    "longitude": 0.533091
+  },
+  {
+    "postalCode": "BL9",
+    "population": 47942,
+    "city": "Bury",
+    "region": "Bury",
+    "latitude": 53.5923,
+    "longitude": -2.28891
+  },
+  {
+    "postalCode": "WN7",
+    "population": 47823,
+    "city": "Leigh",
+    "region": "Wigan",
+    "latitude": 53.4973,
+    "longitude": -2.51816
+  },
+  {
+    "postalCode": "CO4",
+    "population": 47821,
+    "city": "Colchester",
+    "region": "Colchester",
+    "latitude": 51.9071,
+    "longitude": 0.920206
+  },
+  {
+    "postalCode": "LS8",
+    "population": 47805,
+    "city": "Leeds",
+    "region": "Leeds",
+    "latitude": 53.8215,
+    "longitude": -1.51253
+  },
+  {
+    "postalCode": "PO12",
+    "population": 47769,
+    "city": "Gosport, Lee-on-the-Solent",
+    "region": "Hampshire",
+    "latitude": 50.7988,
+    "longitude": -1.14274
+  },
+  {
+    "postalCode": "W2",
+    "population": 47710,
+    "city": "London",
+    "region": "Westminster",
+    "latitude": 51.5142,
+    "longitude": -0.189858
+  },
+  {
+    "postalCode": "HA9",
+    "population": 47692,
+    "city": "Wembley",
+    "region": "Brent",
+    "latitude": 51.5585,
+    "longitude": -0.289984
+  },
+  {
+    "postalCode": "E5",
+    "population": 47669,
+    "city": "London",
+    "region": "Hackney",
+    "latitude": 51.5594,
+    "longitude": -0.0545857
+  },
+  {
+    "postalCode": "ME10",
+    "population": 47660,
+    "city": "Sittingbourne",
+    "region": "Swale",
+    "latitude": 51.3426,
+    "longitude": 0.735724
+  },
+  {
+    "postalCode": "WA3",
+    "population": 47610,
+    "city": "Warrington",
+    "region": "Wigan",
+    "latitude": 53.4522,
+    "longitude": -2.54827
+  },
+  {
+    "postalCode": "LS6",
+    "population": 47533,
+    "city": "Leeds",
+    "region": "Leeds",
+    "latitude": 53.8185,
+    "longitude": -1.56616
+  },
+  {
+    "postalCode": "G72",
+    "population": 47530,
+    "city": "Glasgow",
+    "region": "South Lanarkshire",
+    "latitude": 55.8048,
+    "longitude": -4.13071
+  },
+  {
+    "postalCode": "LE10",
+    "population": 47511,
+    "city": "Hinckley",
+    "region": "Leicester",
+    "latitude": 52.5373,
+    "longitude": -1.37066
+  },
+  {
+    "postalCode": "BR3",
+    "population": 47411,
+    "city": "Beckenham",
+    "region": "Bromley",
+    "latitude": 51.4033,
+    "longitude": -0.0318865
+  },
+  {
+    "postalCode": "BS15",
+    "population": 47398,
+    "city": "Bristol",
+    "region": "Bristol",
+    "latitude": 51.4549,
+    "longitude": -2.49632
+  }
+]

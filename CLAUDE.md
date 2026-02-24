@@ -679,6 +679,26 @@ The email campaign system consists of multiple parallel campaigns targeting diff
 - **Template Variables**: `first_name`, `tracked_cta_url`, `unsubscribe_url`
 - **Language Selection**: Based on country field (EN default, ES for Spain/Mexico/etc., DE for Germany/Austria/etc.)
 
+### Scentsy Campaign (Mailgun API - Automated)
+- **Function**: `sendHourlyScentsyCampaign` in `functions/email-campaign-scentsy.js`
+- **Tags**: `scentsy_campaign`, `tracked`
+- **Schedule**: 11:30am, 2:30pm, 5:30pm, 8:30pm PT (4 runs/day)
+- **Data Source**: Firestore `scentsy_contacts` collection (scraped from Scentsy consultant finder)
+- **Control Variable**: SCENTSY_CAMPAIGN_ENABLED
+- **Batch Size**: Dynamic via Firestore `config/emailCampaign.scentsyBatchSize`
+- **Subject**: V9/V10 A/B test with 4-way rotation per language (`scentsy_v9a_en`, `scentsy_v9b_en`, `scentsy_v10a_en`, `scentsy_v10b_en`, plus ES and DE variants)
+- **Query**: `status == 'pending' && sent == false`, ordered by randomIndex
+- **Template Variables**: `first_name`, `tracked_cta_url`, `unsubscribe_url`
+- **Language Selection**: Based on countryCode field mapping:
+  - EN: US, CA, GB, AU, IE, NZ
+  - ES: MX, ES, AR, CO, CL, PE, VE
+  - DE: DE, AT, CH
+
+- **Scraper Architecture** (Feb 2026):
+  - `scripts/scentsy-scraper.js` - Puppeteer scraper for Scentsy consultant finder
+  - `.github/workflows/scentsy-scraper.yml` - 4x daily (every 6 hours), 20 postal codes/run
+  - Data source: `scentsy_zipcodes` collection (ordered by population DESC)
+
 - **Two-Script Architecture** (Feb 2026):
   - `scripts/fsr-id-harvester.js` - Fast ID harvester (no CAPTCHA, 12x daily, 50 pages/run)
   - `scripts/fsr-scraper.js` - Contact scraper with 2Captcha reCAPTCHA solver (4x daily, 75/run)
@@ -694,6 +714,7 @@ The email campaign system consists of multiple parallel campaigns targeting diff
   | FSR (`batchSizeFsr`) | 5 | 4 | 20 | 17 | New (Feb 19) |
   | Paparazzi (`batchSizePaparazzi`) | TBD | 4 | TBD | TBD | New (Feb 23) |
   | Pruvit (`batchSizePruvit`) | TBD | 4 | TBD | 5 | New (Feb 24) |
+  | Scentsy (`scentsyBatchSize`) | 0 | 4 | 0 | TBD | New (Feb 24) |
   | Contacts (`batchSizeContacts`) | 0 | - | - | 826 (paused) | Complete |
   | **Total** | - | 20 | **TBD** | - | - |
 
@@ -1302,6 +1323,7 @@ Corporate email domains are excluded from all contact collections using a **blac
 - `functions/email-campaign-bfh.js` - BFH Campaign (bfh_contacts)
 - `functions/email-campaign-paparazzi.js` - Paparazzi Campaign + testPaparazziEmail spam test endpoint
 - `functions/email-campaign-pruvit.js` - Pruvit Campaign (pruvit_contacts)
+- `functions/email-campaign-scentsy.js` - Scentsy Campaign (scentsy_contacts) with multilingual support
 - `functions/email-stats-functions.js` - Email campaign stats API (Firestore + GA4)
 - `functions/analytics-dashboard-functions.js` - TBP analytics dashboard API (GA4 + iOS + Android + Firestore)
 - `functions/email-smtp-sender.js` - SMTP transporter with connection pooling
@@ -1321,6 +1343,7 @@ Corporate email domains are excluded from all contact collections using a **blac
 - `scripts/mlm500-scraper.js` - MLM500 rankings scraper with BFH migration
 - `scripts/pruvit-url-discovery.js` - Pruvit referral code discovery (Common Crawl + Wayback + SerpAPI)
 - `scripts/pruvit-scraper.js` - Pruvit contact scraper (Puppeteer modal extraction)
+- `scripts/scentsy-scraper.js` - Scentsy consultant scraper (Puppeteer, queries scentsy_zipcodes by population)
 
 ### Utility Scripts (functions/)
 - `count-todays-emails.js` - Query Firestore for daily email send counts
@@ -1349,8 +1372,8 @@ Corporate email domains are excluded from all contact collections using a **blac
   - **Calls `testPaparazziEmail` Cloud Function endpoint** to test actual campaign code (prevents drift)
   - Tests variants v9a and v10b to cover both subject lines
   - Checks Gmail API for inbox vs spam placement
-  - Auto-disables **ALL 6 campaigns** if spam detected:
-    - `batchSize`, `batchSizePurchased`, `batchSizeBfh`, `batchSizePaparazzi`, `batchSizeFsr`, `batchSizeZinzino`
+  - Auto-disables **ALL 8 campaigns** if spam detected:
+    - `batchSize`, `batchSizePurchased`, `batchSizeBfh`, `batchSizePaparazzi`, `batchSizeFsr`, `batchSizeZinzino`, `batchSizePruvit`, `scentsyBatchSize`
   - Sends alert email via Mailgun on spam detection
   - Stores previous batch size values for recovery
   - Schedule: Daily 6am PT via `.github/workflows/spam-monitor.yml`
@@ -1585,7 +1608,7 @@ Corporate email domains are excluded from all contact collections using a **blac
 - ✅ **Spam Monitor Script Updated**: `scripts/spam-monitor.js` now uses Cloud Function endpoint
   - Calls `testPaparazziEmail` instead of sending emails directly
   - Tests variants v9a and v10b to cover both safe subjects
-  - Disables ALL 6 campaigns if spam detected (batchSize, batchSizePurchased, batchSizeBfh, batchSizePaparazzi, batchSizeFsr, batchSizeZinzino)
+  - Disables ALL 8 campaigns if spam detected (batchSize, batchSizePurchased, batchSizeBfh, batchSizePaparazzi, batchSizeFsr, batchSizeZinzino, batchSizePruvit, scentsyBatchSize)
 - ✅ **Paparazzi Campaign Added**: New campaign for `paparazzi_contacts` collection
   - Schedule: 10:30am, 1:30pm, 4:30pm, 7:30pm PT (4 runs/day)
   - 4-way A/B test: V9/V10 × 2 subjects
@@ -1594,6 +1617,13 @@ Corporate email domains are excluded from all contact collections using a **blac
   - `status + sent + randomIndex` (for campaign email send query)
   - `sent + sentTimestamp DESC` (for benchmark filtering)
   - `sent + sentTimestamp ASC` (for benchmark filtering)
+- ✅ **Scentsy Campaign Added**: New campaign for `scentsy_contacts` collection
+  - Schedule: 11:30am, 2:30pm, 5:30pm, 8:30pm PT (4 runs/day)
+  - Multilingual 4-way A/B test: V9/V10 × 2 subjects × 3 languages (EN/ES/DE)
+  - Scraper: `scripts/scentsy-scraper.js` with Puppeteer (queries `scentsy_zipcodes` by population)
+  - Workflow: `.github/workflows/scentsy-scraper.yml` (4x daily, 20 postal codes/run)
+  - Batch size controlled via `config/emailCampaign.scentsyBatchSize`
+- ✅ **Scentsy Firestore Indexes Added**: 6 composite indexes for `scentsy_zipcodes` and `scentsy_contacts` collections
 
 **FSR Campaign & Subscription Updates (Feb 19, 2026)**
 - ✅ **FSR Email Campaign Created**: New campaign for FindSalesRep contacts
@@ -1624,6 +1654,7 @@ Main Campaign reduced due to underperformance. Focus shifted to BFH, Purchased, 
 | Paparazzi Campaign | Active | 10:30am, 1:30pm, 4:30pm, 7:30pm PT · uses `paparazzi_contacts` |
 | FSR Campaign | Active | 10am, 1pm, 4pm, 7pm PT · 5/batch · 17 contacts (new Feb 19) |
 | Pruvit Campaign | Active | 11:30am, 2:30pm, 5:30pm, 8:30pm PT · uses `pruvit_contacts` (new Feb 24) |
+| Scentsy Campaign | Active | 11:30am, 2:30pm, 5:30pm, 8:30pm PT · uses `scentsy_contacts` (new Feb 24) |
 | Contacts Campaign | Complete | 826 contacts (cleaned Feb 15) |
 | Email Sending | Mailgun API | Via Mailgun, news.teambuildpro.com |
 | Email A/B Testing | Active | Safe subjects only (spam-trigger removed Feb 23) |

@@ -183,6 +183,13 @@ const {
 } = require('./email-campaign-pruvit');
 
 // ==============================
+// Import Email Campaign for Scentsy Contacts
+// ==============================
+const {
+  sendHourlyScentsyCampaign,
+} = require('./email-campaign-scentsy');
+
+// ==============================
 // Import Email Tracking Functions (SMTP Migration)
 // ==============================
 const {
@@ -454,6 +461,9 @@ module.exports = {
 
   // Email campaign for Pruvit contacts (scheduled)
   sendHourlyPruvitCampaign,
+
+  // Email campaign for Scentsy contacts (scheduled)
+  sendHourlyScentsyCampaign,
 
   // Email tracking endpoints (SMTP migration)
   trackEmailOpen,

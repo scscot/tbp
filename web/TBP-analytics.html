@@ -746,6 +746,16 @@
             color: #a16207;
         }
 
+        .campaign-label.pruvit {
+            background: #f3e8ff;
+            color: #7c3aed;
+        }
+
+        .campaign-label.scentsy {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
         .source-label {
             display: inline-block;
             font-size: 0.7rem;
@@ -1614,6 +1624,42 @@
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Pruvit Campaign -->
+                        <div style="background: #f8f9fa; border-radius: 12px; padding: 15px; border-left: 4px solid #7c3aed;">
+                            <h4 style="margin: 0 0 12px 0; color: #7c3aed; font-size: 0.9rem;">PRUVIT CAMPAIGN</h4>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                <div>
+                                    <div style="font-size: 0.7rem; color: #666; text-transform: uppercase;">Sent</div>
+                                    <div style="font-size: 1.3rem; font-weight: 600; color: #34c759;" id="execPruvitSent">-</div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 0.7rem; color: #666; text-transform: uppercase;">Remaining</div>
+                                    <div style="font-size: 1.3rem; font-weight: 600; color: #7c3aed;" id="execPruvitRemaining">-</div>
+                                </div>
+                                <div style="grid-column: span 2; margin-top: 5px;">
+                                    <div style="font-size: 0.7rem; color: #999; text-align: center;">Clicks tracked via GA4 below</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Scentsy Campaign -->
+                        <div style="background: #f8f9fa; border-radius: 12px; padding: 15px; border-left: 4px solid #2e7d32;">
+                            <h4 style="margin: 0 0 12px 0; color: #2e7d32; font-size: 0.9rem;">SCENTSY CAMPAIGN</h4>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                <div>
+                                    <div style="font-size: 0.7rem; color: #666; text-transform: uppercase;">Sent</div>
+                                    <div style="font-size: 1.3rem; font-weight: 600; color: #34c759;" id="execScentsySent">-</div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 0.7rem; color: #666; text-transform: uppercase;">Remaining</div>
+                                    <div style="font-size: 1.3rem; font-weight: 600; color: #2e7d32;" id="execScentsyRemaining">-</div>
+                                </div>
+                                <div style="grid-column: span 2; margin-top: 5px;">
+                                    <div style="font-size: 0.7rem; color: #999; text-align: center;">Clicks tracked via GA4 below</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- GA4 Campaign Traffic -->
@@ -1895,6 +1941,12 @@
                     </div>
                     <div class="campaign-tab" onclick="switchEmailTab('paparazzi')">
                         Paparazzi <span class="tab-badge" id="emailPaparazziTabBadge">-</span>
+                    </div>
+                    <div class="campaign-tab" onclick="switchEmailTab('pruvit')">
+                        Pruvit <span class="tab-badge" id="emailPruvitTabBadge">-</span>
+                    </div>
+                    <div class="campaign-tab" onclick="switchEmailTab('scentsy')">
+                        Scentsy <span class="tab-badge" id="emailScentsyTabBadge">-</span>
                     </div>
                     <div class="campaign-tab comparison" onclick="switchEmailTab('comparison')">
                         &#128202; Comparison
@@ -2424,6 +2476,160 @@
                     </div>
                 </div>
 
+                <!-- Pruvit Campaign Sub-Tab Content -->
+                <div id="emailPruvitTab" class="campaign-content">
+                    <!-- Campaign Progress -->
+                    <h2 class="section-title">Campaign Progress <span class="campaign-label pruvit">Pruvit</span></h2>
+                    <div class="section-card" style="margin-bottom: 30px;">
+                        <h3>Overall Send Progress</h3>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar" id="emailPruvitProgressBar" style="width: 0%;">0%</div>
+                        </div>
+                        <div class="progress-stats">
+                            <span><strong id="emailPruvitTotalSent">0</strong> sent</span>
+                            <span><strong id="emailPruvitTotalRemaining">0</strong> remaining</span>
+                            <span><strong id="emailPruvitTotalContacts">0</strong> total</span>
+                        </div>
+                    </div>
+
+                    <div class="section-card">
+                        <h3>Email Statistics</h3>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-value green" id="emailPruvitSentToday">-</div>
+                                <div class="stat-label">Sent Today</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="emailPruvitSent24h">-</div>
+                                <div class="stat-label">Last 24 Hours</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value red" id="emailPruvitFailed">-</div>
+                                <div class="stat-label">Failed</div>
+                            </div>
+                        </div>
+                        <!-- Click Performance - Now tracked via GA4 -->
+                        <div style="margin-top: 15px; padding: 12px; background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 8px; border-left: 4px solid #0ea5e9;">
+                            <div style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem;">
+                                <span>&#128202;</span>
+                                <span><strong>Click Tracking via GA4</strong> - See Website tab, filter by medium = email</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-card" style="margin-top: 30px;">
+                        <h3>A/B Test Performance (Sends Only)</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Variant</th>
+                                    <th>Sent</th>
+                                    <th>Clicked</th>
+                                    <th>Rate</th>
+                                </tr>
+                            </thead>
+                            <tbody id="emailPruvitAbTestBody">
+                                <tr><td colspan="4" class="no-data-message">Loading...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="section-card" style="margin-top: 30px;">
+                        <h3>Recent Sends</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Time (PT)</th>
+                                    <th>Email</th>
+                                    <th>Name</th>
+                                    <th>Variant</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="emailPruvitRecentSendsBody">
+                                <tr><td colspan="5" class="no-data-message">Loading...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Scentsy Campaign Sub-Tab Content -->
+                <div id="emailScentsyTab" class="campaign-content">
+                    <!-- Campaign Progress -->
+                    <h2 class="section-title">Campaign Progress <span class="campaign-label scentsy">Scentsy</span></h2>
+                    <div class="section-card" style="margin-bottom: 30px;">
+                        <h3>Overall Send Progress</h3>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar" id="emailScentsyProgressBar" style="width: 0%;">0%</div>
+                        </div>
+                        <div class="progress-stats">
+                            <span><strong id="emailScentsyTotalSent">0</strong> sent</span>
+                            <span><strong id="emailScentsyTotalRemaining">0</strong> remaining</span>
+                            <span><strong id="emailScentsyTotalContacts">0</strong> total</span>
+                        </div>
+                    </div>
+
+                    <div class="section-card">
+                        <h3>Email Statistics</h3>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-value green" id="emailScentsySentToday">-</div>
+                                <div class="stat-label">Sent Today</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="emailScentsySent24h">-</div>
+                                <div class="stat-label">Last 24 Hours</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value red" id="emailScentsyFailed">-</div>
+                                <div class="stat-label">Failed</div>
+                            </div>
+                        </div>
+                        <!-- Click Performance - Now tracked via GA4 -->
+                        <div style="margin-top: 15px; padding: 12px; background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 8px; border-left: 4px solid #0ea5e9;">
+                            <div style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem;">
+                                <span>&#128202;</span>
+                                <span><strong>Click Tracking via GA4</strong> - See Website tab, filter by medium = email</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-card" style="margin-top: 30px;">
+                        <h3>A/B Test Performance (Sends Only)</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Variant</th>
+                                    <th>Sent</th>
+                                    <th>Clicked</th>
+                                    <th>Rate</th>
+                                </tr>
+                            </thead>
+                            <tbody id="emailScentsyAbTestBody">
+                                <tr><td colspan="4" class="no-data-message">Loading...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="section-card" style="margin-top: 30px;">
+                        <h3>Recent Sends</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Time (PT)</th>
+                                    <th>Email</th>
+                                    <th>Name</th>
+                                    <th>Variant</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="emailScentsyRecentSendsBody">
+                                <tr><td colspan="5" class="no-data-message">Loading...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
                 <!-- Campaign Comparison Tab Content -->
                 <div id="emailComparisonTab" class="campaign-content">
                     <h2 class="section-title">&#128202; Campaign Performance Comparison</h2>
@@ -2558,7 +2764,25 @@
             'paparazzi_v9a': 'V9a: "AI is changing how teams grow"',
             'paparazzi_v9b': 'V9b: "Your AI-powered recruiting assistant"',
             'paparazzi_v10a': 'V10a: "AI is changing how teams grow"',
-            'paparazzi_v10b': 'V10b: "Your AI-powered recruiting assistant"'
+            'paparazzi_v10b': 'V10b: "Your AI-powered recruiting assistant"',
+            // Pruvit campaign
+            'pruvit_v9a': 'V9a: "AI is changing how teams grow"',
+            'pruvit_v9b': 'V9b: "Your AI-powered recruiting assistant"',
+            'pruvit_v10a': 'V10a: "AI is changing how teams grow"',
+            'pruvit_v10b': 'V10b: "Your AI-powered recruiting assistant"',
+            // Scentsy campaign
+            'scentsy_v9a_en': 'V9a EN: "AI is changing how teams grow"',
+            'scentsy_v9b_en': 'V9b EN: "Your AI-powered recruiting assistant"',
+            'scentsy_v10a_en': 'V10a EN: "AI is changing how teams grow"',
+            'scentsy_v10b_en': 'V10b EN: "Your AI-powered recruiting assistant"',
+            'scentsy_v9a_es': 'V9a ES: "AI is changing how teams grow"',
+            'scentsy_v9b_es': 'V9b ES: "Your AI-powered recruiting assistant"',
+            'scentsy_v10a_es': 'V10a ES: "AI is changing how teams grow"',
+            'scentsy_v10b_es': 'V10b ES: "Your AI-powered recruiting assistant"',
+            'scentsy_v9a_de': 'V9a DE: "AI is changing how teams grow"',
+            'scentsy_v9b_de': 'V9b DE: "Your AI-powered recruiting assistant"',
+            'scentsy_v10a_de': 'V10a DE: "AI is changing how teams grow"',
+            'scentsy_v10b_de': 'V10b DE: "Your AI-powered recruiting assistant"'
         };
 
         // Authentication
@@ -2973,6 +3197,16 @@
                 const paparazzi = campaigns.paparazzi || {};
                 document.getElementById('execPaparazziSent').textContent = formatNumber(paparazzi.sent || 0);
                 document.getElementById('execPaparazziRemaining').textContent = formatNumber(paparazzi.remaining || 0);
+
+                // Pruvit Campaign
+                const pruvit = campaigns.pruvit || {};
+                document.getElementById('execPruvitSent').textContent = formatNumber(pruvit.sent || 0);
+                document.getElementById('execPruvitRemaining').textContent = formatNumber(pruvit.remaining || 0);
+
+                // Scentsy Campaign
+                const scentsy = campaigns.scentsy || {};
+                document.getElementById('execScentsySent').textContent = formatNumber(scentsy.sent || 0);
+                document.getElementById('execScentsyRemaining').textContent = formatNumber(scentsy.remaining || 0);
             }
 
             // GA4 Campaign Traffic (from date-range website data)
@@ -3049,6 +3283,7 @@
                 document.getElementById('emailZinzinoTabBadge').textContent = '-';
                 document.getElementById('emailFsrTabBadge').textContent = '-';
                 document.getElementById('emailPaparazziTabBadge').textContent = '-';
+                document.getElementById('emailPruvitTabBadge').textContent = '-';
                 return;
             }
 
@@ -3551,6 +3786,168 @@
                 document.getElementById('execPaparazziRemaining').textContent = formatNumber(pap.campaign?.remaining || 0);
             }
 
+            // ==================== PRUVIT CAMPAIGN ====================
+            if (emailStatsData.pruvitCampaign) {
+                const prv = emailStatsData.pruvitCampaign;
+
+                // Campaign progress
+                const prvTotal = prv.campaign?.total || 1;
+                const prvSent = prv.campaign?.sent || 0;
+                const prvProgress = (prvSent / prvTotal * 100);
+
+                document.getElementById('emailPruvitProgressBar').style.width = prvProgress + '%';
+                document.getElementById('emailPruvitProgressBar').textContent = prvProgress.toFixed(1) + '%';
+                document.getElementById('emailPruvitTotalSent').textContent = formatNumber(prvSent);
+                document.getElementById('emailPruvitTotalRemaining').textContent = formatNumber(prv.campaign?.remaining || 0);
+                document.getElementById('emailPruvitTotalContacts').textContent = formatNumber(prv.campaign?.total || 0);
+
+                // Sending activity
+                document.getElementById('emailPruvitSentToday').textContent = formatNumber(prv.today?.sent || 0);
+                document.getElementById('emailPruvitSent24h').textContent = formatNumber(prv.last24h?.sent || 0);
+
+                // Failed count (clicks now tracked via GA4)
+                if (prv.tracking) {
+                    document.getElementById('emailPruvitFailed').textContent = formatNumber(prv.tracking.failed || 0);
+                }
+
+                // A/B test performance
+                const prvAbBody = document.getElementById('emailPruvitAbTestBody');
+                const prvSubjectLines = (prv.subjectLines || []).filter(sl =>
+                    sl.subjectTag?.startsWith('pruvit_v9') || sl.subjectTag?.startsWith('pruvit_v10')
+                );
+                if (prvSubjectLines.length > 0) {
+                    const sorted = [...prvSubjectLines].sort((a, b) => {
+                        return parseFloat(b.clickRate) - parseFloat(a.clickRate);
+                    });
+                    const winnerTag = sorted[0].subjectTag;
+
+                    prvAbBody.innerHTML = prvSubjectLines.map(sl => {
+                        const label = SUBJECT_LABELS[sl.subjectTag] || sl.subjectTag || 'Unknown';
+                        const isWinner = sl.subjectTag === winnerTag && prvSubjectLines.length > 1;
+                        const badgeClass = getBadgeClass(sl.subjectTag);
+                        return `
+                            <tr class="${isWinner ? 'ab-winner' : ''}">
+                                <td>${escapeHtml(label)} ${isWinner ? '<span class="badge badge-clicked">LEADING</span>' : ''}</td>
+                                <td>${formatNumber(sl.sent)}</td>
+                                <td>${formatNumber(sl.clicked)}</td>
+                                <td><span class="badge ${badgeClass}">${sl.clickRate}</span></td>
+                            </tr>
+                        `;
+                    }).join('');
+                } else {
+                    prvAbBody.innerHTML = '<tr><td colspan="4" class="no-data-message">No A/B test data</td></tr>';
+                }
+
+                // Recent sends
+                const prvTbody = document.getElementById('emailPruvitRecentSendsBody');
+                if (prv.recentSends && prv.recentSends.length > 0) {
+                    prvTbody.innerHTML = prv.recentSends.map(send => {
+                        const variantBadge = getVariantBadge(send.subjectTag);
+                        const statusBadge = send.clicked
+                            ? '<span class="badge badge-clicked">Clicked</span>'
+                            : '<span class="badge badge-sent">Sent</span>';
+                        return `
+                            <tr>
+                                <td>${escapeHtml(send.time || '')}</td>
+                                <td>${escapeHtml(send.email || '')}</td>
+                                <td>${variantBadge}</td>
+                                <td>${statusBadge}</td>
+                            </tr>
+                        `;
+                    }).join('');
+                } else {
+                    prvTbody.innerHTML = '<tr><td colspan="4" class="no-data-message">No recent sends</td></tr>';
+                }
+
+                // Update tab badge
+                document.getElementById('emailPruvitTabBadge').textContent = formatNumber(prvSent) + ' sent';
+
+                // Update executive summary card (clicks tracked via GA4)
+                document.getElementById('execPruvitSent').textContent = formatNumber(prvSent);
+                document.getElementById('execPruvitRemaining').textContent = formatNumber(prv.campaign?.remaining || 0);
+            }
+
+            // ==================== SCENTSY CAMPAIGN ====================
+            if (emailStatsData.scentsyCampaign) {
+                const sct = emailStatsData.scentsyCampaign;
+
+                // Campaign progress
+                const sctTotal = sct.campaign?.total || 1;
+                const sctSent = sct.campaign?.sent || 0;
+                const sctProgress = (sctSent / sctTotal * 100);
+
+                document.getElementById('emailScentsyProgressBar').style.width = sctProgress + '%';
+                document.getElementById('emailScentsyProgressBar').textContent = sctProgress.toFixed(1) + '%';
+                document.getElementById('emailScentsyTotalSent').textContent = formatNumber(sctSent);
+                document.getElementById('emailScentsyTotalRemaining').textContent = formatNumber(sct.campaign?.remaining || 0);
+                document.getElementById('emailScentsyTotalContacts').textContent = formatNumber(sct.campaign?.total || 0);
+
+                // Sending activity
+                document.getElementById('emailScentsySentToday').textContent = formatNumber(sct.today?.sent || 0);
+                document.getElementById('emailScentsySent24h').textContent = formatNumber(sct.last24h?.sent || 0);
+
+                // Failed count (clicks now tracked via GA4)
+                if (sct.tracking) {
+                    document.getElementById('emailScentsyFailed').textContent = formatNumber(sct.tracking.failed || 0);
+                }
+
+                // A/B test performance
+                const sctAbBody = document.getElementById('emailScentsyAbTestBody');
+                const sctSubjectLines = (sct.subjectLines || []).filter(sl =>
+                    sl.subjectTag?.startsWith('scentsy_v9') || sl.subjectTag?.startsWith('scentsy_v10')
+                );
+                if (sctSubjectLines.length > 0) {
+                    const sorted = [...sctSubjectLines].sort((a, b) => {
+                        return parseFloat(b.clickRate) - parseFloat(a.clickRate);
+                    });
+                    const winnerTag = sorted[0].subjectTag;
+
+                    sctAbBody.innerHTML = sctSubjectLines.map(sl => {
+                        const label = SUBJECT_LABELS[sl.subjectTag] || sl.subjectTag || 'Unknown';
+                        const isWinner = sl.subjectTag === winnerTag && sctSubjectLines.length > 1;
+                        const badgeClass = getBadgeClass(sl.subjectTag);
+                        return `
+                            <tr class="${isWinner ? 'ab-winner' : ''}">
+                                <td>${escapeHtml(label)} ${isWinner ? '<span class="badge badge-clicked">LEADING</span>' : ''}</td>
+                                <td>${formatNumber(sl.sent)}</td>
+                                <td>${formatNumber(sl.clicked)}</td>
+                                <td><span class="badge ${badgeClass}">${sl.clickRate}</span></td>
+                            </tr>
+                        `;
+                    }).join('');
+                } else {
+                    sctAbBody.innerHTML = '<tr><td colspan="4" class="no-data-message">No A/B test data</td></tr>';
+                }
+
+                // Recent sends
+                const sctTbody = document.getElementById('emailScentsyRecentSendsBody');
+                if (sct.recentSends && sct.recentSends.length > 0) {
+                    sctTbody.innerHTML = sct.recentSends.map(send => {
+                        const variantBadge = getVariantBadge(send.subjectTag);
+                        const statusBadge = send.clicked
+                            ? '<span class="badge badge-clicked">Clicked</span>'
+                            : '<span class="badge badge-sent">Sent</span>';
+                        return `
+                            <tr>
+                                <td>${escapeHtml(send.time || '')}</td>
+                                <td>${escapeHtml(send.email || '')}</td>
+                                <td>${variantBadge}</td>
+                                <td>${statusBadge}</td>
+                            </tr>
+                        `;
+                    }).join('');
+                } else {
+                    sctTbody.innerHTML = '<tr><td colspan="4" class="no-data-message">No recent sends</td></tr>';
+                }
+
+                // Update tab badge
+                document.getElementById('emailScentsyTabBadge').textContent = formatNumber(sctSent) + ' sent';
+
+                // Update executive summary card (clicks tracked via GA4)
+                document.getElementById('execScentsySent').textContent = formatNumber(sctSent);
+                document.getElementById('execScentsyRemaining').textContent = formatNumber(sct.campaign?.remaining || 0);
+            }
+
             // ==================== GA4 EMAIL TRAFFIC ====================
             if (emailStatsData.ga4) {
                 const trafficContent = document.getElementById('emailCampaignTrafficContent');
@@ -3718,7 +4115,9 @@
                     { key: 'bfh', name: 'BFH', data: campaigns.bfh },
                     { key: 'zinzino', name: 'Zinzino', data: campaigns.zinzino },
                     { key: 'fsr', name: 'FSR', data: campaigns.fsr },
-                    { key: 'paparazzi', name: 'Paparazzi', data: campaigns.paparazzi }
+                    { key: 'paparazzi', name: 'Paparazzi', data: campaigns.paparazzi },
+                    { key: 'pruvit', name: 'Pruvit', data: campaigns.pruvit },
+                    { key: 'scentsy', name: 'Scentsy', data: campaigns.scentsy }
                 ];
 
                 campaignList.forEach(c => {

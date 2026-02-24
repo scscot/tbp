@@ -1320,6 +1320,8 @@ const BFH_CAMPAIGN_COLLECTION = 'bfh_contacts';
 const ZINZINO_CAMPAIGN_COLLECTION = 'zinzino_contacts';
 const FSR_CAMPAIGN_COLLECTION = 'fsr_contacts';
 const PAPARAZZI_CAMPAIGN_COLLECTION = 'paparazzi_contacts';
+const PRUVIT_CAMPAIGN_COLLECTION = 'pruvit_contacts';
+const SCENTSY_CAMPAIGN_COLLECTION = 'scentsy_contacts';
 
 /**
  * Fetch email campaign stats from Firestore
@@ -1497,18 +1499,20 @@ async function fetchSingleCampaignStats(collectionPath, campaignName, benchmarkT
  */
 async function fetchAllEmailCampaignStats(benchmarkTimestamp = null) {
   try {
-    const [mainStats, contactsStats, purchasedStats, bfhStats, zinzinoStats, fsrStats, paparazziStats] = await Promise.all([
+    const [mainStats, contactsStats, purchasedStats, bfhStats, zinzinoStats, fsrStats, paparazziStats, pruvitStats, scentsyStats] = await Promise.all([
       fetchSingleCampaignStats(CONTACTS_COLLECTION, 'Main', benchmarkTimestamp),
       fetchSingleCampaignStats(CONTACTS_CAMPAIGN_COLLECTION, 'Contacts', benchmarkTimestamp),
       fetchSingleCampaignStats(PURCHASED_CAMPAIGN_COLLECTION, 'Purchased', benchmarkTimestamp),
       fetchSingleCampaignStats(BFH_CAMPAIGN_COLLECTION, 'BFH', benchmarkTimestamp),
       fetchSingleCampaignStats(ZINZINO_CAMPAIGN_COLLECTION, 'Zinzino', benchmarkTimestamp),
       fetchSingleCampaignStats(FSR_CAMPAIGN_COLLECTION, 'FSR', benchmarkTimestamp),
-      fetchSingleCampaignStats(PAPARAZZI_CAMPAIGN_COLLECTION, 'Paparazzi', benchmarkTimestamp)
+      fetchSingleCampaignStats(PAPARAZZI_CAMPAIGN_COLLECTION, 'Paparazzi', benchmarkTimestamp),
+      fetchSingleCampaignStats(PRUVIT_CAMPAIGN_COLLECTION, 'Pruvit', benchmarkTimestamp),
+      fetchSingleCampaignStats(SCENTSY_CAMPAIGN_COLLECTION, 'Scentsy', benchmarkTimestamp)
     ]);
 
     // Calculate totals across all campaigns
-    const campaigns = [mainStats, contactsStats, purchasedStats, bfhStats, zinzinoStats, fsrStats, paparazziStats];
+    const campaigns = [mainStats, contactsStats, purchasedStats, bfhStats, zinzinoStats, fsrStats, paparazziStats, pruvitStats, scentsyStats];
     const totals = {
       totalSent: campaigns.reduce((sum, c) => sum + c.sent, 0),
       totalRemaining: campaigns.reduce((sum, c) => sum + c.remaining, 0),
@@ -1530,7 +1534,9 @@ async function fetchAllEmailCampaignStats(benchmarkTimestamp = null) {
         bfh: bfhStats,
         zinzino: zinzinoStats,
         fsr: fsrStats,
-        paparazzi: paparazziStats
+        paparazzi: paparazziStats,
+        pruvit: pruvitStats,
+        scentsy: scentsyStats
       },
       totals,
       mostActiveCampaign: {
@@ -1875,6 +1881,7 @@ Purchased Leads: ${campaigns.purchased?.clickRate || 'N/A'} click rate, ${campai
 BFH Campaign: ${campaigns.bfh?.clickRate || 'N/A'} click rate, ${campaigns.bfh?.sent || 0} sent
 FSR Campaign: ${campaigns.fsr?.clickRate || 'N/A'} click rate, ${campaigns.fsr?.sent || 0} sent
 Paparazzi Campaign: ${campaigns.paparazzi?.clickRate || 'N/A'} click rate, ${campaigns.paparazzi?.sent || 0} sent
+Pruvit Campaign: ${campaigns.pruvit?.clickRate || 'N/A'} click rate, ${campaigns.pruvit?.sent || 0} sent
 
 PURCHASED LEADS ROI (by source):
 ${Object.entries(roi.bySource || {}).map(([source, data]) =>

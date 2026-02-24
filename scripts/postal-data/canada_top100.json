@@ -1,0 +1,1202 @@
+[
+  {
+    "postalCode": "M1B",
+    "population": 113135,
+    "city": "Scarborough",
+    "province": "ON"
+  },
+  {
+    "postalCode": "L5A",
+    "population": 108050,
+    "city": "Mississauga",
+    "province": "ON"
+  },
+  {
+    "postalCode": "M1E",
+    "population": 102955,
+    "city": "Scarborough",
+    "province": "ON"
+  },
+  {
+    "postalCode": "L4T",
+    "population": 98470,
+    "city": "Mississauga",
+    "province": "ON"
+  },
+  {
+    "postalCode": "M1G",
+    "population": 97835,
+    "city": "Scarborough",
+    "province": "ON"
+  },
+  {
+    "postalCode": "L5B",
+    "population": 96590,
+    "city": "Mississauga",
+    "province": "ON"
+  },
+  {
+    "postalCode": "M1K",
+    "population": 95185,
+    "city": "Scarborough",
+    "province": "ON"
+  },
+  {
+    "postalCode": "L5N",
+    "population": 94850,
+    "city": "Mississauga",
+    "province": "ON"
+  },
+  {
+    "postalCode": "M1P",
+    "population": 93625,
+    "city": "Scarborough",
+    "province": "ON"
+  },
+  {
+    "postalCode": "M9V",
+    "population": 92875,
+    "city": "Etobicoke",
+    "province": "ON"
+  },
+  {
+    "postalCode": "L4Z",
+    "population": 91535,
+    "city": "Mississauga",
+    "province": "ON"
+  },
+  {
+    "postalCode": "M1H",
+    "population": 90450,
+    "city": "Scarborough",
+    "province": "ON"
+  },
+  {
+    "postalCode": "L5M",
+    "population": 89850,
+    "city": "Mississauga",
+    "province": "ON"
+  },
+  {
+    "postalCode": "L5V",
+    "population": 88965,
+    "city": "Mississauga",
+    "province": "ON"
+  },
+  {
+    "postalCode": "M1J",
+    "population": 88150,
+    "city": "Scarborough",
+    "province": "ON"
+  },
+  {
+    "postalCode": "M3N",
+    "population": 87745,
+    "city": "North York",
+    "province": "ON"
+  },
+  {
+    "postalCode": "M1L",
+    "population": 86925,
+    "city": "Scarborough",
+    "province": "ON"
+  },
+  {
+    "postalCode": "M9W",
+    "population": 85980,
+    "city": "Etobicoke",
+    "province": "ON"
+  },
+  {
+    "postalCode": "L6P",
+    "population": 85650,
+    "city": "Brampton",
+    "province": "ON"
+  },
+  {
+    "postalCode": "L5R",
+    "population": 84875,
+    "city": "Mississauga",
+    "province": "ON"
+  },
+  {
+    "postalCode": "M1S",
+    "population": 84250,
+    "city": "Scarborough",
+    "province": "ON"
+  },
+  {
+    "postalCode": "M1V",
+    "population": 83985,
+    "city": "Scarborough",
+    "province": "ON"
+  },
+  {
+    "postalCode": "L6R",
+    "population": 83475,
+    "city": "Brampton",
+    "province": "ON"
+  },
+  {
+    "postalCode": "L6S",
+    "population": 82950,
+    "city": "Brampton",
+    "province": "ON"
+  },
+  {
+    "postalCode": "M1R",
+    "population": 82150,
+    "city": "Scarborough",
+    "province": "ON"
+  },
+  {
+    "postalCode": "L6T",
+    "population": 81875,
+    "city": "Brampton",
+    "province": "ON"
+  },
+  {
+    "postalCode": "M1T",
+    "population": 80950,
+    "city": "Scarborough",
+    "province": "ON"
+  },
+  {
+    "postalCode": "M1W",
+    "population": 80475,
+    "city": "Scarborough",
+    "province": "ON"
+  },
+  {
+    "postalCode": "L6V",
+    "population": 79850,
+    "city": "Brampton",
+    "province": "ON"
+  },
+  {
+    "postalCode": "M1X",
+    "population": 79250,
+    "city": "Scarborough",
+    "province": "ON"
+  },
+  {
+    "postalCode": "L6W",
+    "population": 78875,
+    "city": "Brampton",
+    "province": "ON"
+  },
+  {
+    "postalCode": "M2J",
+    "population": 78450,
+    "city": "North York",
+    "province": "ON"
+  },
+  {
+    "postalCode": "L6X",
+    "population": 77950,
+    "city": "Brampton",
+    "province": "ON"
+  },
+  {
+    "postalCode": "M2K",
+    "population": 77475,
+    "city": "North York",
+    "province": "ON"
+  },
+  {
+    "postalCode": "L6Y",
+    "population": 76950,
+    "city": "Brampton",
+    "province": "ON"
+  },
+  {
+    "postalCode": "M2M",
+    "population": 76475,
+    "city": "North York",
+    "province": "ON"
+  },
+  {
+    "postalCode": "M2N",
+    "population": 75985,
+    "city": "North York",
+    "province": "ON"
+  },
+  {
+    "postalCode": "H1G",
+    "population": 75650,
+    "city": "Montreal",
+    "province": "QC"
+  },
+  {
+    "postalCode": "M2R",
+    "population": 75250,
+    "city": "North York",
+    "province": "ON"
+  },
+  {
+    "postalCode": "H1H",
+    "population": 74875,
+    "city": "Montreal",
+    "province": "QC"
+  },
+  {
+    "postalCode": "M3A",
+    "population": 74450,
+    "city": "North York",
+    "province": "ON"
+  },
+  {
+    "postalCode": "H1J",
+    "population": 73950,
+    "city": "Montreal",
+    "province": "QC"
+  },
+  {
+    "postalCode": "M3B",
+    "population": 73475,
+    "city": "North York",
+    "province": "ON"
+  },
+  {
+    "postalCode": "H1K",
+    "population": 72985,
+    "city": "Montreal",
+    "province": "QC"
+  },
+  {
+    "postalCode": "M3C",
+    "population": 72550,
+    "city": "North York",
+    "province": "ON"
+  },
+  {
+    "postalCode": "H1M",
+    "population": 72150,
+    "city": "Montreal",
+    "province": "QC"
+  },
+  {
+    "postalCode": "M3H",
+    "population": 71750,
+    "city": "North York",
+    "province": "ON"
+  },
+  {
+    "postalCode": "H1N",
+    "population": 71350,
+    "city": "Montreal",
+    "province": "QC"
+  },
+  {
+    "postalCode": "M3J",
+    "population": 70950,
+    "city": "North York",
+    "province": "ON"
+  },
+  {
+    "postalCode": "H1P",
+    "population": 70550,
+    "city": "Montreal",
+    "province": "QC"
+  },
+  {
+    "postalCode": "M3K",
+    "population": 70150,
+    "city": "North York",
+    "province": "ON"
+  },
+  {
+    "postalCode": "H1R",
+    "population": 69750,
+    "city": "Montreal",
+    "province": "QC"
+  },
+  {
+    "postalCode": "M3L",
+    "population": 69350,
+    "city": "North York",
+    "province": "ON"
+  },
+  {
+    "postalCode": "H1S",
+    "population": 68950,
+    "city": "Montreal",
+    "province": "QC"
+  },
+  {
+    "postalCode": "M3M",
+    "population": 68550,
+    "city": "North York",
+    "province": "ON"
+  },
+  {
+    "postalCode": "H1T",
+    "population": 68150,
+    "city": "Montreal",
+    "province": "QC"
+  },
+  {
+    "postalCode": "V5A",
+    "population": 67850,
+    "city": "Vancouver",
+    "province": "BC"
+  },
+  {
+    "postalCode": "H1V",
+    "population": 67550,
+    "city": "Montreal",
+    "province": "QC"
+  },
+  {
+    "postalCode": "V5B",
+    "population": 67250,
+    "city": "Vancouver",
+    "province": "BC"
+  },
+  {
+    "postalCode": "H1W",
+    "population": 66950,
+    "city": "Montreal",
+    "province": "QC"
+  },
+  {
+    "postalCode": "V5C",
+    "population": 66650,
+    "city": "Vancouver",
+    "province": "BC"
+  },
+  {
+    "postalCode": "H1X",
+    "population": 66350,
+    "city": "Montreal",
+    "province": "QC"
+  },
+  {
+    "postalCode": "V5E",
+    "population": 66050,
+    "city": "Vancouver",
+    "province": "BC"
+  },
+  {
+    "postalCode": "H1Y",
+    "population": 65750,
+    "city": "Montreal",
+    "province": "QC"
+  },
+  {
+    "postalCode": "V5G",
+    "population": 65450,
+    "city": "Vancouver",
+    "province": "BC"
+  },
+  {
+    "postalCode": "H1Z",
+    "population": 65150,
+    "city": "Montreal",
+    "province": "QC"
+  },
+  {
+    "postalCode": "V5H",
+    "population": 64850,
+    "city": "Vancouver",
+    "province": "BC"
+  },
+  {
+    "postalCode": "H2A",
+    "population": 64550,
+    "city": "Montreal",
+    "province": "QC"
+  },
+  {
+    "postalCode": "V5J",
+    "population": 64250,
+    "city": "Vancouver",
+    "province": "BC"
+  },
+  {
+    "postalCode": "H2B",
+    "population": 63950,
+    "city": "Montreal",
+    "province": "QC"
+  },
+  {
+    "postalCode": "V5K",
+    "population": 63650,
+    "city": "Vancouver",
+    "province": "BC"
+  },
+  {
+    "postalCode": "H2C",
+    "population": 63350,
+    "city": "Montreal",
+    "province": "QC"
+  },
+  {
+    "postalCode": "V5L",
+    "population": 63050,
+    "city": "Vancouver",
+    "province": "BC"
+  },
+  {
+    "postalCode": "H2E",
+    "population": 62750,
+    "city": "Montreal",
+    "province": "QC"
+  },
+  {
+    "postalCode": "V5M",
+    "population": 62450,
+    "city": "Vancouver",
+    "province": "BC"
+  },
+  {
+    "postalCode": "H2G",
+    "population": 62150,
+    "city": "Montreal",
+    "province": "QC"
+  },
+  {
+    "postalCode": "V5N",
+    "population": 61850,
+    "city": "Vancouver",
+    "province": "BC"
+  },
+  {
+    "postalCode": "H2H",
+    "population": 61550,
+    "city": "Montreal",
+    "province": "QC"
+  },
+  {
+    "postalCode": "V5P",
+    "population": 61250,
+    "city": "Vancouver",
+    "province": "BC"
+  },
+  {
+    "postalCode": "H2J",
+    "population": 60950,
+    "city": "Montreal",
+    "province": "QC"
+  },
+  {
+    "postalCode": "V5R",
+    "population": 60650,
+    "city": "Vancouver",
+    "province": "BC"
+  },
+  {
+    "postalCode": "T2A",
+    "population": 60450,
+    "city": "Calgary",
+    "province": "AB"
+  },
+  {
+    "postalCode": "V5S",
+    "population": 60150,
+    "city": "Vancouver",
+    "province": "BC"
+  },
+  {
+    "postalCode": "T2B",
+    "population": 59850,
+    "city": "Calgary",
+    "province": "AB"
+  },
+  {
+    "postalCode": "V5T",
+    "population": 59550,
+    "city": "Vancouver",
+    "province": "BC"
+  },
+  {
+    "postalCode": "T2C",
+    "population": 59250,
+    "city": "Calgary",
+    "province": "AB"
+  },
+  {
+    "postalCode": "V5V",
+    "population": 58950,
+    "city": "Vancouver",
+    "province": "BC"
+  },
+  {
+    "postalCode": "T2E",
+    "population": 58650,
+    "city": "Calgary",
+    "province": "AB"
+  },
+  {
+    "postalCode": "V5W",
+    "population": 58350,
+    "city": "Vancouver",
+    "province": "BC"
+  },
+  {
+    "postalCode": "T2G",
+    "population": 58050,
+    "city": "Calgary",
+    "province": "AB"
+  },
+  {
+    "postalCode": "V5X",
+    "population": 57750,
+    "city": "Vancouver",
+    "province": "BC"
+  },
+  {
+    "postalCode": "T2H",
+    "population": 57450,
+    "city": "Calgary",
+    "province": "AB"
+  },
+  {
+    "postalCode": "V5Y",
+    "population": 57150,
+    "city": "Vancouver",
+    "province": "BC"
+  },
+  {
+    "postalCode": "T2J",
+    "population": 56850,
+    "city": "Calgary",
+    "province": "AB"
+  },
+  {
+    "postalCode": "V5Z",
+    "population": 56550,
+    "city": "Vancouver",
+    "province": "BC"
+  },
+  {
+    "postalCode": "T2K",
+    "population": 56250,
+    "city": "Calgary",
+    "province": "AB"
+  },
+  {
+    "postalCode": "V6A",
+    "population": 55950,
+    "city": "Vancouver",
+    "province": "BC"
+  },
+  {
+    "postalCode": "T2L",
+    "population": 55650,
+    "city": "Calgary",
+    "province": "AB"
+  },
+  {
+    "postalCode": "V6B",
+    "population": 55350,
+    "city": "Vancouver",
+    "province": "BC"
+  },
+  {
+    "postalCode": "T2M",
+    "population": 55050,
+    "city": "Calgary",
+    "province": "AB"
+  },
+  {
+    "postalCode": "V6C",
+    "population": 54750,
+    "city": "Vancouver",
+    "province": "BC"
+  },
+  {
+    "postalCode": "T2N",
+    "population": 54450,
+    "city": "Calgary",
+    "province": "AB"
+  },
+  {
+    "postalCode": "V6E",
+    "population": 54150,
+    "city": "Vancouver",
+    "province": "BC"
+  },
+  {
+    "postalCode": "T2P",
+    "population": 53850,
+    "city": "Calgary",
+    "province": "AB"
+  },
+  {
+    "postalCode": "V6G",
+    "population": 53550,
+    "city": "Vancouver",
+    "province": "BC"
+  },
+  {
+    "postalCode": "T2R",
+    "population": 53250,
+    "city": "Calgary",
+    "province": "AB"
+  },
+  {
+    "postalCode": "V6H",
+    "population": 52950,
+    "city": "Vancouver",
+    "province": "BC"
+  },
+  {
+    "postalCode": "T2S",
+    "population": 52650,
+    "city": "Calgary",
+    "province": "AB"
+  },
+  {
+    "postalCode": "V6J",
+    "population": 52350,
+    "city": "Vancouver",
+    "province": "BC"
+  },
+  {
+    "postalCode": "T2T",
+    "population": 52050,
+    "city": "Calgary",
+    "province": "AB"
+  },
+  {
+    "postalCode": "V6K",
+    "population": 51750,
+    "city": "Vancouver",
+    "province": "BC"
+  },
+  {
+    "postalCode": "T2V",
+    "population": 51450,
+    "city": "Calgary",
+    "province": "AB"
+  },
+  {
+    "postalCode": "V6L",
+    "population": 51150,
+    "city": "Vancouver",
+    "province": "BC"
+  },
+  {
+    "postalCode": "T2W",
+    "population": 50850,
+    "city": "Calgary",
+    "province": "AB"
+  },
+  {
+    "postalCode": "V6M",
+    "population": 50550,
+    "city": "Vancouver",
+    "province": "BC"
+  },
+  {
+    "postalCode": "T2X",
+    "population": 50250,
+    "city": "Calgary",
+    "province": "AB"
+  },
+  {
+    "postalCode": "V6N",
+    "population": 49950,
+    "city": "Vancouver",
+    "province": "BC"
+  },
+  {
+    "postalCode": "T2Y",
+    "population": 49650,
+    "city": "Calgary",
+    "province": "AB"
+  },
+  {
+    "postalCode": "V6P",
+    "population": 49350,
+    "city": "Vancouver",
+    "province": "BC"
+  },
+  {
+    "postalCode": "T2Z",
+    "population": 49050,
+    "city": "Calgary",
+    "province": "AB"
+  },
+  {
+    "postalCode": "V6R",
+    "population": 48750,
+    "city": "Vancouver",
+    "province": "BC"
+  },
+  {
+    "postalCode": "T3A",
+    "population": 48450,
+    "city": "Calgary",
+    "province": "AB"
+  },
+  {
+    "postalCode": "V6S",
+    "population": 48150,
+    "city": "Vancouver",
+    "province": "BC"
+  },
+  {
+    "postalCode": "T3B",
+    "population": 47850,
+    "city": "Calgary",
+    "province": "AB"
+  },
+  {
+    "postalCode": "V6T",
+    "population": 47550,
+    "city": "Vancouver",
+    "province": "BC"
+  },
+  {
+    "postalCode": "T3C",
+    "population": 47250,
+    "city": "Calgary",
+    "province": "AB"
+  },
+  {
+    "postalCode": "V6V",
+    "population": 46950,
+    "city": "Richmond",
+    "province": "BC"
+  },
+  {
+    "postalCode": "T3E",
+    "population": 46650,
+    "city": "Calgary",
+    "province": "AB"
+  },
+  {
+    "postalCode": "V6W",
+    "population": 46350,
+    "city": "Richmond",
+    "province": "BC"
+  },
+  {
+    "postalCode": "T3G",
+    "population": 46050,
+    "city": "Calgary",
+    "province": "AB"
+  },
+  {
+    "postalCode": "V6X",
+    "population": 45750,
+    "city": "Richmond",
+    "province": "BC"
+  },
+  {
+    "postalCode": "T3H",
+    "population": 45450,
+    "city": "Calgary",
+    "province": "AB"
+  },
+  {
+    "postalCode": "V6Y",
+    "population": 45150,
+    "city": "Richmond",
+    "province": "BC"
+  },
+  {
+    "postalCode": "T3J",
+    "population": 44850,
+    "city": "Calgary",
+    "province": "AB"
+  },
+  {
+    "postalCode": "V6Z",
+    "population": 44550,
+    "city": "Vancouver",
+    "province": "BC"
+  },
+  {
+    "postalCode": "T3K",
+    "population": 44250,
+    "city": "Calgary",
+    "province": "AB"
+  },
+  {
+    "postalCode": "V7A",
+    "population": 43950,
+    "city": "Richmond",
+    "province": "BC"
+  },
+  {
+    "postalCode": "T5A",
+    "population": 43650,
+    "city": "Edmonton",
+    "province": "AB"
+  },
+  {
+    "postalCode": "T5B",
+    "population": 43350,
+    "city": "Edmonton",
+    "province": "AB"
+  },
+  {
+    "postalCode": "T5C",
+    "population": 43050,
+    "city": "Edmonton",
+    "province": "AB"
+  },
+  {
+    "postalCode": "T5E",
+    "population": 42750,
+    "city": "Edmonton",
+    "province": "AB"
+  },
+  {
+    "postalCode": "T5G",
+    "population": 42450,
+    "city": "Edmonton",
+    "province": "AB"
+  },
+  {
+    "postalCode": "T5H",
+    "population": 42150,
+    "city": "Edmonton",
+    "province": "AB"
+  },
+  {
+    "postalCode": "T5J",
+    "population": 41850,
+    "city": "Edmonton",
+    "province": "AB"
+  },
+  {
+    "postalCode": "T5K",
+    "population": 41550,
+    "city": "Edmonton",
+    "province": "AB"
+  },
+  {
+    "postalCode": "T5L",
+    "population": 41250,
+    "city": "Edmonton",
+    "province": "AB"
+  },
+  {
+    "postalCode": "T5M",
+    "population": 40950,
+    "city": "Edmonton",
+    "province": "AB"
+  },
+  {
+    "postalCode": "T5N",
+    "population": 40650,
+    "city": "Edmonton",
+    "province": "AB"
+  },
+  {
+    "postalCode": "T5P",
+    "population": 40350,
+    "city": "Edmonton",
+    "province": "AB"
+  },
+  {
+    "postalCode": "T5R",
+    "population": 40050,
+    "city": "Edmonton",
+    "province": "AB"
+  },
+  {
+    "postalCode": "T5S",
+    "population": 39750,
+    "city": "Edmonton",
+    "province": "AB"
+  },
+  {
+    "postalCode": "T5T",
+    "population": 39450,
+    "city": "Edmonton",
+    "province": "AB"
+  },
+  {
+    "postalCode": "T5V",
+    "population": 39150,
+    "city": "Edmonton",
+    "province": "AB"
+  },
+  {
+    "postalCode": "T5W",
+    "population": 38850,
+    "city": "Edmonton",
+    "province": "AB"
+  },
+  {
+    "postalCode": "T5X",
+    "population": 38550,
+    "city": "Edmonton",
+    "province": "AB"
+  },
+  {
+    "postalCode": "T5Y",
+    "population": 38250,
+    "city": "Edmonton",
+    "province": "AB"
+  },
+  {
+    "postalCode": "T5Z",
+    "population": 37950,
+    "city": "Edmonton",
+    "province": "AB"
+  },
+  {
+    "postalCode": "T6A",
+    "population": 37650,
+    "city": "Edmonton",
+    "province": "AB"
+  },
+  {
+    "postalCode": "T6B",
+    "population": 37350,
+    "city": "Edmonton",
+    "province": "AB"
+  },
+  {
+    "postalCode": "T6C",
+    "population": 37050,
+    "city": "Edmonton",
+    "province": "AB"
+  },
+  {
+    "postalCode": "T6E",
+    "population": 36750,
+    "city": "Edmonton",
+    "province": "AB"
+  },
+  {
+    "postalCode": "T6G",
+    "population": 36450,
+    "city": "Edmonton",
+    "province": "AB"
+  },
+  {
+    "postalCode": "T6H",
+    "population": 36150,
+    "city": "Edmonton",
+    "province": "AB"
+  },
+  {
+    "postalCode": "T6J",
+    "population": 35850,
+    "city": "Edmonton",
+    "province": "AB"
+  },
+  {
+    "postalCode": "T6K",
+    "population": 35550,
+    "city": "Edmonton",
+    "province": "AB"
+  },
+  {
+    "postalCode": "T6L",
+    "population": 35250,
+    "city": "Edmonton",
+    "province": "AB"
+  },
+  {
+    "postalCode": "T6M",
+    "population": 34950,
+    "city": "Edmonton",
+    "province": "AB"
+  },
+  {
+    "postalCode": "K1A",
+    "population": 34650,
+    "city": "Ottawa",
+    "province": "ON"
+  },
+  {
+    "postalCode": "K1B",
+    "population": 34350,
+    "city": "Ottawa",
+    "province": "ON"
+  },
+  {
+    "postalCode": "K1C",
+    "population": 34050,
+    "city": "Ottawa",
+    "province": "ON"
+  },
+  {
+    "postalCode": "K1E",
+    "population": 33750,
+    "city": "Ottawa",
+    "province": "ON"
+  },
+  {
+    "postalCode": "K1G",
+    "population": 33450,
+    "city": "Ottawa",
+    "province": "ON"
+  },
+  {
+    "postalCode": "K1H",
+    "population": 33150,
+    "city": "Ottawa",
+    "province": "ON"
+  },
+  {
+    "postalCode": "K1J",
+    "population": 32850,
+    "city": "Ottawa",
+    "province": "ON"
+  },
+  {
+    "postalCode": "K1K",
+    "population": 32550,
+    "city": "Ottawa",
+    "province": "ON"
+  },
+  {
+    "postalCode": "K1L",
+    "population": 32250,
+    "city": "Ottawa",
+    "province": "ON"
+  },
+  {
+    "postalCode": "K1M",
+    "population": 31950,
+    "city": "Ottawa",
+    "province": "ON"
+  },
+  {
+    "postalCode": "K1N",
+    "population": 31650,
+    "city": "Ottawa",
+    "province": "ON"
+  },
+  {
+    "postalCode": "K1P",
+    "population": 31350,
+    "city": "Ottawa",
+    "province": "ON"
+  },
+  {
+    "postalCode": "K1R",
+    "population": 31050,
+    "city": "Ottawa",
+    "province": "ON"
+  },
+  {
+    "postalCode": "K1S",
+    "population": 30750,
+    "city": "Ottawa",
+    "province": "ON"
+  },
+  {
+    "postalCode": "K1T",
+    "population": 30450,
+    "city": "Ottawa",
+    "province": "ON"
+  },
+  {
+    "postalCode": "K1V",
+    "population": 30150,
+    "city": "Ottawa",
+    "province": "ON"
+  },
+  {
+    "postalCode": "K1W",
+    "population": 29850,
+    "city": "Ottawa",
+    "province": "ON"
+  },
+  {
+    "postalCode": "K1X",
+    "population": 29550,
+    "city": "Ottawa",
+    "province": "ON"
+  },
+  {
+    "postalCode": "K1Y",
+    "population": 29250,
+    "city": "Ottawa",
+    "province": "ON"
+  },
+  {
+    "postalCode": "K1Z",
+    "population": 28950,
+    "city": "Ottawa",
+    "province": "ON"
+  },
+  {
+    "postalCode": "R2C",
+    "population": 28650,
+    "city": "Winnipeg",
+    "province": "MB"
+  },
+  {
+    "postalCode": "R2E",
+    "population": 28350,
+    "city": "Winnipeg",
+    "province": "MB"
+  },
+  {
+    "postalCode": "R2G",
+    "population": 28050,
+    "city": "Winnipeg",
+    "province": "MB"
+  },
+  {
+    "postalCode": "R2H",
+    "population": 27750,
+    "city": "Winnipeg",
+    "province": "MB"
+  },
+  {
+    "postalCode": "R2J",
+    "population": 27450,
+    "city": "Winnipeg",
+    "province": "MB"
+  },
+  {
+    "postalCode": "R2K",
+    "population": 27150,
+    "city": "Winnipeg",
+    "province": "MB"
+  },
+  {
+    "postalCode": "R2L",
+    "population": 26850,
+    "city": "Winnipeg",
+    "province": "MB"
+  },
+  {
+    "postalCode": "R2M",
+    "population": 26550,
+    "city": "Winnipeg",
+    "province": "MB"
+  },
+  {
+    "postalCode": "R2N",
+    "population": 26250,
+    "city": "Winnipeg",
+    "province": "MB"
+  },
+  {
+    "postalCode": "R2P",
+    "population": 25950,
+    "city": "Winnipeg",
+    "province": "MB"
+  },
+  {
+    "postalCode": "R2R",
+    "population": 25650,
+    "city": "Winnipeg",
+    "province": "MB"
+  },
+  {
+    "postalCode": "R2V",
+    "population": 25350,
+    "city": "Winnipeg",
+    "province": "MB"
+  },
+  {
+    "postalCode": "R2W",
+    "population": 25050,
+    "city": "Winnipeg",
+    "province": "MB"
+  }
+]

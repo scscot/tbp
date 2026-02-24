@@ -1,0 +1,1802 @@
+[
+  {
+    "postalCode": "60629",
+    "population": 113916,
+    "city": "Chicago",
+    "state": "IL",
+    "stateName": "Illinois",
+    "latitude": 41.77567,
+    "longitude": -87.71176
+  },
+  {
+    "postalCode": "79936",
+    "population": 111086,
+    "city": "El Paso",
+    "state": "TX",
+    "stateName": "Texas",
+    "latitude": 31.77618,
+    "longitude": -106.29785
+  },
+  {
+    "postalCode": "11368",
+    "population": 109931,
+    "city": "Corona",
+    "state": "NY",
+    "stateName": "New York",
+    "latitude": 40.74959,
+    "longitude": -73.8526
+  },
+  {
+    "postalCode": "00926",
+    "population": 108862,
+    "city": "San Juan",
+    "state": "PR",
+    "stateName": "Puerto Rico",
+    "latitude": 18.3462,
+    "longitude": -66.05234
+  },
+  {
+    "postalCode": "90650",
+    "population": 105549,
+    "city": "Norwalk",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 33.90685,
+    "longitude": -118.08263
+  },
+  {
+    "postalCode": "90011",
+    "population": 103892,
+    "city": "Los Angeles",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 34.00714,
+    "longitude": -118.25874
+  },
+  {
+    "postalCode": "91331",
+    "population": 103689,
+    "city": "Pacoima",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 34.25563,
+    "longitude": -118.42076
+  },
+  {
+    "postalCode": "11226",
+    "population": 101572,
+    "city": "Brooklyn",
+    "state": "NY",
+    "stateName": "New York",
+    "latitude": 40.64639,
+    "longitude": -73.9568
+  },
+  {
+    "postalCode": "90201",
+    "population": 101279,
+    "city": "Bell Gardens",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 33.97074,
+    "longitude": -118.17084
+  },
+  {
+    "postalCode": "11373",
+    "population": 100820,
+    "city": "Elmhurst",
+    "state": "NY",
+    "stateName": "New York",
+    "latitude": 40.73886,
+    "longitude": -73.87858
+  },
+  {
+    "postalCode": "11220",
+    "population": 99598,
+    "city": "Brooklyn",
+    "state": "NY",
+    "stateName": "New York",
+    "latitude": 40.64115,
+    "longitude": -74.01627
+  },
+  {
+    "postalCode": "11385",
+    "population": 98592,
+    "city": "Ridgewood",
+    "state": "NY",
+    "stateName": "New York",
+    "latitude": 40.70102,
+    "longitude": -73.89013
+  },
+  {
+    "postalCode": "10467",
+    "population": 97060,
+    "city": "Bronx",
+    "state": "NY",
+    "stateName": "New York",
+    "latitude": 40.88085,
+    "longitude": -73.87394
+  },
+  {
+    "postalCode": "92335",
+    "population": 95397,
+    "city": "Fontana",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 34.08717,
+    "longitude": -117.46549
+  },
+  {
+    "postalCode": "77084",
+    "population": 95137,
+    "city": "Houston",
+    "state": "TX",
+    "stateName": "Texas",
+    "latitude": 29.82641,
+    "longitude": -95.66214
+  },
+  {
+    "postalCode": "10025",
+    "population": 94600,
+    "city": "New York",
+    "state": "NY",
+    "stateName": "New York",
+    "latitude": 40.79857,
+    "longitude": -73.96659
+  },
+  {
+    "postalCode": "11208",
+    "population": 94469,
+    "city": "Brooklyn",
+    "state": "NY",
+    "stateName": "New York",
+    "latitude": 40.66853,
+    "longitude": -73.87089
+  },
+  {
+    "postalCode": "90280",
+    "population": 94396,
+    "city": "South Gate",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 33.94467,
+    "longitude": -118.19268
+  },
+  {
+    "postalCode": "77449",
+    "population": 94382,
+    "city": "Katy",
+    "state": "TX",
+    "stateName": "Texas",
+    "latitude": 29.83556,
+    "longitude": -95.73813
+  },
+  {
+    "postalCode": "11236",
+    "population": 93877,
+    "city": "Brooklyn",
+    "state": "NY",
+    "stateName": "New York",
+    "latitude": 40.63958,
+    "longitude": -73.90107
+  },
+  {
+    "postalCode": "78521",
+    "population": 93818,
+    "city": "Brownsville",
+    "state": "TX",
+    "stateName": "Texas",
+    "latitude": 25.95038,
+    "longitude": -97.32167
+  },
+  {
+    "postalCode": "90805",
+    "population": 93524,
+    "city": "Long Beach",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 33.86491,
+    "longitude": -118.18054
+  },
+  {
+    "postalCode": "11207",
+    "population": 93386,
+    "city": "Brooklyn",
+    "state": "NY",
+    "stateName": "New York",
+    "latitude": 40.6707,
+    "longitude": -73.8941
+  },
+  {
+    "postalCode": "90250",
+    "population": 93193,
+    "city": "Hawthorne",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 33.91437,
+    "longitude": -118.3493
+  },
+  {
+    "postalCode": "08701",
+    "population": 92843,
+    "city": "Lakewood",
+    "state": "NJ",
+    "stateName": "New Jersey",
+    "latitude": 40.07645,
+    "longitude": -74.20323
+  },
+  {
+    "postalCode": "11219",
+    "population": 92221,
+    "city": "Brooklyn",
+    "state": "NY",
+    "stateName": "New York",
+    "latitude": 40.63267,
+    "longitude": -73.99669
+  },
+  {
+    "postalCode": "60623",
+    "population": 92108,
+    "city": "Chicago",
+    "state": "IL",
+    "stateName": "Illinois",
+    "latitude": 41.84808,
+    "longitude": -87.71778
+  },
+  {
+    "postalCode": "60618",
+    "population": 92084,
+    "city": "Chicago",
+    "state": "IL",
+    "stateName": "Illinois",
+    "latitude": 41.94696,
+    "longitude": -87.70262
+  },
+  {
+    "postalCode": "91342",
+    "population": 91725,
+    "city": "Sylmar",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 34.31515,
+    "longitude": -118.3851
+  },
+  {
+    "postalCode": "60632",
+    "population": 91326,
+    "city": "Chicago",
+    "state": "IL",
+    "stateName": "Illinois",
+    "latitude": 41.81133,
+    "longitude": -87.71335
+  },
+  {
+    "postalCode": "60639",
+    "population": 90407,
+    "city": "Chicago",
+    "state": "IL",
+    "stateName": "Illinois",
+    "latitude": 41.92056,
+    "longitude": -87.75603
+  },
+  {
+    "postalCode": "11211",
+    "population": 90117,
+    "city": "Brooklyn",
+    "state": "NY",
+    "stateName": "New York",
+    "latitude": 40.71244,
+    "longitude": -73.95299
+  },
+  {
+    "postalCode": "11377",
+    "population": 89830,
+    "city": "Woodside",
+    "state": "NY",
+    "stateName": "New York",
+    "latitude": 40.74485,
+    "longitude": -73.90517
+  },
+  {
+    "postalCode": "90044",
+    "population": 89779,
+    "city": "Los Angeles",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 33.95278,
+    "longitude": -118.29188
+  },
+  {
+    "postalCode": "92683",
+    "population": 89747,
+    "city": "Westminster",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 33.7525,
+    "longitude": -117.99397
+  },
+  {
+    "postalCode": "00725",
+    "population": 89374,
+    "city": "Caguas",
+    "state": "PR",
+    "stateName": "Puerto Rico",
+    "latitude": 18.21858,
+    "longitude": -66.04275
+  },
+  {
+    "postalCode": "75052",
+    "population": 88996,
+    "city": "Grand Prairie",
+    "state": "TX",
+    "stateName": "Texas",
+    "latitude": 32.66591,
+    "longitude": -97.02648
+  },
+  {
+    "postalCode": "11214",
+    "population": 88630,
+    "city": "Brooklyn",
+    "state": "NY",
+    "stateName": "New York",
+    "latitude": 40.59879,
+    "longitude": -73.99635
+  },
+  {
+    "postalCode": "92336",
+    "population": 88419,
+    "city": "Fontana",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 34.14649,
+    "longitude": -117.46395
+  },
+  {
+    "postalCode": "92704",
+    "population": 88123,
+    "city": "Santa Ana",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 33.72053,
+    "longitude": -117.90805
+  },
+  {
+    "postalCode": "11234",
+    "population": 87757,
+    "city": "Brooklyn",
+    "state": "NY",
+    "stateName": "New York",
+    "latitude": 40.60602,
+    "longitude": -73.91071
+  },
+  {
+    "postalCode": "60647",
+    "population": 87291,
+    "city": "Chicago",
+    "state": "IL",
+    "stateName": "Illinois",
+    "latitude": 41.92068,
+    "longitude": -87.70167
+  },
+  {
+    "postalCode": "10456",
+    "population": 86547,
+    "city": "Bronx",
+    "state": "NY",
+    "stateName": "New York",
+    "latitude": 40.83003,
+    "longitude": -73.90815
+  },
+  {
+    "postalCode": "11230",
+    "population": 86408,
+    "city": "Brooklyn",
+    "state": "NY",
+    "stateName": "New York",
+    "latitude": 40.62218,
+    "longitude": -73.96519
+  },
+  {
+    "postalCode": "92804",
+    "population": 85914,
+    "city": "Anaheim",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 33.81826,
+    "longitude": -117.97504
+  },
+  {
+    "postalCode": "11355",
+    "population": 85871,
+    "city": "Flushing",
+    "state": "NY",
+    "stateName": "New York",
+    "latitude": 40.75148,
+    "longitude": -73.82092
+  },
+  {
+    "postalCode": "10314",
+    "population": 85510,
+    "city": "Staten Island",
+    "state": "NY",
+    "stateName": "New York",
+    "latitude": 40.59912,
+    "longitude": -74.16573
+  },
+  {
+    "postalCode": "91744",
+    "population": 85040,
+    "city": "La Puente",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 34.02889,
+    "longitude": -117.93732
+  },
+  {
+    "postalCode": "94565",
+    "population": 84641,
+    "city": "Pittsburg",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 38.01581,
+    "longitude": -121.90704
+  },
+  {
+    "postalCode": "60804",
+    "population": 84573,
+    "city": "Cicero",
+    "state": "IL",
+    "stateName": "Illinois",
+    "latitude": 41.83783,
+    "longitude": -87.76014
+  },
+  {
+    "postalCode": "92503",
+    "population": 84519,
+    "city": "Riverside",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 33.88163,
+    "longitude": -117.44479
+  },
+  {
+    "postalCode": "11212",
+    "population": 84500,
+    "city": "Brooklyn",
+    "state": "NY",
+    "stateName": "New York",
+    "latitude": 40.66293,
+    "longitude": -73.91303
+  },
+  {
+    "postalCode": "60617",
+    "population": 84155,
+    "city": "Chicago",
+    "state": "IL",
+    "stateName": "Illinois",
+    "latitude": 41.71591,
+    "longitude": -87.55431
+  },
+  {
+    "postalCode": "91911",
+    "population": 82999,
+    "city": "Chula Vista",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 32.60738,
+    "longitude": -117.05405
+  },
+  {
+    "postalCode": "60608",
+    "population": 82739,
+    "city": "Chicago",
+    "state": "IL",
+    "stateName": "Illinois",
+    "latitude": 41.84876,
+    "longitude": -87.6713
+  },
+  {
+    "postalCode": "93033",
+    "population": 82728,
+    "city": "Oxnard",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 34.15213,
+    "longitude": -119.12649
+  },
+  {
+    "postalCode": "93307",
+    "population": 82658,
+    "city": "Bakersfield",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 35.24847,
+    "longitude": -118.93632
+  },
+  {
+    "postalCode": "95076",
+    "population": 82474,
+    "city": "Watsonville",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 36.93926,
+    "longitude": -121.74841
+  },
+  {
+    "postalCode": "00949",
+    "population": 82278,
+    "city": "Toa Baja",
+    "state": "PR",
+    "stateName": "Puerto Rico",
+    "latitude": 18.43017,
+    "longitude": -66.20883
+  },
+  {
+    "postalCode": "11206",
+    "population": 81677,
+    "city": "Brooklyn",
+    "state": "NY",
+    "stateName": "New York",
+    "latitude": 40.70189,
+    "longitude": -73.94237
+  },
+  {
+    "postalCode": "92376",
+    "population": 81516,
+    "city": "Rialto",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 34.1112,
+    "longitude": -117.37884
+  },
+  {
+    "postalCode": "10002",
+    "population": 81410,
+    "city": "New York",
+    "state": "NY",
+    "stateName": "New York",
+    "latitude": 40.71586,
+    "longitude": -73.98613
+  },
+  {
+    "postalCode": "91710",
+    "population": 80358,
+    "city": "Chino",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 34.00447,
+    "longitude": -117.68469
+  },
+  {
+    "postalCode": "75217",
+    "population": 80324,
+    "city": "Dallas",
+    "state": "TX",
+    "stateName": "Texas",
+    "latitude": 32.71215,
+    "longitude": -96.68116
+  },
+  {
+    "postalCode": "30043",
+    "population": 80241,
+    "city": "Lawrenceville",
+    "state": "GA",
+    "stateName": "Georgia",
+    "latitude": 34.00303,
+    "longitude": -84.00745
+  },
+  {
+    "postalCode": "11229",
+    "population": 80018,
+    "city": "Brooklyn",
+    "state": "NY",
+    "stateName": "New York",
+    "latitude": 40.60082,
+    "longitude": -73.944
+  },
+  {
+    "postalCode": "92154",
+    "population": 79708,
+    "city": "San Diego",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 32.56762,
+    "longitude": -117.00304
+  },
+  {
+    "postalCode": "30044",
+    "population": 79701,
+    "city": "Lawrenceville",
+    "state": "GA",
+    "stateName": "Georgia",
+    "latitude": 33.92215,
+    "longitude": -84.06916
+  },
+  {
+    "postalCode": "10458",
+    "population": 79492,
+    "city": "Bronx",
+    "state": "NY",
+    "stateName": "New York",
+    "latitude": 40.86244,
+    "longitude": -73.88818
+  },
+  {
+    "postalCode": "94112",
+    "population": 79407,
+    "city": "San Francisco",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 37.72032,
+    "longitude": -122.44296
+  },
+  {
+    "postalCode": "00956",
+    "population": 79304,
+    "city": "Bayamon",
+    "state": "PR",
+    "stateName": "Puerto Rico",
+    "latitude": 18.32082,
+    "longitude": -66.17175
+  },
+  {
+    "postalCode": "11235",
+    "population": 79132,
+    "city": "Brooklyn",
+    "state": "NY",
+    "stateName": "New York",
+    "latitude": 40.58402,
+    "longitude": -73.9488
+  },
+  {
+    "postalCode": "11221",
+    "population": 78895,
+    "city": "Brooklyn",
+    "state": "NY",
+    "stateName": "New York",
+    "latitude": 40.69137,
+    "longitude": -73.9279
+  },
+  {
+    "postalCode": "11223",
+    "population": 78731,
+    "city": "Brooklyn",
+    "state": "NY",
+    "stateName": "New York",
+    "latitude": 40.59715,
+    "longitude": -73.97359
+  },
+  {
+    "postalCode": "92345",
+    "population": 78715,
+    "city": "Hesperia",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 34.38213,
+    "longitude": -117.30939
+  },
+  {
+    "postalCode": "60625",
+    "population": 78651,
+    "city": "Chicago",
+    "state": "IL",
+    "stateName": "Illinois",
+    "latitude": 41.97335,
+    "longitude": -87.70014
+  },
+  {
+    "postalCode": "37013",
+    "population": 78406,
+    "city": "Antioch",
+    "state": "TN",
+    "stateName": "Tennessee",
+    "latitude": 36.04709,
+    "longitude": -86.63244
+  },
+  {
+    "postalCode": "10453",
+    "population": 78309,
+    "city": "Bronx",
+    "state": "NY",
+    "stateName": "New York",
+    "latitude": 40.85231,
+    "longitude": -73.91353
+  },
+  {
+    "postalCode": "11204",
+    "population": 78134,
+    "city": "Brooklyn",
+    "state": "NY",
+    "stateName": "New York",
+    "latitude": 40.61879,
+    "longitude": -73.98479
+  },
+  {
+    "postalCode": "79912",
+    "population": 77161,
+    "city": "El Paso",
+    "state": "TX",
+    "stateName": "Texas",
+    "latitude": 31.84821,
+    "longitude": -106.53264
+  },
+  {
+    "postalCode": "87121",
+    "population": 76721,
+    "city": "Albuquerque",
+    "state": "NM",
+    "stateName": "New Mexico",
+    "latitude": 35.05851,
+    "longitude": -106.87792
+  },
+  {
+    "postalCode": "90706",
+    "population": 76615,
+    "city": "Bellflower",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 33.88802,
+    "longitude": -118.12708
+  },
+  {
+    "postalCode": "60505",
+    "population": 76573,
+    "city": "Aurora",
+    "state": "IL",
+    "stateName": "Illinois",
+    "latitude": 41.76429,
+    "longitude": -88.29409
+  },
+  {
+    "postalCode": "91706",
+    "population": 76571,
+    "city": "Baldwin Park",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 34.09641,
+    "longitude": -117.96816
+  },
+  {
+    "postalCode": "93722",
+    "population": 76448,
+    "city": "Fresno",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 36.80098,
+    "longitude": -119.87727
+  },
+  {
+    "postalCode": "11203",
+    "population": 76174,
+    "city": "Brooklyn",
+    "state": "NY",
+    "stateName": "New York",
+    "latitude": 40.64955,
+    "longitude": -73.93444
+  },
+  {
+    "postalCode": "10468",
+    "population": 76103,
+    "city": "Bronx",
+    "state": "NY",
+    "stateName": "New York",
+    "latitude": 40.86805,
+    "longitude": -73.90009
+  },
+  {
+    "postalCode": "10029",
+    "population": 76003,
+    "city": "New York",
+    "state": "NY",
+    "stateName": "New York",
+    "latitude": 40.79173,
+    "longitude": -73.94396
+  },
+  {
+    "postalCode": "91910",
+    "population": 75802,
+    "city": "Chula Vista",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 32.63827,
+    "longitude": -117.05705
+  },
+  {
+    "postalCode": "10462",
+    "population": 75784,
+    "city": "Bronx",
+    "state": "NY",
+    "stateName": "New York",
+    "latitude": 40.84269,
+    "longitude": -73.8586
+  },
+  {
+    "postalCode": "10452",
+    "population": 75371,
+    "city": "Bronx",
+    "state": "NY",
+    "stateName": "New York",
+    "latitude": 40.83746,
+    "longitude": -73.9234
+  },
+  {
+    "postalCode": "78572",
+    "population": 75221,
+    "city": "Mission",
+    "state": "TX",
+    "stateName": "Texas",
+    "latitude": 26.2281,
+    "longitude": -98.37665
+  },
+  {
+    "postalCode": "11218",
+    "population": 75220,
+    "city": "Brooklyn",
+    "state": "NY",
+    "stateName": "New York",
+    "latitude": 40.64346,
+    "longitude": -73.97611
+  },
+  {
+    "postalCode": "92509",
+    "population": 75196,
+    "city": "Jurupa Valley",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 34.00326,
+    "longitude": -117.44494
+  },
+  {
+    "postalCode": "90255",
+    "population": 75066,
+    "city": "Huntington Park",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 33.97703,
+    "longitude": -118.2173
+  },
+  {
+    "postalCode": "93257",
+    "population": 75004,
+    "city": "Porterville",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 35.98376,
+    "longitude": -118.87178
+  },
+  {
+    "postalCode": "93550",
+    "population": 74929,
+    "city": "Palmdale",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 34.41325,
+    "longitude": -118.09161
+  },
+  {
+    "postalCode": "85364",
+    "population": 74904,
+    "city": "Yuma",
+    "state": "AZ",
+    "stateName": "Arizona",
+    "latitude": 32.70312,
+    "longitude": -114.65881
+  },
+  {
+    "postalCode": "91709",
+    "population": 74796,
+    "city": "Chino Hills",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 33.96432,
+    "longitude": -117.736
+  },
+  {
+    "postalCode": "37211",
+    "population": 74755,
+    "city": "Nashville",
+    "state": "TN",
+    "stateName": "Tennessee",
+    "latitude": 36.06718,
+    "longitude": -86.7237
+  },
+  {
+    "postalCode": "75070",
+    "population": 74734,
+    "city": "Mckinney",
+    "state": "TX",
+    "stateName": "Texas",
+    "latitude": 33.17311,
+    "longitude": -96.69773
+  },
+  {
+    "postalCode": "77479",
+    "population": 74514,
+    "city": "Sugar Land",
+    "state": "TX",
+    "stateName": "Texas",
+    "latitude": 29.56645,
+    "longitude": -95.63557
+  },
+  {
+    "postalCode": "66062",
+    "population": 74411,
+    "city": "Olathe",
+    "state": "KS",
+    "stateName": "Kansas",
+    "latitude": 38.83454,
+    "longitude": -94.77799
+  },
+  {
+    "postalCode": "91335",
+    "population": 74363,
+    "city": "Reseda",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 34.20105,
+    "longitude": -118.54067
+  },
+  {
+    "postalCode": "60634",
+    "population": 74298,
+    "city": "Chicago",
+    "state": "IL",
+    "stateName": "Illinois",
+    "latitude": 41.94635,
+    "longitude": -87.8061
+  },
+  {
+    "postalCode": "95823",
+    "population": 73985,
+    "city": "Sacramento",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 38.47408,
+    "longitude": -121.44347
+  },
+  {
+    "postalCode": "92553",
+    "population": 73722,
+    "city": "Moreno Valley",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 33.92338,
+    "longitude": -117.24486
+  },
+  {
+    "postalCode": "92126",
+    "population": 73343,
+    "city": "San Diego",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 32.90847,
+    "longitude": -117.14141
+  },
+  {
+    "postalCode": "75211",
+    "population": 73146,
+    "city": "Dallas",
+    "state": "TX",
+    "stateName": "Texas",
+    "latitude": 32.73491,
+    "longitude": -96.903
+  },
+  {
+    "postalCode": "22193",
+    "population": 73047,
+    "city": "Woodbridge",
+    "state": "VA",
+    "stateName": "Virginia",
+    "latitude": 38.64308,
+    "longitude": -77.34807
+  },
+  {
+    "postalCode": "94544",
+    "population": 73026,
+    "city": "Hayward",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 37.63382,
+    "longitude": -122.05719
+  },
+  {
+    "postalCode": "00953",
+    "population": 73014,
+    "city": "Toa Alta",
+    "state": "PR",
+    "stateName": "Puerto Rico",
+    "latitude": 18.36312,
+    "longitude": -66.2475
+  },
+  {
+    "postalCode": "75034",
+    "population": 72723,
+    "city": "Frisco",
+    "state": "TX",
+    "stateName": "Texas",
+    "latitude": 33.15196,
+    "longitude": -96.86035
+  },
+  {
+    "postalCode": "93065",
+    "population": 72508,
+    "city": "Simi Valley",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 34.26022,
+    "longitude": -118.77437
+  },
+  {
+    "postalCode": "92592",
+    "population": 72492,
+    "city": "Temecula",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 33.51108,
+    "longitude": -117.03087
+  },
+  {
+    "postalCode": "23464",
+    "population": 72359,
+    "city": "Virginia Beach",
+    "state": "VA",
+    "stateName": "Virginia",
+    "latitude": 36.79724,
+    "longitude": -76.17922
+  },
+  {
+    "postalCode": "96797",
+    "population": 72289,
+    "city": "Waipahu",
+    "state": "HI",
+    "stateName": "Hawaii",
+    "latitude": 21.42424,
+    "longitude": -157.97898
+  },
+  {
+    "postalCode": "77429",
+    "population": 72264,
+    "city": "Cypress",
+    "state": "TX",
+    "stateName": "Texas",
+    "latitude": 29.99104,
+    "longitude": -95.65878
+  },
+  {
+    "postalCode": "33012",
+    "population": 72248,
+    "city": "Hialeah",
+    "state": "FL",
+    "stateName": "Florida",
+    "latitude": 25.86562,
+    "longitude": -80.30249
+  },
+  {
+    "postalCode": "60620",
+    "population": 72216,
+    "city": "Chicago",
+    "state": "IL",
+    "stateName": "Illinois",
+    "latitude": 41.7408,
+    "longitude": -87.6525
+  },
+  {
+    "postalCode": "60628",
+    "population": 72202,
+    "city": "Chicago",
+    "state": "IL",
+    "stateName": "Illinois",
+    "latitude": 41.69182,
+    "longitude": -87.61797
+  },
+  {
+    "postalCode": "95630",
+    "population": 72180,
+    "city": "Folsom",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 38.66707,
+    "longitude": -121.14176
+  },
+  {
+    "postalCode": "93535",
+    "population": 72046,
+    "city": "Lancaster",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 34.71306,
+    "longitude": -117.87825
+  },
+  {
+    "postalCode": "77036",
+    "population": 71969,
+    "city": "Houston",
+    "state": "TX",
+    "stateName": "Texas",
+    "latitude": 29.70167,
+    "longitude": -95.53594
+  },
+  {
+    "postalCode": "77450",
+    "population": 71889,
+    "city": "Katy",
+    "state": "TX",
+    "stateName": "Texas",
+    "latitude": 29.7463,
+    "longitude": -95.73832
+  },
+  {
+    "postalCode": "93727",
+    "population": 71820,
+    "city": "Fresno",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 36.75156,
+    "longitude": -119.68059
+  },
+  {
+    "postalCode": "60085",
+    "population": 71714,
+    "city": "Waukegan",
+    "state": "IL",
+    "stateName": "Illinois",
+    "latitude": 42.35333,
+    "longitude": -87.86825
+  },
+  {
+    "postalCode": "60641",
+    "population": 71663,
+    "city": "Chicago",
+    "state": "IL",
+    "stateName": "Illinois",
+    "latitude": 41.94659,
+    "longitude": -87.74676
+  },
+  {
+    "postalCode": "91766",
+    "population": 71599,
+    "city": "Pomona",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 34.04179,
+    "longitude": -117.75691
+  },
+  {
+    "postalCode": "77573",
+    "population": 71580,
+    "city": "League City",
+    "state": "TX",
+    "stateName": "Texas",
+    "latitude": 29.50205,
+    "longitude": -95.08652
+  },
+  {
+    "postalCode": "28269",
+    "population": 71048,
+    "city": "Charlotte",
+    "state": "NC",
+    "stateName": "North Carolina",
+    "latitude": 35.33789,
+    "longitude": -80.80251
+  },
+  {
+    "postalCode": "89110",
+    "population": 70994,
+    "city": "Las Vegas",
+    "state": "NV",
+    "stateName": "Nevada",
+    "latitude": 36.17139,
+    "longitude": -115.04774
+  },
+  {
+    "postalCode": "93536",
+    "population": 70918,
+    "city": "Lancaster",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 34.74709,
+    "longitude": -118.36875
+  },
+  {
+    "postalCode": "78577",
+    "population": 70840,
+    "city": "Pharr",
+    "state": "TX",
+    "stateName": "Texas",
+    "latitude": 26.15047,
+    "longitude": -98.19104
+  },
+  {
+    "postalCode": "77083",
+    "population": 70837,
+    "city": "Houston",
+    "state": "TX",
+    "stateName": "Texas",
+    "latitude": 29.69326,
+    "longitude": -95.6489
+  },
+  {
+    "postalCode": "63376",
+    "population": 70828,
+    "city": "Saint Peters",
+    "state": "MO",
+    "stateName": "Missouri",
+    "latitude": 38.79987,
+    "longitude": -90.6174
+  },
+  {
+    "postalCode": "77379",
+    "population": 70544,
+    "city": "Spring",
+    "state": "TX",
+    "stateName": "Texas",
+    "latitude": 30.0391,
+    "longitude": -95.5338
+  },
+  {
+    "postalCode": "10457",
+    "population": 70496,
+    "city": "Bronx",
+    "state": "NY",
+    "stateName": "New York",
+    "latitude": 40.84713,
+    "longitude": -73.89871
+  },
+  {
+    "postalCode": "92805",
+    "population": 70401,
+    "city": "Anaheim",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 33.83038,
+    "longitude": -117.90578
+  },
+  {
+    "postalCode": "77584",
+    "population": 70228,
+    "city": "Pearland",
+    "state": "TX",
+    "stateName": "Texas",
+    "latitude": 29.546,
+    "longitude": -95.35082
+  },
+  {
+    "postalCode": "89108",
+    "population": 70123,
+    "city": "Las Vegas",
+    "state": "NV",
+    "stateName": "Nevada",
+    "latitude": 36.20531,
+    "longitude": -115.22367
+  },
+  {
+    "postalCode": "91402",
+    "population": 69817,
+    "city": "Panorama City",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 34.22411,
+    "longitude": -118.44481
+  },
+  {
+    "postalCode": "07055",
+    "population": 69816,
+    "city": "Passaic",
+    "state": "NJ",
+    "stateName": "New Jersey",
+    "latitude": 40.85748,
+    "longitude": -74.12819
+  },
+  {
+    "postalCode": "92105",
+    "population": 69813,
+    "city": "San Diego",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 32.73784,
+    "longitude": -117.09266
+  },
+  {
+    "postalCode": "85225",
+    "population": 69810,
+    "city": "Chandler",
+    "state": "AZ",
+    "stateName": "Arizona",
+    "latitude": 33.31738,
+    "longitude": -111.83218
+  },
+  {
+    "postalCode": "21234",
+    "population": 69752,
+    "city": "Parkville",
+    "state": "MD",
+    "stateName": "Maryland",
+    "latitude": 39.39347,
+    "longitude": -76.53388
+  },
+  {
+    "postalCode": "90262",
+    "population": 69745,
+    "city": "Lynwood",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 33.92365,
+    "longitude": -118.20053
+  },
+  {
+    "postalCode": "93274",
+    "population": 69721,
+    "city": "Tulare",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 36.18026,
+    "longitude": -119.36943
+  },
+  {
+    "postalCode": "45011",
+    "population": 69677,
+    "city": "Hamilton",
+    "state": "OH",
+    "stateName": "Ohio",
+    "latitude": 39.42958,
+    "longitude": -84.50247
+  },
+  {
+    "postalCode": "80013",
+    "population": 69588,
+    "city": "Aurora",
+    "state": "CO",
+    "stateName": "Colorado",
+    "latitude": 39.66139,
+    "longitude": -104.7657
+  },
+  {
+    "postalCode": "94587",
+    "population": 69516,
+    "city": "Union City",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 37.60315,
+    "longitude": -122.01865
+  },
+  {
+    "postalCode": "94110",
+    "population": 69333,
+    "city": "San Francisco",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 37.74996,
+    "longitude": -122.41537
+  },
+  {
+    "postalCode": "94533",
+    "population": 69277,
+    "city": "Fairfield",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 38.28061,
+    "longitude": -122.00669
+  },
+  {
+    "postalCode": "11209",
+    "population": 68853,
+    "city": "Brooklyn",
+    "state": "NY",
+    "stateName": "New York",
+    "latitude": 40.62212,
+    "longitude": -74.03016
+  },
+  {
+    "postalCode": "94536",
+    "population": 68790,
+    "city": "Fremont",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 37.57132,
+    "longitude": -121.9854
+  },
+  {
+    "postalCode": "78660",
+    "population": 68789,
+    "city": "Pflugerville",
+    "state": "TX",
+    "stateName": "Texas",
+    "latitude": 30.44304,
+    "longitude": -97.5955
+  },
+  {
+    "postalCode": "11375",
+    "population": 68733,
+    "city": "Forest Hills",
+    "state": "NY",
+    "stateName": "New York",
+    "latitude": 40.72092,
+    "longitude": -73.84611
+  },
+  {
+    "postalCode": "84118",
+    "population": 68295,
+    "city": "Salt Lake City",
+    "state": "UT",
+    "stateName": "Utah",
+    "latitude": 40.6535,
+    "longitude": -112.01342
+  },
+  {
+    "postalCode": "99301",
+    "population": 68191,
+    "city": "Pasco",
+    "state": "WA",
+    "stateName": "Washington",
+    "latitude": 46.38445,
+    "longitude": -118.94383
+  },
+  {
+    "postalCode": "19120",
+    "population": 68104,
+    "city": "Philadelphia",
+    "state": "PA",
+    "stateName": "Pennsylvania",
+    "latitude": 40.03365,
+    "longitude": -75.11998
+  },
+  {
+    "postalCode": "10463",
+    "population": 67970,
+    "city": "Bronx",
+    "state": "NY",
+    "stateName": "New York",
+    "latitude": 40.88081,
+    "longitude": -73.90661
+  },
+  {
+    "postalCode": "92882",
+    "population": 67917,
+    "city": "Corona",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 33.84194,
+    "longitude": -117.60423
+  },
+  {
+    "postalCode": "90026",
+    "population": 67869,
+    "city": "Los Angeles",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 34.07927,
+    "longitude": -118.26301
+  },
+  {
+    "postalCode": "10466",
+    "population": 67813,
+    "city": "Bronx",
+    "state": "NY",
+    "stateName": "New York",
+    "latitude": 40.89097,
+    "longitude": -73.84601
+  },
+  {
+    "postalCode": "90631",
+    "population": 67619,
+    "city": "La Habra",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 33.94248,
+    "longitude": -117.95133
+  },
+  {
+    "postalCode": "30349",
+    "population": 67602,
+    "city": "Atlanta",
+    "state": "GA",
+    "stateName": "Georgia",
+    "latitude": 33.62356,
+    "longitude": -84.52591
+  },
+  {
+    "postalCode": "90022",
+    "population": 67179,
+    "city": "Los Angeles",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 34.02452,
+    "longitude": -118.15609
+  },
+  {
+    "postalCode": "33186",
+    "population": 67137,
+    "city": "Miami",
+    "state": "FL",
+    "stateName": "Florida",
+    "latitude": 25.65548,
+    "longitude": -80.41048
+  },
+  {
+    "postalCode": "11746",
+    "population": 67094,
+    "city": "Huntington Station",
+    "state": "NY",
+    "stateName": "New York",
+    "latitude": 40.81438,
+    "longitude": -73.36095
+  },
+  {
+    "postalCode": "11233",
+    "population": 67053,
+    "city": "Brooklyn",
+    "state": "NY",
+    "stateName": "New York",
+    "latitude": 40.6783,
+    "longitude": -73.91995
+  },
+  {
+    "postalCode": "00612",
+    "population": 67010,
+    "city": "Arecibo",
+    "state": "PR",
+    "stateName": "Puerto Rico",
+    "latitude": 18.40699,
+    "longitude": -66.70803
+  },
+  {
+    "postalCode": "47906",
+    "population": 66972,
+    "city": "West Lafayette",
+    "state": "IN",
+    "stateName": "Indiana",
+    "latitude": 40.48696,
+    "longitude": -86.98648
+  },
+  {
+    "postalCode": "97007",
+    "population": 66954,
+    "city": "Beaverton",
+    "state": "OR",
+    "stateName": "Oregon",
+    "latitude": 45.45434,
+    "longitude": -122.87965
+  },
+  {
+    "postalCode": "95035",
+    "population": 66943,
+    "city": "Milpitas",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 37.44422,
+    "longitude": -121.8743
+  },
+  {
+    "postalCode": "91730",
+    "population": 66925,
+    "city": "Rancho Cucamonga",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 34.09954,
+    "longitude": -117.57851
+  },
+  {
+    "postalCode": "37042",
+    "population": 66916,
+    "city": "Clarksville",
+    "state": "TN",
+    "stateName": "Tennessee",
+    "latitude": 36.56907,
+    "longitude": -87.41694
+  },
+  {
+    "postalCode": "94558",
+    "population": 66830,
+    "city": "Napa",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 38.45491,
+    "longitude": -122.25643
+  },
+  {
+    "postalCode": "29483",
+    "population": 66731,
+    "city": "Summerville",
+    "state": "SC",
+    "stateName": "South Carolina",
+    "latitude": 33.05137,
+    "longitude": -80.18746
+  },
+  {
+    "postalCode": "19124",
+    "population": 66691,
+    "city": "Philadelphia",
+    "state": "PA",
+    "stateName": "Pennsylvania",
+    "latitude": 40.0171,
+    "longitude": -75.09304
+  },
+  {
+    "postalCode": "11372",
+    "population": 66636,
+    "city": "Jackson Heights",
+    "state": "NY",
+    "stateName": "New York",
+    "latitude": 40.75166,
+    "longitude": -73.88361
+  },
+  {
+    "postalCode": "10469",
+    "population": 66631,
+    "city": "Bronx",
+    "state": "NY",
+    "stateName": "New York",
+    "latitude": 40.86862,
+    "longitude": -73.84813
+  },
+  {
+    "postalCode": "60614",
+    "population": 66617,
+    "city": "Chicago",
+    "state": "IL",
+    "stateName": "Illinois",
+    "latitude": 41.9228,
+    "longitude": -87.65139
+  },
+  {
+    "postalCode": "75228",
+    "population": 66551,
+    "city": "Dallas",
+    "state": "TX",
+    "stateName": "Texas",
+    "latitude": 32.82444,
+    "longitude": -96.67995
+  },
+  {
+    "postalCode": "07087",
+    "population": 66515,
+    "city": "Union City",
+    "state": "NJ",
+    "stateName": "New Jersey",
+    "latitude": 40.76736,
+    "longitude": -74.03227
+  },
+  {
+    "postalCode": "77095",
+    "population": 66502,
+    "city": "Houston",
+    "state": "TX",
+    "stateName": "Texas",
+    "latitude": 29.90819,
+    "longitude": -95.65323
+  },
+  {
+    "postalCode": "10472",
+    "population": 66358,
+    "city": "Bronx",
+    "state": "NY",
+    "stateName": "New York",
+    "latitude": 40.8295,
+    "longitude": -73.8694
+  },
+  {
+    "postalCode": "90003",
+    "population": 66266,
+    "city": "Los Angeles",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 33.96411,
+    "longitude": -118.2737
+  },
+  {
+    "postalCode": "30281",
+    "population": 66140,
+    "city": "Stockbridge",
+    "state": "GA",
+    "stateName": "Georgia",
+    "latitude": 33.56347,
+    "longitude": -84.19491
+  },
+  {
+    "postalCode": "60657",
+    "population": 65996,
+    "city": "Chicago",
+    "state": "IL",
+    "stateName": "Illinois",
+    "latitude": 41.93998,
+    "longitude": -87.65374
+  },
+  {
+    "postalCode": "60640",
+    "population": 65790,
+    "city": "Chicago",
+    "state": "IL",
+    "stateName": "Illinois",
+    "latitude": 41.97236,
+    "longitude": -87.66347
+  },
+  {
+    "postalCode": "27610",
+    "population": 65648,
+    "city": "Raleigh",
+    "state": "NC",
+    "stateName": "North Carolina",
+    "latitude": 35.74598,
+    "longitude": -78.54647
+  },
+  {
+    "postalCode": "85032",
+    "population": 65485,
+    "city": "Phoenix",
+    "state": "AZ",
+    "stateName": "Arizona",
+    "latitude": 33.6263,
+    "longitude": -112.00381
+  },
+  {
+    "postalCode": "92703",
+    "population": 65445,
+    "city": "Santa Ana",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 33.74873,
+    "longitude": -117.90611
+  },
+  {
+    "postalCode": "92114",
+    "population": 65433,
+    "city": "San Diego",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 32.70776,
+    "longitude": -117.0551
+  },
+  {
+    "postalCode": "93230",
+    "population": 65264,
+    "city": "Hanford",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 36.28802,
+    "longitude": -119.62301
+  },
+  {
+    "postalCode": "33411",
+    "population": 65245,
+    "city": "West Palm Beach",
+    "state": "FL",
+    "stateName": "Florida",
+    "latitude": 26.71979,
+    "longitude": -80.1998
+  },
+  {
+    "postalCode": "00976",
+    "population": 65136,
+    "city": "Trujillo Alto",
+    "state": "PR",
+    "stateName": "Puerto Rico",
+    "latitude": 18.33844,
+    "longitude": -65.9921
+  },
+  {
+    "postalCode": "78613",
+    "population": 65099,
+    "city": "Cedar Park",
+    "state": "TX",
+    "stateName": "Texas",
+    "latitude": 30.50395,
+    "longitude": -97.82463
+  },
+  {
+    "postalCode": "95687",
+    "population": 65096,
+    "city": "Vacaville",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 38.33691,
+    "longitude": -121.92038
+  },
+  {
+    "postalCode": "92021",
+    "population": 65068,
+    "city": "El Cajon",
+    "state": "CA",
+    "stateName": "California",
+    "latitude": 32.83548,
+    "longitude": -116.8708
+  }
+]

@@ -257,6 +257,48 @@
       ]
     },
     {
+      "collectionGroup": "scentsy_zipcodes",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "scraped", "order": "ASCENDING" },
+        { "fieldPath": "population", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "scentsy_zipcodes",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "scraped", "order": "ASCENDING" },
+        { "fieldPath": "countryCode", "order": "ASCENDING" },
+        { "fieldPath": "population", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "scentsy_contacts",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "status", "order": "ASCENDING" },
+        { "fieldPath": "sent", "order": "ASCENDING" },
+        { "fieldPath": "randomIndex", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "scentsy_contacts",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "sent", "order": "ASCENDING" },
+        { "fieldPath": "sentTimestamp", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "scentsy_contacts",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "sent", "order": "ASCENDING" },
+        { "fieldPath": "sentTimestamp", "order": "ASCENDING" }
+      ]
+    },
+    {
       "collectionGroup": "users",
       "queryScope": "COLLECTION",
       "fields": [

@@ -20,6 +20,7 @@ const BFH_CAMPAIGN_COLLECTION = 'bfh_contacts';
 const ZINZINO_CAMPAIGN_COLLECTION = 'zinzino_contacts';
 const FSR_CAMPAIGN_COLLECTION = 'fsr_contacts';
 const PAPARAZZI_CAMPAIGN_COLLECTION = 'paparazzi_contacts';
+const PRUVIT_CAMPAIGN_COLLECTION = 'pruvit_contacts';
 const MONITORING_PASSWORD = process.env.MONITORING_PASSWORD || 'TeamBuildPro2024!';
 const GA4_PROPERTY_ID = '485651473';
 
@@ -359,14 +360,15 @@ const getEmailCampaignStats = onRequest({
     const startOfTodayUTC = new Date(startOfTodayPT.getTime() - (ptOffset + now.getTimezoneOffset()) * 60 * 1000);
 
     // Fetch stats for all campaigns in parallel
-    const [mainCampaignStats, contactsCampaignStats, purchasedCampaignStats, bfhCampaignStats, zinzinoCampaignStats, fsrCampaignStats, paparazziCampaignStats] = await Promise.all([
+    const [mainCampaignStats, contactsCampaignStats, purchasedCampaignStats, bfhCampaignStats, zinzinoCampaignStats, fsrCampaignStats, paparazziCampaignStats, pruvitCampaignStats] = await Promise.all([
       fetchCampaignStats(MAIN_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC),
       fetchCampaignStats(CONTACTS_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC, { isContactsCampaign: true }),
       fetchCampaignStats(PURCHASED_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC),
       fetchCampaignStats(BFH_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC),
       fetchCampaignStats(ZINZINO_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC, { isZinzinoCampaign: true }),
       fetchCampaignStats(FSR_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC, { isFsrCampaign: true }),
-      fetchCampaignStats(PAPARAZZI_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC, { isPaparazziCampaign: true })
+      fetchCampaignStats(PAPARAZZI_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC, { isPaparazziCampaign: true }),
+      fetchCampaignStats(PRUVIT_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC)
     ]);
 
     // Get GA4 stats (shared across campaigns)
@@ -452,6 +454,16 @@ const getEmailCampaignStats = onRequest({
         subjectLines: paparazziCampaignStats.subjectLines,
         recentSends: paparazziCampaignStats.recentSends,
         distribution: paparazziCampaignStats.distribution
+      },
+
+      // Pruvit campaign data
+      pruvitCampaign: {
+        campaign: pruvitCampaignStats.campaign,
+        last24h: pruvitCampaignStats.last24h,
+        today: pruvitCampaignStats.today,
+        tracking: pruvitCampaignStats.tracking,
+        subjectLines: pruvitCampaignStats.subjectLines,
+        recentSends: pruvitCampaignStats.recentSends
       },
 
       // GA4 stats (shared)

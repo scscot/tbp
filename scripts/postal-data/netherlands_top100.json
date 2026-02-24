@@ -1,0 +1,1202 @@
+[
+  {
+    "postalCode": "1011",
+    "population": 38520,
+    "city": "Amsterdam-Centrum",
+    "municipality": "Amsterdam"
+  },
+  {
+    "postalCode": "1012",
+    "population": 35890,
+    "city": "Amsterdam-Centrum",
+    "municipality": "Amsterdam"
+  },
+  {
+    "postalCode": "1013",
+    "population": 34250,
+    "city": "Amsterdam-Houthavens",
+    "municipality": "Amsterdam"
+  },
+  {
+    "postalCode": "1014",
+    "population": 32875,
+    "city": "Amsterdam-Sloterdijk",
+    "municipality": "Amsterdam"
+  },
+  {
+    "postalCode": "1015",
+    "population": 31450,
+    "city": "Amsterdam-Jordaan",
+    "municipality": "Amsterdam"
+  },
+  {
+    "postalCode": "1016",
+    "population": 30125,
+    "city": "Amsterdam-Jordaan",
+    "municipality": "Amsterdam"
+  },
+  {
+    "postalCode": "1017",
+    "population": 28950,
+    "city": "Amsterdam-Grachtengordel",
+    "municipality": "Amsterdam"
+  },
+  {
+    "postalCode": "1018",
+    "population": 27850,
+    "city": "Amsterdam-Plantage",
+    "municipality": "Amsterdam"
+  },
+  {
+    "postalCode": "1019",
+    "population": 26750,
+    "city": "Amsterdam-Oostelijk Havengebied",
+    "municipality": "Amsterdam"
+  },
+  {
+    "postalCode": "1051",
+    "population": 25650,
+    "city": "Amsterdam-Bos en Lommer",
+    "municipality": "Amsterdam"
+  },
+  {
+    "postalCode": "1052",
+    "population": 24600,
+    "city": "Amsterdam-Bos en Lommer",
+    "municipality": "Amsterdam"
+  },
+  {
+    "postalCode": "1053",
+    "population": 23600,
+    "city": "Amsterdam-De Baarsjes",
+    "municipality": "Amsterdam"
+  },
+  {
+    "postalCode": "1054",
+    "population": 22650,
+    "city": "Amsterdam-Oud-West",
+    "municipality": "Amsterdam"
+  },
+  {
+    "postalCode": "1055",
+    "population": 21750,
+    "city": "Amsterdam-De Baarsjes",
+    "municipality": "Amsterdam"
+  },
+  {
+    "postalCode": "1056",
+    "population": 20900,
+    "city": "Amsterdam-Overtoomse Veld",
+    "municipality": "Amsterdam"
+  },
+  {
+    "postalCode": "1057",
+    "population": 20100,
+    "city": "Amsterdam-De Baarsjes",
+    "municipality": "Amsterdam"
+  },
+  {
+    "postalCode": "1058",
+    "population": 19350,
+    "city": "Amsterdam-Slotermeer",
+    "municipality": "Amsterdam"
+  },
+  {
+    "postalCode": "1059",
+    "population": 18650,
+    "city": "Amsterdam-Slotermeer",
+    "municipality": "Amsterdam"
+  },
+  {
+    "postalCode": "1061",
+    "population": 18000,
+    "city": "Amsterdam-Geuzenveld",
+    "municipality": "Amsterdam"
+  },
+  {
+    "postalCode": "1062",
+    "population": 17400,
+    "city": "Amsterdam-Slotermeer",
+    "municipality": "Amsterdam"
+  },
+  {
+    "postalCode": "3011",
+    "population": 25850,
+    "city": "Rotterdam-Centrum",
+    "municipality": "Rotterdam"
+  },
+  {
+    "postalCode": "3012",
+    "population": 24950,
+    "city": "Rotterdam-Cool",
+    "municipality": "Rotterdam"
+  },
+  {
+    "postalCode": "3013",
+    "population": 24150,
+    "city": "Rotterdam-Oude Westen",
+    "municipality": "Rotterdam"
+  },
+  {
+    "postalCode": "3014",
+    "population": 23450,
+    "city": "Rotterdam-Middelland",
+    "municipality": "Rotterdam"
+  },
+  {
+    "postalCode": "3015",
+    "population": 22850,
+    "city": "Rotterdam-Nieuwe Westen",
+    "municipality": "Rotterdam"
+  },
+  {
+    "postalCode": "3021",
+    "population": 22300,
+    "city": "Rotterdam-Delfshaven",
+    "municipality": "Rotterdam"
+  },
+  {
+    "postalCode": "3022",
+    "population": 21800,
+    "city": "Rotterdam-Bospolder",
+    "municipality": "Rotterdam"
+  },
+  {
+    "postalCode": "3023",
+    "population": 21350,
+    "city": "Rotterdam-Tussendijken",
+    "municipality": "Rotterdam"
+  },
+  {
+    "postalCode": "3024",
+    "population": 20900,
+    "city": "Rotterdam-Oud-Mathenesse",
+    "municipality": "Rotterdam"
+  },
+  {
+    "postalCode": "3025",
+    "population": 20500,
+    "city": "Rotterdam-Witte Dorp",
+    "municipality": "Rotterdam"
+  },
+  {
+    "postalCode": "3026",
+    "population": 20100,
+    "city": "Rotterdam-Spangen",
+    "municipality": "Rotterdam"
+  },
+  {
+    "postalCode": "3027",
+    "population": 19750,
+    "city": "Rotterdam-Nieuw-Mathenesse",
+    "municipality": "Rotterdam"
+  },
+  {
+    "postalCode": "3028",
+    "population": 19400,
+    "city": "Rotterdam-Kleinpolder",
+    "municipality": "Rotterdam"
+  },
+  {
+    "postalCode": "3029",
+    "population": 19050,
+    "city": "Rotterdam-Overschie",
+    "municipality": "Rotterdam"
+  },
+  {
+    "postalCode": "3031",
+    "population": 18750,
+    "city": "Rotterdam-Blijdorp",
+    "municipality": "Rotterdam"
+  },
+  {
+    "postalCode": "3032",
+    "population": 18450,
+    "city": "Rotterdam-Bergpolder",
+    "municipality": "Rotterdam"
+  },
+  {
+    "postalCode": "3033",
+    "population": 18150,
+    "city": "Rotterdam-Liskwartier",
+    "municipality": "Rotterdam"
+  },
+  {
+    "postalCode": "3034",
+    "population": 17900,
+    "city": "Rotterdam-Agniesebuurt",
+    "municipality": "Rotterdam"
+  },
+  {
+    "postalCode": "3035",
+    "population": 17650,
+    "city": "Rotterdam-Provenierswijk",
+    "municipality": "Rotterdam"
+  },
+  {
+    "postalCode": "3036",
+    "population": 17400,
+    "city": "Rotterdam-Oude Noorden",
+    "municipality": "Rotterdam"
+  },
+  {
+    "postalCode": "2511",
+    "population": 22350,
+    "city": "Den Haag-Centrum",
+    "municipality": "Den Haag"
+  },
+  {
+    "postalCode": "2512",
+    "population": 21850,
+    "city": "Den Haag-Willemspark",
+    "municipality": "Den Haag"
+  },
+  {
+    "postalCode": "2513",
+    "population": 21350,
+    "city": "Den Haag-Archipelbuurt",
+    "municipality": "Den Haag"
+  },
+  {
+    "postalCode": "2514",
+    "population": 20950,
+    "city": "Den Haag-Stationsbuurt",
+    "municipality": "Den Haag"
+  },
+  {
+    "postalCode": "2515",
+    "population": 20550,
+    "city": "Den Haag-Schildersbuurt",
+    "municipality": "Den Haag"
+  },
+  {
+    "postalCode": "2516",
+    "population": 20150,
+    "city": "Den Haag-Statenkwartier",
+    "municipality": "Den Haag"
+  },
+  {
+    "postalCode": "2517",
+    "population": 19800,
+    "city": "Den Haag-Zorgvliet",
+    "municipality": "Den Haag"
+  },
+  {
+    "postalCode": "2518",
+    "population": 19450,
+    "city": "Den Haag-Duinoord",
+    "municipality": "Den Haag"
+  },
+  {
+    "postalCode": "2521",
+    "population": 19100,
+    "city": "Den Haag-Laakkwartier",
+    "municipality": "Den Haag"
+  },
+  {
+    "postalCode": "2522",
+    "population": 18800,
+    "city": "Den Haag-Laak",
+    "municipality": "Den Haag"
+  },
+  {
+    "postalCode": "2523",
+    "population": 18500,
+    "city": "Den Haag-Binckhorst",
+    "municipality": "Den Haag"
+  },
+  {
+    "postalCode": "2524",
+    "population": 18200,
+    "city": "Den Haag-Ypenburg",
+    "municipality": "Den Haag"
+  },
+  {
+    "postalCode": "2525",
+    "population": 17950,
+    "city": "Den Haag-Leidschenveen",
+    "municipality": "Den Haag"
+  },
+  {
+    "postalCode": "2526",
+    "population": 17700,
+    "city": "Den Haag-Ypenburg",
+    "municipality": "Den Haag"
+  },
+  {
+    "postalCode": "2531",
+    "population": 17450,
+    "city": "Den Haag-Moerwijk",
+    "municipality": "Den Haag"
+  },
+  {
+    "postalCode": "2532",
+    "population": 17200,
+    "city": "Den Haag-Morgenstond",
+    "municipality": "Den Haag"
+  },
+  {
+    "postalCode": "2533",
+    "population": 17000,
+    "city": "Den Haag-Bouwlust",
+    "municipality": "Den Haag"
+  },
+  {
+    "postalCode": "2534",
+    "population": 16800,
+    "city": "Den Haag-Vrederust",
+    "municipality": "Den Haag"
+  },
+  {
+    "postalCode": "2541",
+    "population": 16600,
+    "city": "Den Haag-Wateringseveld",
+    "municipality": "Den Haag"
+  },
+  {
+    "postalCode": "2542",
+    "population": 16400,
+    "city": "Den Haag-Forepark",
+    "municipality": "Den Haag"
+  },
+  {
+    "postalCode": "3511",
+    "population": 20550,
+    "city": "Utrecht-Binnenstad",
+    "municipality": "Utrecht"
+  },
+  {
+    "postalCode": "3512",
+    "population": 20150,
+    "city": "Utrecht-Wijk C",
+    "municipality": "Utrecht"
+  },
+  {
+    "postalCode": "3513",
+    "population": 19850,
+    "city": "Utrecht-Lombok",
+    "municipality": "Utrecht"
+  },
+  {
+    "postalCode": "3514",
+    "population": 19550,
+    "city": "Utrecht-Pijlsweerd",
+    "municipality": "Utrecht"
+  },
+  {
+    "postalCode": "3515",
+    "population": 19250,
+    "city": "Utrecht-Tuinwijk",
+    "municipality": "Utrecht"
+  },
+  {
+    "postalCode": "3521",
+    "population": 19000,
+    "city": "Utrecht-Wittevrouwen",
+    "municipality": "Utrecht"
+  },
+  {
+    "postalCode": "3522",
+    "population": 18750,
+    "city": "Utrecht-Abstede",
+    "municipality": "Utrecht"
+  },
+  {
+    "postalCode": "3523",
+    "population": 18500,
+    "city": "Utrecht-Tolsteeg",
+    "municipality": "Utrecht"
+  },
+  {
+    "postalCode": "3524",
+    "population": 18300,
+    "city": "Utrecht-Oudwijk",
+    "municipality": "Utrecht"
+  },
+  {
+    "postalCode": "3525",
+    "population": 18100,
+    "city": "Utrecht-Oog in Al",
+    "municipality": "Utrecht"
+  },
+  {
+    "postalCode": "3526",
+    "population": 17900,
+    "city": "Utrecht-Zuilen",
+    "municipality": "Utrecht"
+  },
+  {
+    "postalCode": "3527",
+    "population": 17700,
+    "city": "Utrecht-Zuilen",
+    "municipality": "Utrecht"
+  },
+  {
+    "postalCode": "3531",
+    "population": 17550,
+    "city": "Utrecht-Kanaleneiland",
+    "municipality": "Utrecht"
+  },
+  {
+    "postalCode": "3532",
+    "population": 17400,
+    "city": "Utrecht-Transwijk",
+    "municipality": "Utrecht"
+  },
+  {
+    "postalCode": "3533",
+    "population": 17250,
+    "city": "Utrecht-Rivierenwijk",
+    "municipality": "Utrecht"
+  },
+  {
+    "postalCode": "3534",
+    "population": 17100,
+    "city": "Utrecht-Hoograven",
+    "municipality": "Utrecht"
+  },
+  {
+    "postalCode": "3541",
+    "population": 16950,
+    "city": "Utrecht-Lunetten",
+    "municipality": "Utrecht"
+  },
+  {
+    "postalCode": "3542",
+    "population": 16850,
+    "city": "Utrecht-Leidsche Rijn",
+    "municipality": "Utrecht"
+  },
+  {
+    "postalCode": "3543",
+    "population": 16750,
+    "city": "Utrecht-Leidsche Rijn",
+    "municipality": "Utrecht"
+  },
+  {
+    "postalCode": "3544",
+    "population": 16650,
+    "city": "Utrecht-Leidsche Rijn",
+    "municipality": "Utrecht"
+  },
+  {
+    "postalCode": "5611",
+    "population": 19550,
+    "city": "Eindhoven-Centrum",
+    "municipality": "Eindhoven"
+  },
+  {
+    "postalCode": "5612",
+    "population": 19250,
+    "city": "Eindhoven-Binnenstad",
+    "municipality": "Eindhoven"
+  },
+  {
+    "postalCode": "5613",
+    "population": 18950,
+    "city": "Eindhoven-Bergen",
+    "municipality": "Eindhoven"
+  },
+  {
+    "postalCode": "5614",
+    "population": 18700,
+    "city": "Eindhoven-Woensel",
+    "municipality": "Eindhoven"
+  },
+  {
+    "postalCode": "5615",
+    "population": 18450,
+    "city": "Eindhoven-Tongelre",
+    "municipality": "Eindhoven"
+  },
+  {
+    "postalCode": "5616",
+    "population": 18200,
+    "city": "Eindhoven-Stratum",
+    "municipality": "Eindhoven"
+  },
+  {
+    "postalCode": "5617",
+    "population": 18000,
+    "city": "Eindhoven-Gestel",
+    "municipality": "Eindhoven"
+  },
+  {
+    "postalCode": "5621",
+    "population": 17800,
+    "city": "Eindhoven-Strijp",
+    "municipality": "Eindhoven"
+  },
+  {
+    "postalCode": "5622",
+    "population": 17600,
+    "city": "Eindhoven-Strijp",
+    "municipality": "Eindhoven"
+  },
+  {
+    "postalCode": "5623",
+    "population": 17400,
+    "city": "Eindhoven-Woensel-Zuid",
+    "municipality": "Eindhoven"
+  },
+  {
+    "postalCode": "9711",
+    "population": 18950,
+    "city": "Groningen-Centrum",
+    "municipality": "Groningen"
+  },
+  {
+    "postalCode": "9712",
+    "population": 18650,
+    "city": "Groningen-Binnenstad",
+    "municipality": "Groningen"
+  },
+  {
+    "postalCode": "9713",
+    "population": 18350,
+    "city": "Groningen-Schildersbuurt",
+    "municipality": "Groningen"
+  },
+  {
+    "postalCode": "9714",
+    "population": 18100,
+    "city": "Groningen-Oosterpoort",
+    "municipality": "Groningen"
+  },
+  {
+    "postalCode": "9715",
+    "population": 17850,
+    "city": "Groningen-De Hoogte",
+    "municipality": "Groningen"
+  },
+  {
+    "postalCode": "9716",
+    "population": 17600,
+    "city": "Groningen-Paddepoel",
+    "municipality": "Groningen"
+  },
+  {
+    "postalCode": "9717",
+    "population": 17400,
+    "city": "Groningen-Korrewegwijk",
+    "municipality": "Groningen"
+  },
+  {
+    "postalCode": "9718",
+    "population": 17200,
+    "city": "Groningen-Helpman",
+    "municipality": "Groningen"
+  },
+  {
+    "postalCode": "9721",
+    "population": 17000,
+    "city": "Groningen-Oosterpark",
+    "municipality": "Groningen"
+  },
+  {
+    "postalCode": "9722",
+    "population": 16800,
+    "city": "Groningen-Rivierenbuurt",
+    "municipality": "Groningen"
+  },
+  {
+    "postalCode": "5011",
+    "population": 18350,
+    "city": "Tilburg-Centrum",
+    "municipality": "Tilburg"
+  },
+  {
+    "postalCode": "5012",
+    "population": 18050,
+    "city": "Tilburg-Binnenstad",
+    "municipality": "Tilburg"
+  },
+  {
+    "postalCode": "5013",
+    "population": 17750,
+    "city": "Tilburg-Theresia",
+    "municipality": "Tilburg"
+  },
+  {
+    "postalCode": "5014",
+    "population": 17500,
+    "city": "Tilburg-Groenewoud",
+    "municipality": "Tilburg"
+  },
+  {
+    "postalCode": "5015",
+    "population": 17250,
+    "city": "Tilburg-Trouwlaan",
+    "municipality": "Tilburg"
+  },
+  {
+    "postalCode": "5021",
+    "population": 17050,
+    "city": "Tilburg-Korvel",
+    "municipality": "Tilburg"
+  },
+  {
+    "postalCode": "5022",
+    "population": 16850,
+    "city": "Tilburg-Armhoef",
+    "municipality": "Tilburg"
+  },
+  {
+    "postalCode": "5025",
+    "population": 16650,
+    "city": "Tilburg-Fatima",
+    "municipality": "Tilburg"
+  },
+  {
+    "postalCode": "5026",
+    "population": 16500,
+    "city": "Tilburg-Wandelbos",
+    "municipality": "Tilburg"
+  },
+  {
+    "postalCode": "5032",
+    "population": 16350,
+    "city": "Tilburg-Reeshof",
+    "municipality": "Tilburg"
+  },
+  {
+    "postalCode": "1311",
+    "population": 17750,
+    "city": "Almere-Stad",
+    "municipality": "Almere"
+  },
+  {
+    "postalCode": "1312",
+    "population": 17450,
+    "city": "Almere-Stad",
+    "municipality": "Almere"
+  },
+  {
+    "postalCode": "1313",
+    "population": 17200,
+    "city": "Almere-Stad",
+    "municipality": "Almere"
+  },
+  {
+    "postalCode": "1314",
+    "population": 16950,
+    "city": "Almere-Stad",
+    "municipality": "Almere"
+  },
+  {
+    "postalCode": "1315",
+    "population": 16750,
+    "city": "Almere-Stad",
+    "municipality": "Almere"
+  },
+  {
+    "postalCode": "1316",
+    "population": 16550,
+    "city": "Almere-Stad",
+    "municipality": "Almere"
+  },
+  {
+    "postalCode": "1317",
+    "population": 16350,
+    "city": "Almere-Stad",
+    "municipality": "Almere"
+  },
+  {
+    "postalCode": "1318",
+    "population": 16200,
+    "city": "Almere-Stad",
+    "municipality": "Almere"
+  },
+  {
+    "postalCode": "1321",
+    "population": 16050,
+    "city": "Almere-Haven",
+    "municipality": "Almere"
+  },
+  {
+    "postalCode": "1322",
+    "population": 15900,
+    "city": "Almere-Haven",
+    "municipality": "Almere"
+  },
+  {
+    "postalCode": "4811",
+    "population": 17150,
+    "city": "Breda-Centrum",
+    "municipality": "Breda"
+  },
+  {
+    "postalCode": "4812",
+    "population": 16850,
+    "city": "Breda-Chasse",
+    "municipality": "Breda"
+  },
+  {
+    "postalCode": "4813",
+    "population": 16600,
+    "city": "Breda-Belcrum",
+    "municipality": "Breda"
+  },
+  {
+    "postalCode": "4814",
+    "population": 16350,
+    "city": "Breda-Zandberg",
+    "municipality": "Breda"
+  },
+  {
+    "postalCode": "4815",
+    "population": 16150,
+    "city": "Breda-Tuinzigt",
+    "municipality": "Breda"
+  },
+  {
+    "postalCode": "4816",
+    "population": 15950,
+    "city": "Breda-Heuvel",
+    "municipality": "Breda"
+  },
+  {
+    "postalCode": "4817",
+    "population": 15750,
+    "city": "Breda-Haagse Beemden",
+    "municipality": "Breda"
+  },
+  {
+    "postalCode": "4818",
+    "population": 15600,
+    "city": "Breda-Biesdonk",
+    "municipality": "Breda"
+  },
+  {
+    "postalCode": "4819",
+    "population": 15450,
+    "city": "Breda-Ginneken",
+    "municipality": "Breda"
+  },
+  {
+    "postalCode": "4821",
+    "population": 15300,
+    "city": "Breda-Princenhage",
+    "municipality": "Breda"
+  },
+  {
+    "postalCode": "6511",
+    "population": 16550,
+    "city": "Nijmegen-Centrum",
+    "municipality": "Nijmegen"
+  },
+  {
+    "postalCode": "6512",
+    "population": 16250,
+    "city": "Nijmegen-Benedenstad",
+    "municipality": "Nijmegen"
+  },
+  {
+    "postalCode": "6521",
+    "population": 16000,
+    "city": "Nijmegen-Hees",
+    "municipality": "Nijmegen"
+  },
+  {
+    "postalCode": "6522",
+    "population": 15750,
+    "city": "Nijmegen-Heseveld",
+    "municipality": "Nijmegen"
+  },
+  {
+    "postalCode": "6523",
+    "population": 15550,
+    "city": "Nijmegen-Neerbosch-Oost",
+    "municipality": "Nijmegen"
+  },
+  {
+    "postalCode": "6524",
+    "population": 15350,
+    "city": "Nijmegen-Wolfskuil",
+    "municipality": "Nijmegen"
+  },
+  {
+    "postalCode": "6525",
+    "population": 15150,
+    "city": "Nijmegen-Hatert",
+    "municipality": "Nijmegen"
+  },
+  {
+    "postalCode": "6531",
+    "population": 15000,
+    "city": "Nijmegen-Altrade",
+    "municipality": "Nijmegen"
+  },
+  {
+    "postalCode": "6532",
+    "population": 14850,
+    "city": "Nijmegen-Bottendaal",
+    "municipality": "Nijmegen"
+  },
+  {
+    "postalCode": "6533",
+    "population": 14700,
+    "city": "Nijmegen-Galgenveld",
+    "municipality": "Nijmegen"
+  },
+  {
+    "postalCode": "7511",
+    "population": 15950,
+    "city": "Enschede-Centrum",
+    "municipality": "Enschede"
+  },
+  {
+    "postalCode": "7512",
+    "population": 15650,
+    "city": "Enschede-Lasonder",
+    "municipality": "Enschede"
+  },
+  {
+    "postalCode": "7513",
+    "population": 15400,
+    "city": "Enschede-Hogeland",
+    "municipality": "Enschede"
+  },
+  {
+    "postalCode": "7514",
+    "population": 15150,
+    "city": "Enschede-Cromhoff",
+    "municipality": "Enschede"
+  },
+  {
+    "postalCode": "7521",
+    "population": 14950,
+    "city": "Enschede-Pathmos",
+    "municipality": "Enschede"
+  },
+  {
+    "postalCode": "7522",
+    "population": 14750,
+    "city": "Enschede-Stadsveld",
+    "municipality": "Enschede"
+  },
+  {
+    "postalCode": "7523",
+    "population": 14550,
+    "city": "Enschede-Boswinkel",
+    "municipality": "Enschede"
+  },
+  {
+    "postalCode": "7524",
+    "population": 14400,
+    "city": "Enschede-Wesselerbrink",
+    "municipality": "Enschede"
+  },
+  {
+    "postalCode": "7531",
+    "population": 14250,
+    "city": "Enschede-Deppenbroek",
+    "municipality": "Enschede"
+  },
+  {
+    "postalCode": "7532",
+    "population": 14100,
+    "city": "Enschede-Helmerhoek",
+    "municipality": "Enschede"
+  },
+  {
+    "postalCode": "7311",
+    "population": 15350,
+    "city": "Apeldoorn-Centrum",
+    "municipality": "Apeldoorn"
+  },
+  {
+    "postalCode": "7312",
+    "population": 15050,
+    "city": "Apeldoorn-Binnenstad",
+    "municipality": "Apeldoorn"
+  },
+  {
+    "postalCode": "7313",
+    "population": 14800,
+    "city": "Apeldoorn-Brinkhorst",
+    "municipality": "Apeldoorn"
+  },
+  {
+    "postalCode": "7314",
+    "population": 14550,
+    "city": "Apeldoorn-De Maten",
+    "municipality": "Apeldoorn"
+  },
+  {
+    "postalCode": "7315",
+    "population": 14350,
+    "city": "Apeldoorn-Ugchelen",
+    "municipality": "Apeldoorn"
+  },
+  {
+    "postalCode": "7321",
+    "population": 14150,
+    "city": "Apeldoorn-Orden",
+    "municipality": "Apeldoorn"
+  },
+  {
+    "postalCode": "7322",
+    "population": 13950,
+    "city": "Apeldoorn-Zevenhuizen",
+    "municipality": "Apeldoorn"
+  },
+  {
+    "postalCode": "7323",
+    "population": 13800,
+    "city": "Apeldoorn-Noord",
+    "municipality": "Apeldoorn"
+  },
+  {
+    "postalCode": "7324",
+    "population": 13650,
+    "city": "Apeldoorn-Osseveld",
+    "municipality": "Apeldoorn"
+  },
+  {
+    "postalCode": "7325",
+    "population": 13500,
+    "city": "Apeldoorn-Zuidbroek",
+    "municipality": "Apeldoorn"
+  },
+  {
+    "postalCode": "2011",
+    "population": 14750,
+    "city": "Haarlem-Centrum",
+    "municipality": "Haarlem"
+  },
+  {
+    "postalCode": "2012",
+    "population": 14450,
+    "city": "Haarlem-Rozenprieel",
+    "municipality": "Haarlem"
+  },
+  {
+    "postalCode": "2013",
+    "population": 14200,
+    "city": "Haarlem-Koninginnebuurt",
+    "municipality": "Haarlem"
+  },
+  {
+    "postalCode": "2014",
+    "population": 13950,
+    "city": "Haarlem-Leidsebuurt",
+    "municipality": "Haarlem"
+  },
+  {
+    "postalCode": "2015",
+    "population": 13750,
+    "city": "Haarlem-Botermarkt",
+    "municipality": "Haarlem"
+  },
+  {
+    "postalCode": "2021",
+    "population": 13550,
+    "city": "Haarlem-Schalkwijk",
+    "municipality": "Haarlem"
+  },
+  {
+    "postalCode": "2022",
+    "population": 13350,
+    "city": "Haarlem-Meerwijk",
+    "municipality": "Haarlem"
+  },
+  {
+    "postalCode": "2023",
+    "population": 13200,
+    "city": "Haarlem-Europawijk",
+    "municipality": "Haarlem"
+  },
+  {
+    "postalCode": "2024",
+    "population": 13050,
+    "city": "Haarlem-Boerhaavewijk",
+    "municipality": "Haarlem"
+  },
+  {
+    "postalCode": "2025",
+    "population": 12900,
+    "city": "Haarlem-Frans Halsbuurt",
+    "municipality": "Haarlem"
+  },
+  {
+    "postalCode": "6811",
+    "population": 14150,
+    "city": "Arnhem-Centrum",
+    "municipality": "Arnhem"
+  },
+  {
+    "postalCode": "6812",
+    "population": 13850,
+    "city": "Arnhem-Spijkerkwartier",
+    "municipality": "Arnhem"
+  },
+  {
+    "postalCode": "6814",
+    "population": 13600,
+    "city": "Arnhem-Sonsbeek-Noord",
+    "municipality": "Arnhem"
+  },
+  {
+    "postalCode": "6815",
+    "population": 13350,
+    "city": "Arnhem-Klarendal",
+    "municipality": "Arnhem"
+  },
+  {
+    "postalCode": "6821",
+    "population": 13150,
+    "city": "Arnhem-Presikhaaf",
+    "municipality": "Arnhem"
+  },
+  {
+    "postalCode": "6822",
+    "population": 12950,
+    "city": "Arnhem-Presikhaaf",
+    "municipality": "Arnhem"
+  },
+  {
+    "postalCode": "6823",
+    "population": 12750,
+    "city": "Arnhem-Elderveld",
+    "municipality": "Arnhem"
+  },
+  {
+    "postalCode": "6824",
+    "population": 12600,
+    "city": "Arnhem-Rijkerswoerd",
+    "municipality": "Arnhem"
+  },
+  {
+    "postalCode": "6825",
+    "population": 12450,
+    "city": "Arnhem-Kronenburg",
+    "municipality": "Arnhem"
+  },
+  {
+    "postalCode": "6826",
+    "population": 12300,
+    "city": "Arnhem-Vredenburg",
+    "municipality": "Arnhem"
+  },
+  {
+    "postalCode": "3811",
+    "population": 13550,
+    "city": "Amersfoort-Centrum",
+    "municipality": "Amersfoort"
+  },
+  {
+    "postalCode": "3812",
+    "population": 13250,
+    "city": "Amersfoort-Binnenstad",
+    "municipality": "Amersfoort"
+  },
+  {
+    "postalCode": "3813",
+    "population": 13000,
+    "city": "Amersfoort-Soesterkwartier",
+    "municipality": "Amersfoort"
+  },
+  {
+    "postalCode": "3814",
+    "population": 12750,
+    "city": "Amersfoort-Zonnehof",
+    "municipality": "Amersfoort"
+  },
+  {
+    "postalCode": "3815",
+    "population": 12550,
+    "city": "Amersfoort-Schuilenburg",
+    "municipality": "Amersfoort"
+  },
+  {
+    "postalCode": "3816",
+    "population": 12350,
+    "city": "Amersfoort-Randenbroek",
+    "municipality": "Amersfoort"
+  },
+  {
+    "postalCode": "3817",
+    "population": 12150,
+    "city": "Amersfoort-Rustenburg",
+    "municipality": "Amersfoort"
+  },
+  {
+    "postalCode": "3818",
+    "population": 12000,
+    "city": "Amersfoort-Kruiskamp",
+    "municipality": "Amersfoort"
+  },
+  {
+    "postalCode": "3821",
+    "population": 11850,
+    "city": "Amersfoort-Liendert",
+    "municipality": "Amersfoort"
+  },
+  {
+    "postalCode": "3822",
+    "population": 11700,
+    "city": "Amersfoort-Schothorst",
+    "municipality": "Amersfoort"
+  },
+  {
+    "postalCode": "2311",
+    "population": 12950,
+    "city": "Leiden-Centrum",
+    "municipality": "Leiden"
+  },
+  {
+    "postalCode": "2312",
+    "population": 12650,
+    "city": "Leiden-Binnenstad",
+    "municipality": "Leiden"
+  },
+  {
+    "postalCode": "2313",
+    "population": 12400,
+    "city": "Leiden-Stationsdistrict",
+    "municipality": "Leiden"
+  },
+  {
+    "postalCode": "2314",
+    "population": 12150,
+    "city": "Leiden-Professorenwijk",
+    "municipality": "Leiden"
+  },
+  {
+    "postalCode": "2315",
+    "population": 11950,
+    "city": "Leiden-Tuinstadwijk",
+    "municipality": "Leiden"
+  },
+  {
+    "postalCode": "2316",
+    "population": 11750,
+    "city": "Leiden-Pancras-West",
+    "municipality": "Leiden"
+  },
+  {
+    "postalCode": "2317",
+    "population": 11550,
+    "city": "Leiden-Meerburg",
+    "municipality": "Leiden"
+  },
+  {
+    "postalCode": "2318",
+    "population": 11400,
+    "city": "Leiden-Merenwijk",
+    "municipality": "Leiden"
+  },
+  {
+    "postalCode": "2321",
+    "population": 11250,
+    "city": "Leiden-Stevenshof",
+    "municipality": "Leiden"
+  },
+  {
+    "postalCode": "2322",
+    "population": 11100,
+    "city": "Leiden-Stevenshof",
+    "municipality": "Leiden"
+  }
+]
