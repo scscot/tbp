@@ -11,7 +11,7 @@
   },
   "tbp": {
     "startDate": "2026-02-22",
-    "notes": "Main campaign disabled (batchSize=0). FSR nearly exhausted, Pruvit exhausted. Scentsy added as new campaign.",
+    "notes": "Main campaign disabled (batchSize=0). All scraper-fed campaigns maintain batch sizes as scrapers continuously add contacts.",
     "schedule": [
       {
         "week": 1,
@@ -21,9 +21,9 @@
         "batchSizeZinzino": 31,
         "batchSizeFsr": 3,
         "batchSizePaparazzi": 7,
-        "batchSizePruvit": 0,
+        "batchSizePruvit": 10,
         "batchSizeScentsy": 10,
-        "dailyTotal": 432
+        "dailyTotal": 472
       },
       {
         "week": 2,
@@ -31,11 +31,11 @@
         "batchSizePurchased": 55,
         "batchSizeBfh": 50,
         "batchSizeZinzino": 57,
-        "batchSizeFsr": 0,
+        "batchSizeFsr": 5,
         "batchSizePaparazzi": 12,
-        "batchSizePruvit": 0,
+        "batchSizePruvit": 18,
         "batchSizeScentsy": 15,
-        "dailyTotal": 756
+        "dailyTotal": 848
       },
       {
         "week": 3,
@@ -43,11 +43,11 @@
         "batchSizePurchased": 88,
         "batchSizeBfh": 80,
         "batchSizeZinzino": 91,
-        "batchSizeFsr": 0,
+        "batchSizeFsr": 8,
         "batchSizePaparazzi": 18,
-        "batchSizePruvit": 0,
+        "batchSizePruvit": 29,
         "batchSizeScentsy": 23,
-        "dailyTotal": 1200
+        "dailyTotal": 1348
       }
     ]
   }
