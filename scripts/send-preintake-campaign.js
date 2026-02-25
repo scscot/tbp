@@ -401,10 +401,6 @@ function generateEmailHTML(firmName, email, leadId, firstName) {
       </div>
 
       <p style="font-size: 16px; margin-top: 16px;">
-          No commitment. Cancel anytime if it's not right for your firm.
-      </p>
-
-      <p style="font-size: 16px; margin-top: 16px;">
           Not the right contact for intake? Feel free to forward this to your team.
       </p>
 
@@ -556,8 +552,6 @@ $99/month. No contracts. Cancel anytime.
 
 Learn More: ${ctaUrl}
 
-No commitment. Cancel anytime if it's not right for your firm.
-
 Not the right contact for intake? Feel free to forward this to your team.
 
 Best,
@@ -679,8 +673,6 @@ function generateBarProfileEmailHTML(firmName, email, leadId, firstName, practic
           <a href="${ctaUrl}" style="display: inline-block; background: linear-gradient(135deg, #c9a962 0%, #b8944f 100%); color: #0c1f3f; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-size: 16px;">Learn More</a>
       </div>
 
-      <p style="font-size: 16px; margin-top: 16px;">No commitment. Cancel anytime if it's not right for your firm.</p>
-
       <p style="font-size: 16px; margin-top: 20px;">
           Best,<br>
           <strong>Stephen Scott</strong><br>
@@ -732,8 +724,6 @@ Most intake systems assume you have a website. This one doesn't. It works as a s
 $99/month. No contracts. Cancel anytime.
 
 Learn More: ${ctaUrl}
-
-No commitment. Cancel anytime if it's not right for your firm.
 
 Best,
 Stephen Scott
