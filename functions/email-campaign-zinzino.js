@@ -2,22 +2,19 @@
  * Team Build Pro Email Campaign for Zinzino Contacts
  *
  * Sends emails to scraped zinzino_contacts (distributors from Zinzino partner finder).
- * Uses Mailgun API with template versioning and language-based template selection.
+ * Uses Mailgun API with v14 template and single subject line (no A/B testing).
  *
  * Templates stored in Mailgun under 'mailer' template:
- * - v9: English minimal version (no bullets)
- * - v10: English version with bullets
- * - v9-es: Spanish minimal version
- * - v10-es: Spanish version with bullets
- * - v9-de: German minimal version
- * - v10-de: German version with bullets
+ * - v14: English (gradient header, white card design)
+ * - v14-es: Spanish
+ * - v14-de: German
+ *
+ * Subject: "AI is changing how teams grow" (localized per language)
  *
  * Language Selection:
  * - Spanish (es): Spain, Mexico, Colombia, Peru
  * - German (de): Germany, Austria, Switzerland
  * - English (en): All other countries (default)
- *
- * A/B Test: 4-way per language (v9a, v9b, v10a, v10b)
  *
  * Collection: zinzino_contacts
  * Query: status == 'pending', sent == false
@@ -78,111 +75,27 @@ const CTA_DOMAINS = {
 };
 
 // =============================================================================
-// A/B TEST CONFIGURATIONS BY LANGUAGE
+// TEMPLATE CONFIGURATION (No A/B Testing)
 // =============================================================================
 
-/**
- * English variants (default)
- * Subject "Not an opportunity. Just a tool." triggers Gmail spam filter - using safe alternatives
- */
-const VARIANTS_EN = {
-  v9a: {
-    templateVersion: 'v9',
+// Language-specific template and subject configuration
+const TEMPLATE_CONFIG = {
+  en: {
+    templateVersion: 'v14',
     subject: 'AI is changing how teams grow',
-    subjectTag: 'zinzino_v9a_en',
-    description: 'V9 (no bullets) + AI curiosity'
+    subjectTag: 'zinzino_v14_en'
   },
-  v9b: {
-    templateVersion: 'v9',
-    subject: 'Your AI-powered recruiting assistant',
-    subjectTag: 'zinzino_v9b_en',
-    description: 'V9 (no bullets) + AI assistant'
-  },
-  v10a: {
-    templateVersion: 'v10',
-    subject: 'AI is changing how teams grow',
-    subjectTag: 'zinzino_v10a_en',
-    description: 'V10 (with bullets) + AI curiosity'
-  },
-  v10b: {
-    templateVersion: 'v10',
-    subject: 'Your AI-powered recruiting assistant',
-    subjectTag: 'zinzino_v10b_en',
-    description: 'V10 (with bullets) + AI assistant'
-  }
-};
-
-/**
- * Spanish variants (Mexico style)
- * Avoiding spam-triggering phrases
- */
-const VARIANTS_ES = {
-  v9a: {
-    templateVersion: 'v9-es',
+  es: {
+    templateVersion: 'v14-es',
     subject: 'La IA esta cambiando como crecen los equipos',
-    subjectTag: 'zinzino_v9a_es',
-    description: 'V9-ES (no bullets) + AI curiosity'
+    subjectTag: 'zinzino_v14_es'
   },
-  v9b: {
-    templateVersion: 'v9-es',
-    subject: 'Tu asistente de reclutamiento con IA',
-    subjectTag: 'zinzino_v9b_es',
-    description: 'V9-ES (no bullets) + AI assistant'
-  },
-  v10a: {
-    templateVersion: 'v10-es',
-    subject: 'La IA esta cambiando como crecen los equipos',
-    subjectTag: 'zinzino_v10a_es',
-    description: 'V10-ES (with bullets) + AI curiosity'
-  },
-  v10b: {
-    templateVersion: 'v10-es',
-    subject: 'Tu asistente de reclutamiento con IA',
-    subjectTag: 'zinzino_v10b_es',
-    description: 'V10-ES (with bullets) + AI assistant'
+  de: {
+    templateVersion: 'v14-de',
+    subject: 'KI verandert, wie Teams wachsen',
+    subjectTag: 'zinzino_v14_de'
   }
 };
-
-/**
- * German variants (formal Sie form)
- * Avoiding spam-triggering phrases
- */
-const VARIANTS_DE = {
-  v9a: {
-    templateVersion: 'v9-de',
-    subject: 'KI verandert, wie Teams wachsen',
-    subjectTag: 'zinzino_v9a_de',
-    description: 'V9-DE (no bullets) + AI curiosity'
-  },
-  v9b: {
-    templateVersion: 'v9-de',
-    subject: 'Ihr KI-gesteuerter Recruiting-Assistent',
-    subjectTag: 'zinzino_v9b_de',
-    description: 'V9-DE (no bullets) + AI assistant'
-  },
-  v10a: {
-    templateVersion: 'v10-de',
-    subject: 'KI verandert, wie Teams wachsen',
-    subjectTag: 'zinzino_v10a_de',
-    description: 'V10-DE (with bullets) + AI curiosity'
-  },
-  v10b: {
-    templateVersion: 'v10-de',
-    subject: 'Ihr KI-gesteuerter Recruiting-Assistent',
-    subjectTag: 'zinzino_v10b_de',
-    description: 'V10-DE (with bullets) + AI assistant'
-  }
-};
-
-// Map language code to variants
-const VARIANTS_BY_LANGUAGE = {
-  en: VARIANTS_EN,
-  es: VARIANTS_ES,
-  de: VARIANTS_DE
-};
-
-// Active variant keys for A/B testing (same for all languages)
-const ACTIVE_VARIANT_KEYS = ['v9a', 'v9b', 'v10a', 'v10b'];
 
 // =============================================================================
 // CAMPAIGN CONFIGURATION
@@ -264,15 +177,14 @@ function buildLandingPageUrl(utmCampaign, utmContent, language = 'en') {
 // =============================================================================
 
 /**
- * Send email via Mailgun API using language-appropriate templates
+ * Send email via Mailgun API using v14 templates (no A/B testing)
  *
  * @param {object} contact - Contact data { firstName, lastName, email, country, ... }
  * @param {string} docId - Firestore document ID (used as tracking ID)
  * @param {object} config - Campaign configuration
- * @param {number} index - Batch index for strict A/B alternation
  * @returns {Promise<object>} Send result
  */
-async function sendEmailViaMailgun(contact, docId, config, index) {
+async function sendEmailViaMailgun(contact, docId, config) {
   const apiKey = mailgunApiKey.value();
   const domain = mailgunDomain.value();
 
@@ -280,18 +192,14 @@ async function sendEmailViaMailgun(contact, docId, config, index) {
     throw new Error('TBP_MAILGUN_API_KEY not configured');
   }
 
-  // Determine language and get appropriate variants
+  // Determine language and get appropriate template config
   const language = getContactLanguage(contact);
-  const variants = VARIANTS_BY_LANGUAGE[language] || VARIANTS_BY_LANGUAGE.en;
-
-  // Select variant based on index (4-way A/B test)
-  const variantKey = ACTIVE_VARIANT_KEYS[index % ACTIVE_VARIANT_KEYS.length];
-  const variant = variants[variantKey];
+  const templateConfig = TEMPLATE_CONFIG[language] || TEMPLATE_CONFIG.en;
 
   // Build URLs (direct links for better deliverability)
   const ctaDomain = CTA_DOMAINS[language] || CTA_DOMAINS.en;
   const unsubscribeUrl = `https://${ctaDomain}/unsubscribe.html?email=${encodeURIComponent(contact.email)}`;
-  const landingPageUrl = buildLandingPageUrl(config.utmCampaign, variant.subjectTag, language);
+  const landingPageUrl = buildLandingPageUrl(config.utmCampaign, templateConfig.subjectTag, language);
 
   // Build form data for Mailgun API
   const form = new FormData();
@@ -303,9 +211,9 @@ async function sendEmailViaMailgun(contact, docId, config, index) {
     : contact.firstName;
   form.append('to', `${recipientName} <${contact.email}>`);
 
-  form.append('subject', variant.subject);
+  form.append('subject', templateConfig.subject);
   form.append('template', TEMPLATE_NAME);
-  form.append('t:version', variant.templateVersion);
+  form.append('t:version', templateConfig.templateVersion);
 
   // Template variables (using direct landing page URL for deliverability)
   const templateVars = {
@@ -322,7 +230,7 @@ async function sendEmailViaMailgun(contact, docId, config, index) {
 
   // Tags for analytics
   form.append('o:tag', config.campaignTag);
-  form.append('o:tag', variant.subjectTag);
+  form.append('o:tag', templateConfig.subjectTag);
   form.append('o:tag', `lang_${language}`);
   form.append('o:tag', 'tracked');
 
@@ -331,7 +239,7 @@ async function sendEmailViaMailgun(contact, docId, config, index) {
   form.append('h:List-Unsubscribe', `<mailto:${unsubscribeEmail}?subject=Unsubscribe>, <${unsubscribeUrl}>`);
   form.append('h:List-Unsubscribe-Post', 'List-Unsubscribe=One-Click');
 
-  console.log(`   Lang: ${language.toUpperCase()} | Template: ${variantKey.toUpperCase()} (${variant.templateVersion}) | CTA: ${ctaDomain}`);
+  console.log(`   Lang: ${language.toUpperCase()} | Template: V14 | CTA: ${ctaDomain}`);
 
   // Send via Mailgun API
   const mailgunBaseUrl = `https://api.mailgun.net/v3/${domain}`;
@@ -346,11 +254,11 @@ async function sendEmailViaMailgun(contact, docId, config, index) {
     success: true,
     messageId: response.data.id,
     response: response.data.message,
-    subjectTag: variant.subjectTag,
-    templateVariant: variantKey,
-    templateVersion: variant.templateVersion,
+    subjectTag: templateConfig.subjectTag,
+    templateVariant: 'v14',
+    templateVersion: templateConfig.templateVersion,
     language: language,
-    usedSubject: variant.subject
+    usedSubject: templateConfig.subject
   };
 }
 
@@ -428,7 +336,7 @@ async function processZinzinoCampaignBatch(batchSize) {
       try {
         console.log(`Sending to ${contact.email}...`);
 
-        const result = await sendEmailViaMailgun(contact, doc.id, config, i);
+        const result = await sendEmailViaMailgun(contact, doc.id, config);
 
         if (result.success) {
           const updateData = {

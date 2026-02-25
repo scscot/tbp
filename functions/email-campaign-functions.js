@@ -2,18 +2,12 @@
  * Team Build Pro Email Campaign Functions (Mailgun Templates Version)
  *
  * Scheduled email campaigns using Mailgun API with template versioning.
- * A/B tests between template versions and subject lines (4 combinations).
+ * Uses v14 template with single subject line (no A/B testing).
  *
  * Templates stored in Mailgun under 'mailer' template:
- * - v3-v8: Legacy versions (deprecated)
- * - v9: Minimal version without bullet points (active)
- * - v10: Version with specific value prop bullets (active)
+ * - v14: Current production template (gradient header, white card design)
  *
- * Current A/B Test (4-way):
- * - v9a: V9 template + "AI is changing how teams grow"
- * - v9b: V9 template + "Your AI-powered recruiting assistant"
- * - v10a: V10 template + "AI is changing how teams grow"
- * - v10b: V10 template + "Your AI-powered recruiting assistant"
+ * Subject: "AI is changing how teams grow"
  */
 
 const { onSchedule } = require("firebase-functions/v2/scheduler");
@@ -42,40 +36,15 @@ const SEND_DELAY_MS = 1000;
 const LANDING_PAGE_URL = 'https://teambuildpro.com';
 
 // =============================================================================
-// A/B TEST CONFIGURATIONS
+// TEMPLATE CONFIGURATION (No A/B Testing)
 // =============================================================================
 
-// A/B Test Variants - V9 vs V10 template with subject line testing (4 combinations)
-// Subject "Not an opportunity. Just a tool." triggers Gmail spam filter - using safe alternatives
-const AB_TEST_VARIANTS = {
-  v9a: {
-    templateVersion: 'v9',
-    subject: 'AI is changing how teams grow',
-    subjectTag: 'main_v9a',
-    description: 'V9 (no bullets) + AI curiosity'
-  },
-  v9b: {
-    templateVersion: 'v9',
-    subject: 'Your AI-powered recruiting assistant',
-    subjectTag: 'main_v9b',
-    description: 'V9 (no bullets) + AI assistant'
-  },
-  v10a: {
-    templateVersion: 'v10',
-    subject: 'AI is changing how teams grow',
-    subjectTag: 'main_v10a',
-    description: 'V10 (with bullets) + AI curiosity'
-  },
-  v10b: {
-    templateVersion: 'v10',
-    subject: 'Your AI-powered recruiting assistant',
-    subjectTag: 'main_v10b',
-    description: 'V10 (with bullets) + AI assistant'
-  }
+// Single template and subject line for all sends
+const TEMPLATE_CONFIG = {
+  templateVersion: 'v14',
+  subject: 'AI is changing how teams grow',
+  subjectTag: 'main_v14'
 };
-
-// Active variants for A/B testing (rotate through these)
-const ACTIVE_VARIANTS = ['v9a', 'v9b', 'v10a', 'v10b'];
 
 // =============================================================================
 // CAMPAIGN CONFIGURATIONS
@@ -147,7 +116,7 @@ function buildLandingPageUrl(utmCampaign, utmContent) {
  * @param {number} index - Batch index for strict A/B alternation
  * @returns {Promise<object>} Send result
  */
-async function sendEmailViaMailgun(contact, docId, config, index) {
+async function sendEmailViaMailgun(contact, docId, config) {
   const apiKey = mailgunApiKey.value();
   const domain = mailgunDomain.value();
 
@@ -155,21 +124,17 @@ async function sendEmailViaMailgun(contact, docId, config, index) {
     throw new Error('TBP_MAILGUN_API_KEY not configured');
   }
 
-  // A/B Test: Strict alternation between active variants
-  const templateVariant = ACTIVE_VARIANTS[index % ACTIVE_VARIANTS.length];
-  const variant = AB_TEST_VARIANTS[templateVariant];
-
   // Build URLs (direct links for better deliverability)
-  const landingPageUrl = buildLandingPageUrl(config.utmCampaign, variant.subjectTag);
+  const landingPageUrl = buildLandingPageUrl(config.utmCampaign, TEMPLATE_CONFIG.subjectTag);
   const unsubscribeUrl = `${LANDING_PAGE_URL}/unsubscribe.html?email=${encodeURIComponent(contact.email)}`;
 
   // Build form data for Mailgun API
   const form = new FormData();
   form.append('from', FROM_ADDRESS);
   form.append('to', `${contact.firstName} ${contact.lastName} <${contact.email}>`);
-  form.append('subject', variant.subject);
+  form.append('subject', TEMPLATE_CONFIG.subject);
   form.append('template', TEMPLATE_NAME);
-  form.append('t:version', variant.templateVersion);
+  form.append('t:version', TEMPLATE_CONFIG.templateVersion);
 
   // Mailgun tracking disabled — clicks tracked via GA4 using UTM parameters in direct landing page URLs
   form.append('o:tracking', 'no');
@@ -178,8 +143,8 @@ async function sendEmailViaMailgun(contact, docId, config, index) {
 
   // Tags for analytics
   form.append('o:tag', config.campaignTag);
-  form.append('o:tag', variant.templateVersion);
-  form.append('o:tag', variant.subjectTag);
+  form.append('o:tag', TEMPLATE_CONFIG.templateVersion);
+  form.append('o:tag', TEMPLATE_CONFIG.subjectTag);
   form.append('o:tag', 'tracked');
 
   // List-Unsubscribe headers (required by Gmail for bulk senders)
@@ -195,7 +160,7 @@ async function sendEmailViaMailgun(contact, docId, config, index) {
   };
   form.append('h:X-Mailgun-Variables', JSON.stringify(templateVars));
 
-  console.log(`   Template: ${templateVariant.toUpperCase()} | Subject: "${variant.subject}"`);
+  console.log(`   Template: V14 | Subject: "${TEMPLATE_CONFIG.subject}"`);
 
   // Send via Mailgun API
   const mailgunBaseUrl = `https://api.mailgun.net/v3/${domain}`;
@@ -210,8 +175,8 @@ async function sendEmailViaMailgun(contact, docId, config, index) {
     success: true,
     messageId: response.data.id,
     response: response.data.message,
-    subjectTag: variant.subjectTag,
-    templateVariant: templateVariant
+    subjectTag: TEMPLATE_CONFIG.subjectTag,
+    templateVariant: 'v14'
   };
 }
 
@@ -279,7 +244,7 @@ async function processCampaignBatch(config, enabledParam, batchSize) {
       try {
         console.log(`📤 Sending to ${contact.email}...`);
 
-        const result = await sendEmailViaMailgun(contact, doc.id, config, i);
+        const result = await sendEmailViaMailgun(contact, doc.id, config);
 
         if (result.success) {
           const updateData = {

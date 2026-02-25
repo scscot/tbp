@@ -1,16 +1,15 @@
 /**
  * Email Spam Monitoring Script
  *
- * Sends test emails directly via Mailgun API using v14/v15 templates,
- * then uses Gmail API to verify inbox placement. If any email lands
+ * Sends test email directly via Mailgun API using v14 template,
+ * then uses Gmail API to verify inbox placement. If email lands
  * in spam, all campaigns are automatically disabled and an alert is sent.
  *
  * Key behaviors:
- * - Sends variants one at a time with 5-minute delays between them
- *   (avoids bulk-send spam triggers from simultaneous emails)
- * - No timestamp suffix in subjects (cleaner, more production-like)
- * - Waits 3 minutes after each send before checking Gmail placement
- * - Total runtime: ~11 minutes for 2 variants (3+5+3 minutes)
+ * - Sends single v14 template with subject "AI is changing how teams grow"
+ * - No A/B testing - single template/subject for consistent monitoring
+ * - Waits 3 minutes after send before checking Gmail placement
+ * - Total runtime: ~3 minutes
  *
  * Usage:
  *   node scripts/spam-monitor.js
@@ -48,28 +47,13 @@ const ALERT_EMAIL = 'scscot@gmail.com';
 const MAILGUN_DOMAIN = 'news.teambuildpro.com';
 const FROM_ADDRESS = 'Stephen Scott <stephen@news.teambuildpro.com>';
 const CHECK_DELAY_MS = 3 * 60 * 1000; // 3 minutes (Gmail typically delivers in 1-2 min)
-const VARIANT_DELAY_MS = 5 * 60 * 1000; // 5 minutes between variants to avoid bulk-send spam triggers
 
-// Variants to test - send directly via Mailgun with these templates
-const VARIANTS = {
-  v14a: {
-    templateVersion: 'v14',
-    subject: 'AI is changing how teams grow',
-    description: 'V14 (new design, v9 content) + AI curiosity'
-  },
-  v15b: {
-    templateVersion: 'v15',
-    subject: 'Grow your team faster with AI',
-    description: 'V15 (new design, v10 content) + AI assistant'
-  }
-};
-
-const VARIANTS_TO_TEST = ['v14a', 'v15b'];
-
-// Map variant to human-readable campaign name for reporting
-const VARIANT_NAMES = {
-  v14a: 'Template V14 (AI changing)',
-  v15b: 'Template V15 (AI assistant)'
+// Single template configuration (no A/B testing)
+const TEMPLATE_CONFIG = {
+  templateVersion: 'v14',
+  subject: 'AI is changing how teams grow',
+  subjectTag: 'spam_test_v14',
+  description: 'V14 template + AI curiosity subject'
 };
 
 // All campaigns to disable if spam is detected
@@ -112,31 +96,26 @@ async function getGmailClient() {
 // SEND TEST EMAIL DIRECTLY VIA MAILGUN
 // =============================================================================
 
-async function sendTestEmailViaMailgun(variantKey) {
-  const variant = VARIANTS[variantKey];
-  if (!variant) {
-    throw new Error(`Unknown variant: ${variantKey}`);
-  }
-
+async function sendTestEmailViaMailgun() {
   const apiKey = process.env.MAILGUN_API_KEY;
   if (!apiKey) {
     throw new Error('MAILGUN_API_KEY not configured');
   }
 
-  console.log(`Sending test email via Mailgun: ${variantKey} (${variant.templateVersion})`);
+  console.log(`Sending test email via Mailgun: v14 (${TEMPLATE_CONFIG.templateVersion})`);
 
   const form = new FormData();
   form.append('from', FROM_ADDRESS);
   form.append('to', TEST_EMAIL);
-  form.append('subject', variant.subject);
+  form.append('subject', TEMPLATE_CONFIG.subject);
   form.append('template', 'mailer');
-  form.append('t:version', variant.templateVersion);
+  form.append('t:version', TEMPLATE_CONFIG.templateVersion);
   form.append('t:variables', JSON.stringify({
     first_name: 'Test',
     tracked_cta_url: 'https://teambuildpro.com',
     unsubscribe_url: 'https://teambuildpro.com/unsubscribe'
   }));
-  form.append('o:tag', `spam_test_${variantKey}`);
+  form.append('o:tag', TEMPLATE_CONFIG.subjectTag);
   form.append('o:tag', 'spam_monitor');
 
   const response = await axios.post(
@@ -151,12 +130,12 @@ async function sendTestEmailViaMailgun(variantKey) {
     }
   );
 
-  console.log(`Sent: "${variant.subject}" (${response.data.id})`);
+  console.log(`Sent: "${TEMPLATE_CONFIG.subject}" (${response.data.id})`);
 
   return {
-    campaign: VARIANT_NAMES[variantKey] || variantKey,
-    variant: variantKey,
-    subject: variant.subject,
+    campaign: 'Template V14',
+    variant: 'v14',
+    subject: TEMPLATE_CONFIG.subject,
     messageId: response.data.id,
     success: true
   };
@@ -336,78 +315,67 @@ async function main() {
   console.log('=== Email Monitor ===');
   console.log(`Time: ${new Date().toISOString()}`);
   console.log(`Target: ${TEST_EMAIL}`);
-  console.log(`Variants: ${VARIANTS_TO_TEST.join(', ')}`);
-  console.log(`Variant delay: ${VARIANT_DELAY_MS / 1000 / 60} minutes`);
+  console.log(`Template: V14`);
+  console.log(`Subject: ${TEMPLATE_CONFIG.subject}`);
   console.log(`Method: Direct Mailgun API\n`);
 
   const results = [];
   const gmail = await getGmailClient();
 
-  // Process each variant sequentially with delays between them
-  for (let i = 0; i < VARIANTS_TO_TEST.length; i++) {
-    const variant = VARIANTS_TO_TEST[i];
-    const variantNum = i + 1;
-    const totalVariants = VARIANTS_TO_TEST.length;
+  console.log(`\n--- Testing V14 Template ---\n`);
 
-    console.log(`\n--- Variant ${variantNum}/${totalVariants}: ${variant} ---\n`);
-
-    // Step 1: Send test email for this variant
-    console.log(`Step 1: Sending test email...`);
-    let sent;
-    try {
-      sent = await sendTestEmailViaMailgun(variant);
-    } catch (error) {
-      console.error(`Failed to send test email: ${error.message}`);
-      results.push({
-        campaign: VARIANT_NAMES[variant] || variant,
-        variant,
-        placement: 'send_failed',
-        error: error.message
-      });
-      continue; // Skip to next variant
-    }
-
-    // Step 2: Wait for email to be delivered
-    console.log(`Step 2: Waiting ${CHECK_DELAY_MS / 1000} seconds for delivery...`);
-    await new Promise(resolve => setTimeout(resolve, CHECK_DELAY_MS));
-
-    // Step 3: Check Gmail for placement
-    console.log(`Step 3: Checking email placement...`);
-    try {
-      const placement = await checkEmailPlacement(gmail, sent.subject);
-      console.log(`Result: ${placement.toUpperCase()}`);
-
-      results.push({
-        campaign: sent.campaign,
-        variant: sent.variant,
-        placement,
-        subject: sent.subject
-      });
-
-      // Disable ALL campaigns immediately if spam detected
-      if (placement === 'spam') {
-        console.log(`\nSPAM DETECTED: Disabling ALL campaigns...`);
-        await disableAllCampaigns(sent.variant);
-      }
-    } catch (error) {
-      console.error(`Failed to check placement: ${error.message}`);
-      results.push({
-        campaign: sent.campaign,
-        variant: sent.variant,
-        placement: 'check_failed',
-        subject: sent.subject,
-        error: error.message
-      });
-    }
-
-    // Wait between variants (but not after the last one)
-    if (i < VARIANTS_TO_TEST.length - 1) {
-      console.log(`\nWaiting ${VARIANT_DELAY_MS / 1000 / 60} minutes before next variant...`);
-      await new Promise(resolve => setTimeout(resolve, VARIANT_DELAY_MS));
-    }
+  // Step 1: Send test email
+  console.log(`Step 1: Sending test email...`);
+  let sent;
+  try {
+    sent = await sendTestEmailViaMailgun();
+  } catch (error) {
+    console.error(`Failed to send test email: ${error.message}`);
+    results.push({
+      campaign: 'Template V14',
+      variant: 'v14',
+      placement: 'send_failed',
+      error: error.message
+    });
+    console.log('\n=== Summary ===');
+    console.log('Template V14: ERROR (send failed)');
+    process.exit(1);
   }
 
-  // Send alert if any spam detected
+  // Step 2: Wait for email to be delivered
+  console.log(`Step 2: Waiting ${CHECK_DELAY_MS / 1000} seconds for delivery...`);
+  await new Promise(resolve => setTimeout(resolve, CHECK_DELAY_MS));
+
+  // Step 3: Check Gmail for placement
+  console.log(`Step 3: Checking email placement...`);
+  try {
+    const placement = await checkEmailPlacement(gmail, sent.subject);
+    console.log(`Result: ${placement.toUpperCase()}`);
+
+    results.push({
+      campaign: sent.campaign,
+      variant: sent.variant,
+      placement,
+      subject: sent.subject
+    });
+
+    // Disable ALL campaigns immediately if spam detected
+    if (placement === 'spam') {
+      console.log(`\nSPAM DETECTED: Disabling ALL campaigns...`);
+      await disableAllCampaigns(sent.variant);
+    }
+  } catch (error) {
+    console.error(`Failed to check placement: ${error.message}`);
+    results.push({
+      campaign: sent.campaign,
+      variant: sent.variant,
+      placement: 'check_failed',
+      subject: sent.subject,
+      error: error.message
+    });
+  }
+
+  // Send alert if spam detected
   const hasSpam = results.some(r => r.placement === 'spam');
 
   if (hasSpam) {
@@ -429,12 +397,11 @@ async function main() {
     console.log(`${result.campaign}: ${status}`);
   }
 
-  const spamCount = results.filter(r => r.placement === 'spam').length;
-  if (spamCount > 0) {
-    console.log(`\n${spamCount} variant(s) detected in spam. ALL campaigns disabled.`);
+  if (hasSpam) {
+    console.log(`\nSpam detected. ALL campaigns disabled.`);
     process.exit(1); // Non-zero exit for GitHub Actions visibility
   } else {
-    console.log('\nAll variants passed spam check.');
+    console.log('\nV14 template passed spam check.');
   }
 }
 

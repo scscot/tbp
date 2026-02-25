@@ -2,13 +2,12 @@
  * Team Build Pro Email Campaign for Paparazzi Contacts
  *
  * Sends emails to scraped paparazzi_contacts (representatives from paparazziexp.com).
- * Uses Mailgun API with template versioning.
+ * Uses Mailgun API with v14 template and single subject line (no A/B testing).
  *
  * Templates stored in Mailgun under 'mailer' template:
- * - v9: Minimal version (no bullets)
- * - v10: Version with bullets
+ * - v14: English (gradient header, white card design)
  *
- * A/B Test: 4-way (v9a, v9b, v10a, v10b)
+ * Subject: "AI is changing how teams grow"
  *
  * Collection: paparazzi_contacts
  * Query: status == 'pending', sent == false
@@ -41,68 +40,15 @@ const SEND_DELAY_MS = 1000;
 const CTA_DOMAIN = 'teambuildpro.com';
 
 // =============================================================================
-// A/B TEST CONFIGURATION
+// TEMPLATE CONFIGURATION (No A/B Testing)
 // =============================================================================
 
-// Subject "Not an opportunity. Just a tool." triggers Gmail spam filter
-// Using safe subject lines proven to land in inbox
-const VARIANTS = {
-  v9a: {
-    templateVersion: 'v9',
-    subject: 'AI is changing how teams grow',
-    subjectTag: 'paparazzi_v9a',
-    description: 'V9 (no bullets) + AI curiosity'
-  },
-  v9b: {
-    templateVersion: 'v9',
-    subject: 'Your AI-powered recruiting assistant',
-    subjectTag: 'paparazzi_v9b',
-    description: 'V9 (no bullets) + AI assistant'
-  },
-  v10a: {
-    templateVersion: 'v10',
-    subject: 'AI is changing how teams grow',
-    subjectTag: 'paparazzi_v10a',
-    description: 'V10 (with bullets) + AI curiosity'
-  },
-  v10b: {
-    templateVersion: 'v10',
-    subject: 'Your AI-powered recruiting assistant',
-    subjectTag: 'paparazzi_v10b',
-    description: 'V10 (with bullets) + AI assistant'
-  },
-  // V14/V15: New design (gradient header, white card) with same content as v9/v10
-  v14a: {
-    templateVersion: 'v14',
-    subject: 'AI is changing how teams grow',
-    subjectTag: 'paparazzi_v14a',
-    description: 'V14 (new design, v9 content) + AI curiosity'
-  },
-  v14b: {
-    templateVersion: 'v14',
-    subject: 'Your AI-powered recruiting assistant',
-    subjectTag: 'paparazzi_v14b',
-    description: 'V14 (new design, v9 content) + AI assistant'
-  },
-  v15a: {
-    templateVersion: 'v15',
-    subject: 'AI is changing how teams grow',
-    subjectTag: 'paparazzi_v15a',
-    description: 'V15 (new design, v10 content) + AI curiosity'
-  },
-  v15b: {
-    templateVersion: 'v15',
-    subject: 'Your AI-powered recruiting assistant',
-    subjectTag: 'paparazzi_v15b',
-    description: 'V15 (new design, v10 content) + AI assistant'
-  }
+// Single template and subject line for all sends
+const TEMPLATE_CONFIG = {
+  templateVersion: 'v14',
+  subject: 'AI is changing how teams grow',
+  subjectTag: 'paparazzi_v14'
 };
-
-// Active variant keys for A/B testing (production campaign)
-const ACTIVE_VARIANT_KEYS = ['v9a', 'v9b', 'v10a', 'v10b'];
-
-// All valid variant keys (includes v14/v15 for spam monitor testing)
-const ALL_VARIANT_KEYS = Object.keys(VARIANTS);
 
 // =============================================================================
 // CAMPAIGN CONFIGURATION
@@ -175,16 +121,15 @@ function buildLandingPageUrl(utmCampaign, utmContent) {
 // =============================================================================
 
 /**
- * Send email via Mailgun API
+ * Send email via Mailgun API using v14 template (no A/B testing)
  *
  * @param {object} contact - Contact data { firstName, lastName, email, ... }
  * @param {string} docId - Firestore document ID (used as tracking ID)
  * @param {object} config - Campaign configuration
- * @param {number} index - Batch index for strict A/B alternation
  * @param {string} subjectSuffix - Optional suffix to append to subject (for spam monitoring)
  * @returns {Promise<object>} Send result
  */
-async function sendEmailViaMailgun(contact, docId, config, index, subjectSuffix = '') {
+async function sendEmailViaMailgun(contact, docId, config, subjectSuffix = '') {
   const apiKey = mailgunApiKey.value();
   const domain = mailgunDomain.value();
 
@@ -192,13 +137,9 @@ async function sendEmailViaMailgun(contact, docId, config, index, subjectSuffix 
     throw new Error('TBP_MAILGUN_API_KEY not configured');
   }
 
-  // Select variant based on index (4-way A/B test)
-  const variantKey = ACTIVE_VARIANT_KEYS[index % ACTIVE_VARIANT_KEYS.length];
-  const variant = VARIANTS[variantKey];
-
   // Build URLs (direct links for better deliverability)
   const unsubscribeUrl = `https://${CTA_DOMAIN}/unsubscribe.html?email=${encodeURIComponent(contact.email)}`;
-  const landingPageUrl = buildLandingPageUrl(config.utmCampaign, variant.subjectTag);
+  const landingPageUrl = buildLandingPageUrl(config.utmCampaign, TEMPLATE_CONFIG.subjectTag);
 
   // Build form data for Mailgun API
   const form = new FormData();
@@ -210,10 +151,10 @@ async function sendEmailViaMailgun(contact, docId, config, index, subjectSuffix 
     : contact.firstName;
   form.append('to', `${recipientName} <${contact.email}>`);
 
-  const fullSubject = subjectSuffix ? `${variant.subject} ${subjectSuffix}` : variant.subject;
+  const fullSubject = subjectSuffix ? `${TEMPLATE_CONFIG.subject} ${subjectSuffix}` : TEMPLATE_CONFIG.subject;
   form.append('subject', fullSubject);
   form.append('template', TEMPLATE_NAME);
-  form.append('t:version', variant.templateVersion);
+  form.append('t:version', TEMPLATE_CONFIG.templateVersion);
 
   // Template variables (using direct landing page URL for deliverability)
   const templateVars = {
@@ -230,7 +171,7 @@ async function sendEmailViaMailgun(contact, docId, config, index, subjectSuffix 
 
   // Tags for analytics
   form.append('o:tag', config.campaignTag);
-  form.append('o:tag', variant.subjectTag);
+  form.append('o:tag', TEMPLATE_CONFIG.subjectTag);
   form.append('o:tag', 'tracked');
 
   // List-Unsubscribe headers (required by Gmail for bulk senders)
@@ -238,7 +179,7 @@ async function sendEmailViaMailgun(contact, docId, config, index, subjectSuffix 
   form.append('h:List-Unsubscribe', `<mailto:${unsubscribeEmail}?subject=Unsubscribe>, <${unsubscribeUrl}>`);
   form.append('h:List-Unsubscribe-Post', 'List-Unsubscribe=One-Click');
 
-  console.log(`   Template: ${variantKey.toUpperCase()} (${variant.templateVersion})`);
+  console.log(`   Template: V14`);
 
   // Send via Mailgun API
   const mailgunBaseUrl = `https://api.mailgun.net/v3/${domain}`;
@@ -253,9 +194,9 @@ async function sendEmailViaMailgun(contact, docId, config, index, subjectSuffix 
     success: true,
     messageId: response.data.id,
     response: response.data.message,
-    subjectTag: variant.subjectTag,
-    templateVariant: variantKey,
-    templateVersion: variant.templateVersion,
+    subjectTag: TEMPLATE_CONFIG.subjectTag,
+    templateVariant: 'v14',
+    templateVersion: TEMPLATE_CONFIG.templateVersion,
     usedSubject: fullSubject
   };
 }
@@ -326,7 +267,7 @@ async function processPaparazziCampaignBatch(batchSize) {
       try {
         console.log(`Sending to ${contact.email}...`);
 
-        const result = await sendEmailViaMailgun(contact, doc.id, config, i);
+        const result = await sendEmailViaMailgun(contact, doc.id, config);
 
         if (result.success) {
           const updateData = {
@@ -420,16 +361,14 @@ const sendHourlyPaparazziCampaign = onSchedule({
 
 /**
  * Test endpoint for spam monitoring workflow
- * Sends test emails using actual campaign code to verify inbox placement
+ * Sends test email using actual campaign code to verify inbox placement
  *
  * Usage: POST /testPaparazziEmail
  * Body: {
  *   "email": "test@example.com",
- *   "variants": ["v9a", "v10a"],
- *   "subjectSuffix": "(Feb 23, 6:00 AM)"
+ *   "subjectSuffix": "(Feb 25, 6:00 AM)"
  * }
  *
- * If variants not specified, sends all 4 variants (v9a, v9b, v10a, v10b)
  * subjectSuffix is optional - appended to subject for Gmail search accuracy
  */
 const testPaparazziEmail = onRequest({
@@ -451,7 +390,7 @@ const testPaparazziEmail = onRequest({
     return;
   }
 
-  const { email, variants, subjectSuffix } = req.body || {};
+  const { email, subjectSuffix } = req.body || {};
 
   if (!email) {
     res.status(400).json({ error: 'Missing required field: email' });
@@ -464,80 +403,63 @@ const testPaparazziEmail = onRequest({
     return;
   }
 
-  // Determine which variants to test (accepts all defined variants, not just active ones)
-  const variantsToTest = variants && Array.isArray(variants)
-    ? variants.filter(v => ALL_VARIANT_KEYS.includes(v))
-    : ACTIVE_VARIANT_KEYS;
+  console.log(`💎 PAPARAZZI TEST: Sending test email to ${email}`);
 
-  if (variantsToTest.length === 0) {
-    res.status(400).json({ error: 'No valid variants specified', validVariants: ALL_VARIANT_KEYS });
-    return;
-  }
+  // Create test contact data (use real name for deliverability testing)
+  const testContact = {
+    firstName: 'Stephen',
+    lastName: 'Scott',
+    email: email
+  };
 
-  console.log(`💎 PAPARAZZI TEST: Sending ${variantsToTest.length} test email(s) to ${email}`);
+  // Create mock config matching campaign config
+  const testConfig = {
+    ...CAMPAIGN_CONFIG,
+    utmCampaign: 'paparazzi_test'
+  };
 
-  const results = [];
+  try {
+    const result = await sendEmailViaMailgun(testContact, `test_${Date.now()}`, testConfig, subjectSuffix || '');
 
-  for (let i = 0; i < variantsToTest.length; i++) {
-    const variantKey = variantsToTest[i];
+    console.log(`💎 Test sent (v14): ${result.messageId}`);
 
-    // Create test contact data (use real name for deliverability testing)
-    const testContact = {
-      firstName: 'Stephen',
-      lastName: 'Scott',
-      email: email
-    };
-
-    // Create mock config matching campaign config
-    const testConfig = {
-      ...CAMPAIGN_CONFIG,
-      utmCampaign: 'paparazzi_test'
-    };
-
-    try {
-      // Override the variant selection by using index that maps to desired variant
-      const variantIndex = ACTIVE_VARIANT_KEYS.indexOf(variantKey);
-      const result = await sendEmailViaMailgun(testContact, `test_${Date.now()}`, testConfig, variantIndex, subjectSuffix || '');
-
-      results.push({
-        variant: variantKey,
+    res.json({
+      success: true,
+      timestamp: new Date().toISOString(),
+      email,
+      summary: {
+        sent: 1,
+        failed: 0,
+        total: 1
+      },
+      results: [{
+        variant: 'v14',
         success: true,
         messageId: result.messageId,
         subject: result.usedSubject,
         templateVersion: result.templateVersion
-      });
+      }]
+    });
+  } catch (error) {
+    const errorMessage = error.response?.data?.message || error.message;
+    console.error(`💎 Test failed (v14): ${errorMessage}`);
 
-      console.log(`💎 Test sent (${variantKey}): ${result.messageId}`);
-
-      // Small delay between sends
-      if (i < variantsToTest.length - 1) {
-        await new Promise(resolve => setTimeout(resolve, 500));
-      }
-    } catch (error) {
-      const errorMessage = error.response?.data?.message || error.message;
-      results.push({
-        variant: variantKey,
+    res.json({
+      success: false,
+      timestamp: new Date().toISOString(),
+      email,
+      summary: {
+        sent: 0,
+        failed: 1,
+        total: 1
+      },
+      results: [{
+        variant: 'v14',
         success: false,
         error: errorMessage
-      });
-      console.error(`💎 Test failed (${variantKey}): ${errorMessage}`);
-    }
+      }]
+    });
   }
-
-  const successful = results.filter(r => r.success).length;
-  const failed = results.filter(r => !r.success).length;
-
-  res.json({
-    success: failed === 0,
-    timestamp: new Date().toISOString(),
-    email,
-    summary: {
-      sent: successful,
-      failed: failed,
-      total: variantsToTest.length
-    },
-    results
-  });
 });
 
 // =============================================================================

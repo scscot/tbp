@@ -2,25 +2,17 @@
  * Team Build Pro Email Campaign for BFH (Business For Home) Contacts
  *
  * Sends emails to scraped bfh_contacts (distributors from Business For Home website).
- * Uses Mailgun API with template versioning and AI personalization.
+ * Uses Mailgun API with v14 template and single subject line (no A/B testing).
  *
  * Templates stored in Mailgun under 'mailer' template:
- * - v9: Minimal version without bullet points
- * - v10: Version with specific value prop bullets
- * - v11: V9 + personalized_intro support (AI personalization)
- * - v12: V10 + personalized_intro support (AI personalization)
+ * - v14: English (gradient header, white card design)
+ * - v14-es: Spanish
+ * - v14-de: German
  *
- * Hybrid Send Strategy:
- * - English contacts with AI personalization → V11/V12 with personalized_intro variable
- * - Non-English contacts (ES/PT/DE) with AI personalization → Raw HTML email
- * - Contacts without personalization → Standard V9/V10 templates
- *
- * Current A/B Test (4-way for non-personalized, 2-way for personalized):
- * - v9a/v9b/v10a/v10b: Standard templates (no personalization)
- * - v11a/v12a: Personalized templates (English only)
+ * Subject: "AI is changing how teams grow" (localized per language)
  *
  * Collection: bfh_contacts
- * Query: personalizationApproved == true OR (bfhScraped == true, email != null), sent == false
+ * Query: bfhScraped == true, email != null, sent == false
  * Schedule: 10am, 1pm, 4pm, 7pm PT (staggered from Main and Contacts campaigns)
  */
 
@@ -49,58 +41,32 @@ const SEND_DELAY_MS = 1000;
 const LANDING_PAGE_URL = 'https://teambuildpro.com';
 
 // =============================================================================
-// A/B TEST CONFIGURATIONS
+// TEMPLATE CONFIGURATION (No A/B Testing)
 // =============================================================================
 
-// A/B Test Variants - Standard (no personalization)
-// Subject "Not an opportunity. Just a tool." triggers Gmail spam filter - using safe alternatives
-const STANDARD_VARIANTS = {
-  v9a: {
-    templateVersion: 'v9',
+// Language-specific template and subject configuration
+const TEMPLATE_CONFIG = {
+  en: {
+    templateVersion: 'v14',
     subject: 'AI is changing how teams grow',
-    subjectTag: 'bfh_v9a',
-    description: 'V9 (no bullets) + AI curiosity'
+    subjectTag: 'bfh_v14_en'
   },
-  v9b: {
-    templateVersion: 'v9',
-    subject: 'Your AI-powered recruiting assistant',
-    subjectTag: 'bfh_v9b',
-    description: 'V9 (no bullets) + AI assistant'
+  es: {
+    templateVersion: 'v14-es',
+    subject: 'La IA esta cambiando como crecen los equipos',
+    subjectTag: 'bfh_v14_es'
   },
-  v10a: {
-    templateVersion: 'v10',
-    subject: 'AI is changing how teams grow',
-    subjectTag: 'bfh_v10a',
-    description: 'V10 (with bullets) + AI curiosity'
+  pt: {
+    templateVersion: 'v14',  // Use English template for Portuguese (no v14-pt yet)
+    subject: 'A IA esta mudando como as equipes crescem',
+    subjectTag: 'bfh_v14_pt'
   },
-  v10b: {
-    templateVersion: 'v10',
-    subject: 'Your AI-powered recruiting assistant',
-    subjectTag: 'bfh_v10b',
-    description: 'V10 (with bullets) + AI assistant'
+  de: {
+    templateVersion: 'v14-de',
+    subject: 'KI verandert, wie Teams wachsen',
+    subjectTag: 'bfh_v14_de'
   }
 };
-
-// A/B Test Variants - Personalized (English only)
-// Subject "Not an opportunity. Just a tool." triggers Gmail spam filter - using safe alternatives
-const PERSONALIZED_VARIANTS = {
-  v11a: {
-    templateVersion: 'v11',
-    subject: 'AI is changing how teams grow',
-    subjectTag: 'bfh_v11a_personalized',
-    description: 'V11 (personalized) + AI curiosity'
-  },
-  v12a: {
-    templateVersion: 'v12',
-    subject: 'Your AI-powered recruiting assistant',
-    subjectTag: 'bfh_v12a_personalized',
-    description: 'V12 (personalized) + AI assistant'
-  }
-};
-
-// Active variants for A/B testing
-const ACTIVE_STANDARD_VARIANTS = ['v9a', 'v9b', 'v10a', 'v10b'];
-const ACTIVE_PERSONALIZED_VARIANTS = ['v11a', 'v12a'];
 
 // Language-specific CTA domains
 const CTA_DOMAINS = {
@@ -109,10 +75,6 @@ const CTA_DOMAINS = {
   pt: 'pt.teambuildpro.com',
   de: 'de.teambuildpro.com'
 };
-
-// For backwards compatibility
-const AB_TEST_VARIANTS = { ...STANDARD_VARIANTS, ...PERSONALIZED_VARIANTS };
-const ACTIVE_VARIANTS = ACTIVE_STANDARD_VARIANTS;
 
 // =============================================================================
 // CAMPAIGN CONFIGURATION
@@ -185,37 +147,21 @@ function buildLandingPageUrl(utmCampaign, utmContent, language = 'en') {
 // =============================================================================
 
 /**
- * Determine send strategy based on contact personalization status
+ * Get language for contact (defaults to English)
  */
-function determineSendStrategy(contact) {
-  const hasPersonalization = contact.personalizationApproved === true;
-  const language = contact.detectedLanguage || 'en';
-  const isEnglish = language === 'en';
-
-  if (hasPersonalization && isEnglish && contact.personalizedIntro) {
-    return { type: 'personalized_template', language };
-  } else if (hasPersonalization && !isEnglish && contact.personalizedHtml) {
-    return { type: 'raw_html', language };
-  } else {
-    return { type: 'standard_template', language };
-  }
+function getContactLanguage(contact) {
+  return contact.detectedLanguage || 'en';
 }
 
 /**
- * Send email via Mailgun API using templates with A/B testing
- *
- * Supports three modes:
- * 1. personalized_template: V11/V12 with personalized_intro variable (English)
- * 2. raw_html: Full AI-generated HTML email (non-English)
- * 3. standard_template: Standard V9/V10 templates (fallback)
+ * Send email via Mailgun API using v14 templates (no A/B testing)
  *
  * @param {object} contact - Contact data { firstName, lastName, email, ... }
  * @param {string} docId - Firestore document ID (used as tracking ID)
  * @param {object} config - Campaign configuration
- * @param {number} index - Batch index for strict A/B alternation
  * @returns {Promise<object>} Send result
  */
-async function sendEmailViaMailgun(contact, docId, config, index) {
+async function sendEmailViaMailgun(contact, docId, config) {
   const apiKey = mailgunApiKey.value();
   const domain = mailgunDomain.value();
 
@@ -223,96 +169,31 @@ async function sendEmailViaMailgun(contact, docId, config, index) {
     throw new Error('TBP_MAILGUN_API_KEY not configured');
   }
 
-  const strategy = determineSendStrategy(contact);
-  const language = strategy.language;
+  const language = getContactLanguage(contact);
+  const templateConfig = TEMPLATE_CONFIG[language] || TEMPLATE_CONFIG.en;
 
   // Build tracking URLs with language-specific domain
   const ctaDomain = CTA_DOMAINS[language] || CTA_DOMAINS.en;
   const unsubscribeUrl = `https://${ctaDomain}/unsubscribe.html?email=${encodeURIComponent(contact.email)}`;
+  const landingPageUrl = buildLandingPageUrl(config.utmCampaign, templateConfig.subjectTag, language);
 
   // Build form data for Mailgun API
   const form = new FormData();
   form.append('from', FROM_ADDRESS);
   form.append('to', `${contact.firstName} ${contact.lastName || ''} <${contact.email}>`);
+  form.append('subject', templateConfig.subject);
+  form.append('template', TEMPLATE_NAME);
+  form.append('t:version', templateConfig.templateVersion);
 
-  let templateVariant, variant, subjectTag, usedSubject, hasPersonalizedSubject = false;
+  // Template variables (using direct landing page URL for deliverability)
+  const templateVars = {
+    first_name: contact.firstName,
+    tracked_cta_url: landingPageUrl,
+    unsubscribe_url: unsubscribeUrl
+  };
+  form.append('h:X-Mailgun-Variables', JSON.stringify(templateVars));
 
-  if (strategy.type === 'personalized_template') {
-    // English with personalized_intro → V11/V12 template
-    templateVariant = ACTIVE_PERSONALIZED_VARIANTS[index % ACTIVE_PERSONALIZED_VARIANTS.length];
-    variant = PERSONALIZED_VARIANTS[templateVariant];
-
-    // Use AI-generated personalized subject if available, otherwise fall back to A/B test subject
-    hasPersonalizedSubject = !!contact.personalizedSubject;
-    usedSubject = contact.personalizedSubject || variant.subject;
-    subjectTag = hasPersonalizedSubject ? `${variant.subjectTag}_ai_subject` : variant.subjectTag;
-
-    const landingPageUrl = buildLandingPageUrl(config.utmCampaign, subjectTag, language);
-
-    form.append('subject', usedSubject);
-    form.append('template', TEMPLATE_NAME);
-    form.append('t:version', variant.templateVersion);
-
-    // Template variables with personalized_intro (using direct landing page URL for deliverability)
-    const templateVars = {
-      first_name: contact.firstName,
-      personalized_intro: contact.personalizedIntro,
-      tracked_cta_url: landingPageUrl,
-      unsubscribe_url: unsubscribeUrl
-    };
-    form.append('h:X-Mailgun-Variables', JSON.stringify(templateVars));
-
-    const subjectInfo = hasPersonalizedSubject ? `AI Subject: "${usedSubject.substring(0, 40)}..."` : `A/B Subject: "${variant.subject}"`;
-    console.log(`   Mode: PERSONALIZED | Template: ${templateVariant.toUpperCase()} | ${subjectInfo}`);
-
-  } else if (strategy.type === 'raw_html') {
-    // Non-English with full HTML → Raw email send
-    templateVariant = `raw_${language}`;
-    subjectTag = `bfh_personalized_${language}`;
-
-    const landingPageUrl = buildLandingPageUrl(config.utmCampaign, subjectTag, language);
-
-    // Replace placeholders in the HTML (using direct landing page URL for deliverability)
-    let html = contact.personalizedHtml;
-    html = html.replace(/\{\{tracked_cta_url\}\}/g, landingPageUrl);
-    html = html.replace(/\{\{unsubscribe_url\}\}/g, unsubscribeUrl);
-    html = html.replace(/\{\{first_name\}\}/g, contact.firstName);
-
-    // Subject line in recipient's language (using spam-safe subjects)
-    const localizedSubjects = {
-      es: 'La IA esta cambiando como crecen los equipos',
-      pt: 'A IA esta mudando como as equipes crescem',
-      de: 'KI verandert, wie Teams wachsen'
-    };
-    usedSubject = localizedSubjects[language] || 'AI is changing how teams grow';
-    form.append('subject', usedSubject);
-    form.append('html', html);
-
-    console.log(`   Mode: RAW HTML | Lang: ${language.toUpperCase()} | CTA: ${ctaDomain}`);
-
-  } else {
-    // Standard template (no personalization)
-    templateVariant = ACTIVE_STANDARD_VARIANTS[index % ACTIVE_STANDARD_VARIANTS.length];
-    variant = STANDARD_VARIANTS[templateVariant];
-    subjectTag = variant.subjectTag;
-
-    const landingPageUrl = buildLandingPageUrl(config.utmCampaign, subjectTag, language);
-
-    usedSubject = variant.subject;
-    form.append('subject', usedSubject);
-    form.append('template', TEMPLATE_NAME);
-    form.append('t:version', variant.templateVersion);
-
-    // Template variables (using direct landing page URL for deliverability)
-    const templateVars = {
-      first_name: contact.firstName,
-      tracked_cta_url: landingPageUrl,
-      unsubscribe_url: unsubscribeUrl
-    };
-    form.append('h:X-Mailgun-Variables', JSON.stringify(templateVars));
-
-    console.log(`   Mode: STANDARD | Template: ${templateVariant.toUpperCase()} | Subject: "${usedSubject}"`);
-  }
+  console.log(`   Lang: ${language.toUpperCase()} | Template: V14 | CTA: ${ctaDomain}`);
 
   // Mailgun tracking disabled — clicks tracked via GA4 using UTM parameters in direct landing page URLs
   form.append('o:tracking', 'no');
@@ -321,8 +202,7 @@ async function sendEmailViaMailgun(contact, docId, config, index) {
 
   // Tags for analytics
   form.append('o:tag', config.campaignTag);
-  form.append('o:tag', strategy.type);
-  form.append('o:tag', subjectTag);
+  form.append('o:tag', templateConfig.subjectTag);
   form.append('o:tag', `lang_${language}`);
   form.append('o:tag', 'tracked');
 
@@ -344,12 +224,10 @@ async function sendEmailViaMailgun(contact, docId, config, index) {
     success: true,
     messageId: response.data.id,
     response: response.data.message,
-    subjectTag: subjectTag,
-    templateVariant: templateVariant,
-    sendStrategy: strategy.type,
+    subjectTag: templateConfig.subjectTag,
+    templateVariant: 'v14',
     language: language,
-    usedSubject: usedSubject,
-    hasPersonalizedSubject: hasPersonalizedSubject
+    usedSubject: templateConfig.subject
   };
 }
 
@@ -444,7 +322,7 @@ async function processBfhCampaignBatch(batchSize) {
       try {
         console.log(`📤 Sending to ${contact.email}...`);
 
-        const result = await sendEmailViaMailgun(contact, doc.id, config, i);
+        const result = await sendEmailViaMailgun(contact, doc.id, config);
 
         if (result.success) {
           const updateData = {

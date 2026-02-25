@@ -2,7 +2,8 @@
  * Purchased Leads Email Campaign Functions
  *
  * Sends email campaigns to leads purchased from external sources (Apollo, Apache, Exact Data)
- * Tracks performance by source for A/B testing and ROI analysis.
+ * Uses v14 template with single subject line (no A/B testing).
+ * Tracks performance by source for ROI analysis.
  */
 
 const { onSchedule } = require("firebase-functions/v2/scheduler");
@@ -29,24 +30,12 @@ const FROM_ADDRESS = 'Stephen Scott <stephen@news.teambuildpro.com>';
 const SEND_DELAY_MS = 1000;
 const LANDING_PAGE_URL = 'https://teambuildpro.com';
 
-// A/B Test Variants - V9 vs V10 templates
-// Subject "Not an opportunity. Just a tool." triggers Gmail spam filter - using safe alternatives
-const AB_TEST_VARIANTS = {
-  v9a: {
-    templateVersion: 'v9',
-    subject: 'AI is changing how teams grow',
-    subjectTag: 'purchased_v9a',
-    description: 'V9 (statistical hook) + AI curiosity subject'
-  },
-  v10a: {
-    templateVersion: 'v10',
-    subject: 'Your AI-powered recruiting assistant',
-    subjectTag: 'purchased_v10a',
-    description: 'V10 (credentials hook) + AI assistant subject'
-  }
+// Single template and subject line for all sends (no A/B testing)
+const TEMPLATE_CONFIG = {
+  templateVersion: 'v14',
+  subject: 'AI is changing how teams grow',
+  subjectTag: 'purchased_v14'
 };
-
-const ACTIVE_VARIANTS = ['v9a', 'v10a'];
 
 // =============================================================================
 // HELPER FUNCTIONS
@@ -95,7 +84,7 @@ async function isCampaignEnabled() {
 // EMAIL SENDER
 // =============================================================================
 
-async function sendEmailViaMailgun(lead, docId, index) {
+async function sendEmailViaMailgun(lead, docId) {
   const apiKey = mailgunApiKey.value();
   const domain = mailgunDomain.value();
 
@@ -103,22 +92,18 @@ async function sendEmailViaMailgun(lead, docId, index) {
     throw new Error('TBP_MAILGUN_API_KEY not configured');
   }
 
-  // A/B Test: Strict alternation between active variants
-  const templateVariant = ACTIVE_VARIANTS[index % ACTIVE_VARIANTS.length];
-  const variant = AB_TEST_VARIANTS[templateVariant];
-
   // Build URLs (direct links for better deliverability)
   const utmCampaign = `purchased_${lead.source}`;
-  const landingPageUrl = buildLandingPageUrl(utmCampaign, variant.subjectTag, lead.source);
+  const landingPageUrl = buildLandingPageUrl(utmCampaign, TEMPLATE_CONFIG.subjectTag, lead.source);
   const unsubscribeUrl = `${LANDING_PAGE_URL}/unsubscribe.html?email=${encodeURIComponent(lead.email)}`;
 
   // Build form data for Mailgun API
   const form = new FormData();
   form.append('from', FROM_ADDRESS);
   form.append('to', `${lead.firstName} ${lead.lastName || ''} <${lead.email}>`.trim());
-  form.append('subject', variant.subject);
+  form.append('subject', TEMPLATE_CONFIG.subject);
   form.append('template', TEMPLATE_NAME);
-  form.append('t:version', variant.templateVersion);
+  form.append('t:version', TEMPLATE_CONFIG.templateVersion);
 
   // Mailgun tracking disabled — clicks tracked via GA4 using UTM parameters in direct landing page URLs
   form.append('o:tracking', 'no');
@@ -128,8 +113,8 @@ async function sendEmailViaMailgun(lead, docId, index) {
   // Tags for analytics
   form.append('o:tag', 'purchased_campaign');
   form.append('o:tag', `source_${lead.source}`);
-  form.append('o:tag', variant.templateVersion);
-  form.append('o:tag', variant.subjectTag);
+  form.append('o:tag', TEMPLATE_CONFIG.templateVersion);
+  form.append('o:tag', TEMPLATE_CONFIG.subjectTag);
   form.append('o:tag', lead.batchId || 'unknown_batch');
 
   // List-Unsubscribe headers
@@ -145,7 +130,7 @@ async function sendEmailViaMailgun(lead, docId, index) {
   };
   form.append('h:X-Mailgun-Variables', JSON.stringify(templateVars));
 
-  console.log(`   Source: ${lead.source} | Template: ${templateVariant.toUpperCase()}`);
+  console.log(`   Source: ${lead.source} | Template: V14`);
 
   // Send via Mailgun API
   const response = await axios.post(
@@ -163,8 +148,8 @@ async function sendEmailViaMailgun(lead, docId, index) {
     success: true,
     messageId: response.data.id,
     response: response.data.message,
-    subjectTag: variant.subjectTag,
-    templateVariant
+    subjectTag: TEMPLATE_CONFIG.subjectTag,
+    templateVariant: 'v14'
   };
 }
 
@@ -287,7 +272,7 @@ const sendPurchasedLeadsCampaign = onSchedule({
       try {
         console.log(`📤 [${i + 1}/${unsentSnapshot.size}] Sending to ${lead.email}...`);
 
-        const result = await sendEmailViaMailgun(lead, doc.id, i);
+        const result = await sendEmailViaMailgun(lead, doc.id);
 
         if (result.success) {
           await doc.ref.update({

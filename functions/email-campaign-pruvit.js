@@ -2,14 +2,12 @@
  * Team Build Pro Email Campaign for Pruvit Contacts
  *
  * Sends emails to scraped pruvit_contacts (distributors from Pruvit referral pages).
- * Uses Mailgun API with template versioning.
+ * Uses Mailgun API with v14 template and single subject line (no A/B testing).
  *
  * Templates stored in Mailgun under 'mailer' template:
- * - v9: English minimal version (no bullets)
- * - v10: English version with bullets
+ * - v14: English (gradient header, white card design)
  *
- * A/B Test: 4-way (v9a, v9b, v10a, v10b) - English only
- * (Pruvit is primarily US-based, so no language selection needed)
+ * Subject: "AI is changing how teams grow"
  *
  * Collection: pruvit_contacts
  * Query: status == 'pending', sent == false, email != null
@@ -41,42 +39,15 @@ const SEND_DELAY_MS = 1000;
 const CTA_DOMAIN = 'teambuildpro.com';
 
 // =============================================================================
-// A/B TEST CONFIGURATIONS
+// TEMPLATE CONFIGURATION (No A/B Testing)
 // =============================================================================
 
-/**
- * English variants
- * Subject "Not an opportunity. Just a tool." triggers Gmail spam filter - using safe alternatives
- */
-const VARIANTS = {
-  v9a: {
-    templateVersion: 'v9',
-    subject: 'AI is changing how teams grow',
-    subjectTag: 'pruvit_v9a',
-    description: 'V9 (no bullets) + AI curiosity'
-  },
-  v9b: {
-    templateVersion: 'v9',
-    subject: 'Your AI-powered recruiting assistant',
-    subjectTag: 'pruvit_v9b',
-    description: 'V9 (no bullets) + AI assistant'
-  },
-  v10a: {
-    templateVersion: 'v10',
-    subject: 'AI is changing how teams grow',
-    subjectTag: 'pruvit_v10a',
-    description: 'V10 (with bullets) + AI curiosity'
-  },
-  v10b: {
-    templateVersion: 'v10',
-    subject: 'Your AI-powered recruiting assistant',
-    subjectTag: 'pruvit_v10b',
-    description: 'V10 (with bullets) + AI assistant'
-  }
+// Single template and subject line for all sends
+const TEMPLATE_CONFIG = {
+  templateVersion: 'v14',
+  subject: 'AI is changing how teams grow',
+  subjectTag: 'pruvit_v14'
 };
-
-// Active variant keys for A/B testing
-const ACTIVE_VARIANT_KEYS = ['v9a', 'v9b', 'v10a', 'v10b'];
 
 // =============================================================================
 // CAMPAIGN CONFIGURATION
@@ -149,15 +120,14 @@ function buildLandingPageUrl(utmCampaign, utmContent) {
 // =============================================================================
 
 /**
- * Send email via Mailgun API
+ * Send email via Mailgun API using v14 template (no A/B testing)
  *
  * @param {object} contact - Contact data { firstName, lastName, email, ... }
  * @param {string} docId - Firestore document ID (used as tracking ID)
  * @param {object} config - Campaign configuration
- * @param {number} index - Batch index for strict A/B alternation
  * @returns {Promise<object>} Send result
  */
-async function sendEmailViaMailgun(contact, docId, config, index) {
+async function sendEmailViaMailgun(contact, docId, config) {
   const apiKey = mailgunApiKey.value();
   const domain = mailgunDomain.value();
 
@@ -165,13 +135,9 @@ async function sendEmailViaMailgun(contact, docId, config, index) {
     throw new Error('TBP_MAILGUN_API_KEY not configured');
   }
 
-  // Select variant based on index (4-way A/B test)
-  const variantKey = ACTIVE_VARIANT_KEYS[index % ACTIVE_VARIANT_KEYS.length];
-  const variant = VARIANTS[variantKey];
-
   // Build URLs (direct links for better deliverability)
   const unsubscribeUrl = `https://${CTA_DOMAIN}/unsubscribe.html?email=${encodeURIComponent(contact.email)}`;
-  const landingPageUrl = buildLandingPageUrl(config.utmCampaign, variant.subjectTag);
+  const landingPageUrl = buildLandingPageUrl(config.utmCampaign, TEMPLATE_CONFIG.subjectTag);
 
   // Build form data for Mailgun API
   const form = new FormData();
@@ -183,9 +149,9 @@ async function sendEmailViaMailgun(contact, docId, config, index) {
     : contact.firstName;
   form.append('to', `${recipientName} <${contact.email}>`);
 
-  form.append('subject', variant.subject);
+  form.append('subject', TEMPLATE_CONFIG.subject);
   form.append('template', TEMPLATE_NAME);
-  form.append('t:version', variant.templateVersion);
+  form.append('t:version', TEMPLATE_CONFIG.templateVersion);
 
   // Template variables (using direct landing page URL for deliverability)
   const templateVars = {
@@ -202,7 +168,7 @@ async function sendEmailViaMailgun(contact, docId, config, index) {
 
   // Tags for analytics
   form.append('o:tag', config.campaignTag);
-  form.append('o:tag', variant.subjectTag);
+  form.append('o:tag', TEMPLATE_CONFIG.subjectTag);
   form.append('o:tag', 'tracked');
 
   // List-Unsubscribe headers (required by Gmail for bulk senders)
@@ -210,7 +176,7 @@ async function sendEmailViaMailgun(contact, docId, config, index) {
   form.append('h:List-Unsubscribe', `<mailto:${unsubscribeEmail}?subject=Unsubscribe>, <${unsubscribeUrl}>`);
   form.append('h:List-Unsubscribe-Post', 'List-Unsubscribe=One-Click');
 
-  console.log(`   Template: ${variantKey.toUpperCase()} (${variant.templateVersion})`);
+  console.log(`   Template: V14`);
 
   // Send via Mailgun API
   const mailgunBaseUrl = `https://api.mailgun.net/v3/${domain}`;
@@ -225,10 +191,10 @@ async function sendEmailViaMailgun(contact, docId, config, index) {
     success: true,
     messageId: response.data.id,
     response: response.data.message,
-    subjectTag: variant.subjectTag,
-    templateVariant: variantKey,
-    templateVersion: variant.templateVersion,
-    usedSubject: variant.subject
+    subjectTag: TEMPLATE_CONFIG.subjectTag,
+    templateVariant: 'v14',
+    templateVersion: TEMPLATE_CONFIG.templateVersion,
+    usedSubject: TEMPLATE_CONFIG.subject
   };
 }
 
@@ -298,7 +264,7 @@ async function processPruvitCampaignBatch(batchSize) {
       try {
         console.log(`Sending to ${contact.email}...`);
 
-        const result = await sendEmailViaMailgun(contact, doc.id, config, i);
+        const result = await sendEmailViaMailgun(contact, doc.id, config);
 
         if (result.success) {
           const updateData = {
