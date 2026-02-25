@@ -397,7 +397,7 @@ function generateEmailHTML(firmName, email, leadId, firstName) {
       <p style="font-size: 16px;"><strong>$99/month. No contracts. Cancel anytime.</strong></p>
 
       <div style="text-align: center; margin: 20px 0 30px 0;">
-          <a href="${ctaUrl}" style="display: inline-block; background: linear-gradient(135deg, #c9a962 0%, #b8944f 100%); color: #0c1f3f; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-size: 16px;">Get Started</a>
+          <a href="${ctaUrl}" style="display: inline-block; background: linear-gradient(135deg, #c9a962 0%, #b8944f 100%); color: #0c1f3f; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-size: 16px;">Learn More</a>
       </div>
 
       <p style="font-size: 16px; margin-top: 16px;">
@@ -554,7 +554,7 @@ Embeds directly on your website — visitors never leave your site.
 
 $99/month. No contracts. Cancel anytime.
 
-Get Started: ${ctaUrl}
+Learn More: ${ctaUrl}
 
 No commitment. Cancel anytime if it's not right for your firm.
 
@@ -676,7 +676,7 @@ function generateBarProfileEmailHTML(firmName, email, leadId, firstName, practic
       <p style="font-size: 16px;"><strong>$99/month. No contracts. Cancel anytime.</strong></p>
 
       <div style="text-align: center; margin: 20px 0 30px 0;">
-          <a href="${ctaUrl}" style="display: inline-block; background: linear-gradient(135deg, #c9a962 0%, #b8944f 100%); color: #0c1f3f; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-size: 16px;">Get Started</a>
+          <a href="${ctaUrl}" style="display: inline-block; background: linear-gradient(135deg, #c9a962 0%, #b8944f 100%); color: #0c1f3f; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-size: 16px;">Learn More</a>
       </div>
 
       <p style="font-size: 16px; margin-top: 16px;">No commitment. Cancel anytime if it's not right for your firm.</p>
@@ -731,7 +731,7 @@ Most intake systems assume you have a website. This one doesn't. It works as a s
 
 $99/month. No contracts. Cancel anytime.
 
-Get Started: ${ctaUrl}
+Learn More: ${ctaUrl}
 
 No commitment. Cancel anytime if it's not right for your firm.
 
