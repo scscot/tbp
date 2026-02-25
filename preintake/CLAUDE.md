@@ -1893,6 +1893,24 @@ Email click → homepage (?demo=) → REDIRECT to /demo/?demo={id}
 - Homepage serves as the hub for users who want to explore the full offering
 - This follows conversion funnel best practices: reduce distractions at critical conversion points
 
+### Phase 77: Analytics Benchmark Reset to Feb 24, 2026 (2026-02-24)
+- [x] **Fresh Analytics Start** - Reset benchmark date for clean metrics
+  - Changed `ANALYTICS_BENCHMARK_DATE` from `2026-02-21` to `2026-02-24`
+  - All email campaign and lead engagement data now filtered from Feb 24 forward
+  - Previous 28 leads with visits excluded from dashboard
+- [x] **FirmName Extraction Fix** - Improved email campaign data quality
+  - Added `isValidFirmName()` function with 11 junk pattern detections
+  - Changed firmName priority: prefer original bar data over scraped page titles
+  - Prevents junk names like "Home - Jeff McNamara Law" from appearing in analytics
+
+**Rationale:** Starting fresh after fixing firmName extraction logic and establishing clean baseline for accurate conversion tracking.
+
+**Files Modified:**
+| File | Changes |
+|------|---------|
+| `functions/widget-functions.js` | Updated `ANALYTICS_BENCHMARK_DATE` to `2026-02-24` |
+| `scripts/send-preintake-campaign.js` | Added `isValidFirmName()`, changed firmName priority logic |
+
 ---
 
 ## Architecture

@@ -195,6 +195,41 @@ function validateContactData(data) {
 }
 
 /**
+ * Check if a firmName looks like a valid law firm name (not a page title or junk)
+ * Returns true if the name appears valid, false if it's junk
+ */
+function isValidFirmName(name) {
+    if (!name || name.trim().length < 3) return false;
+
+    const trimmed = name.trim();
+
+    // Junk patterns that indicate page titles or bad scraper data
+    const junkPatterns = [
+        /^home\b/i,                          // "Home - ...", "Home Page - ..."
+        /\bhome\s*page\b/i,                  // "Home Page"
+        /^page\b/i,                          // "Page - ..."
+        /\bpersonal injury lawyer[s]?\b/i,   // Generic SEO title
+        /\battorney[s]?\s*(at\s+law)?\s*$/i, // Ends with just "Attorney(s) at Law"
+        /^[A-Z][a-z]+,?\s+[A-Z]{2}\s+/,      // Starts with "City, ST" (location)
+        /department of/i,                     // Government
+        /^\d/,                                // Starts with number
+        /\|\s/,                               // Contains pipe separator (page title pattern)
+        /focused on/i,                        // "Firm Focused on X" - SEO pattern
+        /^\w+\s+law\s+firm\s+(in|focused)/i, // "X Law Firm in/focused..." - SEO pattern
+    ];
+
+    if (junkPatterns.some(p => p.test(trimmed))) return false;
+
+    // Must contain at least one letter
+    if (!/[a-zA-Z]/.test(trimmed)) return false;
+
+    // Suspicious if very long (likely truncated page title)
+    if (trimmed.length > 60) return false;
+
+    return true;
+}
+
+/**
  * Clean firm name by removing address information
  * Some bar associations concatenate firm name with address in their data
  * Example: "Lisa L. Cullaro, P.A.PO Box 271150Tampa, FL 33688-1150"
@@ -277,8 +312,19 @@ async function generateDemoForContact(contactData) {
 
         // Step 3: Create lead document
         const leadId = db.collection(LEADS_COLLECTION).doc().id;
-        // Clean firmName - prefer analysis.firmName (scraped from website), fallback to cleaned campaign firmName
-        const cleanedFirmName = analysis.firmName || cleanFirmName(firmName) || firmName;
+        // Clean firmName - prefer original bar data over scraped data (scraped often returns page titles)
+        // Priority: 1) Cleaned original firmName (if valid), 2) Scraped analysis.firmName (if valid), 3) Original firmName
+        const originalCleaned = cleanFirmName(firmName);
+        const scrapedName = analysis.firmName;
+        let cleanedFirmName;
+        if (originalCleaned && isValidFirmName(originalCleaned)) {
+            cleanedFirmName = originalCleaned;
+        } else if (scrapedName && isValidFirmName(scrapedName)) {
+            cleanedFirmName = scrapedName;
+        } else {
+            // Final fallback - use original as-is (may be empty or imperfect)
+            cleanedFirmName = firmName || scrapedName || 'Law Firm';
+        }
         const leadData = {
             name: cleanedFirmName,
             email: email,
