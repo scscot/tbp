@@ -15,7 +15,8 @@ env:
 jobs:
   spam-check:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    # Runtime ~11 min for 2 variants: send(v1) + 3min wait + 5min delay + send(v2) + 3min wait
+    timeout-minutes: 20
 
     steps:
       - name: Checkout repository

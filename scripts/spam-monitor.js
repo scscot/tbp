@@ -8,6 +8,13 @@
  * This approach ensures we test the ACTUAL campaign email-sending code,
  * not a separate implementation that could drift over time.
  *
+ * Key behaviors:
+ * - Sends variants one at a time with 5-minute delays between them
+ *   (avoids bulk-send spam triggers from simultaneous emails)
+ * - No timestamp suffix in subjects (cleaner, more production-like)
+ * - Waits 3 minutes after each send before checking Gmail placement
+ * - Total runtime: ~11 minutes for 2 variants (3+5+3 minutes)
+ *
  * Usage:
  *   node scripts/spam-monitor.js
  *
@@ -44,6 +51,7 @@ const ALERT_EMAIL = 'scscot@gmail.com';
 const MAILGUN_DOMAIN = 'news.teambuildpro.com';
 const FROM_ADDRESS = 'Stephen Scott <stephen@news.teambuildpro.com>';
 const CHECK_DELAY_MS = 3 * 60 * 1000; // 3 minutes (Gmail typically delivers in 1-2 min)
+const VARIANT_DELAY_MS = 5 * 60 * 1000; // 5 minutes between variants to avoid bulk-send spam triggers
 
 // Cloud Function endpoint URL
 const TEST_ENDPOINT = 'https://us-central1-teambuilder-plus-fe74d.cloudfunctions.net/testPaparazziEmail';
@@ -98,18 +106,16 @@ async function getGmailClient() {
 }
 
 // =============================================================================
-// SEND TEST EMAILS VIA CLOUD FUNCTION
+// SEND TEST EMAIL VIA CLOUD FUNCTION (one variant at a time)
 // =============================================================================
 
-async function sendTestEmailsViaEndpoint(subjectSuffix) {
-  console.log(`Calling testPaparazziEmail endpoint...`);
-  console.log(`Variants: ${VARIANTS_TO_TEST.join(', ')}`);
-  console.log(`Subject suffix: "${subjectSuffix}"`);
+async function sendTestEmailViaEndpoint(variant) {
+  console.log(`Calling testPaparazziEmail endpoint for variant: ${variant}`);
 
   const response = await axios.post(TEST_ENDPOINT, {
     email: TEST_EMAIL,
-    variants: VARIANTS_TO_TEST,
-    subjectSuffix: subjectSuffix
+    variants: [variant],
+    subjectSuffix: '' // No timestamp suffix - cleaner subjects avoid spam triggers
   }, {
     headers: { 'Content-Type': 'application/json' },
     timeout: 30000
@@ -119,17 +125,17 @@ async function sendTestEmailsViaEndpoint(subjectSuffix) {
     throw new Error(`Endpoint returned failure: ${JSON.stringify(response.data)}`);
   }
 
-  console.log(`Endpoint response: ${response.data.summary.sent} sent, ${response.data.summary.failed} failed`);
+  const result = response.data.results[0];
+  console.log(`Sent: "${result.subject}"`);
 
-  // Transform endpoint results to format expected by rest of script
-  return response.data.results.map(r => ({
-    campaign: VARIANT_NAMES[r.variant] || r.variant,
-    variant: r.variant,
-    subject: r.subject,
-    messageId: r.messageId,
-    success: r.success,
-    error: r.error
-  }));
+  return {
+    campaign: VARIANT_NAMES[result.variant] || result.variant,
+    variant: result.variant,
+    subject: result.subject,
+    messageId: result.messageId,
+    success: result.success,
+    error: result.error
+  };
 }
 
 // =============================================================================
@@ -306,64 +312,57 @@ async function main() {
   console.log('=== Email Spam Monitor ===');
   console.log(`Time: ${new Date().toISOString()}`);
   console.log(`Target: ${TEST_EMAIL}`);
+  console.log(`Variants: ${VARIANTS_TO_TEST.join(', ')}`);
+  console.log(`Variant delay: ${VARIANT_DELAY_MS / 1000 / 60} minutes`);
   console.log(`Method: testPaparazziEmail Cloud Function endpoint\n`);
 
   const results = [];
-
-  // Generate date suffix for Gmail search accuracy
-  const dateSuffix = `(${new Date().toLocaleString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: '2-digit'
-  })})`;
-
-  // Step 1: Send test emails via Cloud Function endpoint
-  console.log('Step 1: Sending test emails via endpoint...\n');
-
-  let sentEmails = [];
-  try {
-    sentEmails = await sendTestEmailsViaEndpoint(dateSuffix);
-    console.log(`\nSent ${sentEmails.length} test email(s)`);
-
-    // Check for any send failures
-    const failures = sentEmails.filter(e => !e.success);
-    if (failures.length > 0) {
-      for (const f of failures) {
-        console.error(`Send failed for ${f.variant}: ${f.error}`);
-        results.push({
-          campaign: f.campaign,
-          placement: 'send_failed',
-          error: f.error
-        });
-      }
-    }
-
-    // Filter to only successful sends for Gmail checking
-    sentEmails = sentEmails.filter(e => e.success);
-  } catch (error) {
-    console.error('Failed to send test emails via endpoint:', error.message);
-    process.exit(1);
-  }
-
-  if (sentEmails.length === 0) {
-    console.error('\nNo test emails were sent successfully. Exiting.');
-    process.exit(1);
-  }
-
-  // Step 2: Wait for emails to be delivered
-  console.log(`\nStep 2: Waiting ${CHECK_DELAY_MS / 1000} seconds for delivery...\n`);
-  await new Promise(resolve => setTimeout(resolve, CHECK_DELAY_MS));
-
-  // Step 3: Check Gmail for placement
-  console.log('Step 3: Checking email placement...\n');
-
   const gmail = await getGmailClient();
 
-  for (const sent of sentEmails) {
+  // Process each variant sequentially with delays between them
+  for (let i = 0; i < VARIANTS_TO_TEST.length; i++) {
+    const variant = VARIANTS_TO_TEST[i];
+    const variantNum = i + 1;
+    const totalVariants = VARIANTS_TO_TEST.length;
+
+    console.log(`\n--- Variant ${variantNum}/${totalVariants}: ${variant} ---\n`);
+
+    // Step 1: Send test email for this variant
+    console.log(`Step 1: Sending test email...`);
+    let sent;
+    try {
+      sent = await sendTestEmailViaEndpoint(variant);
+
+      if (!sent.success) {
+        console.error(`Send failed: ${sent.error}`);
+        results.push({
+          campaign: sent.campaign,
+          variant: sent.variant,
+          placement: 'send_failed',
+          error: sent.error
+        });
+        continue; // Skip to next variant
+      }
+    } catch (error) {
+      console.error(`Failed to send test email: ${error.message}`);
+      results.push({
+        campaign: VARIANT_NAMES[variant] || variant,
+        variant,
+        placement: 'send_failed',
+        error: error.message
+      });
+      continue; // Skip to next variant
+    }
+
+    // Step 2: Wait for email to be delivered
+    console.log(`Step 2: Waiting ${CHECK_DELAY_MS / 1000} seconds for delivery...`);
+    await new Promise(resolve => setTimeout(resolve, CHECK_DELAY_MS));
+
+    // Step 3: Check Gmail for placement
+    console.log(`Step 3: Checking email placement...`);
     try {
       const placement = await checkEmailPlacement(gmail, sent.subject);
-      console.log(`${sent.campaign}: ${placement.toUpperCase()}`);
+      console.log(`Result: ${placement.toUpperCase()}`);
 
       results.push({
         campaign: sent.campaign,
@@ -372,13 +371,13 @@ async function main() {
         subject: sent.subject
       });
 
-      // Step 4: Disable ALL campaigns if spam detected
+      // Disable ALL campaigns immediately if spam detected
       if (placement === 'spam') {
-        console.log(`\nSPAM DETECTED in ${sent.campaign}: Disabling ALL campaigns...`);
+        console.log(`\nSPAM DETECTED: Disabling ALL campaigns...`);
         await disableAllCampaigns(sent.variant);
       }
     } catch (error) {
-      console.error(`Failed to check ${sent.campaign}:`, error.message);
+      console.error(`Failed to check placement: ${error.message}`);
       results.push({
         campaign: sent.campaign,
         variant: sent.variant,
@@ -387,13 +386,19 @@ async function main() {
         error: error.message
       });
     }
+
+    // Wait between variants (but not after the last one)
+    if (i < VARIANTS_TO_TEST.length - 1) {
+      console.log(`\nWaiting ${VARIANT_DELAY_MS / 1000 / 60} minutes before next variant...`);
+      await new Promise(resolve => setTimeout(resolve, VARIANT_DELAY_MS));
+    }
   }
 
-  // Step 5: Send alert if any spam detected
+  // Send alert if any spam detected
   const hasSpam = results.some(r => r.placement === 'spam');
 
   if (hasSpam) {
-    console.log('\nStep 5: Sending alert email...\n');
+    console.log('\n--- Sending Alert Email ---\n');
     try {
       await sendAlertEmail(results);
     } catch (error) {
