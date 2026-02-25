@@ -893,16 +893,13 @@
             // ═══════════════════════════════════════════════
             // SECTION 1: ENGAGEMENT FUNNEL
             // ═══════════════════════════════════════════════
-            // Note: With auto-loading demos, visit = view, so we show "Demo Viewed" (using visitedCount)
-            // Milestones track in-demo progress: conversation_started → contact_collected → screening_started
+            // Primary path: Email → Landing Page → Create Account → Paid Subscriber
+            // Optional demo path milestones shown separately below
             const milestones = data.milestones || {};
             const funnelSteps = [
                 { label: 'Emails Sent', count: data.totalSent || 0, color: '#3b82f6' },
-                { label: 'Demo Viewed', count: data.visitedCount || 0, color: '#c9a962' },
-                { label: 'Started Chat', count: milestones.conversationStarted || 0, color: '#8b5cf6' },
-                { label: 'Contact Given', count: milestones.contactCollected || 0, color: '#ec4899' },
-                { label: 'Screening', count: milestones.screeningStarted || 0, color: '#f59e0b' },
-                { label: 'Completed', count: data.intakeCompletedCount || 0, color: '#10b981' }
+                { label: 'Page Visited', count: data.visitedCount || 0, color: '#c9a962' },
+                { label: 'Subscribers', count: data.activeSubscribers || 0, color: '#10b981' }
             ];
             const maxCount = funnelSteps[0].count || 1;
 
@@ -982,17 +979,10 @@
                         <div class="rate-card">
                             <h4>${p.label}</h4>
                             <div class="rate-row">
-                                <span class="rate-label">Demo View Rate</span>
+                                <span class="rate-label">Page Visit Rate</span>
                                 <span>
                                     <span class="rate-value">${pct(p.visited, p.sent)}%</span>
                                     <span class="rate-detail">${p.visited}/${p.sent}</span>
-                                </span>
-                            </div>
-                            <div class="rate-row">
-                                <span class="rate-label">Completion Rate</span>
-                                <span>
-                                    <span class="rate-value">${pct(p.completed, p.visited)}%</span>
-                                    <span class="rate-detail">${p.completed}/${p.visited}</span>
                                 </span>
                             </div>
                         </div>
@@ -1019,10 +1009,8 @@
                             <tr>
                                 <th>Template</th>
                                 <th class="right">Sent</th>
-                                <th class="right">Demo Viewed</th>
-                                <th class="right">View Rate</th>
-                                <th class="right">Completed</th>
-                                <th class="right">Completion Rate</th>
+                                <th class="right">Page Visited</th>
+                                <th class="right">Visit Rate</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -1032,8 +1020,6 @@
                                     <td class="right">${perf.sent.toLocaleString()}</td>
                                     <td class="right">${perf.visited}</td>
                                     <td class="right highlight">${pct(perf.visited, perf.sent)}%</td>
-                                    <td class="right">${perf.completed}</td>
-                                    <td class="right highlight">${pct(perf.completed, perf.visited)}%</td>
                                 </tr>
                             `).join('')}
                         </tbody>
@@ -1062,10 +1048,8 @@
                                 <tr>
                                     <th>Source</th>
                                     <th class="right">Sent</th>
-                                    <th class="right">Demo Viewed</th>
-                                    <th class="right">View Rate</th>
-                                    <th class="right">Completed</th>
-                                    <th class="right">Completion Rate</th>
+                                    <th class="right">Page Visited</th>
+                                    <th class="right">Visit Rate</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -1075,8 +1059,6 @@
                                         <td class="right">${perf.sent.toLocaleString()}</td>
                                         <td class="right">${perf.visited}</td>
                                         <td class="right highlight">${pct(perf.visited, perf.sent)}%</td>
-                                        <td class="right">${perf.completed}</td>
-                                        <td class="right highlight">${pct(perf.completed, perf.visited)}%</td>
                                     </tr>
                                 `).join('')}
                             </tbody>
@@ -1192,7 +1174,7 @@
             `;
 
             // ═══════════════════════════════════════════════
-            // SECTION 7: LEAD DETAILS TABLE (ENHANCED)
+            // SECTION 7: LEAD DETAILS TABLE
             // ═══════════════════════════════════════════════
             const visitedLeads = data.leadDetails ? data.leadDetails.filter(lead => lead.visitCount > 0) : [];
             if (visitedLeads.length > 0) {
@@ -1207,12 +1189,8 @@
                             <tr>
                                 <th>Firm Name</th>
                                 <th>Website</th>
-                                <th>Date</th>
-                                <th>Demo</th>
-                                <th>Chat</th>
-                                <th>Contact</th>
-                                <th>Screening</th>
-                                <th>Completed</th>
+                                <th>Visit Date</th>
+                                <th>Subscriber</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -1226,28 +1204,8 @@
                                     </td>
                                     <td style="color: #94a3b8; font-size: 0.8rem;">${lead.firstVisitAt || '-'}</td>
                                     <td>
-                                        <span class="view-count ${lead.visitCount > 0 ? 'viewed' : 'not-viewed'}">
-                                            ${lead.visitCount > 0 ? '✓' : '-'}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <span class="view-count ${lead.conversationStarted ? 'viewed' : 'not-viewed'}">
-                                            ${lead.conversationStarted ? '✓' : '-'}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <span class="view-count ${lead.contactCollected ? 'viewed' : 'not-viewed'}">
-                                            ${lead.contactCollected ? '✓' : '-'}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <span class="view-count ${lead.screeningStarted ? 'viewed' : 'not-viewed'}">
-                                            ${lead.screeningStarted ? '✓' : '-'}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        ${lead.intakeCompleted
-                                            ? '<span class="status-badge completed">✓</span>'
+                                        ${lead.subscriptionStatus === 'active'
+                                            ? '<span class="status-badge active">Active</span>'
                                             : '<span class="status-badge none">-</span>'}
                                     </td>
                                 </tr>

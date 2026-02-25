@@ -1211,6 +1211,9 @@ const getEmailAnalytics = onRequest(
             let contactCollectedCount = 0;
             let screeningStartedCount = 0;
 
+            // Subscriber tracking
+            let activeSubscribers = 0;
+
             let activeLeads = 0;
             const leadDetails = [];
 
@@ -1273,6 +1276,11 @@ const getEmailAnalytics = onRequest(
                 // Active leads (status changed or has delivery config)
                 if (data.status !== 'demo_ready' || data.deliveryConfig) {
                     activeLeads++;
+                }
+
+                // Subscriber tracking (paid customers)
+                if (data.subscriptionStatus === 'active') {
+                    activeSubscribers++;
                 }
 
                 // Store engagement data for per-template/per-source cross-reference
@@ -1368,6 +1376,8 @@ const getEmailAnalytics = onRequest(
                     conversationStartedCount,
                     contactCollectedCount,
                     screeningStartedCount,
+                    // Paid subscribers
+                    activeSubscribers,
                     last7DaysSent,
                     last7DaysVisited,
                     last7DaysCompleted,
@@ -1422,6 +1432,8 @@ const getEmailAnalytics = onRequest(
                 conversationStartedCount,
                 contactCollectedCount,
                 screeningStartedCount,
+                // Paid subscribers
+                activeSubscribers,
                 activeLeads,
                 templateVersions,
                 templatePerformance,
