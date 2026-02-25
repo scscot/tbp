@@ -1,12 +1,9 @@
 /**
  * Email Spam Monitoring Script
  *
- * Calls the testPaparazziEmail Cloud Function endpoint to send test emails,
+ * Sends test emails directly via Mailgun API using v14/v15 templates,
  * then uses Gmail API to verify inbox placement. If any email lands
  * in spam, all campaigns are automatically disabled and an alert is sent.
- *
- * This approach ensures we test the ACTUAL campaign email-sending code,
- * not a separate implementation that could drift over time.
  *
  * Key behaviors:
  * - Sends variants one at a time with 5-minute delays between them
@@ -20,7 +17,7 @@
  *
  * Environment Variables Required:
  *   GOOGLE_APPLICATION_CREDENTIALS - Path to Firebase service account JSON
- *   MAILGUN_API_KEY - Mailgun API key (for sending alerts only)
+ *   MAILGUN_API_KEY - Mailgun API key (for sending test emails and alerts)
  *   GMAIL_OAUTH_CREDENTIALS - OAuth client credentials JSON
  *   GMAIL_OAUTH_TOKEN - OAuth refresh token JSON
  *
@@ -53,19 +50,25 @@ const FROM_ADDRESS = 'Stephen Scott <stephen@news.teambuildpro.com>';
 const CHECK_DELAY_MS = 3 * 60 * 1000; // 3 minutes (Gmail typically delivers in 1-2 min)
 const VARIANT_DELAY_MS = 5 * 60 * 1000; // 5 minutes between variants to avoid bulk-send spam triggers
 
-// Cloud Function endpoint URL
-const TEST_ENDPOINT = 'https://us-central1-teambuilder-plus-fe74d.cloudfunctions.net/testPaparazziEmail';
+// Variants to test - send directly via Mailgun with these templates
+const VARIANTS = {
+  v14a: {
+    templateVersion: 'v14',
+    subject: 'AI is changing how teams grow',
+    description: 'V14 (new design, v9 content) + AI curiosity'
+  },
+  v15b: {
+    templateVersion: 'v15',
+    subject: 'Your AI-powered recruiting assistant',
+    description: 'V15 (new design, v10 content) + AI assistant'
+  }
+};
 
-// Variants to test - covers both subjects and both template versions
-// v14a: "AI is changing how teams grow" (v14 template - new design with v9 content)
-// v15b: "Your AI-powered recruiting assistant" (v15 template - new design with v10 content)
 const VARIANTS_TO_TEST = ['v14a', 'v15b'];
 
 // Map variant to human-readable campaign name for reporting
 const VARIANT_NAMES = {
   v14a: 'Template V14 (AI changing)',
-  v14b: 'Template V14 (AI assistant)',
-  v15a: 'Template V15 (AI changing)',
   v15b: 'Template V15 (AI assistant)'
 };
 
@@ -106,35 +109,56 @@ async function getGmailClient() {
 }
 
 // =============================================================================
-// SEND TEST EMAIL VIA CLOUD FUNCTION (one variant at a time)
+// SEND TEST EMAIL DIRECTLY VIA MAILGUN
 // =============================================================================
 
-async function sendTestEmailViaEndpoint(variant) {
-  console.log(`Calling testPaparazziEmail endpoint for variant: ${variant}`);
-
-  const response = await axios.post(TEST_ENDPOINT, {
-    email: TEST_EMAIL,
-    variants: [variant],
-    subjectSuffix: '' // No timestamp suffix - cleaner subjects avoid spam triggers
-  }, {
-    headers: { 'Content-Type': 'application/json' },
-    timeout: 30000
-  });
-
-  if (!response.data.success) {
-    throw new Error(`Endpoint returned failure: ${JSON.stringify(response.data)}`);
+async function sendTestEmailViaMailgun(variantKey) {
+  const variant = VARIANTS[variantKey];
+  if (!variant) {
+    throw new Error(`Unknown variant: ${variantKey}`);
   }
 
-  const result = response.data.results[0];
-  console.log(`Sent: "${result.subject}"`);
+  const apiKey = process.env.MAILGUN_API_KEY;
+  if (!apiKey) {
+    throw new Error('MAILGUN_API_KEY not configured');
+  }
+
+  console.log(`Sending test email via Mailgun: ${variantKey} (${variant.templateVersion})`);
+
+  const form = new FormData();
+  form.append('from', FROM_ADDRESS);
+  form.append('to', TEST_EMAIL);
+  form.append('subject', variant.subject);
+  form.append('template', 'mailer');
+  form.append('t:version', variant.templateVersion);
+  form.append('t:variables', JSON.stringify({
+    first_name: 'Test',
+    tracked_cta_url: 'https://teambuildpro.com',
+    unsubscribe_url: 'https://teambuildpro.com/unsubscribe'
+  }));
+  form.append('o:tag', `spam_test_${variantKey}`);
+  form.append('o:tag', 'spam_monitor');
+
+  const response = await axios.post(
+    `https://api.mailgun.net/v3/${MAILGUN_DOMAIN}/messages`,
+    form,
+    {
+      headers: {
+        ...form.getHeaders(),
+        'Authorization': `Basic ${Buffer.from(`api:${apiKey}`).toString('base64')}`
+      },
+      timeout: 30000
+    }
+  );
+
+  console.log(`Sent: "${variant.subject}" (${response.data.id})`);
 
   return {
-    campaign: VARIANT_NAMES[result.variant] || result.variant,
-    variant: result.variant,
-    subject: result.subject,
-    messageId: result.messageId,
-    success: result.success,
-    error: result.error
+    campaign: VARIANT_NAMES[variantKey] || variantKey,
+    variant: variantKey,
+    subject: variant.subject,
+    messageId: response.data.id,
+    success: true
   };
 }
 
@@ -265,7 +289,7 @@ async function sendAlertEmail(results) {
 
     <p style="color: #666; font-size: 12px;">
       This alert was generated by the spam monitoring system at ${new Date().toISOString()}<br>
-      Test emails sent via testPaparazziEmail Cloud Function endpoint.
+      Test emails sent directly via Mailgun API.
     </p>
   `;
 
@@ -314,7 +338,7 @@ async function main() {
   console.log(`Target: ${TEST_EMAIL}`);
   console.log(`Variants: ${VARIANTS_TO_TEST.join(', ')}`);
   console.log(`Variant delay: ${VARIANT_DELAY_MS / 1000 / 60} minutes`);
-  console.log(`Method: testPaparazziEmail Cloud Function endpoint\n`);
+  console.log(`Method: Direct Mailgun API\n`);
 
   const results = [];
   const gmail = await getGmailClient();
@@ -331,18 +355,7 @@ async function main() {
     console.log(`Step 1: Sending test email...`);
     let sent;
     try {
-      sent = await sendTestEmailViaEndpoint(variant);
-
-      if (!sent.success) {
-        console.error(`Send failed: ${sent.error}`);
-        results.push({
-          campaign: sent.campaign,
-          variant: sent.variant,
-          placement: 'send_failed',
-          error: sent.error
-        });
-        continue; // Skip to next variant
-      }
+      sent = await sendTestEmailViaMailgun(variant);
     } catch (error) {
       console.error(`Failed to send test email: ${error.message}`);
       results.push({
