@@ -98,8 +98,11 @@ const VARIANTS = {
   }
 };
 
-// Active variant keys for A/B testing
+// Active variant keys for A/B testing (production campaign)
 const ACTIVE_VARIANT_KEYS = ['v9a', 'v9b', 'v10a', 'v10b'];
+
+// All valid variant keys (includes v14/v15 for spam monitor testing)
+const ALL_VARIANT_KEYS = Object.keys(VARIANTS);
 
 // =============================================================================
 // CAMPAIGN CONFIGURATION
@@ -461,13 +464,13 @@ const testPaparazziEmail = onRequest({
     return;
   }
 
-  // Determine which variants to test
+  // Determine which variants to test (accepts all defined variants, not just active ones)
   const variantsToTest = variants && Array.isArray(variants)
-    ? variants.filter(v => ACTIVE_VARIANT_KEYS.includes(v))
+    ? variants.filter(v => ALL_VARIANT_KEYS.includes(v))
     : ACTIVE_VARIANT_KEYS;
 
   if (variantsToTest.length === 0) {
-    res.status(400).json({ error: 'No valid variants specified', validVariants: ACTIVE_VARIANT_KEYS });
+    res.status(400).json({ error: 'No valid variants specified', validVariants: ALL_VARIANT_KEYS });
     return;
   }
 
