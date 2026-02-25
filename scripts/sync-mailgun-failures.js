@@ -43,7 +43,7 @@ const MAILGUN_DOMAIN = mailgunConfig.preintake_domain;
 const FROM_EMAIL = 'stephen@law.preintake.ai';
 
 /**
- * Fetch failed events from Mailgun API
+ * Fetch failed events from Mailgun API (last 24 hours only)
  * @returns {Promise<string[]>} Array of unique failed email addresses
  */
 async function fetchMailgunFailures() {
@@ -52,14 +52,18 @@ async function fetchMailgunFailures() {
   let pageCount = 0;
   const maxPages = 20; // Safety limit
 
-  console.log('Fetching failed deliveries from Mailgun...');
+  // Only check the last 24 hours since this runs daily
+  const twentyFourHoursAgo = Math.floor(Date.now() / 1000) - (24 * 60 * 60);
+
+  console.log('Fetching failed deliveries from Mailgun (last 24 hours)...');
 
   do {
     const url = nextUrl || `https://api.mailgun.net/v3/${MAILGUN_DOMAIN}/events`;
     const params = nextUrl ? {} : {
       event: 'failed',
       limit: 300,
-      from: FROM_EMAIL
+      from: FROM_EMAIL,
+      begin: twentyFourHoursAgo
     };
 
     try {
