@@ -44,7 +44,7 @@ const CONFIG = {
   SEARCH_PATH: '/host/find-a-party-host',
 
   // Scraping settings
-  MAX_ZIPCODES_PER_RUN: 20,
+  MAX_ZIPCODES_PER_RUN: 50,
   DELAY_BETWEEN_SEARCHES: 3000,
   DELAY_JITTER: 1000,
   PAGE_TIMEOUT: 30000,

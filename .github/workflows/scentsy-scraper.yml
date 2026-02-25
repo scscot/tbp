@@ -2,15 +2,16 @@ name: Scentsy Consultant Scraper
 
 on:
   schedule:
-    # Run 4x daily (every 6 hours)
-    - cron: '0 6,12,18,0 * * *'
+    # Run every 6 hours: 6am, 12pm, 6pm, 12am PT (UTC: 14, 20, 02, 08)
+    - cron: '0 14,20,2,8 * * *'
 
+  # Allow manual trigger for testing
   workflow_dispatch:
     inputs:
       max_zipcodes:
-        description: 'Max postal codes to process per run'
+        description: 'Maximum zipcodes to scrape per run'
         required: false
-        default: '20'
+        default: '50'
         type: string
       country:
         description: 'Country filter (US, CA, GB, DE, NL, AU)'
@@ -46,7 +47,12 @@ jobs:
           cache: 'npm'
           cache-dependency-path: 'scripts/package.json'
 
-      - name: Install Puppeteer dependencies
+      - name: Install dependencies
+        run: |
+          cd scripts && npm ci && cd ..
+          echo "Dependencies installed"
+
+      - name: Install Puppeteer Chrome dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y \
@@ -54,19 +60,10 @@ jobs:
             libatk-bridge2.0-0 \
             libdrm2 \
             libxkbcommon0 \
-            libxcomposite1 \
-            libxdamage1 \
-            libxrandr2 \
             libgbm1 \
             libasound2t64 \
-            libpangocairo-1.0-0 \
-            libgtk-3-0
-          echo "Puppeteer dependencies installed"
-
-      - name: Install npm dependencies
-        run: |
-          cd scripts && npm ci && cd ..
-          echo "Dependencies installed"
+            libxshmfence1
+          echo "Chrome dependencies installed"
 
       - name: Setup Firebase credentials
         env:
@@ -83,20 +80,19 @@ jobs:
           node scripts/scentsy-scraper.js --reset
           echo "Reset complete"
 
-      - name: Show initial stats
+      - name: Show pre-run stats
         run: |
-          echo "Current collection stats:"
-          node scripts/scentsy-scraper.js --stats
+          echo "Pre-run stats:"
+          node scripts/scentsy-scraper.js --stats || true
 
-      - name: Run Scentsy scraper
+      - name: Run Scentsy Scraper
         env:
-          MAX_ZIPCODES: ${{ github.event.inputs.max_zipcodes || '20' }}
+          MAX_ZIPCODES: ${{ github.event.inputs.max_zipcodes || '50' }}
           COUNTRY: ${{ github.event.inputs.country }}
           DRY_RUN: ${{ github.event.inputs.dry_run }}
-          HEADLESS: 'true'
         run: |
           echo "Starting Scentsy Consultant Scraper..."
-          echo "Max zipcodes: $MAX_ZIPCODES"
+          echo "Max zipcodes per run: $MAX_ZIPCODES"
 
           ARGS="--scrape --max=$MAX_ZIPCODES"
 
