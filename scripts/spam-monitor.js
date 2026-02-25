@@ -252,7 +252,7 @@ async function sendAlertEmail(results) {
     `${r.campaign}: ${r.placement.toUpperCase()} ${r.placement === 'spam' ? '(DISABLED)' : ''}`
   ).join('\n');
 
-  const subject = `eMail ALERT: ${spamResults.map(c => c.campaign).join(', ')} disabled`;
+  const subject = `${spamResults.map(c => c.campaign).join(', ')} disabled`;
 
   const html = `
     <h2>Email Monitor Alert</h2>
