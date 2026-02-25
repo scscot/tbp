@@ -394,7 +394,7 @@ function generateEmailHTML(firmName, email, leadId, firstName) {
           Embeds directly on your website — visitors never leave your site.
       </p>
 
-      <p style="font-size: 16px;"><strong>$99/month. No contracts. Cancel anytime.</strong></p>
+      <p style="font-size: 16px;"><strong>$99/month. Cancel anytime.</strong></p>
 
       <div style="text-align: center; margin: 20px 0 30px 0;">
           <a href="${ctaUrl}" style="display: inline-block; background: linear-gradient(135deg, #c9a962 0%, #b8944f 100%); color: #0c1f3f; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-size: 16px;">Learn More</a>
@@ -548,7 +548,7 @@ Zero Data Retention — Inquiry content is processed and delivered, not retained
 
 Embeds directly on your website — visitors never leave your site.
 
-$99/month. No contracts. Cancel anytime.
+$99/month. Cancel anytime.
 
 Learn More: ${ctaUrl}
 
@@ -667,7 +667,7 @@ function generateBarProfileEmailHTML(firmName, email, leadId, firstName, practic
 
       <p style="font-size: 16px; margin-top: 8px;">Most intake systems assume you have a website. This one doesn't. It works as a simple hosted intake link you can share anywhere you currently accept inquiries—email signature, referral partners, even a text message.</p>
 
-      <p style="font-size: 16px;"><strong>$99/month. No contracts. Cancel anytime.</strong></p>
+      <p style="font-size: 16px;"><strong>$99/month. Cancel anytime.</strong></p>
 
       <div style="text-align: center; margin: 20px 0 30px 0;">
           <a href="${ctaUrl}" style="display: inline-block; background: linear-gradient(135deg, #c9a962 0%, #b8944f 100%); color: #0c1f3f; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-size: 16px;">Learn More</a>
@@ -721,7 +721,7 @@ ZERO DATA RETENTION — Inquiry content is processed and delivered, not retained
 
 Most intake systems assume you have a website. This one doesn't. It works as a simple hosted intake link you can share anywhere you currently accept inquiries—email signature, referral partners, even a text message.
 
-$99/month. No contracts. Cancel anytime.
+$99/month. Cancel anytime.
 
 Learn More: ${ctaUrl}
 
