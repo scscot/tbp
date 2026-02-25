@@ -1,9 +1,9 @@
 /**
- * Email Spam Monitoring Script
+ * Email Deliverability Monitoring Script
  *
  * Sends test email directly via Mailgun API using v14 template,
  * then uses Gmail API to verify inbox placement. If email lands
- * in spam, all campaigns are automatically disabled and an alert is sent.
+ * in junk folder, all campaigns are automatically disabled and an alert is sent.
  *
  * Key behaviors:
  * - Sends single v14 template with subject "AI is changing how teams grow"
@@ -52,11 +52,11 @@ const CHECK_DELAY_MS = 3 * 60 * 1000; // 3 minutes (Gmail typically delivers in 
 const TEMPLATE_CONFIG = {
   templateVersion: 'v14',
   subject: 'AI is changing how teams grow',
-  subjectTag: 'spam_test_v14',
+  subjectTag: 'delivery_test_v14',
   description: 'V14 template + AI curiosity subject'
 };
 
-// All campaigns to disable if spam is detected
+// All campaigns to disable if junk detected
 const ALL_BATCH_SIZE_FIELDS = ['batchSize', 'batchSizePurchased', 'batchSizeBfh', 'batchSizePaparazzi', 'batchSizeFsr', 'batchSizeZinzino'];
 
 // =============================================================================
@@ -116,7 +116,7 @@ async function sendTestEmailViaMailgun() {
     unsubscribe_url: 'https://teambuildpro.com/unsubscribe'
   }));
   form.append('o:tag', TEMPLATE_CONFIG.subjectTag);
-  form.append('o:tag', 'spam_monitor');
+  form.append('o:tag', 'delivery_monitor');
 
   const response = await axios.post(
     `https://api.mailgun.net/v3/${MAILGUN_DOMAIN}/messages`,
@@ -164,10 +164,10 @@ async function checkEmailPlacement(gmail, subject) {
   });
 
   const inInbox = inboxResponse.data.messages && inboxResponse.data.messages.length > 0;
-  const inSpam = spamResponse.data.messages && spamResponse.data.messages.length > 0;
+  const inJunk = spamResponse.data.messages && spamResponse.data.messages.length > 0;
 
-  if (inSpam) {
-    return 'spam';
+  if (inJunk) {
+    return 'junk';
   } else if (inInbox) {
     return 'inbox';
   } else {
@@ -201,7 +201,7 @@ async function disableAllCampaigns(triggeringVariant) {
         updateData[field] = 0;
         updateData[`${field}_disabled_at`] = admin.firestore.FieldValue.serverTimestamp();
         updateData[`${field}_previous_value`] = currentValue;
-        updateData[`${field}_disabled_reason`] = `spam_detected_via_${triggeringVariant}`;
+        updateData[`${field}_disabled_reason`] = `junk_detected_via_${triggeringVariant}`;
       }
     }
 
@@ -210,7 +210,7 @@ async function disableAllCampaigns(triggeringVariant) {
     }
   });
 
-  console.log(`Disabled ALL campaigns due to spam detected in ${triggeringVariant}`);
+  console.log(`Disabled ALL campaigns due to junk folder placement in ${triggeringVariant}`);
 }
 
 // =============================================================================
@@ -226,18 +226,18 @@ async function sendAlertEmail(results) {
   }
 
   // Build email content
-  const spamResults = results.filter(r => r.placement === 'spam');
+  const flaggedResults = results.filter(r => r.placement === 'junk');
   const allResults = results.map(r =>
-    `${r.campaign}: ${r.placement.toUpperCase()} ${r.placement === 'spam' ? '(DISABLED)' : ''}`
+    `${r.campaign}: ${r.placement.toUpperCase()} ${r.placement === 'junk' ? '(DISABLED)' : ''}`
   ).join('\n');
 
-  const subject = `${spamResults.map(c => c.campaign).join(', ')} disabled`;
+  const subject = `${flaggedResults.map(c => c.campaign).join(', ')} disabled - deliverability issue`;
 
   const html = `
     <h2>Email Monitor Alert</h2>
-    <p>The following test email(s) were detected in the spam folder. <strong>ALL campaigns have been disabled.</strong></p>
+    <p>The following test email(s) were routed to the junk folder. <strong>ALL campaigns have been disabled.</strong></p>
     <ul>
-      ${spamResults.map(c => `<li><strong>${c.campaign}</strong> - Subject: "${c.subject}"</li>`).join('')}
+      ${flaggedResults.map(c => `<li><strong>${c.campaign}</strong> - Subject: "${c.subject}"</li>`).join('')}
     </ul>
 
     <h3>Full Results</h3>
@@ -249,17 +249,17 @@ async function sendAlertEmail(results) {
         <th>Status</th>
       </tr>
       ${results.map(r => `
-        <tr style="background-color: ${r.placement === 'spam' ? '#ffcccc' : r.placement === 'inbox' ? '#ccffcc' : '#ffffcc'};">
+        <tr style="background-color: ${r.placement === 'junk' ? '#ffcccc' : r.placement === 'inbox' ? '#ccffcc' : '#ffffcc'};">
           <td>${r.campaign}</td>
           <td>${r.subject || 'N/A'}</td>
           <td>${r.placement.toUpperCase()}</td>
-          <td>${r.placement === 'spam' ? 'DISABLED' : 'OK'}</td>
+          <td>${r.placement === 'junk' ? 'DISABLED' : 'OK'}</td>
         </tr>
       `).join('')}
     </table>
 
     <h3>How to Re-enable</h3>
-    <p>To re-enable campaigns after resolving spam issues:</p>
+    <p>To re-enable campaigns after resolving deliverability issues:</p>
     <ol>
       <li>Go to Firestore Console > config > emailCampaign</li>
       <li>Set each batch size field to the previous value (stored in *_previous_value)</li>
@@ -267,15 +267,15 @@ async function sendAlertEmail(results) {
     </ol>
 
     <p style="color: #666; font-size: 12px;">
-      This alert was generated by the spam monitoring system at ${new Date().toISOString()}<br>
+      This alert was generated by the email monitoring system at ${new Date().toISOString()}<br>
       Test emails sent directly via Mailgun API.
     </p>
   `;
 
   const text = `EMAIL MONITOR ALERT
 
-The following test emails were detected in spam. ALL campaigns have been disabled:
-${spamResults.map(c => `- ${c.campaign}: "${c.subject}"`).join('\n')}
+The following test emails were flagged. ALL campaigns have been disabled:
+${flaggedResults.map(c => `- ${c.campaign}: "${c.subject}"`).join('\n')}
 
 Full Results:
 ${allResults}
@@ -291,7 +291,7 @@ Generated at ${new Date().toISOString()}`;
   form.append('subject', subject);
   form.append('html', html);
   form.append('text', text);
-  form.append('o:tag', 'spam_alert');
+  form.append('o:tag', 'delivery_alert');
 
   await axios.post(
     `https://api.mailgun.net/v3/${MAILGUN_DOMAIN}/messages`,
@@ -359,9 +359,9 @@ async function main() {
       subject: sent.subject
     });
 
-    // Disable ALL campaigns immediately if spam detected
-    if (placement === 'spam') {
-      console.log(`\nSPAM DETECTED: Disabling ALL campaigns...`);
+    // Disable ALL campaigns immediately if junk detected
+    if (placement === 'junk') {
+      console.log(`\nJUNK FOLDER DETECTED: Disabling ALL campaigns...`);
       await disableAllCampaigns(sent.variant);
     }
   } catch (error) {
@@ -375,10 +375,10 @@ async function main() {
     });
   }
 
-  // Send alert if spam detected
-  const hasSpam = results.some(r => r.placement === 'spam');
+  // Send alert if junk detected
+  const hasJunk = results.some(r => r.placement === 'junk');
 
-  if (hasSpam) {
+  if (hasJunk) {
     console.log('\n--- Sending Alert Email ---\n');
     try {
       await sendAlertEmail(results);
@@ -390,18 +390,18 @@ async function main() {
   // Summary
   console.log('\n=== Summary ===');
   for (const result of results) {
-    const status = result.placement === 'spam' ? 'SPAM (DISABLED)' :
+    const status = result.placement === 'junk' ? 'JUNK (DISABLED)' :
                    result.placement === 'inbox' ? 'OK (Inbox)' :
                    result.placement === 'not_found' ? 'NOT FOUND' :
                    `ERROR: ${result.error || result.placement}`;
     console.log(`${result.campaign}: ${status}`);
   }
 
-  if (hasSpam) {
-    console.log(`\nSpam detected. ALL campaigns disabled.`);
+  if (hasJunk) {
+    console.log(`\nJunk folder detected. ALL campaigns disabled.`);
     process.exit(1); // Non-zero exit for GitHub Actions visibility
   } else {
-    console.log('\nV14 template passed spam check.');
+    console.log('\nV14 template passed deliverability check.');
   }
 }
 
