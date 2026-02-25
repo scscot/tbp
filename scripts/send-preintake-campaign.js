@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 /**
- * PreIntake.ai Email Campaign Sender (with Inline Demo Generation)
+ * PreIntake.ai Email Campaign Sender
  *
  * Sends outreach emails to law firms from Firestore preintake_emails collection.
- * Generates personalized demos for each contact BEFORE sending the email.
+ * Creates lead documents for tracking and links directly to landing page.
  * Uses Mailgun API for email delivery.
  *
  * SCHEDULE (GitHub Actions cron):
@@ -15,30 +15,25 @@
  * Environment Variables:
  *   MAILGUN_API_KEY - Mailgun API key
  *   MAILGUN_DOMAIN - Mailgun sending domain (default: law.preintake.ai)
- *   ANTHROPIC_API_KEY - Anthropic API key for AI analysis
  *   BATCH_SIZE - Number of emails to send per run (default: 5)
  *   TEST_EMAIL - Override recipient for testing (won't mark as sent)
- *   SKIP_DEMO_GEN - Set to 'true' to skip demo generation (for testing email only)
  *   DOC_ID - Specific document ID from preintake_emails to process
- *   TEST_DEMO_ID - Use existing demo lead ID for all emails (skips demo generation)
  *   TEST_LEAD_ID - Use existing preintake_leads doc for everything (simplest test mode)
  *
  * Usage:
  *   # Normal run (triggered by GitHub Actions cron)
- *   MAILGUN_API_KEY=xxx ANTHROPIC_API_KEY=xxx node scripts/send-preintake-campaign.js
+ *   MAILGUN_API_KEY=xxx node scripts/send-preintake-campaign.js
  *
  *   # Test mode (sends to test email, doesn't update Firestore)
- *   TEST_EMAIL=test@example.com MAILGUN_API_KEY=xxx ANTHROPIC_API_KEY=xxx node scripts/send-preintake-campaign.js
+ *   TEST_EMAIL=test@example.com MAILGUN_API_KEY=xxx node scripts/send-preintake-campaign.js
  */
 
 const axios = require('axios');
 const FormData = require('form-data');
 const path = require('path');
 
-// Import demo generation functions first
-const { analyzeWebsite } = require('../functions/preintake-analysis-functions');
-const { performDeepResearch } = require('../functions/deep-research-functions');
-const { initFirebaseAdmin, generateUniqueIntakeCode } = require('../functions/demo-generator-functions');
+// Import Firebase initialization (demo generation removed - linking directly to landing page)
+const { initFirebaseAdmin } = require('../functions/demo-generator-functions');
 
 // Initialize Firebase Admin using the functions' firebase-admin instance
 const serviceAccount = require('../secrets/serviceAccountKey.json');
@@ -89,24 +84,14 @@ async function getDynamicBatchSize() {
   return ENV_BATCH_SIZE;
 }
 
-// Anthropic API key (required for demo generation)
-const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
-
 // Test mode: override recipient email (does NOT mark as sent in Firestore)
 const TEST_EMAIL = process.env.TEST_EMAIL || null;
-
-// Skip demo generation (for testing email only)
-const SKIP_DEMO_GEN = process.env.SKIP_DEMO_GEN === 'true';
 
 // Specific document ID to process (bypasses query, uses specific record)
 const DOC_ID = process.env.DOC_ID || null;
 
-// Test demo ID - use an existing demo lead ID for all emails (skips demo generation)
-// This is useful for testing the email flow without generating new demos each time
-const TEST_DEMO_ID = process.env.TEST_DEMO_ID || null;
-
 // Test lead ID - use an existing preintake_leads document for everything
-// Pulls contact data AND demo from this single document (simplest test mode)
+// Pulls contact data AND lead from this single document (simplest test mode)
 const TEST_LEAD_ID = process.env.TEST_LEAD_ID || null;
 
 // Exclude Yahoo/AOL emails during domain warming (set to 'true' to enable)
@@ -283,161 +268,49 @@ function cleanFirmName(firmText) {
 }
 
 /**
- * Generate demo for a contact
- * Returns { success: boolean, leadId?: string, demoUrl?: string, error?: string }
+ * Create a lead document for tracking and conversion
+ * Creates minimal lead data for landing page display and conversion tracking
+ * Returns { success: boolean, leadId?: string, error?: string }
  */
-async function generateDemoForContact(contactData) {
-    const { firmName, email, website } = contactData;
-
-    if (!website) {
-        return { success: false, error: 'No website URL' };
-    }
+async function createLeadForContact(contactData) {
+    const { firstName, lastName, practiceArea, email, state, firmName, barNumber, website } = contactData;
 
     try {
-        console.log(`   🔍 Analyzing website: ${website}`);
-
-        // Step 1: Analyze website
-        const analysis = await analyzeWebsite(website);
-        console.log(`   ✓ Analysis complete: ${analysis.firmName || firmName}`);
-
-        // Step 2: Deep research
-        console.log(`   🔬 Running deep research...`);
-        let deepResearch = {};
-        try {
-            deepResearch = await performDeepResearch(website, analysis);
-            console.log(`   ✓ Deep research complete: ${deepResearch.pagesAnalyzed || 0} pages`);
-        } catch (deepError) {
-            console.log(`   ⚠️ Deep research failed (continuing): ${deepError.message}`);
-        }
-
-        // Step 3: Create lead document
-        const leadId = db.collection(LEADS_COLLECTION).doc().id;
-        // Clean firmName - prefer original bar data over scraped data (scraped often returns page titles)
-        // Priority: 1) Cleaned original firmName (if valid), 2) Scraped analysis.firmName (if valid), 3) Original firmName
-        const originalCleaned = cleanFirmName(firmName);
-        const scrapedName = analysis.firmName;
-        let cleanedFirmName;
-        if (originalCleaned && isValidFirmName(originalCleaned)) {
-            cleanedFirmName = originalCleaned;
-        } else if (scrapedName && isValidFirmName(scrapedName)) {
-            cleanedFirmName = scrapedName;
-        } else {
-            // Final fallback - use original as-is (may be empty or imperfect)
-            cleanedFirmName = firmName || scrapedName || 'Law Firm';
-        }
-        const leadData = {
-            name: cleanedFirmName,
-            email: email,
-            website: website,
-            source: 'campaign',
-            emailVerified: true,
-            autoConfirmed: true,
-            status: 'demo_ready',
-            createdAt: admin.firestore.FieldValue.serverTimestamp(),
-            updatedAt: admin.firestore.FieldValue.serverTimestamp(),
-            analysis: analysis,
-            deepResearch: deepResearch,
-            // Auto-confirm practice areas (use first detected or 'General Practice')
-            confirmedPracticeAreas: {
-                primaryArea: analysis.primaryPracticeArea || 'General Practice',
-                areas: analysis.practiceAreas || ['General Practice']
-            }
-        };
-
-        // Step 4: Generate unique 6-digit intake code for short URL
-        // (Demo HTML is now served dynamically via master template)
-        console.log(`   🏗️ Setting up demo...`);
-        const intakeCode = await generateUniqueIntakeCode(db);
-        const hostedIntakeUrl = `https://preintake.ai/${intakeCode}`;
-        // Dynamic demo URL (redirects to master template)
-        const demoUrl = `https://preintake.ai/demo/${leadId}`;
-        console.log(`   ✓ Generated intake code: ${intakeCode}`);
-
-        // Step 5: Save lead document with demo URL and intake code
-        leadData.demoUrl = demoUrl;
-        leadData.intakeCode = intakeCode;
-        leadData.hostedIntakeUrl = hostedIntakeUrl;
-        leadData['demo.generatedAt'] = admin.firestore.FieldValue.serverTimestamp();
-        leadData['demo.version'] = '1.0.0';
-        // Default delivery config - email to the contact
-        leadData.deliveryConfig = {
-            method: 'email',
-            emailAddress: email,
-            webhookUrl: null,
-            crmType: null
-        };
-
-        await db.collection(LEADS_COLLECTION).doc(leadId).set(leadData);
-
-        return { success: true, leadId, demoUrl, intakeCode, hostedIntakeUrl };
-
-    } catch (error) {
-        console.error(`   ❌ Demo generation failed: ${error.message}`);
-        return { success: false, error: error.message };
-    }
-}
-
-/**
- * Generate demo for a bar profile contact (no website)
- * Uses only bar profile data: firstName, lastName, practiceArea, email, state
- * Returns { success: boolean, leadId?: string, demoUrl?: string, error?: string }
- */
-async function generateBarProfileDemoForContact(contactData) {
-    const { firstName, lastName, practiceArea, email, state, firmName, barNumber } = contactData;
-
-    if (!firstName || !lastName) {
-        return { success: false, error: 'Missing attorney name' };
-    }
-
-    try {
-        console.log(`   🔍 Generating bar profile demo for: ${firstName} ${lastName}`);
-
-        // Step 1: Create lead document
+        // Generate lead ID
         const leadId = db.collection(LEADS_COLLECTION).doc().id;
 
-        // Step 2: Generate unique 6-digit intake code for short URL
-        // (Demo HTML is now served dynamically via master template)
-        console.log(`   🏗️ Setting up demo...`);
-        const intakeCode = await generateUniqueIntakeCode(db);
-        const hostedIntakeUrl = `https://preintake.ai/${intakeCode}`;
-        // Dynamic demo URL (redirects to master template)
-        const demoUrl = `https://preintake.ai/demo/${leadId}`;
-        console.log(`   ✓ Generated intake code: ${intakeCode}`);
-
-        // Step 3: Build firm name (clean any address info from scraper data)
+        // Build firm name from available data
         const cleanedFirmName = cleanFirmName(firmName);
-        const generatedFirmName = cleanedFirmName || `${firstName} ${lastName}, Attorney at Law`;
+        let displayFirmName;
+        if (cleanedFirmName && isValidFirmName(cleanedFirmName)) {
+            displayFirmName = cleanedFirmName;
+        } else if (firstName && lastName) {
+            displayFirmName = `${firstName} ${lastName}, Attorney at Law`;
+        } else {
+            displayFirmName = 'Law Firm';
+        }
 
-        // Step 4: Save lead document with demo URL and intake code
+        // Determine source type
+        const hasWebsite = !!website;
+        const source = hasWebsite ? 'campaign' : 'bar_profile_campaign';
+
+        // Create minimal lead document for tracking
         const leadData = {
-            name: generatedFirmName,
+            name: displayFirmName,
             email: email,
-            website: '', // No website
-            hasWebsite: false, // Flag for demo template (hides "Not at this firm?" link)
-            source: 'bar_profile_campaign',
+            website: website || '',
+            hasWebsite: hasWebsite,
+            source: source,
             barNumber: barNumber || null,
             state: state || null,
-            emailVerified: true,
-            autoConfirmed: true,
-            status: 'demo_ready',
+            status: 'pending', // Not demo_ready since we're linking to landing page
             createdAt: admin.firestore.FieldValue.serverTimestamp(),
             updatedAt: admin.firestore.FieldValue.serverTimestamp(),
-            demoUrl: demoUrl,
-            intakeCode: intakeCode,
-            hostedIntakeUrl: hostedIntakeUrl,
-            'demo.generatedAt': admin.firestore.FieldValue.serverTimestamp(),
-            'demo.version': '1.0.0',
-            // Minimal analysis (no website to scrape)
+            // Minimal analysis for landing page display
             analysis: {
-                firmName: generatedFirmName,
+                firmName: displayFirmName,
                 primaryPracticeArea: practiceArea || 'General Practice',
                 location: { state: state || null }
-            },
-            // Practice areas from bar profile
-            confirmedPracticeAreas: {
-                primaryArea: practiceArea || 'General Practice',
-                areas: [practiceArea || 'General Practice'],
-                autoConfirmed: true
             },
             // Default delivery config - email to the contact
             deliveryConfig: {
@@ -449,24 +322,24 @@ async function generateBarProfileDemoForContact(contactData) {
         };
 
         await db.collection(LEADS_COLLECTION).doc(leadId).set(leadData);
+        console.log(`   ✓ Created lead: ${leadId}`);
 
-        return { success: true, leadId, demoUrl, intakeCode, hostedIntakeUrl };
+        return { success: true, leadId };
 
     } catch (error) {
-        console.error(`   ❌ Bar profile demo generation failed: ${error.message}`);
+        console.error(`   ❌ Lead creation failed: ${error.message}`);
         return { success: false, error: error.message };
     }
 }
 
 /**
- * Generate outreach email HTML with personalized demo link
+ * Generate outreach email HTML with link to landing page
  * Uses cold outreach messaging (not "demo ready" transactional style)
  */
 function generateEmailHTML(firmName, email, leadId, firstName) {
     const unsubscribeUrl = `https://preintake.ai/unsubscribe.html?email=${encodeURIComponent(email)}`;
-    // Direct link to personalized demo via dedicated demo page
-    // Firm name is fetched from database - no need to pass in URL
-    const demoUrl = `https://preintake.ai/demo/?demo=${leadId}&utm_source=email&utm_medium=outreach&utm_campaign=law_firms&utm_content=cta_button`;
+    // Direct link to landing page with leadId for tracking and personalization
+    const ctaUrl = `https://preintake.ai/?lead=${leadId}&utm_source=email&utm_medium=outreach&utm_campaign=law_firms&utm_content=cta_button`;
 
     // Add greeting if firstName is available
     const greeting = firstName ? `<p style="font-size: 16px;">Hello ${firstName},</p>\n\n      ` : '';
@@ -521,18 +394,18 @@ function generateEmailHTML(firmName, email, leadId, firstName) {
           Embeds directly on your website — visitors never leave your site.
       </p>
 
-      <p style="font-size: 16px;">We've prepared a demo tailored specifically to <strong>${firmName}</strong>:</p>
+      <p style="font-size: 16px;"><strong>$99/month. No contracts. Cancel anytime.</strong></p>
 
       <div style="text-align: center; margin: 20px 0 30px 0;">
-          <a href="${demoUrl}" style="display: inline-block; background: linear-gradient(135deg, #c9a962 0%, #b8944f 100%); color: #0c1f3f; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-size: 16px;">View Your Customized Demo</a>
+          <a href="${ctaUrl}" style="display: inline-block; background: linear-gradient(135deg, #c9a962 0%, #b8944f 100%); color: #0c1f3f; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-size: 16px;">Get Started</a>
       </div>
 
       <p style="font-size: 16px; margin-top: 16px;">
-          No commitment. Review it on your own — no calls required.
+          No commitment. Cancel anytime if it's not right for your firm.
       </p>
 
       <p style="font-size: 16px; margin-top: 16px;">
-          Not the right contact for intake? Feel free to forward — the demo link is specific to <strong>${firmName}</strong>.
+          Not the right contact for intake? Feel free to forward this to your team.
       </p>
 
       <p style="font-size: 16px; margin-top: 20px;">
@@ -655,7 +528,7 @@ function generateFallbackEmailHTML(firmName, email, firstName) {
  */
 function generateEmailPlainText(firmName, email, leadId, firstName) {
     const unsubscribeUrl = `https://preintake.ai/unsubscribe.html?email=${encodeURIComponent(email)}`;
-    const demoUrl = `https://preintake.ai/demo/?demo=${leadId}&utm_source=email&utm_medium=outreach&utm_campaign=law_firms&utm_content=cta_button`;
+    const ctaUrl = `https://preintake.ai/?lead=${leadId}&utm_source=email&utm_medium=outreach&utm_campaign=law_firms&utm_content=cta_button`;
 
     // Add greeting if firstName is available
     const greeting = firstName ? `Hello ${firstName},\n\n` : '';
@@ -663,7 +536,7 @@ function generateEmailPlainText(firmName, email, leadId, firstName) {
     return `PreIntake.ai
 Pre-Screen Every Inquiry — Tailored to Your Practice Area
 
-${greeting}Every law firm has the same intake problem: too many inquiries, not enough signal. Strong cases wait alongside weak or misdirected submissions, and staff time gets burned sorting it out. 
+${greeting}Every law firm has the same intake problem: too many inquiries, not enough signal. Strong cases wait alongside weak or misdirected submissions, and staff time gets burned sorting it out.
 
 PreIntake.ai ensures your most important matters surface immediately—screened, summarized, and prioritized before your team ever reviews them.
 
@@ -679,13 +552,13 @@ Zero Data Retention — Inquiry content is processed and delivered, not retained
 
 Embeds directly on your website — visitors never leave your site.
 
-We've prepared a demo tailored specifically to ${firmName}:
+$99/month. No contracts. Cancel anytime.
 
-View Your Customized Demo: ${demoUrl}
+Get Started: ${ctaUrl}
 
-No commitment. Review it on your own — no calls required.
+No commitment. Cancel anytime if it's not right for your firm.
 
-Not the right contact for intake? Feel free to forward — the demo link is specific to ${firmName}.
+Not the right contact for intake? Feel free to forward this to your team.
 
 Best,
 Stephen Scott
@@ -749,7 +622,7 @@ Unsubscribe: ${unsubscribeUrl}`;
  */
 function generateBarProfileEmailHTML(firmName, email, leadId, firstName, practiceArea, state) {
     const unsubscribeUrl = `https://preintake.ai/unsubscribe.html?email=${encodeURIComponent(email)}`;
-    const demoUrl = `https://preintake.ai/demo/?demo=${leadId}&utm_source=email&utm_medium=outreach&utm_campaign=bar_profile&utm_content=cta_button`;
+    const ctaUrl = `https://preintake.ai/?lead=${leadId}&utm_source=email&utm_medium=outreach&utm_campaign=bar_profile&utm_content=cta_button`;
 
     return `<!DOCTYPE html>
 <html>
@@ -800,13 +673,13 @@ function generateBarProfileEmailHTML(firmName, email, leadId, firstName, practic
 
       <p style="font-size: 16px; margin-top: 8px;">Most intake systems assume you have a website. This one doesn't. It works as a simple hosted intake link you can share anywhere you currently accept inquiries—email signature, referral partners, even a text message.</p>
 
-      <p style="font-size: 16px;">We've prepared a demo tailored specifically to your practice:</p>
+      <p style="font-size: 16px;"><strong>$99/month. No contracts. Cancel anytime.</strong></p>
 
       <div style="text-align: center; margin: 20px 0 30px 0;">
-          <a href="${demoUrl}" style="display: inline-block; background: linear-gradient(135deg, #c9a962 0%, #b8944f 100%); color: #0c1f3f; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-size: 16px;">View Your Customized Demo</a>
+          <a href="${ctaUrl}" style="display: inline-block; background: linear-gradient(135deg, #c9a962 0%, #b8944f 100%); color: #0c1f3f; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-size: 16px;">Get Started</a>
       </div>
 
-      <p style="font-size: 16px; margin-top: 16px;">No commitment. Review it on your own — no calls required.</p>
+      <p style="font-size: 16px; margin-top: 16px;">No commitment. Cancel anytime if it's not right for your firm.</p>
 
       <p style="font-size: 16px; margin-top: 20px;">
           Best,<br>
@@ -833,7 +706,7 @@ function generateBarProfileEmailHTML(firmName, email, leadId, firstName, practic
  */
 function generateBarProfileEmailPlainText(firmName, email, leadId, firstName, practiceArea, state) {
     const unsubscribeUrl = `https://preintake.ai/unsubscribe.html?email=${encodeURIComponent(email)}`;
-    const demoUrl = `https://preintake.ai/demo/?demo=${leadId}&utm_source=email&utm_medium=outreach&utm_campaign=bar_profile&utm_content=cta_button`;
+    const ctaUrl = `https://preintake.ai/?lead=${leadId}&utm_source=email&utm_medium=outreach&utm_campaign=bar_profile&utm_content=cta_button`;
 
     return `PreIntake.ai
 Pre-Screen Every Inquiry — Tailored to Your Practice Area
@@ -856,11 +729,11 @@ ZERO DATA RETENTION — Inquiry content is processed and delivered, not retained
 
 Most intake systems assume you have a website. This one doesn't. It works as a simple hosted intake link you can share anywhere you currently accept inquiries—email signature, referral partners, even a text message.
 
-We've prepared a demo tailored specifically to your practice:
+$99/month. No contracts. Cancel anytime.
 
-View Your Customized Demo: ${demoUrl}
+Get Started: ${ctaUrl}
 
-No commitment. Review it on your own — no calls required.
+No commitment. Cancel anytime if it's not right for your firm.
 
 Best,
 Stephen Scott
@@ -875,7 +748,7 @@ Unsubscribe: ${unsubscribeUrl}`;
  * Generate subject line
  * Different subjects based on email type
  */
-function generateSubject(hasDemo, isBarProfile = false) {
+function generateSubject(hasLead, isBarProfile = false) {
     if (isBarProfile) {
         return 'Pre-screen every inquiry before it reaches you';
     }
@@ -922,7 +795,7 @@ async function sendViaMailgun(to, subject, htmlContent, textContent, tags = []) 
  * Main campaign function
  */
 async function runCampaign() {
-    console.log('📧 PreIntake.ai Email Campaign (with Demo Generation)');
+    console.log('📧 PreIntake.ai Email Campaign');
     console.log('======================================================\n');
 
     // Get dynamic batch size from Firestore (or fall back to env)
@@ -934,19 +807,10 @@ async function runCampaign() {
         process.exit(1);
     }
 
-    if (!ANTHROPIC_API_KEY && !SKIP_DEMO_GEN && !TEST_LEAD_ID && !TEST_DEMO_ID) {
-        console.error('❌ Missing ANTHROPIC_API_KEY');
-        console.error('   Set ANTHROPIC_API_KEY environment variable for demo generation');
-        console.error('   Or set SKIP_DEMO_GEN=true to skip demo generation');
-        console.error('   Or set TEST_LEAD_ID=xxx to use an existing demo');
-        process.exit(1);
-    }
-
     console.log(`📊 Configuration:`);
     console.log(`   Mailgun Domain: ${MAILGUN_DOMAIN}`);
     console.log(`   From: ${FROM_ADDRESS}`);
     console.log(`   Batch Size: ${BATCH_SIZE}`);
-    console.log(`   Demo Generation: ${SKIP_DEMO_GEN ? 'DISABLED' : 'ENABLED'}`);
     console.log(`   Yahoo/AOL Exclusion: ${EXCLUDE_YAHOO_AOL ? 'ENABLED (domain warming)' : 'DISABLED'}`);
     if (TEST_EMAIL) {
         console.log(`   ⚠️  TEST MODE: All emails will be sent to ${TEST_EMAIL}`);
@@ -959,8 +823,8 @@ async function runCampaign() {
     const batchId = `batch_${Date.now()}`;
 
     // Query all "ready" contacts together, ordered by randomIndex:
-    // - Contacts WITH website URLs (website-based demos)
-    // - Contacts with domainChecked=true but no website (bar profile demos)
+    // - Contacts WITH website URLs
+    // - Contacts with domainChecked=true but no website (bar profile contacts)
     // Contacts not yet processed by infer-calbar-websites.js are skipped until ready.
     let allDocs = [];
 
@@ -987,7 +851,7 @@ async function runCampaign() {
                 website: leadData.website,
                 firstName: leadData.name?.split(' ')[0] || '',
                 lastName: leadData.name?.split(' ').slice(1).join(' ') || '',
-                _isTestLead: true, // Flag to use this lead ID for demo URL
+                _isTestLead: true, // Flag to use this existing lead ID
                 _testLeadId: TEST_LEAD_ID
             })
         };
@@ -1118,7 +982,7 @@ async function runCampaign() {
     let sent = 0;
     let failed = 0;
     let skipped = 0;
-    let demosGenerated = 0;
+    let leadsCreated = 0;
 
     for (const doc of allDocs) {
         const data = doc.data();
@@ -1163,83 +1027,55 @@ async function runCampaign() {
             }
 
             let leadId = null;
-            let demoUrl = null;
-            let hasDemo = false;
-            let isBarProfile = false;
+            let hasLead = false;
+            let isBarProfile = isBarProfileContact;
 
             // Use test lead ID if this is from TEST_LEAD_ID mode
             if (data._isTestLead) {
                 leadId = data._testLeadId;
-                hasDemo = true;
-                console.log(`   🧪 Using existing lead/demo: ${leadId}`);
+                hasLead = true;
+                console.log(`   🧪 Using existing lead: ${leadId}`);
             }
-            // Use test demo ID if provided (for testing without generating new demos)
-            else if (TEST_DEMO_ID) {
-                leadId = TEST_DEMO_ID;
-                hasDemo = true;
-                console.log(`   🧪 Using test demo ID: ${TEST_DEMO_ID}`);
-            }
-            // Generate demo if we have a website URL and demo gen is enabled
-            else if (website && !SKIP_DEMO_GEN) {
-                const demoResult = await generateDemoForContact(data);
-                if (demoResult.success) {
-                    leadId = demoResult.leadId;
-                    demoUrl = demoResult.demoUrl;
-                    hasDemo = true;
-                    demosGenerated++;
+            // Create lead for tracking and conversion
+            else {
+                const leadResult = await createLeadForContact(data);
+                if (leadResult.success) {
+                    leadId = leadResult.leadId;
+                    hasLead = true;
+                    leadsCreated++;
                 } else {
-                    console.log(`   ⚠️ Demo generation failed: ${demoResult.error}`);
+                    console.log(`   ⚠️ Lead creation failed: ${leadResult.error}`);
                     console.log(`   📧 Sending fallback email instead...`);
                 }
-            }
-            // Generate bar profile demo for contacts without websites but with bar data
-            else if (isBarProfileContact && !SKIP_DEMO_GEN) {
-                const demoResult = await generateBarProfileDemoForContact(data);
-                if (demoResult.success) {
-                    leadId = demoResult.leadId;
-                    demoUrl = demoResult.demoUrl;
-                    hasDemo = true;
-                    isBarProfile = true;
-                    demosGenerated++;
-                } else {
-                    console.log(`   ⚠️ Bar profile demo generation failed: ${demoResult.error}`);
-                    console.log(`   📧 Sending fallback email instead...`);
-                }
-            } else if (!website && !isBarProfileContact) {
-                // This shouldn't happen since Phase 3 was removed - contacts without website
-                // AND without domainChecked=true should not be queried. Log as unexpected.
-                console.log(`   ⚠️ UNEXPECTED: Contact has no website and domainChecked!=true - sending fallback email`);
-            } else if (SKIP_DEMO_GEN) {
-                console.log(`   ⚠️ Demo generation disabled - sending fallback email`);
             }
 
             // Generate subject, HTML, and plain-text versions
-            const subject = generateSubject(hasDemo, isBarProfile);
+            const subject = generateSubject(hasLead, isBarProfile);
             let html, text;
 
-            if (isBarProfile && hasDemo) {
-                // Use bar profile email template
+            if (isBarProfile && hasLead) {
+                // Use bar profile email template (links to landing page with lead ID)
                 html = generateBarProfileEmailHTML(displayFirmName, email, leadId, firstName, practiceArea, state);
                 text = generateBarProfileEmailPlainText(displayFirmName, email, leadId, firstName, practiceArea, state);
-            } else if (hasDemo) {
-                // Use standard personalized email template
+            } else if (hasLead) {
+                // Use standard personalized email template (links to landing page with lead ID)
                 html = generateEmailHTML(displayFirmName, email, leadId, firstName);
                 text = generateEmailPlainText(displayFirmName, email, leadId, firstName);
             } else {
-                // Use fallback email template
+                // Use fallback email template (no lead ID - links to generic landing page)
                 html = generateFallbackEmailHTML(displayFirmName, email, firstName);
                 text = generateFallbackEmailPlainText(displayFirmName, email, firstName);
             }
 
             // Build Mailgun tags for analytics
             const mailgunTags = [];
-            if (hasDemo) {
-                mailgunTags.push('with_demo');
+            if (hasLead) {
+                mailgunTags.push('with_lead');
                 if (isBarProfile) {
                     mailgunTags.push('bar_profile');
                 }
             } else {
-                mailgunTags.push('no_demo');
+                mailgunTags.push('no_lead');
             }
 
             // Send email via Mailgun
@@ -1256,10 +1092,10 @@ async function runCampaign() {
             if (!TEST_EMAIL) {
                 // Determine template version
                 let templateVersion = 'v6-generic';
-                if (isBarProfile && hasDemo) {
-                    templateVersion = 'v8-bar-profile-demo';
-                } else if (hasDemo) {
-                    templateVersion = 'v6-personalized-demo';
+                if (isBarProfile && hasLead) {
+                    templateVersion = 'v8-bar-profile';
+                } else if (hasLead) {
+                    templateVersion = 'v6-personalized';
                 }
 
                 const updateData = {
@@ -1274,13 +1110,12 @@ async function runCampaign() {
                     templateVersion: templateVersion
                 };
 
-                // Add demo-related fields if demo was generated
-                if (hasDemo) {
-                    updateData.demoGenerated = true;
-                    updateData.demoUrl = demoUrl;
+                // Add lead-related fields if lead was created
+                if (hasLead) {
+                    updateData.leadCreated = true;
                     updateData.preintakeLeadId = leadId;
-                    updateData.demoGeneratedAt = admin.firestore.FieldValue.serverTimestamp();
-                    updateData.demoSource = isBarProfile ? 'bar_profile' : 'website';
+                    updateData.leadCreatedAt = admin.firestore.FieldValue.serverTimestamp();
+                    updateData.leadSource = isBarProfile ? 'bar_profile' : 'website';
                 }
 
                 await doc.ref.update(updateData);
@@ -1316,7 +1151,7 @@ async function runCampaign() {
     console.log(`\n📊 ${batchId} Complete:`);
     console.log(`   Total processed: ${allDocs.length}`);
     console.log(`   Successfully sent: ${sent}`);
-    console.log(`   Demos generated: ${demosGenerated}`);
+    console.log(`   Leads created: ${leadsCreated}`);
     console.log(`   Skipped (bad data): ${skipped}`);
     console.log(`   Failed: ${failed}`);
     if (sent > 0) {

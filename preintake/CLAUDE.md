@@ -1,46 +1,48 @@
 # PreIntake.ai: Comprehensive Project Documentation
 
-**Last Updated**: 2026-02-23
-**Version**: 7.3 (corrected dynamic architecture documentation)
+**Last Updated**: 2026-02-24
+**Version**: 7.4 (demo elimination - direct landing page conversion)
 
 ---
 
-## 🚦 Current Strategic Status: AUTONOMOUS OPERATION
+## 🚦 Current Strategic Status: ACTIVE DEVELOPMENT
 
-**Decision Date**: 2026-01-31
-**Status**: System running autonomously - no active development
-**Review Date**: Mid-March 2026 (4-6 weeks)
+**Decision Date**: 2026-02-24
+**Status**: Demo elimination pivot - direct landing page conversion
+**Previous Status**: Was autonomous since 2026-01-31
 
 ### Rationale
 
-PreIntake.ai has reached a mature, fully-automated state:
-- ✅ 8 active bar scrapers continuously adding attorney contacts (7 disabled after completion)
-- ✅ Email campaign runs 4x daily Mon-Fri (PST: 8:30am, 10:30am, 12:30pm, 2:30pm) - domain warming complete
-- ✅ Dynamic demo serving via master template (`/intake.html?demo={leadId}`)
+After 15+ demo flow iterations with 0% completion rate, pivoting to direct landing page conversion:
+- ✅ Email campaigns now link directly to landing page (no demo required)
+- ✅ Personalized welcome banner for campaign visitors
+- ✅ Direct path: Landing page → Create Account → Stripe checkout
+- ✅ Demo still available via "View Demo" button for interested users
+- ✅ 8 active bar scrapers continuously adding attorney contacts
+- ✅ Email campaign runs 4x daily Mon-Fri (domain warming complete)
 - ✅ Analytics dashboard operational (GA4 + Firestore)
-- ✅ Customer portal implemented (magic link auth, settings, billing)
-- ✅ Stale demo cleanup runs daily (15+ day never-accessed)
-- ✅ All previously-identified gaps implemented
 
-**Why pause now:**
-1. Domain warming needs consistent time to build reputation (rushing hurts deliverability)
-2. Need 1,500+ emails for statistically significant A/B test conclusions
-3. No critical bugs or missing features
-4. System needs real conversion data before optimization makes sense
+**Why this change:**
+1. Demo asked users to CREATE value rather than SHOWING them value
+2. 0% demo completion rate after 15+ optimization attempts
+3. $99/month is low enough for direct conversion without extensive evaluation
+4. Landing page already has 90% of what's needed to sell the product
 
-### Monitoring Guidelines (Low-Touch)
+### Monitoring Guidelines
 
 | Metric | Check Frequency | Red Flag |
 |--------|-----------------|----------|
 | Email bounces/spam complaints | Weekly | >2% bounce or any spam complaints |
-| Demo view rate | Bi-weekly | Drops below 2% sustained |
-| Intake completion rate | Bi-weekly | 0% sustained over 50+ demo views |
+| Landing page visit rate | Weekly | Drops below 5% sustained |
+| Create account click rate | Weekly | 0% over 100+ visits |
+| Stripe checkout completion | Weekly | High abandonment rate |
 | Scraper failures (8 active) | Weekly (GitHub Actions) | Multiple consecutive failures |
-| First paying customer | Passive | 🎉 Celebrate and re-engage |
+| First paying customer | Passive | 🎉 Celebrate |
 
-**Note on Demo Metrics:** The important engagement metrics are:
-- **Demo Viewed**: Recipient clicked email CTA and loaded demo page
-- **Intake Completed**: User finished the demo conversation and received screening report
+**Note on Conversion Metrics:** The important engagement metrics are now:
+- **Landing Page Visit**: Recipient clicked email CTA and loaded landing page
+- **Create Account Click**: User clicked "Get Started" to begin checkout
+- **Checkout Completed**: User completed Stripe payment
 
 ### Email Spam Monitoring (Automated)
 
@@ -231,7 +233,7 @@ Discovery → Demo → Payment → Onboarding → Implementation → Lead Flow �
 
 **Entry:** User clicks "Activate Your Account" from demo page or direct link
 
-**Page:** `/create-account.html?firm={leadId}`
+**Page:** `/create-account.html?lead={leadId}`
 
 **Flow:**
 1. User reviews pricing ($99/month)
@@ -705,7 +707,7 @@ When you're spending $300-500 per lead, even small conversion improvements mean 
   - Tracks via `conversionEmailSent` and `conversionEmailSentAt` fields
   - Skips active/paid subscribers and already-sent leads
   - Subject: "Your PreIntake.ai Demo Just Captured a Lead"
-  - CTA: Links to `https://preintake.ai/create-account.html?firm={leadId}`
+  - CTA: Links to `https://preintake.ai/create-account.html?lead={leadId}`
 - [x] **FROM Address Update** - Changed from `intake@preintake.ai` to `support@preintake.ai`
 - [x] **Signature Update** - Changed from "Stephen Scott, Founder" to "Support Team, PreIntake.ai"
 - [x] **JavaScript Parse Error Fix** - Escaped apostrophes in firm names that broke demo template
@@ -833,7 +835,7 @@ When you're spending $300-500 per lead, even small conversion improvements mean 
   - Header shows "My Account" by default
   - After user clicks Campaign Hero CTA, header changes to "Get Started →"
   - Uses `sessionStorage` key `tbp_demo_viewed` to track demo views
-  - Links directly to `create-account.html?firm={leadId}`
+  - Links directly to `create-account.html?lead={leadId}`
   - Gold gradient styling (`.nav-get-started` class) for prominent CTA
 - [x] **Demo Regeneration Utility** - `scripts/regenerate-preintake-demos.js`
   - Regenerates all demos with latest template (fixes missing onboarding modal)
@@ -1910,6 +1912,52 @@ Email click → homepage (?demo=) → REDIRECT to /demo/?demo={id}
 |------|---------|
 | `functions/widget-functions.js` | Updated `ANALYTICS_BENCHMARK_DATE` to `2026-02-24` |
 | `scripts/send-preintake-campaign.js` | Added `isValidFirmName()`, changed firmName priority logic |
+
+### Phase 78: Demo Elimination - Direct Landing Page Conversion (2026-02-24)
+- [x] **Strategic Pivot** - Eliminated demo requirement for conversion
+  - After 15+ demo flow iterations with 0% completion rate, removed demo as conversion bottleneck
+  - Email campaigns now link directly to landing page with personalized CTAs
+  - Users convert via landing page → create-account → Stripe checkout
+- [x] **Email Campaign Simplification** - Removed inline demo generation
+  - `scripts/send-preintake-campaign.js` no longer generates demos before sending
+  - Creates minimal lead documents for tracking and personalization
+  - Removed `ANTHROPIC_API_KEY` dependency from campaign script
+  - Simplified from ~500 lines to ~300 lines
+- [x] **URL Parameter Standardization** - Changed `?firm=` to `?lead=`
+  - All create-account URLs now use `?lead={leadId}` parameter
+  - Backward compatibility maintained for `?demo=` parameter on landing page
+  - Updated: `index.html`, `create-account.html`, `components.js`, `intake.html`
+- [x] **Landing Page Campaign Flow** - Personalized experience for email recipients
+  - `?lead=` parameter triggers personalized welcome banner
+  - Shows firm name, floating CTAs ("Get Started", "View Demo")
+  - Direct path to account creation without demo requirement
+  - Demo still available via "View Demo" button for interested users
+- [x] **Stripe API Key Refresh** - Updated Secret Manager with new key
+  - Resolved `StripeConnectionError` caused by key mismatch
+  - Secret Manager `STRIPE_SECRET_KEY` updated to version 5
+- [x] **Stripe Link Decision** - Kept enabled after analysis
+  - Link provides faster checkout for users who have it
+  - Standard card payment still available for all users
+  - Dashboard toggle available if issues arise
+
+**New Campaign Visitor Flow:**
+```
+Email click → Landing page (?lead=) → Welcome banner + floating CTAs
+  → "Get Started" → /create-account.html?lead={id} → Stripe checkout
+  → OR "View Demo" → /demo/?demo={id} (optional, for interested users)
+```
+
+**Rationale:** The demo asked users to CREATE value rather than SHOWING them value. After analyzing 15+ iterations with 0% completion, removing the demo requirement and converting directly via landing page eliminates the bottleneck.
+
+**Files Modified:**
+| File | Changes |
+|------|---------|
+| `scripts/send-preintake-campaign.js` | Removed demo generation, simplified to lead creation |
+| `preintake/index.html` | Updated campaign flow, `?lead=` parameter handling |
+| `preintake/create-account.html` | Changed `?firm=` to `?lead=` parameter |
+| `preintake/js/components.js` | Updated create-account URL parameter |
+| `preintake/intake.html` | Updated create-account URL parameter |
+| `preintake/demo/index.html` | Updated create-account URL parameter |
 
 ---
 

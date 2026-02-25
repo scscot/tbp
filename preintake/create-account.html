@@ -511,9 +511,9 @@
             }
         }
 
-        // Get firm ID from URL
+        // Get lead ID from URL (support both ?lead= and legacy ?firm= parameter)
         const urlParams = new URLSearchParams(window.location.search);
-        const firmId = urlParams.get('firm');
+        const firmId = urlParams.get('lead') || urlParams.get('firm');
         const cancelled = urlParams.get('cancelled');
 
         // DOM elements
@@ -617,6 +617,11 @@
                         .substring(0, 2)
                         .toUpperCase();
                     firmLogoPlaceholder.textContent = initials;
+                }
+
+                // Pre-fill billing email if available
+                if (firmData.deliveryEmail) {
+                    emailInput.value = firmData.deliveryEmail;
                 }
 
                 // Update back link to preserve context

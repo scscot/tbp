@@ -2025,7 +2025,7 @@
                 const pricingCtaContainer = document.getElementById('pricing-cta-container');
                 const pricingGetStartedBtn = document.getElementById('pricing-get-started-btn');
                 if (pricingCtaContainer && pricingGetStartedBtn) {
-                    pricingGetStartedBtn.href = `/create-account.html?firm=${leadId}`;
+                    pricingGetStartedBtn.href = `/create-account.html?lead=${leadId}`;
                     pricingCtaContainer.style.display = 'block';
                 }
 
@@ -2035,7 +2035,7 @@
                 const viewDemoBtn = document.getElementById('view-demo-btn');
 
                 if (floatingButtons && getStartedBtn && viewDemoBtn) {
-                    getStartedBtn.href = `/create-account.html?firm=${leadId}`;
+                    getStartedBtn.href = `/create-account.html?lead=${leadId}`;
                     viewDemoBtn.innerHTML = `View Demo <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>`;
                     viewDemoBtn.href = `/demo/?demo=${leadId}`;
                     floatingButtons.classList.add('visible');
@@ -2044,7 +2044,7 @@
                 // Update sticky CTA to link to create account
                 const stickyCta = document.getElementById('sticky-cta');
                 if (stickyCta) {
-                    stickyCta.href = `/create-account.html?firm=${leadId}`;
+                    stickyCta.href = `/create-account.html?lead=${leadId}`;
                     stickyCta.textContent = 'Create Account →';
                 }
 
@@ -2058,322 +2058,80 @@
             }
 
             // =====================================
-            // Campaign Demo Detection (?demo= parameter)
+            // Campaign Lead Detection (?lead= or ?demo= parameter)
             // =====================================
-            // For visitors arriving from email campaign with pre-generated demo
-            // Opens demo in a full-screen modal overlay
-            // If user already has a subscription, shows "Account Active" modal instead
-            async function checkCampaignDemo() {
+            // For visitors arriving from email campaign
+            // Shows personalized landing page with direct conversion CTAs
+            async function checkCampaignLead() {
                 const urlParams = new URLSearchParams(window.location.search);
-                const demoLeadId = urlParams.get('demo');
+                // Support both ?lead= (new) and ?demo= (backward compatibility)
+                const leadId = urlParams.get('lead') || urlParams.get('demo');
 
-                if (!demoLeadId) return false;
+                if (!leadId) return false;
 
-                // Redirect to dedicated demo page (firm name fetched from database)
-                window.location.href = `/demo/?demo=${demoLeadId}`;
-                return true; // Redirecting, so we handled it
-
-                // NOTE: Code below is now unreachable but kept for reference
                 const STATUS_ENDPOINT = 'https://us-west1-teambuilder-plus-fe74d.cloudfunctions.net/getPreIntakeFirmStatus';
                 const TRACK_ENDPOINT = 'https://us-west1-teambuilder-plus-fe74d.cloudfunctions.net/trackDemoView';
 
-                // Track visit first (before any checks)
-                fetch(`${TRACK_ENDPOINT}?firmId=${demoLeadId}&type=visit`).catch(() => {});
+                // Track visit
+                fetch(`${TRACK_ENDPOINT}?firmId=${leadId}&type=visit`).catch(() => {});
 
-                // Clean URL
+                // Clean URL (remove query params)
                 window.history.replaceState({}, document.title, window.location.pathname);
 
-                // Show firm name welcome banner IMMEDIATELY (before async API calls)
-                const welcomeBanner = document.getElementById('campaign-welcome');
-                const firmNameSpan = document.getElementById('campaign-firm-name');
-                const welcomeSuffix = document.getElementById('campaign-welcome-suffix');
-                const welcomeCta = document.getElementById('campaign-welcome-cta');
-                if (firmNameFromUrl) {
-                    firmNameSpan.textContent = cleanFirmNameForDisplay(firmNameFromUrl);
-                    welcomeBanner.classList.add('visible');
-                    // Show the "Your demo is ready" suffix and CTA for campaign demo visitors
-                    if (welcomeSuffix) welcomeSuffix.classList.add('visible');
-                    if (welcomeCta) welcomeCta.classList.add('visible');
-                }
-
-                // Construct demo URL (embed=true hides sidebar CTA; skip_onboarding=true bypasses iframe onboarding modal)
-                const demoUrl = `https://preintake.ai/demo/${demoLeadId}?embed=true&skip_onboarding=true`;
-
-                // Setup modal elements IMMEDIATELY (before status check)
-                const modal = document.getElementById('demo-modal');
-                const iframe = document.getElementById('demo-modal-iframe');
-                const iframeWrapper = document.getElementById('demo-iframe-wrapper');
-                const preScreen = document.getElementById('demo-pre-screen');
-                const closeBtn = document.getElementById('demo-modal-close');
-                const floatingButtons = document.getElementById('floating-demo-buttons');
-                const getStartedBtn = document.getElementById('get-started-btn');
-                const viewDemoBtn = document.getElementById('view-demo-btn');
-                let iframeLoaded = false; // Track whether iframe has been loaded
-
-                // Configure modal and buttons
-                getStartedBtn.href = `/create-account.html?firm=${demoLeadId}`;
-
-                // Hide the demo request form for ?demo= visitors (they already have a demo)
+                // Hide the demo request form (they came from email, don't need to request)
                 const demoSection = document.getElementById('demo');
                 if (demoSection) {
                     demoSection.style.display = 'none';
+                }
+
+                // Hide sticky CTA
+                const stickyCta = document.getElementById('sticky-cta');
+                if (stickyCta) {
+                    stickyCta.style.display = 'none';
                 }
 
                 // Show and configure the pricing section "Get Started" button
                 const pricingCtaContainer = document.getElementById('pricing-cta-container');
                 const pricingGetStartedBtn = document.getElementById('pricing-get-started-btn');
                 if (pricingCtaContainer && pricingGetStartedBtn) {
-                    pricingGetStartedBtn.href = `/create-account.html?firm=${demoLeadId}`;
+                    pricingGetStartedBtn.href = `/create-account.html?lead=${leadId}`;
                     pricingCtaContainer.style.display = 'block';
                 }
 
-                // Modify the header "Demo" link to open the demo modal instead
-                const navDemoLink = document.getElementById('nav-demo-link');
-                if (navDemoLink) {
-                    navDemoLink.textContent = 'View Demo';
-                    navDemoLink.href = '#';
-                    navDemoLink.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        reopenDemoModal();
-                    });
-                }
-
-                // Show pre-demo screen (first-time view — no iframe yet)
-                function showPreDemoScreen() {
-                    // Populate firm name on pre-screen
-                    const preScreenFirmName = document.getElementById('demo-pre-firm-name');
-                    if (firmNameFromUrl && preScreenFirmName) {
-                        preScreenFirmName.textContent = cleanFirmNameForDisplay(firmNameFromUrl);
-                    }
-                    preScreen.style.display = 'flex';
-                    iframeWrapper.style.display = 'none';
-                    modal.classList.add('show');
-                    floatingButtons.classList.remove('visible');
-                    document.body.style.overflow = 'hidden';
-                }
-
-                // Load iframe and switch from pre-screen to demo
-                function loadDemoIframe() {
-                    // Track actual demo view (user chose to start)
-                    fetch(`${TRACK_ENDPOINT}?firmId=${demoLeadId}&type=view`).catch(() => {});
-                    sessionStorage.setItem('tbp_demo_viewed', demoLeadId);
-
-                    // Update header button to "Create Account" dynamically
-                    const accountBtn = document.querySelector('.nav-account');
-                    if (accountBtn) {
-                        accountBtn.href = `/create-account.html?firm=${demoLeadId}`;
-                        accountBtn.textContent = 'Create Account →';
-                        accountBtn.classList.add('nav-get-started');
-                    }
-
-                    // Hide pre-screen, show iframe
-                    preScreen.style.display = 'none';
-                    iframeWrapper.style.display = '';
-                    iframe.src = demoUrl + '&_t=' + Date.now();
-                    iframeLoaded = true;
-                }
-
-                // Reopen demo modal (for secondary entry points after first view)
-                function reopenDemoModal() {
-                    if (iframeLoaded) {
-                        // Already loaded — just show the iframe directly
-                        preScreen.style.display = 'none';
-                        iframeWrapper.style.display = '';
-                        // Reload iframe fresh
-                        iframe.src = demoUrl + '&_t=' + Date.now();
-                    } else {
-                        // Not yet loaded — show pre-screen
-                        showPreDemoScreen();
-                        return;
-                    }
-                    modal.classList.add('show');
-                    floatingButtons.classList.remove('visible');
-                    document.body.style.overflow = 'hidden';
-                }
-
-                // Attach click handler to welcome banner CTA
-                if (welcomeCta) {
-                    welcomeCta.addEventListener('click', reopenDemoModal);
-                }
-
-                // Wire pre-demo screen buttons
-                const preStartBtn = document.getElementById('demo-pre-start-btn');
-                const preEscapeLink = document.getElementById('demo-pre-escape');
-                if (preStartBtn) {
-                    preStartBtn.addEventListener('click', loadDemoIframe);
-                }
-                if (preEscapeLink) {
-                    preEscapeLink.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        fetch(`${TRACK_ENDPOINT}?firmId=${demoLeadId}&type=explore`).catch(() => {});
-                        forceCloseDemoModal();
-                    });
-                }
-
-                // Track demo state for exit confirmation
-                let demoIntakeCompleted = false;
-                let demoFirmEmail = '';
-
-                // Listen for messages from iframe
-                window.addEventListener('message', function(e) {
-                    // Demo started - iframe loaded with skip_onboarding, captures firmEmail
-                    if (e.data?.type === 'demo-started' && e.data?.firmId === demoLeadId) {
-                        // Store firm email for exit confirmation modal
-                        if (e.data.firmEmail) {
-                            demoFirmEmail = e.data.firmEmail;
-                            // Update the pre-screen email display (for future reopens)
-                            const preEmail = document.getElementById('demo-pre-email');
-                            if (preEmail) preEmail.textContent = e.data.firmEmail;
-                        }
-                    }
-                    // Intake completed - user finished the conversation and email was sent
-                    if (e.data?.type === 'intake-completed' && e.data?.firmId === demoLeadId) {
-                        demoIntakeCompleted = true;
-                    }
-                    // Demo complete - user clicked OK on success modal, redirect to homepage
-                    if (e.data?.type === 'demo-complete-redirect' && e.data?.firmId === demoLeadId) {
-                        // Close modal first, then redirect parent window
-                        forceCloseDemoModal();
-                        window.location.href = e.data.redirectUrl || '/';
-                    }
-                });
-
-                // Exit confirmation modal elements
-                const exitConfirmModal = document.getElementById('exit-confirm-modal');
-                const exitConfirmEmail = document.getElementById('exit-confirm-email');
-                const exitConfirmContinue = document.getElementById('exit-confirm-continue');
-                const exitConfirmEnd = document.getElementById('exit-confirm-end');
-
-                // Show exit confirmation modal
-                function showExitConfirmModal() {
-                    exitConfirmEmail.textContent = demoFirmEmail || 'your email';
-                    exitConfirmModal.classList.add('show');
-                }
-
-                // Hide exit confirmation modal
-                function hideExitConfirmModal() {
-                    exitConfirmModal.classList.remove('show');
-                }
-
-                // Continue demo button - just close confirmation modal
-                exitConfirmContinue.addEventListener('click', hideExitConfirmModal);
-
-                // End demo anyway button - close both modals
-                exitConfirmEnd.addEventListener('click', function() {
-                    hideExitConfirmModal();
-                    forceCloseDemoModal();
-                });
-
-                // Close modal function (with confirmation check)
-                function closeDemoModal() {
-                    // If intake not completed, show confirmation modal
-                    if (!demoIntakeCompleted && demoFirmEmail) {
-                        showExitConfirmModal();
-                        return;
-                    }
-                    forceCloseDemoModal();
-                }
-
-                // Force close demo modal (bypass confirmation)
-                function forceCloseDemoModal() {
-                    modal.classList.remove('show');
-                    preScreen.style.display = 'none';
-                    floatingButtons.classList.add('visible');
-                    document.body.style.overflow = '';
-                    // Clear iframe to stop any ongoing processes
-                    iframe.src = 'about:blank';
-                    // Reset completion state for next demo view
-                    demoIntakeCompleted = false;
-                    // Hide hero CTA since demo was viewed
-                    const defaultHeroCta = document.getElementById('default-hero-cta');
-                    if (defaultHeroCta) {
-                        defaultHeroCta.style.display = 'none';
-                    }
-                }
-
-                // "End Demo" closes modal (with confirmation)
-                closeBtn.addEventListener('click', closeDemoModal);
-
-                // "View Demo" floating button reopens modal
-                viewDemoBtn.addEventListener('click', reopenDemoModal);
-
-                // Close on escape key (with confirmation)
-                document.addEventListener('keydown', (e) => {
-                    if (e.key === 'Escape') {
-                        // First check if exit confirm modal is open
-                        if (exitConfirmModal.classList.contains('show')) {
-                            hideExitConfirmModal();
-                        } else if (modal.classList.contains('show')) {
-                            closeDemoModal();
-                        }
-                    }
-                });
-
-                // Close on overlay click (outside iframe container) - with confirmation
-                modal.addEventListener('click', (e) => {
-                    if (e.target === modal) {
-                        closeDemoModal();
-                    }
-                });
-
-                // Hide sticky CTA for campaign visitors
-                const stickyCta = document.getElementById('sticky-cta');
-                if (stickyCta) {
-                    stickyCta.style.display = 'none';
-                }
-
-                // Change hero CTA to "Begin Your Custom Demo" and wire it to open modal
+                // Update hero CTA to link to create account
                 const defaultHeroCta = document.getElementById('default-hero-cta');
                 if (defaultHeroCta) {
-                    // Update button text (keep arrow icon)
+                    defaultHeroCta.href = `/create-account.html?lead=${leadId}`;
                     defaultHeroCta.innerHTML = `
-                        Begin Your Custom Demo
+                        Get Started
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                         </svg>
                     `;
-                    // Change href and add click handler to open modal
-                    defaultHeroCta.href = '#';
-                    defaultHeroCta.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        reopenDemoModal();
-                    });
                 }
 
-                // Hide campaign hero CTA (using modified default CTA instead)
-                const campaignHeroCta = document.getElementById('campaign-hero-cta');
-                if (campaignHeroCta) {
-                    campaignHeroCta.style.display = 'none';
-                }
+                // Fetch firm data and show welcome banner
+                try {
+                    const response = await fetch(`${STATUS_ENDPOINT}?leadId=${leadId}`);
+                    if (response.ok) {
+                        const statusData = await response.json();
 
-                // Show pre-demo screen immediately for campaign visitors
-                // They clicked an email expecting to see their demo - show welcome screen first
-                showPreDemoScreen();
-
-                // Check subscription status in background (non-blocking)
-                // Populates delivery email on pre-screen; shows Account Active modal for subscribers
-                fetch(`${STATUS_ENDPOINT}?leadId=${demoLeadId}`)
-                    .then(response => response.ok ? response.json() : null)
-                    .then(statusData => {
-                        if (!statusData) return;
-
-                        // Populate delivery email on pre-screen
-                        if (statusData.deliveryEmail) {
-                            const preEmail = document.getElementById('demo-pre-email');
-                            if (preEmail) preEmail.textContent = statusData.deliveryEmail;
-                            demoFirmEmail = statusData.deliveryEmail;
+                        // Show welcome banner with firm name
+                        const welcomeBanner = document.getElementById('campaign-welcome');
+                        const firmNameSpan = document.getElementById('campaign-firm-name');
+                        if (welcomeBanner && firmNameSpan && statusData.firmName) {
+                            firmNameSpan.textContent = cleanFirmNameForDisplay(statusData.firmName);
+                            welcomeBanner.classList.add('visible');
                         }
 
-                        // If they have an active subscription, close demo and show Account Active modal
-                        if (statusData.subscriptionStatus) {
-                            forceCloseDemoModal();
+                        // If they already have an active subscription, show Account Active modal
+                        if (statusData.subscriptionStatus === 'active') {
                             showAccountActiveModal(statusData);
                         }
-                    })
-                    .catch(err => {
-                        // Status check failed - keep showing demo (fail open)
-                        console.warn('Status check failed:', err);
-                    });
+                    }
+                } catch (err) {
+                    console.warn('Status check failed:', err);
+                }
 
                 return true;
             }
@@ -2459,9 +2217,9 @@
             // Then check for ?firm= parameter (just welcome banner, no demo)
             // Finally check for verification token
             const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.get('demo')) {
-                // ?demo= takes priority - open demo modal
-                checkCampaignDemo().then(handled => {
+            if (urlParams.get('lead') || urlParams.get('demo')) {
+                // ?lead= or ?demo= - campaign visitor, show personalized landing page
+                checkCampaignLead().then(handled => {
                     if (!handled) {
                         checkVerificationToken();
                     }
@@ -2531,7 +2289,7 @@
             const viewDemoBtn = document.getElementById('view-demo-btn');
 
             if (floatingButtons && getStartedBtn && viewDemoBtn) {
-                getStartedBtn.href = `/create-account.html?firm=${demoId}`;
+                getStartedBtn.href = `/create-account.html?lead=${demoId}`;
                 viewDemoBtn.innerHTML = `View Demo <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>`;
                 viewDemoBtn.href = `/demo/?demo=${demoId}`;
                 floatingButtons.classList.add('visible');
@@ -2541,7 +2299,7 @@
             setTimeout(() => {
                 const accountBtn = document.querySelector('.nav-account');
                 if (accountBtn) {
-                    accountBtn.href = `/create-account.html?firm=${demoId}`;
+                    accountBtn.href = `/create-account.html?lead=${demoId}`;
                     accountBtn.textContent = 'Create Account →';
                     accountBtn.classList.add('nav-get-started');
                 }
@@ -2576,7 +2334,7 @@
 
             if (floatingButtons && getStartedBtn && viewDemoBtn) {
                 const firmName = sessionStorage.getItem('tbp_demo_firm');
-                getStartedBtn.href = `/create-account.html?firm=${viewedDemoId}`;
+                getStartedBtn.href = `/create-account.html?lead=${viewedDemoId}`;
                 viewDemoBtn.innerHTML = `View Demo <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>`;
                 viewDemoBtn.href = `/demo/?demo=${viewedDemoId}`;
                 floatingButtons.classList.add('visible');

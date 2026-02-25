@@ -2014,7 +2014,7 @@
             document.getElementById('demo-limit-text').textContent =
                 "You've explored this demo extensively. Ready to see PreIntake.ai work for your firm?";
             document.getElementById('demo-limit-cta').href =
-                `https://preintake.ai/create-account.html?firm=${config.firmId}`;
+                `https://preintake.ai/create-account.html?lead=${config.firmId}`;
         }
 
         function lightenColor(hex, percent) {
@@ -3168,7 +3168,7 @@
             const firmId = CONFIG?.firmId || new URLSearchParams(window.location.search).get('demo');
             const accountBtn = document.getElementById('nav-account');
             if (accountBtn && firmId) {
-                accountBtn.href = `/create-account.html?firm=${firmId}`;
+                accountBtn.href = `/create-account.html?lead=${firmId}`;
             }
         }
 

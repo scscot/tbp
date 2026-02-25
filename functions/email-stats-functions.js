@@ -21,6 +21,7 @@ const ZINZINO_CAMPAIGN_COLLECTION = 'zinzino_contacts';
 const FSR_CAMPAIGN_COLLECTION = 'fsr_contacts';
 const PAPARAZZI_CAMPAIGN_COLLECTION = 'paparazzi_contacts';
 const PRUVIT_CAMPAIGN_COLLECTION = 'pruvit_contacts';
+const SCENTSY_CAMPAIGN_COLLECTION = 'scentsy_contacts';
 const MONITORING_PASSWORD = process.env.MONITORING_PASSWORD || 'TeamBuildPro2024!';
 const GA4_PROPERTY_ID = '485651473';
 
@@ -198,7 +199,7 @@ async function fetchGA4Stats(serviceAccountJson) {
  */
 async function fetchCampaignStats(collectionPath, now, twentyFourHoursAgo, startOfTodayUTC, options = {}) {
   const contactsRef = db.collection(collectionPath);
-  const { isContactsCampaign = false, isZinzinoCampaign = false, isFsrCampaign = false, isPaparazziCampaign = false } = options;
+  const { isContactsCampaign = false, isZinzinoCampaign = false, isFsrCampaign = false, isPaparazziCampaign = false, isScentsyCampaign = false } = options;
 
   // Get total count
   let totalSnapshot;
@@ -259,9 +260,9 @@ async function fetchCampaignStats(collectionPath, now, twentyFourHoursAgo, start
   // Get subject line breakdown
   const subjectLineStats = await fetchSubjectLineStats(contactsRef);
 
-  // Get language breakdown for Zinzino campaign
+  // Get language breakdown for Zinzino and Scentsy campaigns (multilingual)
   let languageBreakdown = null;
-  if (isZinzinoCampaign) {
+  if (isZinzinoCampaign || isScentsyCampaign) {
     try {
       const sentDocs = await contactsRef
         .where('sent', '==', true)
@@ -360,7 +361,7 @@ const getEmailCampaignStats = onRequest({
     const startOfTodayUTC = new Date(startOfTodayPT.getTime() - (ptOffset + now.getTimezoneOffset()) * 60 * 1000);
 
     // Fetch stats for all campaigns in parallel
-    const [mainCampaignStats, contactsCampaignStats, purchasedCampaignStats, bfhCampaignStats, zinzinoCampaignStats, fsrCampaignStats, paparazziCampaignStats, pruvitCampaignStats] = await Promise.all([
+    const [mainCampaignStats, contactsCampaignStats, purchasedCampaignStats, bfhCampaignStats, zinzinoCampaignStats, fsrCampaignStats, paparazziCampaignStats, pruvitCampaignStats, scentsyCampaignStats] = await Promise.all([
       fetchCampaignStats(MAIN_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC),
       fetchCampaignStats(CONTACTS_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC, { isContactsCampaign: true }),
       fetchCampaignStats(PURCHASED_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC),
@@ -368,7 +369,8 @@ const getEmailCampaignStats = onRequest({
       fetchCampaignStats(ZINZINO_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC, { isZinzinoCampaign: true }),
       fetchCampaignStats(FSR_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC, { isFsrCampaign: true }),
       fetchCampaignStats(PAPARAZZI_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC, { isPaparazziCampaign: true }),
-      fetchCampaignStats(PRUVIT_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC)
+      fetchCampaignStats(PRUVIT_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC),
+      fetchCampaignStats(SCENTSY_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC, { isScentsyCampaign: true })
     ]);
 
     // Get GA4 stats (shared across campaigns)
@@ -464,6 +466,17 @@ const getEmailCampaignStats = onRequest({
         tracking: pruvitCampaignStats.tracking,
         subjectLines: pruvitCampaignStats.subjectLines,
         recentSends: pruvitCampaignStats.recentSends
+      },
+
+      // Scentsy campaign data
+      scentsyCampaign: {
+        campaign: scentsyCampaignStats.campaign,
+        last24h: scentsyCampaignStats.last24h,
+        today: scentsyCampaignStats.today,
+        tracking: scentsyCampaignStats.tracking,
+        subjectLines: scentsyCampaignStats.subjectLines,
+        recentSends: scentsyCampaignStats.recentSends,
+        languageBreakdown: scentsyCampaignStats.languageBreakdown
       },
 
       // GA4 stats (shared)
