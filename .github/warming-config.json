@@ -51,7 +51,7 @@
       "pruvit": {
         "collection": "pruvit_contacts",
         "firestoreField": "batchSizePruvit",
-        "enabled": true
+        "enabled": false
       },
       "scentsy": {
         "collection": "scentsy_contacts",
