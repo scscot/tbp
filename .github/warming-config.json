@@ -16,7 +16,7 @@
     "runsPerDay": 4,
     "minBatchSize": 1,
     "maxBatchSize": 100,
-    "warmingSchedule": [0.40, 0.60, 0.80, 1.0],
+    "warmingSchedule": [1.0, 1.0, 1.0, 1.0],
     "campaigns": {
       "main": {
         "collection": "emailCampaigns/master/contacts",
