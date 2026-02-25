@@ -70,6 +70,31 @@ const VARIANTS = {
     subject: 'Your AI-powered recruiting assistant',
     subjectTag: 'paparazzi_v10b',
     description: 'V10 (with bullets) + AI assistant'
+  },
+  // V14/V15: New design (gradient header, white card) with same content as v9/v10
+  v14a: {
+    templateVersion: 'v14',
+    subject: 'AI is changing how teams grow',
+    subjectTag: 'paparazzi_v14a',
+    description: 'V14 (new design, v9 content) + AI curiosity'
+  },
+  v14b: {
+    templateVersion: 'v14',
+    subject: 'Your AI-powered recruiting assistant',
+    subjectTag: 'paparazzi_v14b',
+    description: 'V14 (new design, v9 content) + AI assistant'
+  },
+  v15a: {
+    templateVersion: 'v15',
+    subject: 'AI is changing how teams grow',
+    subjectTag: 'paparazzi_v15a',
+    description: 'V15 (new design, v10 content) + AI curiosity'
+  },
+  v15b: {
+    templateVersion: 'v15',
+    subject: 'Your AI-powered recruiting assistant',
+    subjectTag: 'paparazzi_v15b',
+    description: 'V15 (new design, v10 content) + AI assistant'
   }
 };
 

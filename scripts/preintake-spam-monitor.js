@@ -356,10 +356,10 @@ async function sendAlertEmail(subject, placement) {
     return;
   }
 
-  const alertSubject = 'SPAM ALERT: PreIntake campaign disabled';
+  const alertSubject = 'eMail ALERT: PreIntake campaign disabled';
 
   const html = `
-    <h2>PreIntake Email Spam Monitor Alert</h2>
+    <h2>PreIntake Email Monitor Alert</h2>
     <p>The test email was detected in the <strong style="color: red;">SPAM</strong> folder. The PreIntake campaign has been <strong>disabled</strong>.</p>
 
     <h3>Details</h3>
@@ -391,7 +391,7 @@ async function sendAlertEmail(subject, placement) {
     </p>
   `;
 
-  const text = `PREINTAKE EMAIL SPAM MONITOR ALERT
+  const text = `PREINTAKE EMAIL MONITOR ALERT
 
 The test email was detected in the SPAM folder. The PreIntake campaign has been DISABLED.
 
@@ -430,7 +430,7 @@ Generated at ${new Date().toISOString()}`;
 // =============================================================================
 
 async function main() {
-  console.log('=== PreIntake Email Spam Monitor ===');
+  console.log('=== PreIntake Email Monitor ===');
   console.log(`Time: ${new Date().toISOString()}`);
   console.log(`Target: ${TEST_EMAIL}`);
   console.log(`Domain: ${MAILGUN_DOMAIN}\n`);

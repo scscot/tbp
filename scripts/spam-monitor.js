@@ -57,16 +57,16 @@ const VARIANT_DELAY_MS = 5 * 60 * 1000; // 5 minutes between variants to avoid b
 const TEST_ENDPOINT = 'https://us-central1-teambuilder-plus-fe74d.cloudfunctions.net/testPaparazziEmail';
 
 // Variants to test - covers both subjects and both template versions
-// v9a: "AI is changing how teams grow" (v9 template)
-// v10b: "Your AI-powered recruiting assistant" (v10 template)
-const VARIANTS_TO_TEST = ['v9a', 'v10b'];
+// v14a: "AI is changing how teams grow" (v14 template - new design with v9 content)
+// v15b: "Your AI-powered recruiting assistant" (v15 template - new design with v10 content)
+const VARIANTS_TO_TEST = ['v14a', 'v15b'];
 
 // Map variant to human-readable campaign name for reporting
 const VARIANT_NAMES = {
-  v9a: 'Template V9 (AI changing)',
-  v9b: 'Template V9 (AI assistant)',
-  v10a: 'Template V10 (AI changing)',
-  v10b: 'Template V10 (AI assistant)'
+  v14a: 'Template V14 (AI changing)',
+  v14b: 'Template V14 (AI assistant)',
+  v15a: 'Template V15 (AI changing)',
+  v15b: 'Template V15 (AI assistant)'
 };
 
 // All campaigns to disable if spam is detected
@@ -228,10 +228,10 @@ async function sendAlertEmail(results) {
     `${r.campaign}: ${r.placement.toUpperCase()} ${r.placement === 'spam' ? '(DISABLED)' : ''}`
   ).join('\n');
 
-  const subject = `SPAM ALERT: ${spamResults.map(c => c.campaign).join(', ')} disabled`;
+  const subject = `eMail ALERT: ${spamResults.map(c => c.campaign).join(', ')} disabled`;
 
   const html = `
-    <h2>Email Spam Monitor Alert</h2>
+    <h2>Email Monitor Alert</h2>
     <p>The following test email(s) were detected in the spam folder. <strong>ALL campaigns have been disabled.</strong></p>
     <ul>
       ${spamResults.map(c => `<li><strong>${c.campaign}</strong> - Subject: "${c.subject}"</li>`).join('')}
@@ -269,7 +269,7 @@ async function sendAlertEmail(results) {
     </p>
   `;
 
-  const text = `EMAIL SPAM MONITOR ALERT
+  const text = `EMAIL MONITOR ALERT
 
 The following test emails were detected in spam. ALL campaigns have been disabled:
 ${spamResults.map(c => `- ${c.campaign}: "${c.subject}"`).join('\n')}
@@ -309,7 +309,7 @@ Generated at ${new Date().toISOString()}`;
 // =============================================================================
 
 async function main() {
-  console.log('=== Email Spam Monitor ===');
+  console.log('=== Email Monitor ===');
   console.log(`Time: ${new Date().toISOString()}`);
   console.log(`Target: ${TEST_EMAIL}`);
   console.log(`Variants: ${VARIANTS_TO_TEST.join(', ')}`);
