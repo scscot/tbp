@@ -356,7 +356,7 @@ async function sendAlertEmail(subject, placement) {
     return;
   }
 
-  const alertSubject = 'eMail ALERT: PreIntake campaign disabled';
+  const alertSubject = 'PreIntake campaign disabled';
 
   const html = `
     <h2>PreIntake Email Monitor Alert</h2>

@@ -59,7 +59,7 @@ const VARIANTS = {
   },
   v15b: {
     templateVersion: 'v15',
-    subject: 'Your AI-powered recruiting assistant',
+    subject: 'Grow your team faster with AI',
     description: 'V15 (new design, v10 content) + AI assistant'
   }
 };
