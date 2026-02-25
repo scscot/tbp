@@ -1,0 +1,58 @@
+name: Sync Mailgun Failures
+
+on:
+  schedule:
+    # Daily at 5am PT (13:00 UTC)
+    - cron: '0 13 * * *'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry run (no changes)'
+        required: false
+        default: 'false'
+        type: boolean
+
+jobs:
+  sync-failures:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: scripts
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install firebase-admin axios
+        working-directory: scripts
+
+      - name: Create secrets directory
+        run: mkdir -p ../secrets
+
+      - name: Write service account key
+        run: echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}' > ../secrets/serviceAccountKey.json
+
+      - name: Write Mailgun config
+        run: |
+          cat << 'EOF' > ../secrets/mailgun_config.json
+          {
+            "tbp_api_key": "${{ secrets.TBP_MAILGUN_API_KEY }}",
+            "tbp_domain": "news.teambuildpro.com",
+            "preintake_api_key": "${{ secrets.MAILGUN_API_KEY }}",
+            "preintake_domain": "law.preintake.ai"
+          }
+          EOF
+
+      - name: Sync Mailgun failures to Firestore
+        run: |
+          if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
+            node sync-mailgun-failures.js --dry-run
+          else
+            node sync-mailgun-failures.js
+          fi
