@@ -485,15 +485,9 @@ function generateFallbackEmailHTML(firmName, email, firstName) {
           Embeds directly on your website — visitors never leave your site.
       </p>
 
-      <p style="font-size: 16px;">For your convenience, we've created a fully customized demo for <strong>${firmName}</strong>:</p>
-
       <div style="text-align: center; margin: 20px 0 30px 0;">
-          <a href="${demoUrl}" style="display: inline-block; background: linear-gradient(135deg, #c9a962 0%, #b8944f 100%); color: #0c1f3f; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-size: 16px;">Experience It Live</a>
+          <a href="${demoUrl}" style="display: inline-block; background: linear-gradient(135deg, #c9a962 0%, #b8944f 100%); color: #0c1f3f; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-size: 16px;">Learn More</a>
       </div>
-
-      <p style="font-size: 16px; margin-top: 16px;">
-          No commitment. Review it on your own — no calls required.
-      </p>
 
       <p style="font-size: 16px; margin-top: 16px;">
           Not the right contact for intake? Feel free to forward — the demo link is specific to <strong>${firmName}</strong>.
@@ -593,11 +587,7 @@ Zero Data Retention — Inquiry content is processed and delivered, not retained
 
 Embeds directly on your website — visitors never leave your site.
 
-For your convenience, we've created a fully customized demo for ${firmName}:
-
-Experience It Live: ${demoUrl}
-
-No commitment. Review it on your own — no calls required.
+Learn More: ${demoUrl}
 
 Not the right contact for intake? Feel free to forward — the demo link is specific to ${firmName}.
 
