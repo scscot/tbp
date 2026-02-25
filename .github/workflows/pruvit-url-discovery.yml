@@ -1,11 +1,12 @@
 name: Pruvit URL Discovery
 
 on:
-  schedule:
-    # Run every 6 hours: 6am, 12pm, 6pm, 12am PT
-    - cron: '0 14,20,2,8 * * *'
+  # DISABLED: Pipeline paused due to low data yield
+  # schedule:
+  #   # Run every 6 hours: 6am, 12pm, 6pm, 12am PT
+  #   - cron: '0 14,20,2,8 * * *'
 
-  # Allow manual trigger for testing
+  # Manual trigger only
   workflow_dispatch:
     inputs:
       max_searches:

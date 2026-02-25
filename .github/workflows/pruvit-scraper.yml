@@ -1,11 +1,12 @@
 name: Pruvit Contact Scraper
 
 on:
-  schedule:
-    # Run every 4 hours: 8am, 12pm, 4pm, 8pm, 12am, 4am PT
-    - cron: '0 16,20,0,4,8,12 * * *'
+  # DISABLED: Pipeline paused due to low data yield
+  # schedule:
+  #   # Run every 4 hours: 8am, 12pm, 4pm, 8pm, 12am, 4am PT
+  #   - cron: '0 16,20,0,4,8,12 * * *'
 
-  # Allow manual trigger for testing
+  # Manual trigger only
   workflow_dispatch:
     inputs:
       max_contacts:
