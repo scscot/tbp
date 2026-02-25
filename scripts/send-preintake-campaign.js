@@ -366,7 +366,7 @@ function generateEmailHTML(firmName, email, leadId, firstName) {
           <span style="color:#ffffff;">Pre</span>Intake<span style="color:#ffffff;">.ai</span>
         </span>
         <span style="display:block; margin-top:4px; font-size:14px; font-weight:400; color:#ffffff; line-height:1.4;">
-          Pre-Screen Every Inquiry — Tailored to Your Practice Area
+          Pre-Screen Every Inquiry<br>Tailored to Your Practice Area
         </span>
       </h1>
     </div>
@@ -457,7 +457,7 @@ function generateFallbackEmailHTML(firmName, email, firstName) {
           <span style="color:#ffffff;">Pre</span>Intake<span style="color:#ffffff;">.ai</span>
         </span>
         <span style="display:block; margin-top:4px; font-size:14px; font-weight:400; color:#ffffff; line-height:1.4;">
-          Pre-Screen Every Inquiry — Tailored to Your Practice Area
+          Pre-Screen Every Inquiry<br>Tailored to Your Practice Area
         </span>
       </h1>
     </div>
@@ -629,7 +629,7 @@ function generateBarProfileEmailHTML(firmName, email, leadId, firstName, practic
           <span style="color:#ffffff;">Pre</span>Intake<span style="color:#ffffff;">.ai</span>
         </span>
         <span style="display:block; margin-top:4px; font-size:14px; font-weight:400; color:#ffffff; line-height:1.4;">
-          Pre-Screen Every Inquiry — Tailored to Your Practice Area
+          Pre-Screen Every Inquiry<br>Tailored to Your Practice Area
         </span>
       </h1>
     </div>
