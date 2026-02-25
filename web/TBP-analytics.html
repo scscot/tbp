@@ -2735,54 +2735,87 @@
 
         // Subject line labels
         const SUBJECT_LABELS = {
-            // Main campaign (current: V9/V10 4-way A/B test)
+            // ============ CURRENT V14 TEMPLATE (single subject line) ============
+            // Main campaign (current: v14)
+            'main_v14': 'V14: "AI is changing how teams grow"',
+            // Purchased leads campaign (current: v14)
+            'purchased_v14': 'V14: "AI is changing how teams grow"',
+            // BFH campaign (current: v14 per language)
+            'bfh_v14_en': 'V14 EN: "AI is changing how teams grow"',
+            'bfh_v14_es': 'V14 ES: "La IA está cambiando..."',
+            'bfh_v14_pt': 'V14 PT: "A IA está mudando..."',
+            'bfh_v14_de': 'V14 DE: "KI verändert..."',
+            // FSR campaign (current: v14)
+            'fsr_v14': 'V14: "AI is changing how teams grow"',
+            // Paparazzi campaign (current: v14)
+            'paparazzi_v14': 'V14: "AI is changing how teams grow"',
+            // Pruvit campaign (current: v14)
+            'pruvit_v14': 'V14: "AI is changing how teams grow"',
+            // Zinzino campaign (current: v14 per language)
+            'zinzino_v14_en': 'V14 EN: "AI is changing how teams grow"',
+            'zinzino_v14_es': 'V14 ES: "La IA está cambiando..."',
+            'zinzino_v14_de': 'V14 DE: "KI verändert..."',
+            // Scentsy campaign (current: v14 per language)
+            'scentsy_v14_en': 'V14 EN: "AI is changing how teams grow"',
+            'scentsy_v14_es': 'V14 ES: "La IA está cambiando..."',
+            'scentsy_v14_de': 'V14 DE: "KI verändert..."',
+            // Scentsy campaign (legacy)
+            'scentsy_v9a_en': 'V9a EN: "AI is changing how teams grow"',
+            'scentsy_v9b_en': 'V9b EN: "Your AI-powered recruiting assistant"',
+            'scentsy_v10a_en': 'V10a EN: "AI is changing how teams grow"',
+            'scentsy_v10b_en': 'V10b EN: "Your AI-powered recruiting assistant"',
+            'scentsy_v9a_es': 'V9a ES: "La IA está cambiando..."',
+            'scentsy_v9b_es': 'V9b ES: "Tu asistente de reclutamiento..."',
+            'scentsy_v10a_es': 'V10a ES: "La IA está cambiando..."',
+            'scentsy_v10b_es': 'V10b ES: "Tu asistente de reclutamiento..."',
+            'scentsy_v9a_de': 'V9a DE: "KI verändert..."',
+            'scentsy_v9b_de': 'V9b DE: "Dein KI-gesteuerter Recruiting-Assistent"',
+            'scentsy_v10a_de': 'V10a DE: "KI verändert..."',
+            'scentsy_v10b_de': 'V10b DE: "Dein KI-gesteuerter Recruiting-Assistent"',
+            // ============ LEGACY TAGS (for historical data) ============
+            // Main campaign (legacy)
             'main_v9a': 'V9a: "Not an opportunity. Just a tool."',
             'main_v9b': 'V9b: "AI is changing how teams grow"',
             'main_v10a': 'V10a: "Not an opportunity. Just a tool."',
             'main_v10b': 'V10b: "AI is changing how teams grow"',
-            // Main campaign (legacy)
             'mobile_first_v3': 'V3: "This isn\'t another opportunity email"',
             'mobile_first_v4': 'V4: "Not an opportunity. Just a tool."',
             'mobile_first_v5': 'V5: "Using AI to Build Your Direct Sales Team"',
             'mobile_first_v6': 'V6: "Using AI to Build Your Direct Sales Team"',
             'mobile_first_v7': 'V7: "The future of direct sales is here"',
             'mobile_first_v8': 'V8: "Not an opportunity. Just a tool."',
-            // Purchased leads campaign (current: v11a/v12a)
+            // Purchased leads campaign (legacy)
             'purchased_v11a': 'V11a: "Not an opportunity. Just a tool."',
             'purchased_v12a': 'V12a: "AI is changing how teams grow"',
-            // Purchased leads campaign (legacy)
             'purchased_v7': 'V7: "The future of direct sales is here"',
             'purchased_v8': 'V8: "Not an opportunity. Just a tool."',
             'purchased_v9a': 'V9a: "Not an opportunity. Just a tool."',
             'purchased_v9b': 'V9b: "AI is changing how teams grow"',
             'purchased_v10a': 'V10a: "Not an opportunity. Just a tool."',
             'purchased_v10b': 'V10b: "AI is changing how teams grow"',
-            // FSR campaign
+            // BFH campaign (legacy)
+            'bfh_v11_en': 'V11 EN (personalized)',
+            'bfh_v12_en': 'V12 EN (personalized)',
+            'bfh_v9_en': 'V9 EN',
+            'bfh_v10_en': 'V10 EN',
+            // FSR campaign (legacy)
             'fsr_v9a': 'V9a: "Not an opportunity. Just a tool."',
             'fsr_v10a': 'V10a: "AI is changing how teams grow"',
-            // Paparazzi campaign
+            // Paparazzi campaign (legacy)
             'paparazzi_v9a': 'V9a: "AI is changing how teams grow"',
             'paparazzi_v9b': 'V9b: "Your AI-powered recruiting assistant"',
             'paparazzi_v10a': 'V10a: "AI is changing how teams grow"',
             'paparazzi_v10b': 'V10b: "Your AI-powered recruiting assistant"',
-            // Pruvit campaign
+            // Pruvit campaign (legacy)
             'pruvit_v9a': 'V9a: "AI is changing how teams grow"',
             'pruvit_v9b': 'V9b: "Your AI-powered recruiting assistant"',
             'pruvit_v10a': 'V10a: "AI is changing how teams grow"',
             'pruvit_v10b': 'V10b: "Your AI-powered recruiting assistant"',
-            // Scentsy campaign
-            'scentsy_v9a_en': 'V9a EN: "AI is changing how teams grow"',
-            'scentsy_v9b_en': 'V9b EN: "Your AI-powered recruiting assistant"',
-            'scentsy_v10a_en': 'V10a EN: "AI is changing how teams grow"',
-            'scentsy_v10b_en': 'V10b EN: "Your AI-powered recruiting assistant"',
-            'scentsy_v9a_es': 'V9a ES: "AI is changing how teams grow"',
-            'scentsy_v9b_es': 'V9b ES: "Your AI-powered recruiting assistant"',
-            'scentsy_v10a_es': 'V10a ES: "AI is changing how teams grow"',
-            'scentsy_v10b_es': 'V10b ES: "Your AI-powered recruiting assistant"',
-            'scentsy_v9a_de': 'V9a DE: "AI is changing how teams grow"',
-            'scentsy_v9b_de': 'V9b DE: "Your AI-powered recruiting assistant"',
-            'scentsy_v10a_de': 'V10a DE: "AI is changing how teams grow"',
-            'scentsy_v10b_de': 'V10b DE: "Your AI-powered recruiting assistant"'
+            // Zinzino campaign (legacy)
+            'zinzino_v9a_en': 'V9a EN: "AI is changing how teams grow"',
+            'zinzino_v9b_en': 'V9b EN: "Your AI-powered recruiting assistant"',
+            'zinzino_v10a_en': 'V10a EN: "AI is changing how teams grow"',
+            'zinzino_v10b_en': 'V10b EN: "Your AI-powered recruiting assistant"'
         };
 
         // Authentication
@@ -3314,9 +3347,10 @@
                 document.getElementById('emailMainFailed').textContent = formatNumber(emailStatsData.tracking.failed || 0);
             }
 
-            // A/B test performance (current V9/V10 4-way test + legacy V7/V8)
+            // Template performance (current V14 + legacy tags)
             const abBody = document.getElementById('emailMainAbTestBody');
             const mainSubjectLines = (emailStatsData.subjectLines || []).filter(sl =>
+                sl.subjectTag === 'main_v14' ||
                 sl.subjectTag === 'main_v9a' || sl.subjectTag === 'main_v9b' ||
                 sl.subjectTag === 'main_v10a' || sl.subjectTag === 'main_v10b' ||
                 sl.subjectTag === 'mobile_first_v7' || sl.subjectTag === 'mobile_first_v8'
@@ -3389,9 +3423,10 @@
                     document.getElementById('emailPurchasedFailed').textContent = formatNumber(pc.tracking.failed || 0);
                 }
 
-                // A/B test performance
+                // Template performance (current V14 + legacy tags)
                 const purchasedAbBody = document.getElementById('emailPurchasedAbTestBody');
                 const purchasedSubjectLines = (pc.subjectLines || []).filter(sl =>
+                    sl.subjectTag === 'purchased_v14' ||
                     sl.subjectTag === 'purchased_v11a' || sl.subjectTag === 'purchased_v12a' ||
                     sl.subjectTag === 'purchased_v10a' || sl.subjectTag === 'purchased_v10b' ||
                     sl.subjectTag === 'purchased_v9a' || sl.subjectTag === 'purchased_v9b' ||
@@ -3470,9 +3505,10 @@
                     document.getElementById('emailBfhFailed').textContent = formatNumber(bfh.tracking.failed || 0);
                 }
 
-                // A/B test performance (v11a/v12a for personalized)
+                // Template performance (current V14 per language + legacy tags)
                 const bfhAbBody = document.getElementById('emailBfhAbTestBody');
                 const bfhSubjectLines = (bfh.subjectLines || []).filter(sl =>
+                    sl.subjectTag?.startsWith('bfh_v14') ||
                     sl.subjectTag?.startsWith('bfh_v11') || sl.subjectTag?.startsWith('bfh_v12') ||
                     sl.subjectTag?.startsWith('bfh_v9') || sl.subjectTag?.startsWith('bfh_v10')
                 );
@@ -3556,9 +3592,10 @@
                     document.getElementById('emailZinzinoLangDe').textContent = formatNumber(zz.languageBreakdown.de || 0);
                 }
 
-                // A/B test performance
+                // Template performance (current V14 per language + legacy tags)
                 const zzAbBody = document.getElementById('emailZinzinoAbTestBody');
                 const zzSubjectLines = (zz.subjectLines || []).filter(sl =>
+                    sl.subjectTag?.startsWith('zinzino_v14') ||
                     sl.subjectTag?.startsWith('zinzino_v9') || sl.subjectTag?.startsWith('zinzino_v10')
                 );
                 if (zzSubjectLines.length > 0) {
@@ -3640,9 +3677,10 @@
                     document.getElementById('emailFsrStateCount').textContent = formatNumber(fsr.distribution.states || 0);
                 }
 
-                // A/B test performance
+                // Template performance (current V14 + legacy tags)
                 const fsrAbBody = document.getElementById('emailFsrAbTestBody');
                 const fsrSubjectLines = (fsr.subjectLines || []).filter(sl =>
+                    sl.subjectTag === 'fsr_v14' ||
                     sl.subjectTag?.startsWith('fsr_v9') || sl.subjectTag?.startsWith('fsr_v10')
                 );
                 if (fsrSubjectLines.length > 0) {
@@ -3728,9 +3766,10 @@
                     document.getElementById('emailPaparazziStateCount').textContent = formatNumber(pap.distribution.states || 0);
                 }
 
-                // A/B test performance
+                // Template performance (current V14 + legacy tags)
                 const papAbBody = document.getElementById('emailPaparazziAbTestBody');
                 const papSubjectLines = (pap.subjectLines || []).filter(sl =>
+                    sl.subjectTag === 'paparazzi_v14' ||
                     sl.subjectTag?.startsWith('paparazzi_v9') || sl.subjectTag?.startsWith('paparazzi_v10')
                 );
                 if (papSubjectLines.length > 0) {
@@ -3810,9 +3849,10 @@
                     document.getElementById('emailPruvitFailed').textContent = formatNumber(prv.tracking.failed || 0);
                 }
 
-                // A/B test performance
+                // Template performance (current V14 + legacy tags)
                 const prvAbBody = document.getElementById('emailPruvitAbTestBody');
                 const prvSubjectLines = (prv.subjectLines || []).filter(sl =>
+                    sl.subjectTag === 'pruvit_v14' ||
                     sl.subjectTag?.startsWith('pruvit_v9') || sl.subjectTag?.startsWith('pruvit_v10')
                 );
                 if (prvSubjectLines.length > 0) {
@@ -3892,8 +3932,10 @@
                 }
 
                 // A/B test performance
+                // Template performance (current V14 per language + legacy tags)
                 const sctAbBody = document.getElementById('emailScentsyAbTestBody');
                 const sctSubjectLines = (sct.subjectLines || []).filter(sl =>
+                    sl.subjectTag?.startsWith('scentsy_v14') ||
                     sl.subjectTag?.startsWith('scentsy_v9') || sl.subjectTag?.startsWith('scentsy_v10')
                 );
                 if (sctSubjectLines.length > 0) {
