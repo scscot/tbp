@@ -1959,6 +1959,24 @@ Email click → Landing page (?lead=) → Welcome banner + floating CTAs
 | `preintake/intake.html` | Updated create-account URL parameter |
 | `preintake/demo/index.html` | Updated create-account URL parameter |
 
+### Phase 79: Email Template Refinements (2026-02-24)
+- [x] **CTA Button Label Change** - Changed from "Get Started" to "Learn More"
+  - Softer, less committal language for cold outreach emails
+  - Updated in all 4 email templates (personalized HTML/text, bar profile HTML/text)
+- [x] **Removed Redundant Copy** - Eliminated duplicate "Cancel anytime" messaging
+  - Previously had both pricing line AND follow-up paragraph mentioning cancellation
+  - Removed "No commitment. Cancel anytime if it's not right for your firm." paragraph
+  - Pricing line now serves as single source for cancellation messaging
+- [x] **Removed "No contracts" Claim** - Updated pricing line for accuracy
+  - A Stripe subscription is technically a contract
+  - Changed from "$99/month. No contracts. Cancel anytime." to "$99/month. Cancel anytime."
+  - More accurate and less potentially misleading
+
+**Files Modified:**
+| File | Changes |
+|------|---------|
+| `scripts/send-preintake-campaign.js` | CTA labels, removed redundant copy, updated pricing line |
+
 ---
 
 ## Architecture
