@@ -1395,6 +1395,15 @@ Corporate email domains are excluded from all contact collections using a **blac
   - Uses same `sendEmailViaMailgun` function as production campaign
   - Accepts `subjectSuffix` parameter for accurate Gmail search identification
 
+**Email Bounce Handling:**
+- `sync-tbp-mailgun-failures.js` - Daily sync of permanent bounces from Mailgun
+  - Queries Mailgun API for permanent failures (last 24 hours) from `stephen@news.teambuildpro.com`
+  - Checks all TBP contact collections: `bfh_contacts`, `fsr_contacts`, `paparazzi_contacts`, `pruvit_contacts`, `scentsy_contacts`, `zinzino_contacts`, `purchased_leads`, `direct_sales_contacts`, `emailCampaigns/master/contacts`
+  - Marks failed emails with `status: 'failed'`, `failReason: 'permanent_bounce'`, `failedAt: timestamp`
+  - Campaign scripts skip contacts with `status: 'failed'`
+  - Schedule: Daily 5:30am PT via `.github/workflows/sync-tbp-mailgun-failures.yml`
+  - `--dry-run` - Preview changes without updating Firestore
+
 **Contact Data Management:**
 - `analyze-apollo-personal-emails.js` - Extract contacts with personal emails from Apollo CSV
   - `--analyze` - Audit CSV and categorize contacts (personal email vs needs search)

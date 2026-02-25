@@ -63,6 +63,28 @@ After 15+ demo flow iterations with 0% completion rate, pivoting to direct landi
 2. Set `preintakeBatchSize` to previous value (stored in `preintakeBatchSize_previous_value`)
 3. Delete the `preintakeBatchSize_disabled_*` fields
 
+### Email Bounce Handling (Automated)
+
+**Daily automated bounce sync** prevents sending to invalid addresses:
+- **Schedule**: Daily at 5:00 AM PT (GitHub Actions)
+- **Workflow**: `.github/workflows/sync-mailgun-failures.yml`
+- **Script**: `scripts/sync-mailgun-failures.js`
+
+**How it works:**
+1. Queries Mailgun API for permanent failures (last 24 hours)
+2. Filters for emails from `stephen@law.preintake.ai`
+3. Marks matching contacts in `preintake_emails` collection with:
+   - `status: 'failed'`
+   - `failReason: 'permanent_bounce'`
+   - `failedAt: timestamp`
+4. Campaign script skips contacts with `status: 'failed'`
+
+**Manual run:**
+```bash
+node scripts/sync-mailgun-failures.js          # Live run
+node scripts/sync-mailgun-failures.js --dry-run # Preview only
+```
+
 ### Resume Development When
 
 - First paying customer signs up (onboarding support needed)
@@ -2071,7 +2093,8 @@ pending → analyzing → researching → generating_demo → demo_ready
 ├── analyze-sources.js               # Analyze preintake_emails by source (scraper vs legacy)
 ├── audit-preintake-emails.js        # Audit data integrity for send-preintake-campaign.js
 ├── infer-websites.js                # Infer attorney websites from email domains
-└── cleanup-stale-demos.js           # Auto-delete 15+ day old never-accessed demos (daily workflow)
+├── cleanup-stale-demos.js           # Auto-delete 15+ day old never-accessed demos (daily workflow)
+└── sync-mailgun-failures.js         # Auto-mark bounced emails as failed (daily workflow)
 ```
 
 ### Firebase Configuration
