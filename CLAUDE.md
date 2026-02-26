@@ -1363,6 +1363,13 @@ Corporate email domains are excluded from all contact collections using a **blac
   - `--notify-email=EMAIL` - Recipient for notification emails
   - Generates 4 language versions: English, Spanish, Portuguese, German
 - `generate-blog.js` - Legacy blog generation (static template approach)
+- `set-analytics-benchmark.js` - Set/clear analytics benchmark date in Firestore
+  - `node scripts/set-analytics-benchmark.js` - Set to today
+  - `node scripts/set-analytics-benchmark.js 2026-02-25` - Set to specific date
+  - `node scripts/set-analytics-benchmark.js --clear` - Remove benchmark (show all data)
+  - When set, TBP Analytics dashboard shows data only from benchmark date forward
+  - Affects: iOS/Android app store metrics, email campaign sent counts
+  - Stored in Firestore `config/analytics.benchmarkDate`
 
 **Spam Monitoring:**
 - `gmail-oauth-setup.js` - One-time OAuth setup for Gmail API access
@@ -1476,18 +1483,11 @@ Corporate email domains are excluded from all contact collections using a **blac
   - Sending domain: `news.teambuildpro.com` with 10/10 mail-tester.com score (SPF/DKIM/DMARC configured)
   - Open tracking disabled for deliverability; click tracking via GA4 UTM parameters
   - SMTP sender utility (`email-smtp-sender.js`) exists but is used only for blog notifications, not campaigns
-- ✅ **A/B Testing Active**: Main campaign uses 4-way V9/V10 test (Feb 12, 2026)
-  - V9a: V9 template + "AI is changing how teams grow" (`main_v9a`)
-  - V9b: V9 template + "Your AI-powered recruiting assistant" (`main_v9b`)
-  - V10a: V10 template + "AI is changing how teams grow" (`main_v10a`)
-  - V10b: V10 template + "Your AI-powered recruiting assistant" (`main_v10b`)
-  - Contacts campaign still uses V7/V8 (`mobile_first_v7`/`mobile_first_v8`)
-- ✅ **A/B Test Template Update** (Feb 11, 2026): Migrated from v3/v4 to v7/v8 Mailgun templates
-  - Simplified HTML template with text link CTA (improved inbox placement vs Promotions/Spam)
-  - Fixed From address typo in templates v4-v8 (was missing "t" in teambuildpro)
-- ✅ **4-Way A/B Test Deployed** (Feb 12, 2026): Main campaign upgraded to V9/V10 × 2 subject lines
-  - Matches purchased leads campaign A/B test configuration
-  - Dashboards updated to track new `main_v9a/v9b/v10a/v10b` subject lines
+- ✅ **A/B Testing Discontinued** (Feb 25, 2026): All campaigns standardized on V14 template
+  - Single subject line: "AI is changing how teams grow" (localized per language)
+  - A/B test UI removed from TBP-analytics.html dashboard
+  - Analytics benchmark set to Feb 25, 2026 for clean data starting point
+  - Historical A/B test data (v9/v10 tags) retained in Firestore for reference
 - ✅ **Yahoo Campaign Removed** (Jan 31, 2026): File and function deleted
 - ✅ **Android Launch Campaign Removed** (Jan 31, 2026): Function deleted from `email-campaign-functions.js`
 - ✅ **Contacts Campaign Added** (Jan 31, 2026): New campaign targeting `direct_sales_contacts` collection with company-specific subject lines
@@ -1696,7 +1696,7 @@ Main Campaign disabled. All scraper-fed campaigns now use dynamic batch sizing t
 | Android Campaign | Removed | Function and all references deleted |
 | Subscription Reminders | Disabled | Auto-renewal handled by app stores (Feb 19) |
 | Email Tracking | GA4 | Clicks via UTM parameters; opens disabled |
-| Analytics Dashboard | Enhanced | 6 campaign cards, GA4 click tracking, improved remaining counts |
+| Analytics Dashboard | Enhanced | 6 campaign cards, GA4 click tracking, A/B testing removed (Feb 25) |
 | Push Notifications | Working | profile_reminder, trial_expired verified |
 | Blog Automation | Running | Mon/Thu schedule, 4 languages (24/24/24/23 posts) |
 | Sitemap Pings | Active | Google + Bing pinged after each blog deploy |
