@@ -10,7 +10,7 @@
  * - v14-pt: Portuguese (Brazil)
  * - v14-de: German
  *
- * Subject: "AI is changing how teams grow" (localized per language)
+ * Subject: "Using AI to grow your team faster" (localized per language)
  *
  * Collection: bfh_contacts
  * Query: bfhScraped == true, email != null, sent == false
@@ -49,22 +49,22 @@ const LANDING_PAGE_URL = 'https://teambuildpro.com';
 const TEMPLATE_CONFIG = {
   en: {
     templateVersion: 'v14',
-    subject: 'AI is changing how teams grow',
+    subject: 'Using AI to grow your team faster',
     subjectTag: 'bfh_v14_en'
   },
   es: {
     templateVersion: 'v14-es',
-    subject: 'La IA esta cambiando como crecen los equipos',
+    subject: 'Usando IA para hacer crecer tu equipo mas rapido',
     subjectTag: 'bfh_v14_es'
   },
   pt: {
     templateVersion: 'v14-pt',
-    subject: 'A IA esta mudando como as equipes crescem',
+    subject: 'Usando IA para crescer sua equipe mais rapido',
     subjectTag: 'bfh_v14_pt'
   },
   de: {
     templateVersion: 'v14-de',
-    subject: 'KI verandert, wie Teams wachsen',
+    subject: 'Mit KI Ihr Team schneller aufbauen',
     subjectTag: 'bfh_v14_de'
   }
 };

@@ -6,7 +6,7 @@
  * in junk folder, all campaigns are automatically disabled and an alert is sent.
  *
  * Key behaviors:
- * - Sends single v14 template with subject "AI is changing how teams grow"
+ * - Sends single v14 template with subject "Using AI to grow your team faster"
  * - No A/B testing - single template/subject for consistent monitoring
  * - Waits 3 minutes after send before checking Gmail placement
  * - Total runtime: ~3 minutes

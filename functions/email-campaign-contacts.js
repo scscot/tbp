@@ -55,7 +55,7 @@ const AB_TEST_VARIANTS = {
   },
   v4: {
     templateVersion: 'v4',
-    subject: 'AI is changing how teams grow',
+    subject: 'Using AI to grow your team faster',
     subjectTag: 'mobile_first_v4',
     description: 'AI curiosity hook (legacy)'
   },

@@ -2,9 +2,9 @@
 /**
  * Update V14 Mailgun Templates
  *
- * - Removes preheader from all v14 templates (spam trigger)
- * - Creates/updates v14-pt (Portuguese/Brazil translation)
- * - Updates v14, v14-es, v14-de with preheader removed
+ * Updates all v14 template versions (EN, ES, PT, DE) in Mailgun.
+ * New body content focuses on momentum/structure problem.
+ * Subject: "Using AI to grow your team faster" (localized)
  *
  * Usage:
  *   node scripts/update-v14-templates.js           # Update all v14 templates
@@ -23,10 +23,9 @@ const MAILGUN_DOMAIN = 'news.teambuildpro.com';
 const TEMPLATE_NAME = 'mailer';
 
 // =============================================================================
-// V14 ENGLISH - No preheader
+// V14 ENGLISH
 // =============================================================================
-const V14_HTML = `<!DOCTYPE html>
-<html>
+const V14_HTML = `<html>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -54,33 +53,19 @@ const V14_HTML = `<!DOCTYPE html>
       </p>
 
       <p style="margin:0 0 16px 0;">
-        I'm not recruiting you, and this isn't an opportunity.
+        If you're in direct sales, you already know how hard it is to keep new team members moving.
       </p>
 
       <p style="margin:0 0 16px 0;">
-        About 75% of new direct sales reps quit in their first year.
+        A lot of people start strong, then lose momentum within the first year.
       </p>
 
       <p style="margin:0 0 16px 0;">
-        That's not a motivation problem. It's a systems problem.
+        In many cases, it isn't effort. It's that they don't have much structure in the beginning.
       </p>
 
       <p style="margin:0 0 16px 0;">
-        I built an AI driven app to fix this.
-      </p>
-
-      <p style="margin:0 0 16px 0;">
-        <strong>Team Build Pro</strong> provides:
-      </p>
-
-      <ul style="margin:0 0 16px 20px; padding:0;">
-        <li style="margin-bottom:6px;">Individualized 24/7 AI coaching</li>
-        <li style="margin-bottom:6px;">Customized pre-written outreach messages</li>
-        <li style="margin-bottom:0;">A way to pre-build a team before joining</li>
-      </ul>
-
-      <p style="margin:0 0 16px 0;">
-        It works with any company.
+        I built a mobile app that provides individualized 24/7 AI guidance, ready-to-use outreach messages, and even the ability to start building a team before officially joining your company.
       </p>
 
       <p style="margin:0 0 16px 0;">
@@ -108,20 +93,13 @@ const V14_HTML = `<!DOCTYPE html>
 
 const V14_TEXT = `Hello {{first_name}},
 
-I'm not recruiting you, and this isn't an opportunity.
+If you're in direct sales, you already know how hard it is to keep new team members moving.
 
-About 75% of new direct sales reps quit in their first year.
+A lot of people start strong, then lose momentum within the first year.
 
-That's not a motivation problem. It's a systems problem.
+In many cases, it isn't effort. It's that they don't have much structure in the beginning.
 
-I built an AI driven app to fix this.
-
-Team Build Pro provides:
-- Individualized 24/7 AI coaching
-- Customized pre-written outreach messages
-- A way to pre-build a team before joining
-
-It works with any company.
+I built a mobile app that provides individualized 24/7 AI guidance, ready-to-use outreach messages, and even the ability to start building a team before officially joining your company.
 
 See how it works: {{tracked_cta_url}}
 
@@ -135,10 +113,9 @@ Author, How to Grow Your Network Marketing Business Using AI
 Unsubscribe: {{unsubscribe_url}}`;
 
 // =============================================================================
-// V14-ES SPANISH - No preheader
+// V14-ES SPANISH
 // =============================================================================
-const V14_ES_HTML = `<!DOCTYPE html>
-<html>
+const V14_ES_HTML = `<html>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -166,33 +143,19 @@ const V14_ES_HTML = `<!DOCTYPE html>
       </p>
 
       <p style="margin:0 0 16px 0;">
-        No te estoy reclutando, y esto no es una oportunidad.
+        Si estas en ventas directas, ya sabes lo dificil que es mantener a los nuevos miembros del equipo en movimiento.
       </p>
 
       <p style="margin:0 0 16px 0;">
-        Aproximadamente el 75% de los nuevos representantes de ventas directas abandonan en su primer ano.
+        Muchas personas comienzan con fuerza, pero pierden impulso dentro del primer ano.
       </p>
 
       <p style="margin:0 0 16px 0;">
-        Eso no es un problema de motivacion. Es un problema de sistemas.
+        En muchos casos, no es falta de esfuerzo. Es que no tienen mucha estructura al principio.
       </p>
 
       <p style="margin:0 0 16px 0;">
-        Cree una aplicacion impulsada por IA para solucionar esto.
-      </p>
-
-      <p style="margin:0 0 16px 0;">
-        <strong>Team Build Pro</strong> ofrece:
-      </p>
-
-      <ul style="margin:0 0 16px 20px; padding:0;">
-        <li style="margin-bottom:6px;">Coaching de IA individualizado 24/7</li>
-        <li style="margin-bottom:6px;">Mensajes de alcance personalizados y preescritos</li>
-        <li style="margin-bottom:0;">Una forma de pre-construir un equipo antes de unirse</li>
-      </ul>
-
-      <p style="margin:0 0 16px 0;">
-        Funciona con cualquier empresa.
+        Cree una aplicacion movil que proporciona orientacion de IA personalizada 24/7, mensajes de contacto listos para usar, e incluso la capacidad de comenzar a construir un equipo antes de unirse oficialmente a tu empresa.
       </p>
 
       <p style="margin:0 0 16px 0;">
@@ -220,20 +183,13 @@ const V14_ES_HTML = `<!DOCTYPE html>
 
 const V14_ES_TEXT = `Hola {{first_name}},
 
-No te estoy reclutando, y esto no es una oportunidad.
+Si estas en ventas directas, ya sabes lo dificil que es mantener a los nuevos miembros del equipo en movimiento.
 
-Aproximadamente el 75% de los nuevos representantes de ventas directas abandonan en su primer ano.
+Muchas personas comienzan con fuerza, pero pierden impulso dentro del primer ano.
 
-Eso no es un problema de motivacion. Es un problema de sistemas.
+En muchos casos, no es falta de esfuerzo. Es que no tienen mucha estructura al principio.
 
-Cree una aplicacion impulsada por IA para solucionar esto.
-
-Team Build Pro ofrece:
-- Coaching de IA individualizado 24/7
-- Mensajes de alcance personalizados y preescritos
-- Una forma de pre-construir un equipo antes de unirse
-
-Funciona con cualquier empresa.
+Cree una aplicacion movil que proporciona orientacion de IA personalizada 24/7, mensajes de contacto listos para usar, e incluso la capacidad de comenzar a construir un equipo antes de unirse oficialmente a tu empresa.
 
 Descubre como funciona: {{tracked_cta_url}}
 
@@ -247,10 +203,9 @@ Autor, Como Hacer Crecer tu Negocio de Network Marketing Usando IA
 Cancelar suscripcion: {{unsubscribe_url}}`;
 
 // =============================================================================
-// V14-DE GERMAN - No preheader
+// V14-DE GERMAN
 // =============================================================================
-const V14_DE_HTML = `<!DOCTYPE html>
-<html>
+const V14_DE_HTML = `<html>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -278,33 +233,19 @@ const V14_DE_HTML = `<!DOCTYPE html>
       </p>
 
       <p style="margin:0 0 16px 0;">
-        Ich rekrutiere Sie nicht, und dies ist keine Geschaftsmoglichkeit.
+        Wenn Sie im Direktvertrieb tatig sind, wissen Sie bereits, wie schwer es ist, neue Teammitglieder in Bewegung zu halten.
       </p>
 
       <p style="margin:0 0 16px 0;">
-        Etwa 75% der neuen Direktvertriebs-Mitarbeiter geben in ihrem ersten Jahr auf.
+        Viele Menschen starten stark, verlieren aber innerhalb des ersten Jahres an Schwung.
       </p>
 
       <p style="margin:0 0 16px 0;">
-        Das ist kein Motivationsproblem. Es ist ein Systemproblem.
+        In vielen Fallen liegt es nicht am Einsatz. Es fehlt ihnen einfach an Struktur am Anfang.
       </p>
 
       <p style="margin:0 0 16px 0;">
-        Ich habe eine KI-gestutzte App entwickelt, um das zu losen.
-      </p>
-
-      <p style="margin:0 0 16px 0;">
-        <strong>Team Build Pro</strong> bietet:
-      </p>
-
-      <ul style="margin:0 0 16px 20px; padding:0;">
-        <li style="margin-bottom:6px;">Individuelles 24/7 KI-Coaching</li>
-        <li style="margin-bottom:6px;">Massgeschneiderte, vorgeschriebene Kontaktnachrichten</li>
-        <li style="margin-bottom:0;">Eine Moglichkeit, ein Team vor dem Beitritt aufzubauen</li>
-      </ul>
-
-      <p style="margin:0 0 16px 0;">
-        Es funktioniert mit jedem Unternehmen.
+        Ich habe eine mobile App entwickelt, die personalisierte KI-Unterstutzung rund um die Uhr, gebrauchsfertige Kontaktnachrichten und sogar die Moglichkeit bietet, ein Team aufzubauen, bevor Sie offiziell Ihrem Unternehmen beitreten.
       </p>
 
       <p style="margin:0 0 16px 0;">
@@ -332,20 +273,13 @@ const V14_DE_HTML = `<!DOCTYPE html>
 
 const V14_DE_TEXT = `Hallo {{first_name}},
 
-Ich rekrutiere Sie nicht, und dies ist keine Geschaftsmoglichkeit.
+Wenn Sie im Direktvertrieb tatig sind, wissen Sie bereits, wie schwer es ist, neue Teammitglieder in Bewegung zu halten.
 
-Etwa 75% der neuen Direktvertriebs-Mitarbeiter geben in ihrem ersten Jahr auf.
+Viele Menschen starten stark, verlieren aber innerhalb des ersten Jahres an Schwung.
 
-Das ist kein Motivationsproblem. Es ist ein Systemproblem.
+In vielen Fallen liegt es nicht am Einsatz. Es fehlt ihnen einfach an Struktur am Anfang.
 
-Ich habe eine KI-gestutzte App entwickelt, um das zu losen.
-
-Team Build Pro bietet:
-- Individuelles 24/7 KI-Coaching
-- Massgeschneiderte, vorgeschriebene Kontaktnachrichten
-- Eine Moglichkeit, ein Team vor dem Beitritt aufzubauen
-
-Es funktioniert mit jedem Unternehmen.
+Ich habe eine mobile App entwickelt, die personalisierte KI-Unterstutzung rund um die Uhr, gebrauchsfertige Kontaktnachrichten und sogar die Moglichkeit bietet, ein Team aufzubauen, bevor Sie offiziell Ihrem Unternehmen beitreten.
 
 Erfahren Sie, wie es funktioniert: {{tracked_cta_url}}
 
@@ -359,10 +293,9 @@ Autor, Wie Sie Ihr Network-Marketing-Geschaft mit KI ausbauen
 Abmelden: {{unsubscribe_url}}`;
 
 // =============================================================================
-// V14-PT PORTUGUESE (BRAZIL) - New template
+// V14-PT PORTUGUESE (BRAZIL)
 // =============================================================================
-const V14_PT_HTML = `<!DOCTYPE html>
-<html>
+const V14_PT_HTML = `<html>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -390,33 +323,19 @@ const V14_PT_HTML = `<!DOCTYPE html>
       </p>
 
       <p style="margin:0 0 16px 0;">
-        Nao estou recrutando voce, e isso nao e uma oportunidade.
+        Se voce esta em vendas diretas, ja sabe como e dificil manter os novos membros da equipe em movimento.
       </p>
 
       <p style="margin:0 0 16px 0;">
-        Cerca de 75% dos novos representantes de vendas diretas desistem no primeiro ano.
+        Muitas pessoas comecam com forca, mas perdem o impulso no primeiro ano.
       </p>
 
       <p style="margin:0 0 16px 0;">
-        Isso nao e um problema de motivacao. E um problema de sistemas.
+        Em muitos casos, nao e falta de esforco. E que eles nao tem muita estrutura no inicio.
       </p>
 
       <p style="margin:0 0 16px 0;">
-        Criei um aplicativo com IA para resolver isso.
-      </p>
-
-      <p style="margin:0 0 16px 0;">
-        <strong>Team Build Pro</strong> oferece:
-      </p>
-
-      <ul style="margin:0 0 16px 20px; padding:0;">
-        <li style="margin-bottom:6px;">Coaching de IA individualizado 24/7</li>
-        <li style="margin-bottom:6px;">Mensagens de contato personalizadas e pre-escritas</li>
-        <li style="margin-bottom:0;">Uma forma de construir uma equipe antes de entrar</li>
-      </ul>
-
-      <p style="margin:0 0 16px 0;">
-        Funciona com qualquer empresa.
+        Criei um aplicativo movel que oferece orientacao de IA personalizada 24/7, mensagens de contato prontas para usar, e ate a capacidade de comecar a construir uma equipe antes de entrar oficialmente na sua empresa.
       </p>
 
       <p style="margin:0 0 16px 0;">
@@ -444,20 +363,13 @@ const V14_PT_HTML = `<!DOCTYPE html>
 
 const V14_PT_TEXT = `Ola {{first_name}},
 
-Nao estou recrutando voce, e isso nao e uma oportunidade.
+Se voce esta em vendas diretas, ja sabe como e dificil manter os novos membros da equipe em movimento.
 
-Cerca de 75% dos novos representantes de vendas diretas desistem no primeiro ano.
+Muitas pessoas comecam com forca, mas perdem o impulso no primeiro ano.
 
-Isso nao e um problema de motivacao. E um problema de sistemas.
+Em muitos casos, nao e falta de esforco. E que eles nao tem muita estrutura no inicio.
 
-Criei um aplicativo com IA para resolver isso.
-
-Team Build Pro oferece:
-- Coaching de IA individualizado 24/7
-- Mensagens de contato personalizadas e pre-escritas
-- Uma forma de construir uma equipe antes de entrar
-
-Funciona com qualquer empresa.
+Criei um aplicativo movel que oferece orientacao de IA personalizada 24/7, mensagens de contato prontas para usar, e ate a capacidade de comecar a construir uma equipe antes de entrar oficialmente na sua empresa.
 
 Veja como funciona: {{tracked_cta_url}}
 
@@ -475,10 +387,10 @@ Cancelar inscricao: {{unsubscribe_url}}`;
 // =============================================================================
 
 const templates = [
-  { version: 'v14', html: V14_HTML, text: V14_TEXT, description: 'English (no preheader)' },
-  { version: 'v14-es', html: V14_ES_HTML, text: V14_ES_TEXT, description: 'Spanish (no preheader)' },
-  { version: 'v14-de', html: V14_DE_HTML, text: V14_DE_TEXT, description: 'German (no preheader)' },
-  { version: 'v14-pt', html: V14_PT_HTML, text: V14_PT_TEXT, description: 'Portuguese/Brazil (new)' }
+  { version: 'v14', html: V14_HTML, text: V14_TEXT, description: 'English' },
+  { version: 'v14-es', html: V14_ES_HTML, text: V14_ES_TEXT, description: 'Spanish' },
+  { version: 'v14-de', html: V14_DE_HTML, text: V14_DE_TEXT, description: 'German' },
+  { version: 'v14-pt', html: V14_PT_HTML, text: V14_PT_TEXT, description: 'Portuguese/Brazil' }
 ];
 
 // =============================================================================
@@ -553,22 +465,22 @@ async function sendTestEmail(version, language) {
   };
 
   const subjects = {
-    'v14': 'AI is changing how teams grow',
-    'v14-es': 'La IA esta cambiando como crecen los equipos',
-    'v14-de': 'KI verandert, wie Teams wachsen',
-    'v14-pt': 'A IA esta mudando como as equipes crescem'
+    'v14': 'Using AI to grow your team faster',
+    'v14-es': 'Usando IA para hacer crecer tu equipo mas rapido',
+    'v14-de': 'Mit KI Ihr Team schneller aufbauen',
+    'v14-pt': 'Usando IA para crescer sua equipe mais rapido'
   };
 
   console.log(`\nSending test email for ${version}...`);
 
   const domain = domains[version] || 'teambuildpro.com';
-  const subject = subjects[version] || 'AI is changing how teams grow';
+  const subject = subjects[version] || 'Using AI to grow your team faster';
   const landingPageUrl = `https://${domain}?utm_source=mailgun&utm_medium=email&utm_campaign=v14_test&utm_content=${version}`;
   const unsubscribeUrl = `https://${domain}/unsubscribe.html?email=scscot@gmail.com`;
 
   const form = new FormData();
   form.append('from', 'Stephen Scott <stephen@news.teambuildpro.com>');
-  form.append('to', 'Test <scscot@gmail.com>');
+  form.append('to', 'Stephen Scott <scscot@gmail.com>');
   form.append('subject', `${subject} [TEST ${version}]`);
   form.append('template', TEMPLATE_NAME);
   form.append('t:version', version);
@@ -619,10 +531,8 @@ async function main() {
 
   console.log('Updating V14 Mailgun Templates');
   console.log('==============================');
-  console.log('Changes:');
-  console.log('  - Removing preheader from v14, v14-es, v14-de');
-  console.log('  - Creating new v14-pt (Portuguese/Brazil)');
-  console.log('  - Adding plain text alternatives');
+  console.log('Subject: "Using AI to grow your team faster"');
+  console.log('Body: Momentum/structure focused messaging');
   console.log('');
 
   let allSuccess = true;

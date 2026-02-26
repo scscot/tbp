@@ -9,7 +9,7 @@
  * - v14-es: Spanish
  * - v14-de: German
  *
- * Subject: "AI is changing how teams grow" (localized per language)
+ * Subject: "Using AI to grow your team faster" (localized per language)
  *
  * Language Selection:
  * - Spanish (es): Spain, Mexico, Colombia, Peru
@@ -82,17 +82,17 @@ const CTA_DOMAINS = {
 const TEMPLATE_CONFIG = {
   en: {
     templateVersion: 'v14',
-    subject: 'AI is changing how teams grow',
+    subject: 'Using AI to grow your team faster',
     subjectTag: 'zinzino_v14_en'
   },
   es: {
     templateVersion: 'v14-es',
-    subject: 'La IA esta cambiando como crecen los equipos',
+    subject: 'Usando IA para hacer crecer tu equipo mas rapido',
     subjectTag: 'zinzino_v14_es'
   },
   de: {
     templateVersion: 'v14-de',
-    subject: 'KI verandert, wie Teams wachsen',
+    subject: 'Mit KI Ihr Team schneller aufbauen',
     subjectTag: 'zinzino_v14_de'
   }
 };
