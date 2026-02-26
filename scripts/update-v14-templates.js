@@ -54,6 +54,10 @@ const V14_HTML = `<!DOCTYPE html>
       </p>
 
       <p style="margin:0 0 16px 0;">
+        I'm not recruiting you, and this isn't an opportunity.
+      </p>
+
+      <p style="margin:0 0 16px 0;">
         About 75% of new direct sales reps quit in their first year.
       </p>
 
@@ -103,6 +107,8 @@ const V14_HTML = `<!DOCTYPE html>
 </html>`;
 
 const V14_TEXT = `Hello {{first_name}},
+
+I'm not recruiting you, and this isn't an opportunity.
 
 About 75% of new direct sales reps quit in their first year.
 
@@ -160,6 +166,10 @@ const V14_ES_HTML = `<!DOCTYPE html>
       </p>
 
       <p style="margin:0 0 16px 0;">
+        No te estoy reclutando, y esto no es una oportunidad.
+      </p>
+
+      <p style="margin:0 0 16px 0;">
         Aproximadamente el 75% de los nuevos representantes de ventas directas abandonan en su primer ano.
       </p>
 
@@ -209,6 +219,8 @@ const V14_ES_HTML = `<!DOCTYPE html>
 </html>`;
 
 const V14_ES_TEXT = `Hola {{first_name}},
+
+No te estoy reclutando, y esto no es una oportunidad.
 
 Aproximadamente el 75% de los nuevos representantes de ventas directas abandonan en su primer ano.
 
@@ -266,6 +278,10 @@ const V14_DE_HTML = `<!DOCTYPE html>
       </p>
 
       <p style="margin:0 0 16px 0;">
+        Ich rekrutiere Sie nicht, und dies ist keine Geschaftsmoglichkeit.
+      </p>
+
+      <p style="margin:0 0 16px 0;">
         Etwa 75% der neuen Direktvertriebs-Mitarbeiter geben in ihrem ersten Jahr auf.
       </p>
 
@@ -315,6 +331,8 @@ const V14_DE_HTML = `<!DOCTYPE html>
 </html>`;
 
 const V14_DE_TEXT = `Hallo {{first_name}},
+
+Ich rekrutiere Sie nicht, und dies ist keine Geschaftsmoglichkeit.
 
 Etwa 75% der neuen Direktvertriebs-Mitarbeiter geben in ihrem ersten Jahr auf.
 
@@ -372,6 +390,10 @@ const V14_PT_HTML = `<!DOCTYPE html>
       </p>
 
       <p style="margin:0 0 16px 0;">
+        Nao estou recrutando voce, e isso nao e uma oportunidade.
+      </p>
+
+      <p style="margin:0 0 16px 0;">
         Cerca de 75% dos novos representantes de vendas diretas desistem no primeiro ano.
       </p>
 
@@ -421,6 +443,8 @@ const V14_PT_HTML = `<!DOCTYPE html>
 </html>`;
 
 const V14_PT_TEXT = `Ola {{first_name}},
+
+Nao estou recrutando voce, e isso nao e uma oportunidade.
 
 Cerca de 75% dos novos representantes de vendas diretas desistem no primeiro ano.
 

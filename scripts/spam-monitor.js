@@ -42,7 +42,7 @@ const db = admin.firestore();
 // CONFIGURATION
 // =============================================================================
 
-const TEST_EMAIL = 'scscot@gmail.com';
+const TEST_EMAIL = 'Stephen Scott <scscot@gmail.com>';
 const ALERT_EMAIL = 'scscot@gmail.com';
 const MAILGUN_DOMAIN = 'news.teambuildpro.com';
 const FROM_ADDRESS = 'Stephen Scott <stephen@news.teambuildpro.com>';
