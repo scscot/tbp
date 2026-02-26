@@ -7,6 +7,7 @@
  * Templates stored in Mailgun under 'mailer' template:
  * - v14: English (gradient header, white card design)
  * - v14-es: Spanish
+ * - v14-pt: Portuguese (Brazil)
  * - v14-de: German
  *
  * Subject: "AI is changing how teams grow" (localized per language)
@@ -57,7 +58,7 @@ const TEMPLATE_CONFIG = {
     subjectTag: 'bfh_v14_es'
   },
   pt: {
-    templateVersion: 'v14',  // Use English template for Portuguese (no v14-pt yet)
+    templateVersion: 'v14-pt',
     subject: 'A IA esta mudando como as equipes crescem',
     subjectTag: 'bfh_v14_pt'
   },

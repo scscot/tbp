@@ -15,8 +15,8 @@ env:
 jobs:
   spam-check:
     runs-on: ubuntu-latest
-    # Runtime ~11 min for 2 variants: send(v1) + 3min wait + 5min delay + send(v2) + 3min wait
-    timeout-minutes: 20
+    # Runtime ~3-4 min: send v14 test email + 3min wait + check Gmail placement
+    timeout-minutes: 10
 
     steps:
       - name: Checkout repository
