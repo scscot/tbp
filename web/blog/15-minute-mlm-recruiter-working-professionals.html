@@ -143,30 +143,6 @@
       .share-btn{width:100%;justify-content:center}
     }
   </style>
-
-<!-- Podcast Audio Schema for SEO -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "AudioObject",
-  "name": "Listen: The 15-Minute MLM Recruiter: How Working Professionals Can Build Teams Without Quitting Their Day Job",
-  "description": "Learn time-efficient MLM recruiting strategies for working professionals. Build teams in 15 minutes daily with AI coaching and proven messages.",
-  "contentUrl": "https://storage.googleapis.com/teambuilder-plus-fe74d.firebasestorage.app/podcasts/en/15-minute-mlm-recruiter-working-professionals.mp3",
-  "encodingFormat": "audio/mpeg",
-  "duration": "PT5M",
-  "uploadDate": "2026-02-23",
-  "inLanguage": "en",
-  "publisher": {
-    "@type": "Organization",
-    "name": "Team Build Pro",
-    "url": "https://teambuildpro.com",
-    "logo": {
-      "@type": "ImageObject",
-      "url": "https://teambuildpro.com/assets/icons/team-build-pro.png"
-    }
-  }
-}
-</script>
 </head>
 <body>
   <!-- Header -->
@@ -216,22 +192,6 @@
       </div>
 
       <article>
-
-<!-- Podcast Player Section -->
-<div class="podcast-player-section">
-  <div class="podcast-player-wrapper">
-    <span class="podcast-icon">🎧</span>
-    <div class="podcast-info">
-      <span class="podcast-label">Listen to this article</span>
-      <span class="podcast-duration">5 min</span>
-    </div>
-    <audio controls preload="metadata" class="podcast-audio" data-slug="15-minute-mlm-recruiter-working-professionals" data-lang="en">
-      <source src="https://storage.googleapis.com/teambuilder-plus-fe74d.firebasestorage.app/podcasts/en/15-minute-mlm-recruiter-working-professionals.mp3" type="audio/mpeg">
-      Your browser does not support the audio element.
-    </audio>
-  </div>
-</div>
-
         <p>You're sitting at your desk during lunch break, scrolling through LinkedIn contacts, wondering how successful network marketers find time to build massive teams while you can barely squeeze in a follow-up call. The harsh reality? Most working professionals abandon their direct sales dreams not because they lack ambition, but because they can't figure out how to recruit effectively within the constraints of a 9-to-5 schedule.</p>
 
 <p>Here's what the top 1% of part-time recruiters know: building a successful MLM team isn't about working more hours—it's about working smarter. With 75% of recruits quitting in their first year, the key isn't just finding prospects; it's finding the right prospects and giving them the tools to succeed before they even join your opportunity.</p>
@@ -562,52 +522,5 @@
   </script>
 
   <script src="/js/referral-tracking.js"></script>
-
-<script>
-// Podcast tracking for GA4
-document.addEventListener('DOMContentLoaded', function() {
-  const audioElements = document.querySelectorAll('.podcast-audio');
-  audioElements.forEach(function(audio) {
-    const slug = audio.dataset.slug || 'unknown';
-    const lang = audio.dataset.lang || 'en';
-
-    audio.addEventListener('play', function() {
-      if (typeof gtag === 'function') {
-        gtag('event', 'podcast_play', {
-          'event_category': 'engagement',
-          'event_label': slug,
-          'language': lang
-        });
-      }
-    });
-
-    audio.addEventListener('ended', function() {
-      if (typeof gtag === 'function') {
-        gtag('event', 'podcast_complete', {
-          'event_category': 'engagement',
-          'event_label': slug,
-          'language': lang
-        });
-      }
-    });
-
-    // Track 50% completion
-    let halfTracked = false;
-    audio.addEventListener('timeupdate', function() {
-      if (!halfTracked && audio.currentTime > audio.duration / 2) {
-        halfTracked = true;
-        if (typeof gtag === 'function') {
-          gtag('event', 'podcast_halfway', {
-            'event_category': 'engagement',
-            'event_label': slug,
-            'language': lang
-          });
-        }
-      }
-    });
-  });
-});
-</script>
-
 </body>
 </html>
