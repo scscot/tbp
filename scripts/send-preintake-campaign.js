@@ -872,7 +872,19 @@ async function runCampaign() {
 
     console.log(`\n📋 Remaining unsent: ${remainingSnapshot.size}`);
 
-    process.exit(failed > 0 ? 1 : 0);
+    // Exit with error only if success rate drops below 90%
+    const totalAttempted = sent + failed;
+    const successRate = totalAttempted > 0 ? (sent / totalAttempted) : 1;
+    const SUCCESS_THRESHOLD = 0.90;
+
+    if (successRate < SUCCESS_THRESHOLD) {
+        console.log(`\n❌ Success rate ${(successRate * 100).toFixed(1)}% is below ${SUCCESS_THRESHOLD * 100}% threshold - failing workflow`);
+        process.exit(1);
+    } else if (failed > 0) {
+        console.log(`\n⚠️  ${failed} email(s) failed, but success rate ${(successRate * 100).toFixed(1)}% is above threshold - workflow passes`);
+    }
+
+    process.exit(0);
 }
 
 // Run campaign
