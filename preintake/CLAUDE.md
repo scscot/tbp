@@ -1999,6 +1999,24 @@ Email click → Landing page (?lead=) → Welcome banner + floating CTAs
 |------|---------|
 | `scripts/send-preintake-campaign.js` | CTA labels, removed redundant copy, updated pricing line |
 
+### Phase 80: Analytics Benchmark Reset to Feb 25, 2026 (2026-02-25)
+- [x] **Fresh Analytics Start** - Reset benchmark date after significant changes
+  - Changed `ANALYTICS_BENCHMARK_DATE` from `2026-02-24` to `2026-02-25`
+  - All email campaign and lead engagement data now filtered from Feb 25 forward
+  - Clean baseline after demo elimination and direct landing page conversion changes
+- [x] **Strategic Insights Fix** - Fixed JSON parsing errors in AI insights generation
+  - Added system prompt to guide Claude to return clean JSON without markdown
+  - Added string cleanup to remove newlines within quoted values
+  - Added balanced brace extraction as robust parsing fallback
+  - Added error context logging for debugging
+
+**Rationale:** Starting fresh after major strategic pivot (demo elimination) and fixing strategic insights JSON parsing. Clean baseline ensures metrics reflect new conversion flow without contaminated historical data.
+
+**Files Modified:**
+| File | Changes |
+|------|---------|
+| `functions/widget-functions.js` | Updated `ANALYTICS_BENCHMARK_DATE` to `2026-02-25`, fixed `generatePreIntakeInsights()` JSON parsing |
+
 ---
 
 ## Architecture

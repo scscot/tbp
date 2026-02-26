@@ -29,7 +29,7 @@ const anthropicApiKey = defineSecret('ANTHROPIC_API_KEY');
 
 // Analytics benchmark date - all data before this date is excluded from analytics
 // Reset to Feb 24, 2026 - fresh start for analytics dashboard
-const ANALYTICS_BENCHMARK_DATE = new Date('2026-02-24T00:00:00-08:00'); // PST
+const ANALYTICS_BENCHMARK_DATE = new Date('2026-02-25T00:00:00-08:00'); // PST - Reset after significant demo flow changes
 
 // Import prompt/tools generators from demo-generator
 const {
@@ -885,18 +885,101 @@ Be direct and avoid generic marketing advice. If data shows 0 or low numbers, ac
         const message = await anthropic.messages.create({
             model: 'claude-haiku-4-5',
             max_tokens: 1000,
+            system: 'You are a data analyst. Respond ONLY with valid JSON, no markdown, no explanations. Keep all text on single lines - no line breaks within strings.',
             messages: [{ role: 'user', content: prompt }]
         });
 
         const content = message.content[0]?.text || '';
 
-        // Extract JSON from response
+        // Extract JSON from response with robust parsing
         const jsonMatch = content.match(/\{[\s\S]*\}/);
         if (!jsonMatch) {
             throw new Error('No JSON found in response');
         }
 
-        const analysis = JSON.parse(jsonMatch[0]);
+        // Clean up common AI response issues before parsing
+        let jsonStr = jsonMatch[0];
+
+        // Remove trailing commas before closing brackets/braces (common AI error)
+        jsonStr = jsonStr.replace(/,(\s*[\]}])/g, '$1');
+
+        // Remove any newlines within string values (can break JSON parsing)
+        // This regex finds strings and replaces internal newlines with spaces
+        jsonStr = jsonStr.replace(/"([^"\\]|\\.)*"/g, (match) => {
+            return match.replace(/\n/g, ' ').replace(/\r/g, '');
+        });
+
+        // Try to parse
+        let analysis;
+        try {
+            analysis = JSON.parse(jsonStr);
+        } catch (parseError) {
+            // Log the error position for debugging
+            const posMatch = parseError.message.match(/position (\d+)/);
+            if (posMatch) {
+                const pos = parseInt(posMatch[1]);
+                console.log('JSON parse error at position', pos);
+                console.log('Context:', jsonStr.substring(Math.max(0, pos - 50), pos + 50));
+            }
+
+            // Try a more aggressive cleanup - extract each section manually
+            console.log('Initial JSON parse failed, attempting manual extraction...');
+
+            try {
+                // Extract arrays using balanced brace matching
+                const extractArray = (key) => {
+                    const keyStart = jsonStr.indexOf(`"${key}"`);
+                    if (keyStart === -1) return [];
+
+                    const bracketStart = jsonStr.indexOf('[', keyStart);
+                    if (bracketStart === -1) return [];
+
+                    let depth = 0;
+                    let bracketEnd = -1;
+                    for (let i = bracketStart; i < jsonStr.length; i++) {
+                        if (jsonStr[i] === '[') depth++;
+                        if (jsonStr[i] === ']') depth--;
+                        if (depth === 0) {
+                            bracketEnd = i;
+                            break;
+                        }
+                    }
+
+                    if (bracketEnd === -1) return [];
+
+                    let arrayStr = jsonStr.substring(bracketStart, bracketEnd + 1);
+                    // Clean up trailing commas in the extracted array
+                    arrayStr = arrayStr.replace(/,(\s*[\]}])/g, '$1');
+                    // Remove newlines in string values
+                    arrayStr = arrayStr.replace(/"([^"\\]|\\.)*"/g, (match) => {
+                        return match.replace(/\n/g, ' ').replace(/\r/g, '');
+                    });
+
+                    try {
+                        return JSON.parse(arrayStr);
+                    } catch {
+                        return [];
+                    }
+                };
+
+                analysis = {
+                    whatsWorking: extractArray('whatsWorking'),
+                    needsAttention: extractArray('needsAttention'),
+                    recommendedActions: extractArray('recommendedActions')
+                };
+
+                // Validate we got something useful
+                const totalItems = analysis.whatsWorking.length + analysis.needsAttention.length + analysis.recommendedActions.length;
+                if (totalItems === 0) {
+                    throw parseError; // Re-throw original error if recovery found nothing
+                }
+
+                console.log('Manual extraction recovered', totalItems, 'items');
+            } catch (recoveryError) {
+                console.log('Manual extraction also failed:', recoveryError.message);
+                throw parseError; // Re-throw original error
+            }
+        }
         return {
             generatedAt: new Date().toISOString(),
             insights: analysis,
