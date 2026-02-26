@@ -8,9 +8,9 @@
  *
  * SCHEDULE (GitHub Actions cron):
  *   - Days: Monday-Friday (weekdays only)
- *   - 4 runs/day at PST offsets (UTC-8)
- *   - PST: 8:30am, 10:30am, 12:30pm, 2:30pm PT
- *   - PDT: 7:30am, 9:30am, 11:30am, 1:30pm PT (1hr earlier, still business hours)
+ *   - 4 runs/day morning window at PST offsets (UTC-8)
+ *   - PST: 7:30am, 9:00am, 10:00am, 11:30am PT
+ *   - PDT: 6:30am, 8:00am, 9:00am, 10:30am PT (1hr earlier, still morning)
  *
  * Environment Variables:
  *   MAILGUN_API_KEY - Mailgun API key

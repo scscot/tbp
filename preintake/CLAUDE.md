@@ -746,7 +746,7 @@ When you're spending $300-500 per lead, even small conversion improvements mean 
   - Tracks sent status, batch ID, message ID in Firestore
   - Template version: `v4-generic` (practice-agnostic messaging)
 - [x] **GitHub Actions Workflow** - `.github/workflows/preintake-email-campaign.yml`
-  - Scheduled: Mon-Fri, 4 runs/day (PST: 8:30am, 10:30am, 12:30pm, 2:30pm PT)
+  - Scheduled: Mon-Fri, 4 runs/day morning window (PST: 7:30am, 9:00am, 10:00am, 11:30am PT)
   - Manual trigger with configurable batch size
   - Uses `PREINTAKE_SMTP_USER` and `PREINTAKE_SMTP_PASS` secrets
   - Uses `FIREBASE_SERVICE_ACCOUNT` for Firestore access
@@ -1216,11 +1216,11 @@ See Phase 53 for current architecture.
 2. Demo regeneration (already completed — 473 demos)
 3. `firebase deploy --only hosting:preintake-ai` — parent page + CSS
 
-### Phase 52: Email Campaign Schedule Optimization (2026-02-03/04)
-- [x] **4 Runs/Day** - Increased from 2 to 4 daily sends for better deliverability spread
-  - PST times: 8:30am, 10:30am, 12:30pm, 2:30pm PT
-  - PDT times: 7:30am, 9:30am, 11:30am, 1:30pm PT (1hr earlier, still business hours)
-  - Spreads volume across business hours (ISPs prefer steady flow vs bursts)
+### Phase 52: Email Campaign Schedule Optimization (2026-02-03/04, updated 2026-02-26)
+- [x] **4 Runs/Day** - Concentrated in morning window for better engagement
+  - PST times: 7:30am, 9:00am, 10:00am, 11:30am PT
+  - PDT times: 6:30am, 8:00am, 9:00am, 10:30am PT (1hr earlier, still morning)
+  - Morning sends complete before noon when attorneys are most responsive
 - [x] **Weekday-Only Sending** - Reverted from 7 days/week to Mon-Fri
   - Law firms closed weekends; weekend emails get buried in Monday inbox
   - Lower weekend engagement hurts sender reputation
