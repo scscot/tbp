@@ -372,11 +372,11 @@ function generateEmailHTML(firmName, email, leadId, firstName) {
     </div>
 
     <div style="background:#ffffff; padding:30px; border-radius:0 0 12px 12px; box-shadow:0 4px 6px rgba(0,0,0,0.1);">
-      ${greeting}<p style="font-size: 16px;">Every law firm has the same intake problem: too many inquiries, not enough signal. Strong cases wait alongside weak or misdirected submissions, and staff time gets burned sorting it out.</p>
+      ${greeting}<p style="font-size: 16px;">Most law firms treat intake as data collection. It's not. It's triage. And without structured screening, your strongest matters are competing for attention with submissions that should never reach your desk.</p>
       
-      <p style="font-size: 16px;"><strong>PreIntake.ai</strong> ensures your most important matters surface immediately—screened, summarized, and prioritized before your team ever reviews them.</p>
+      <p style="font-size: 16px;"><strong>PreIntake.ai</strong> puts practice-specific screening in front of your intake workflow, so the best matters rise to the top immediately—before your team spends time reading raw narratives and chasing missing details.</p>
 
-      <p style="font-size: 16px;">Instead of reviewing raw submissions in the order they arrive, your team sees what matters most first. Strong inquiries are clear, weak ones are obvious, and misdirected matters don't steal attention they don't deserve.</p>
+      <p style="font-size: 16px;">Instead of reviewing submissions in the order they arrive, you receive a clear case summary, a simple qualification rating (qualified / needs review / not a fit), and a plain-English rationale—so staff can move fast, and attorneys see what matters first.</p>
 
       <p style="font-size: 16px;">Every inquiry is reviewed and delivered with:</p>
 
@@ -394,7 +394,9 @@ function generateEmailHTML(firmName, email, leadId, firstName) {
           Embeds directly on your website — visitors never leave your site.
       </p>
 
-      <p style="font-size: 16px;"><strong>$99/month. Cancel anytime.</strong></p>
+      <p style="font-size: 16px; margin-top: 8px;">
+          Don't have a website? No problem. PreIntake.ai works as a hosted intake link you can share anywhere you currently accept inquiries—email signature, referral partners, even a text message.
+      </p>
 
       <div style="text-align: center; margin: 20px 0 30px 0;">
           <a href="${ctaUrl}" style="display: inline-block; background: linear-gradient(135deg, #c9a962 0%, #b8944f 100%); color: #0c1f3f; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-size: 16px;">Learn More</a>
@@ -424,94 +426,6 @@ function generateEmailHTML(firmName, email, leadId, firstName) {
 </html>`;
 }
 
-/**
- * Generate fallback email HTML (no personalized demo)
- */
-function generateFallbackEmailHTML(firmName, email, firstName) {
-    const unsubscribeUrl = `https://preintake.ai/unsubscribe.html?email=${encodeURIComponent(email)}`;
-    // Include firmName in URL so landing page can display it (no #demo hash to prevent auto-scroll)
-    const demoUrl = `https://preintake.ai/?firm=${encodeURIComponent(firmName)}&utm_source=email&utm_medium=outreach&utm_campaign=law_firms&utm_content=cta_button`;
-
-    // Add greeting if firstName is available
-    const greeting = firstName ? `<p style="font-size: 16px;">Hello ${firstName},</p>\n\n      ` : '';
-
-    return `<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!--[if !mso]><!-->
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <!--<![endif]-->
-</head>
-<body style="margin:0; padding:0; background-color:#f8fafc;">
-  <div style="display:none; max-height:0; overflow:hidden;">
-    Pre-screen every inquiry before it reaches your team—see how it works for ${firmName}.
-  </div>
-
-  <div style="max-width:600px; margin:0 auto; padding:20px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; line-height:1.6; color:#1a1a2e;">
-
-    <div style="background-color:#0c1f3f; background:linear-gradient(135deg,#0c1f3f 0%,#1a3a5c 100%); padding:20px; border-radius:12px 12px 0 0; text-align:center;">
-      <h1 style="margin:0; padding:0; font-weight:600; line-height:1.2;">
-        <span style="display:block; font-size:24px; color:#c9a962;">
-          <span style="color:#ffffff;">Pre</span>Intake<span style="color:#ffffff;">.ai</span>
-        </span>
-        <span style="display:block; margin-top:4px; font-size:14px; font-weight:400; color:#ffffff; line-height:1.4;">
-          Pre-Screen Every Inquiry<br>Tailored to Your Practice Area
-        </span>
-      </h1>
-    </div>
-
-    <div style="background:#ffffff; padding:30px; border-radius:0 0 12px 12px; box-shadow:0 4px 6px rgba(0,0,0,0.1);">
-      ${greeting}<p style="font-size: 16px;">Every law firm has the same intake problem: too many inquiries, not enough signal. Strong cases wait alongside weak or misdirected submissions, and staff time gets burned sorting it out.</p>
-      
-      <p style="font-size: 16px;"><strong>PreIntake.ai</strong> ensures your most important matters surface immediately—screened, summarized, and prioritized before your team ever reviews them.</p>
-
-      <p style="font-size: 16px;">Instead of reviewing raw submissions in the order they arrive, your team sees what matters most first. Strong inquiries are clear, weak ones are obvious, and misdirected matters don't steal attention they don't deserve.</p>
-
-      <p style="font-size: 16px;">Every inquiry is reviewed and delivered with:</p>
-
-      <ul style="color: #1a1a2e; padding-left: 20px; font-size: 16px;">
-          <li>A case summary tailored to your practice area</li>
-          <li>A qualification rating: <strong>qualified</strong>, <strong>needs review</strong>, or <strong>not a fit</strong></li>
-          <li>A plain-English explanation of why</li>
-      </ul>
-
-      <p style="font-size: 16px; margin-top: 16px;">
-          <strong style="color: #c9a962;">Zero Data Retention</strong> — Inquiry content is processed and delivered, not retained.
-      </p>
-
-      <p style="font-size: 16px; margin-top: 8px;">
-          Embeds directly on your website — visitors never leave your site.
-      </p>
-
-      <div style="text-align: center; margin: 20px 0 30px 0;">
-          <a href="${demoUrl}" style="display: inline-block; background: linear-gradient(135deg, #c9a962 0%, #b8944f 100%); color: #0c1f3f; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-size: 16px;">Learn More</a>
-      </div>
-
-      <p style="font-size: 16px; margin-top: 16px;">
-          Not the right contact for intake? Feel free to forward — the demo link is specific to <strong>${firmName}</strong>.
-      </p>
-
-      <p style="font-size: 16px; margin-top: 20px;">
-          Best,<br>
-          <strong>Stephen Scott</strong><br>
-          Founder, PreIntake.ai
-      </p>
-    </div>
-
-    <div style="text-align:center; padding:20px; color:#94a3b8; font-size:12px;">
-      <a href="https://preintake.ai" style="color:#c9a962;">preintake.ai</a>
-      <p style="margin:10px 0 0 0; font-size:11px; color:#94a3b8;">
-        PreIntake.ai · Los Angeles, California
-      </p>
-      <p style="margin:10px 0 0 0;">
-        <a href="${unsubscribeUrl}" style="color:#94a3b8; text-decoration:underline;">Unsubscribe</a>
-      </p>
-    </div>
-</body>
-</html>`;
-}
 
 /**
  * Generate plain-text version of personalized demo email
@@ -542,7 +456,7 @@ Zero Data Retention — Inquiry content is processed and delivered, not retained
 
 Embeds directly on your website — visitors never leave your site.
 
-$99/month. Cancel anytime.
+Don't have a website? No problem. PreIntake.ai works as a hosted intake link you can share anywhere you currently accept inquiries—email signature, referral partners, even a text message.
 
 Learn More: ${ctaUrl}
 
@@ -557,182 +471,12 @@ PreIntake.ai · Los Angeles, California
 Unsubscribe: ${unsubscribeUrl}`;
 }
 
-/**
- * Generate plain-text version of fallback email
- */
-function generateFallbackEmailPlainText(firmName, email, firstName) {
-    const unsubscribeUrl = `https://preintake.ai/unsubscribe.html?email=${encodeURIComponent(email)}`;
-    // Include firmName in URL so landing page can display it (no #demo hash to prevent auto-scroll)
-    const demoUrl = `https://preintake.ai/?firm=${encodeURIComponent(firmName)}&utm_source=email&utm_medium=outreach&utm_campaign=law_firms&utm_content=cta_button`;
 
-    // Add greeting if firstName is available
-    const greeting = firstName ? `Hello ${firstName},\n\n` : '';
-
-    return `PreIntake.ai
-Pre-Screen Every Inquiry — Tailored to Your Practice Area
-
-${greeting}Every law firm has the same intake problem: too many inquiries, not enough signal. Strong cases wait alongside weak or misdirected submissions, and staff time gets burned sorting it out. 
-
-PreIntake.ai ensures your most important matters surface immediately—screened, summarized, and prioritized before your team ever reviews them.
-
-Instead of reviewing raw submissions in the order they arrive, your team sees what matters most first. Strong inquiries are clear, weak ones are obvious, and misdirected matters don't steal attention they don't deserve.
-
-Every inquiry is reviewed and delivered with:
-
-• A case summary tailored to your practice area
-• A qualification rating: qualified, needs review, or not a fit
-• A plain-English explanation of why
-
-Zero Data Retention — Inquiry content is processed and delivered, not retained.
-
-Embeds directly on your website — visitors never leave your site.
-
-Learn More: ${demoUrl}
-
-Not the right contact for intake? Feel free to forward — the demo link is specific to ${firmName}.
-
-Best,
-Stephen Scott
-Founder, PreIntake.ai
-
----
-PreIntake.ai · Los Angeles, California
-Unsubscribe: ${unsubscribeUrl}`;
-}
-
-/**
- * Generate email HTML for bar profile contacts (attorneys without websites)
- * More personalized messaging acknowledging we built the demo from their bar profile
- */
-function generateBarProfileEmailHTML(firmName, email, leadId, firstName, practiceArea, state) {
-    const unsubscribeUrl = `https://preintake.ai/unsubscribe.html?email=${encodeURIComponent(email)}`;
-    const ctaUrl = `https://preintake.ai/?lead=${leadId}&utm_source=email&utm_medium=outreach&utm_campaign=bar_profile&utm_content=cta_button`;
-
-    return `<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!--[if !mso]><!-->
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <!--<![endif]-->
-</head>
-<body style="margin:0; padding:0; background-color:#f8fafc;">
-  <div style="display:none; max-height:0; overflow:hidden;">
-    Pre-screen every inquiry before it reaches you—see how it works for ${firmName}.
-  </div>
-  <div style="max-width:600px; margin:0 auto; padding:20px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; line-height:1.6; color:#1a1a2e;">
-
-    <div style="background-color:#0c1f3f; background:linear-gradient(135deg,#0c1f3f 0%,#1a3a5c 100%); padding:20px; border-radius:12px 12px 0 0; text-align:center;">
-      <h1 style="margin:0; padding:0; font-weight:600; line-height:1.2;">
-        <span style="display:block; font-size:24px; color:#c9a962;">
-          <span style="color:#ffffff;">Pre</span>Intake<span style="color:#ffffff;">.ai</span>
-        </span>
-        <span style="display:block; margin-top:4px; font-size:14px; font-weight:400; color:#ffffff; line-height:1.4;">
-          Pre-Screen Every Inquiry<br>Tailored to Your Practice Area
-        </span>
-      </h1>
-    </div>
-
-    <div style="background:#ffffff; padding:30px; border-radius:0 0 12px 12px; box-shadow:0 4px 6px rgba(0,0,0,0.1);">
-      <p style="font-size: 16px;">Hello${firstName ? ' ' + firstName : ''},</p>
-
-      <p style="font-size: 16px;">Every law firm has the same intake problem: too many inquiries, not enough signal. Strong cases wait alongside weak or misdirected submissions, and staff time gets burned sorting it out.</p>
-      
-      <p style="font-size: 16px;"><strong>PreIntake.ai</strong> ensures your most important matters surface immediately—screened, summarized, and prioritized before you ever review them.</p>
-
-      <p style="font-size: 16px;">Instead of reviewing raw submissions in the order they arrive, you focus on what matters most first. Strong inquiries are clear, weak ones are obvious, and misdirected matters don't steal attention they don't deserve.</p>
-
-      <p style="font-size: 16px;">Every inquiry is reviewed and delivered with:</p>
-
-      <ul style="color: #1a1a2e; padding-left: 20px; font-size: 16px;">
-          <li>A case summary tailored to your practice area</li>
-          <li>A qualification rating: <strong>qualified</strong>, <strong>needs review</strong>, or <strong>not a fit</strong></li>
-          <li>A plain-English explanation of why</li>
-      </ul>
-
-      <p style="font-size: 16px; margin-top: 16px;">
-          <strong style="color: #c9a962;">Zero Data Retention</strong> — Inquiry content is processed and delivered, not retained.
-      </p>
-
-      <p style="font-size: 16px; margin-top: 8px;">Most intake systems assume you have a website. This one doesn't. It works as a simple hosted intake link you can share anywhere you currently accept inquiries—email signature, referral partners, even a text message.</p>
-
-      <p style="font-size: 16px;"><strong>$99/month. Cancel anytime.</strong></p>
-
-      <div style="text-align: center; margin: 20px 0 30px 0;">
-          <a href="${ctaUrl}" style="display: inline-block; background: linear-gradient(135deg, #c9a962 0%, #b8944f 100%); color: #0c1f3f; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-size: 16px;">Learn More</a>
-      </div>
-
-      <p style="font-size: 16px; margin-top: 20px;">
-          Best,<br>
-          <strong>Stephen Scott</strong><br>
-          Founder, PreIntake.ai
-      </p>
-    </div>
-
-    <div style="text-align:center; padding:20px; color:#94a3b8; font-size:12px;">
-      <a href="https://preintake.ai" style="color:#c9a962;">preintake.ai</a>
-      <p style="margin:10px 0 0 0; font-size:11px; color:#94a3b8;">
-        Los Angeles, California
-      </p>
-      <p style="margin:10px 0 0 0;">
-        <a href="${unsubscribeUrl}" style="color:#94a3b8; text-decoration:underline;">Unsubscribe</a>
-      </p>
-    </div>
-</body>
-</html>`;
-}
-
-/**
- * Generate plain-text version of bar profile email
- */
-function generateBarProfileEmailPlainText(firmName, email, leadId, firstName, practiceArea, state) {
-    const unsubscribeUrl = `https://preintake.ai/unsubscribe.html?email=${encodeURIComponent(email)}`;
-    const ctaUrl = `https://preintake.ai/?lead=${leadId}&utm_source=email&utm_medium=outreach&utm_campaign=bar_profile&utm_content=cta_button`;
-
-    return `PreIntake.ai
-Pre-Screen Every Inquiry — Tailored to Your Practice Area
-
-Hello${firstName ? ' ' + firstName : ''},
-
-Every law firm has the same intake problem: too many inquiries, not enough signal. Strong cases wait alongside weak or misdirected submissions, and staff time gets burned sorting it out. 
-
-PreIntake.ai ensures your most important matters surface immediately—screened, summarized, and prioritized before you ever review them.
-
-Instead of reviewing raw submissions in the order they arrive, you focus on what matters most first. Strong inquiries are clear, weak ones are obvious, and misdirected matters don't steal attention they don't deserve.
-
-Every inquiry is reviewed and delivered with:
-
-• A case summary tailored to your practice area
-• A qualification rating: qualified, needs review, or not a fit
-• A plain-English explanation of why
-
-ZERO DATA RETENTION — Inquiry content is processed and delivered, not retained.
-
-Most intake systems assume you have a website. This one doesn't. It works as a simple hosted intake link you can share anywhere you currently accept inquiries—email signature, referral partners, even a text message.
-
-$99/month. Cancel anytime.
-
-Learn More: ${ctaUrl}
-
-Best,
-Stephen Scott
-Founder, PreIntake.ai
-
----
-PreIntake.ai · Los Angeles, California
-Unsubscribe: ${unsubscribeUrl}`;
-}
 
 /**
  * Generate subject line
- * Different subjects based on email type
  */
-function generateSubject(hasLead, isBarProfile = false) {
-    if (isBarProfile) {
-        return 'Pre-screen every inquiry before it reaches you';
-    }
-    // Same subject for both personalized and fallback emails
+function generateSubject() {
     return 'Pre-screen every inquiry before it reaches your team';
 }
 
@@ -1030,22 +774,9 @@ async function runCampaign() {
             }
 
             // Generate subject, HTML, and plain-text versions
-            const subject = generateSubject(hasLead, isBarProfile);
-            let html, text;
-
-            if (isBarProfile && hasLead) {
-                // Use bar profile email template (links to landing page with lead ID)
-                html = generateBarProfileEmailHTML(displayFirmName, email, leadId, firstName, practiceArea, state);
-                text = generateBarProfileEmailPlainText(displayFirmName, email, leadId, firstName, practiceArea, state);
-            } else if (hasLead) {
-                // Use standard personalized email template (links to landing page with lead ID)
-                html = generateEmailHTML(displayFirmName, email, leadId, firstName);
-                text = generateEmailPlainText(displayFirmName, email, leadId, firstName);
-            } else {
-                // Use fallback email template (no lead ID - links to generic landing page)
-                html = generateFallbackEmailHTML(displayFirmName, email, firstName);
-                text = generateFallbackEmailPlainText(displayFirmName, email, firstName);
-            }
+            const subject = generateSubject();
+            const html = generateEmailHTML(displayFirmName, email, leadId, firstName);
+            const text = generateEmailPlainText(displayFirmName, email, leadId, firstName);
 
             // Build Mailgun tags for analytics
             const mailgunTags = [];

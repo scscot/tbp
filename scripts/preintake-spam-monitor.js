@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 /**
- * PreIntake Email Spam Monitoring Script
+ * PreIntake Email Delivery Monitoring Script
  *
  * Sends a test email via Mailgun API (same as campaign), then uses Gmail API
- * to verify inbox placement. If the email lands in spam, the campaign is
+ * to verify inbox placement. If the email lands in the junk folder, the campaign is
  * automatically disabled and an alert is sent.
  *
  * This is a self-contained script that mirrors the email sending pattern
@@ -58,10 +58,10 @@ const TEST_FIRM_NAME = 'Test Law Firm';
 /**
  * Generate test email HTML content
  * IDENTICAL to generateEmailHTML() in send-preintake-campaign.js
- * to ensure spam testing reflects actual campaign emails
+ * to ensure testing reflects actual campaign emails
  */
 function generateTestEmailHtml(subjectSuffix) {
-  const ctaUrl = 'https://preintake.ai/?lead=spam_test&utm_source=email&utm_medium=outreach&utm_campaign=law_firms&utm_content=cta_button';
+  const ctaUrl = 'https://preintake.ai/?lead=delivery_test&utm_source=email&utm_medium=outreach&utm_campaign=law_firms&utm_content=cta_button';
   const unsubscribeUrl = `https://preintake.ai/unsubscribe.html?email=${encodeURIComponent(TEST_EMAIL)}`;
   const firstName = TEST_RECIPIENT_NAME.split(' ')[0];
 
@@ -78,6 +78,7 @@ function generateTestEmailHtml(subjectSuffix) {
   <div style="display:none; max-height:0; overflow:hidden;">
     Pre-screen every inquiry before it reaches your team—see how it works for ${TEST_FIRM_NAME}.
   </div>
+
   <div style="max-width:600px; margin:0 auto; padding:20px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; line-height:1.6; color:#1a1a2e;">
 
     <div style="background-color:#0c1f3f; background:linear-gradient(135deg,#0c1f3f 0%,#1a3a5c 100%); padding:20px; border-radius:12px 12px 0 0; text-align:center;">
@@ -86,7 +87,7 @@ function generateTestEmailHtml(subjectSuffix) {
           <span style="color:#ffffff;">Pre</span>Intake<span style="color:#ffffff;">.ai</span>
         </span>
         <span style="display:block; margin-top:4px; font-size:14px; font-weight:400; color:#ffffff; line-height:1.4;">
-          Pre-Screen Every Inquiry — Tailored to Your Practice Area
+          Pre-Screen Every Inquiry<br>Tailored to Your Practice Area
         </span>
       </h1>
     </div>
@@ -94,11 +95,11 @@ function generateTestEmailHtml(subjectSuffix) {
     <div style="background:#ffffff; padding:30px; border-radius:0 0 12px 12px; box-shadow:0 4px 6px rgba(0,0,0,0.1);">
       <p style="font-size: 16px;">Hello ${firstName},</p>
 
-      <p style="font-size: 16px;">Every law firm has the same intake problem: too many inquiries, not enough signal. Strong cases wait alongside weak or misdirected submissions, and staff time gets burned sorting it out.</p>
+      <p style="font-size: 16px;">Most law firms treat intake as data collection. It's not. It's triage. And without structured screening, your strongest matters are competing for attention with submissions that should never reach your desk.</p>
 
-      <p style="font-size: 16px;"><strong>PreIntake.ai</strong> ensures your most important matters surface immediately—screened, summarized, and prioritized before your team ever reviews them.</p>
+      <p style="font-size: 16px;"><strong>PreIntake.ai</strong> puts practice-specific screening in front of your intake workflow, so the best matters rise to the top immediately—before your team spends time reading raw narratives and chasing missing details.</p>
 
-      <p style="font-size: 16px;">Instead of reviewing raw submissions in the order they arrive, your team sees what matters most first. Strong inquiries are clear, weak ones are obvious, and misdirected matters don't steal attention they don't deserve.</p>
+      <p style="font-size: 16px;">Instead of reviewing submissions in the order they arrive, you receive a clear case summary, a simple qualification rating (qualified / needs review / not a fit), and a plain-English rationale—so staff can move fast, and attorneys see what matters first.</p>
 
       <p style="font-size: 16px;">Every inquiry is reviewed and delivered with:</p>
 
@@ -116,7 +117,9 @@ function generateTestEmailHtml(subjectSuffix) {
           Embeds directly on your website — visitors never leave your site.
       </p>
 
-      <p style="font-size: 16px;"><strong>$99/month. Cancel anytime.</strong></p>
+      <p style="font-size: 16px; margin-top: 8px;">
+          Don't have a website? No problem. PreIntake.ai works as a hosted intake link you can share anywhere you currently accept inquiries—email signature, referral partners, even a text message.
+      </p>
 
       <div style="text-align: center; margin: 20px 0 30px 0;">
           <a href="${ctaUrl}" style="display: inline-block; background: linear-gradient(135deg, #c9a962 0%, #b8944f 100%); color: #0c1f3f; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-size: 16px;">Learn More</a>
@@ -151,7 +154,7 @@ function generateTestEmailHtml(subjectSuffix) {
  * IDENTICAL to generateEmailPlainText() in send-preintake-campaign.js
  */
 function generateTestEmailText(subjectSuffix) {
-  const ctaUrl = 'https://preintake.ai/?lead=spam_test&utm_source=email&utm_medium=outreach&utm_campaign=law_firms&utm_content=cta_button';
+  const ctaUrl = 'https://preintake.ai/?lead=delivery_test&utm_source=email&utm_medium=outreach&utm_campaign=law_firms&utm_content=cta_button';
   const unsubscribeUrl = `https://preintake.ai/unsubscribe.html?email=${encodeURIComponent(TEST_EMAIL)}`;
   const firstName = TEST_RECIPIENT_NAME.split(' ')[0];
 
@@ -160,11 +163,11 @@ Pre-Screen Every Inquiry — Tailored to Your Practice Area
 
 Hello ${firstName},
 
-Every law firm has the same intake problem: too many inquiries, not enough signal. Strong cases wait alongside weak or misdirected submissions, and staff time gets burned sorting it out.
+Most law firms treat intake as data collection. It's not. It's triage. And without structured screening, your strongest matters are competing for attention with submissions that should never reach your desk.
 
-PreIntake.ai ensures your most important matters surface immediately—screened, summarized, and prioritized before your team ever reviews them.
+PreIntake.ai puts practice-specific screening in front of your intake workflow, so the best matters rise to the top immediately—before your team spends time reading raw narratives and chasing missing details.
 
-Instead of reviewing raw submissions in the order they arrive, your team sees what matters most first. Strong inquiries are clear, weak ones are obvious, and misdirected matters don't steal attention they don't deserve.
+Instead of reviewing submissions in the order they arrive, you receive a clear case summary, a simple qualification rating (qualified / needs review / not a fit), and a plain-English rationale—so staff can move fast, and attorneys see what matters first.
 
 Every inquiry is reviewed and delivered with:
 
@@ -176,7 +179,7 @@ Zero Data Retention — Inquiry content is processed and delivered, not retained
 
 Embeds directly on your website — visitors never leave your site.
 
-$99/month. Cancel anytime.
+Don't have a website? No problem. PreIntake.ai works as a hosted intake link you can share anywhere you currently accept inquiries—email signature, referral partners, even a text message.
 
 Learn More: ${ctaUrl}
 
@@ -252,7 +255,7 @@ async function sendTestEmail(subjectSuffix) {
   form.append('o:tracking-clicks', 'no');
 
   // Tags for identification
-  form.append('o:tag', 'preintake_spam_test');
+  form.append('o:tag', 'preintake_delivery_test');
   form.append('o:tag', 'delivery_check');
 
   console.log(`Sending test email to ${TEST_EMAIL}...`);
@@ -335,7 +338,7 @@ async function disableCampaign() {
         preintakeBatchSize: 0,
         preintakeBatchSize_disabled_at: admin.firestore.FieldValue.serverTimestamp(),
         preintakeBatchSize_previous_value: currentValue,
-        preintakeBatchSize_disabled_reason: 'spam_detected'
+        preintakeBatchSize_disabled_reason: 'junk_folder_detected'
       });
       console.log(`Disabled PreIntake campaign (previous batch size: ${currentValue})`);
     } else {
@@ -356,11 +359,11 @@ async function sendAlertEmail(subject, placement) {
     return;
   }
 
-  const alertSubject = 'PreIntake campaign disabled';
+  const alertSubject = 'PreIntake campaign disabled - delivery issue';
 
   const html = `
     <h2>PreIntake Email Monitor Alert</h2>
-    <p>The test email was detected in the <strong style="color: red;">SPAM</strong> folder. The PreIntake campaign has been <strong>disabled</strong>.</p>
+    <p>The test email was detected in the <strong style="color: red;">junk folder</strong>. The PreIntake campaign has been <strong>disabled</strong>.</p>
 
     <h3>Details</h3>
     <table border="1" cellpadding="8" style="border-collapse: collapse;">
@@ -370,7 +373,7 @@ async function sendAlertEmail(subject, placement) {
       </tr>
       <tr>
         <td><strong>Placement</strong></td>
-        <td style="background-color: #ffcccc;">SPAM</td>
+        <td style="background-color: #ffcccc;">Junk Folder</td>
       </tr>
       <tr>
         <td><strong>Action Taken</strong></td>
@@ -379,7 +382,7 @@ async function sendAlertEmail(subject, placement) {
     </table>
 
     <h3>How to Re-enable</h3>
-    <p>After resolving the spam issue:</p>
+    <p>After resolving the delivery issue:</p>
     <ol>
       <li>Go to Firebase Console > Firestore > config > emailCampaign</li>
       <li>Set <code>preintakeBatchSize</code> to the previous value (stored in <code>preintakeBatchSize_previous_value</code>)</li>
@@ -387,16 +390,16 @@ async function sendAlertEmail(subject, placement) {
     </ol>
 
     <p style="color: #666; font-size: 12px;">
-      This alert was generated by the PreIntake spam monitoring system at ${new Date().toISOString()}
+      This alert was generated by the PreIntake delivery monitoring system at ${new Date().toISOString()}
     </p>
   `;
 
   const text = `PREINTAKE EMAIL MONITOR ALERT
 
-The test email was detected in the SPAM folder. The PreIntake campaign has been DISABLED.
+The test email was detected in the junk folder. The PreIntake campaign has been DISABLED.
 
 Test Subject: ${subject}
-Placement: SPAM
+Placement: Junk Folder
 Action Taken: preintakeBatchSize set to 0
 
 To re-enable, update preintakeBatchSize in Firestore config/emailCampaign.
@@ -409,7 +412,7 @@ Generated at ${new Date().toISOString()}`;
   form.append('subject', alertSubject);
   form.append('html', html);
   form.append('text', text);
-  form.append('o:tag', 'preintake_spam_alert');
+  form.append('o:tag', 'preintake_delivery_alert');
 
   await axios.post(
     `https://api.mailgun.net/v3/${MAILGUN_DOMAIN}/messages`,
@@ -430,7 +433,7 @@ Generated at ${new Date().toISOString()}`;
 // =============================================================================
 
 async function main() {
-  console.log('=== PreIntake Email Monitor ===');
+  console.log('=== PreIntake Email Delivery Monitor ===');
   console.log(`Time: ${new Date().toISOString()}`);
   console.log(`Target: ${TEST_EMAIL}`);
   console.log(`Domain: ${MAILGUN_DOMAIN}\n`);
@@ -474,7 +477,7 @@ async function main() {
 
   // Step 4: Take action based on placement
   if (placement === 'spam') {
-    console.log('\nSPAM DETECTED: Disabling PreIntake campaign...\n');
+    console.log('\nJUNK FOLDER DETECTED: Disabling PreIntake campaign...\n');
     try {
       await disableCampaign();
     } catch (error) {
