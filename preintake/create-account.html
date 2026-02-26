@@ -290,39 +290,41 @@
             height: 14px;
         }
 
-        .features {
-            margin-top: 0.5rem;
+        .what-happens {
+            background: rgba(201, 169, 98, 0.08);
+            border: 1px solid rgba(201, 169, 98, 0.2);
+            border-radius: 12px;
+            padding: 1.25rem;
             margin-bottom: 1.5rem;
-            padding-bottom: 1.5rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .features h4 {
+        .what-happens h4 {
             font-size: 0.9rem;
             font-weight: 600;
             margin-bottom: 1rem;
-            text-align: left;
-            color: var(--text-muted);
+            color: var(--accent-gold);
         }
 
-        .feature-list {
+        .what-happens-list {
             display: grid;
             gap: 0.75rem;
         }
 
-        .feature-item {
+        .what-happens-item {
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             gap: 0.75rem;
-            font-size: 0.875rem;
-            color: var(--text-muted);
+            font-size: 0.85rem;
+            color: var(--text-light);
+            line-height: 1.4;
         }
 
-        .feature-item svg {
+        .what-happens-item svg {
             width: 18px;
             height: 18px;
-            color: var(--success);
+            color: var(--accent-gold);
             flex-shrink: 0;
+            margin-top: 1px;
         }
 
         .error-message {
@@ -366,23 +368,6 @@
             to { transform: rotate(360deg); }
         }
 
-        .footer-links {
-            text-align: center;
-            width: 100%;
-            margin-top: 2rem;
-            font-size: 0.85rem;
-            color: var(--text-muted);
-        }
-
-        .footer-links a {
-            color: var(--accent-gold);
-            text-decoration: none;
-        }
-
-        .footer-links a:hover {
-            text-decoration: underline;
-        }
-
         @media (max-width: 500px) {
             body {
                 padding: 1rem;
@@ -417,10 +402,13 @@
                     <p id="account-subtitle">Start using AI-powered intake today</p>
                 </div>
 
-                <div class="features">
-                    <h4>What's Included</h4>
-                    <div class="feature-list" id="feature-list">
-                        <!-- Dynamically populated based on account type -->
+                <div class="firm-info">
+                    <div id="firm-logo-container">
+                        <div class="firm-logo placeholder" id="firm-logo-placeholder">?</div>
+                    </div>
+                    <div class="firm-details">
+                        <h3 id="firm-name">Loading...</h3>
+                        <p id="firm-email">Loading...</p>
                     </div>
                 </div>
 
@@ -430,13 +418,30 @@
 
                 <div id="error-message" class="error-message"></div>
 
-                <div class="firm-info">
-                    <div id="firm-logo-container">
-                        <div class="firm-logo placeholder" id="firm-logo-placeholder">?</div>
-                    </div>
-                    <div class="firm-details">
-                        <h3 id="firm-name">Loading...</h3>
-                        <p id="firm-email">Loading...</p>
+                <div class="what-happens">
+                    <h4>What Happens Next</h4>
+                    <div class="what-happens-list">
+                        <div class="what-happens-item">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                            </svg>
+                            <span>Your account activates instantly after payment</span>
+                        </div>
+                        <div class="what-happens-item">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="16 18 22 12 16 6"></polyline>
+                                <polyline points="8 6 2 12 8 18"></polyline>
+                            </svg>
+                            <span>You'll receive an embed code for your website and a shareable intake link</span>
+                        </div>
+                        <div class="what-happens-item">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                <polyline points="22,6 12,13 2,6"></polyline>
+                            </svg>
+                            <span>Qualified inquiries are delivered directly to your inbox</span>
+                        </div>
                     </div>
                 </div>
 
@@ -476,10 +481,6 @@
             </div>
         </div>
 
-        <div class="footer-links">
-            <a href="/" id="back-link">Back to PreIntake.ai</a> &bull;
-            <a href="mailto:support@preintake.ai">Need help?</a>
-        </div>
     </div>
     </main>
 
@@ -569,31 +570,6 @@
                     } else {
                         subtitleEl.textContent = 'Start using AI-powered intake today';
                     }
-                }
-
-                // Update feature list based on account type
-                const featureListEl = document.getElementById('feature-list');
-                if (featureListEl) {
-                    const checkIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
-
-                    const features = hasWebsite
-                        ? [
-                            'Embeddable widget for your website',
-                            '24/7 inquiry qualification and screening',
-                            'Cancel anytime - no long-term contracts'
-                        ]
-                        : [
-                            'Fully customized intake page',
-                            '24/7 inquiry qualification and screening',
-                            'Cancel anytime - no long-term contracts'
-                        ];
-
-                    featureListEl.innerHTML = features.map(feature => `
-                        <div class="feature-item">
-                            ${checkIcon}
-                            <span>${feature}</span>
-                        </div>
-                    `).join('');
                 }
 
                 // Set logo
