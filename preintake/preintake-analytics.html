@@ -831,70 +831,6 @@
             let html = '';
 
             // ═══════════════════════════════════════════════
-            // STRATEGIC INSIGHTS (AI-Generated)
-            // ═══════════════════════════════════════════════
-            if (data.strategicInsights && data.strategicInsights.insights) {
-                const insights = data.strategicInsights.insights;
-                html += `
-                <div class="dashboard-section">
-                    <div class="section-header">
-                        <span class="section-icon">&#9733;</span>
-                        <h2>Strategic Insights</h2>
-                    </div>
-                    <div class="insights-grid">
-                        ${insights.whatsWorking && insights.whatsWorking.length > 0 ? `
-                        <div class="insights-card working">
-                            <h4><span class="icon">✓</span> What's Working</h4>
-                            ${insights.whatsWorking.map(item => `
-                                <div class="insight-item">
-                                    <div class="insight-text">${item.insight}</div>
-                                    <div class="insight-meta">
-                                        <span class="insight-metric">${item.metric}</span>
-                                        <span class="insight-badge ${item.impact}">${item.impact} impact</span>
-                                    </div>
-                                </div>
-                            `).join('')}
-                        </div>
-                        ` : ''}
-
-                        ${insights.needsAttention && insights.needsAttention.length > 0 ? `
-                        <div class="insights-card attention">
-                            <h4><span class="icon">!</span> Needs Attention</h4>
-                            ${insights.needsAttention.map(item => `
-                                <div class="insight-item">
-                                    <div class="insight-text">${item.issue}</div>
-                                    <div class="insight-meta">
-                                        <span class="insight-metric">${item.metric}</span>
-                                        <span class="insight-badge ${item.severity}">${item.severity} severity</span>
-                                    </div>
-                                </div>
-                            `).join('')}
-                        </div>
-                        ` : ''}
-
-                        ${insights.recommendedActions && insights.recommendedActions.length > 0 ? `
-                        <div class="insights-card actions">
-                            <h4><span class="icon">→</span> Recommended Actions</h4>
-                            ${insights.recommendedActions.map(item => `
-                                <div class="insight-item">
-                                    <div class="insight-text">${item.action}</div>
-                                    <div class="insight-meta">
-                                        <span class="insight-metric">${item.expectedImpact}</span>
-                                        <span class="insight-badge ${item.priority.toLowerCase()}">${item.priority}</span>
-                                    </div>
-                                </div>
-                            `).join('')}
-                        </div>
-                        ` : ''}
-                    </div>
-                    ${data.strategicInsights.generatedAt ? `
-                    <div class="insights-timestamp">Generated: ${new Date(data.strategicInsights.generatedAt).toLocaleString()}</div>
-                    ` : ''}
-                </div>
-                `;
-            }
-
-            // ═══════════════════════════════════════════════
             // SECTION 1: ENGAGEMENT FUNNEL
             // ═══════════════════════════════════════════════
             // Conversion path: Email → Landing Page Visit → Paid Subscriber
@@ -1206,6 +1142,70 @@
                             `).join('')}
                         </tbody>
                     </table>
+                </div>
+                `;
+            }
+
+            // ═══════════════════════════════════════════════
+            // SECTION 8: STRATEGIC INSIGHTS (AI-Generated)
+            // ═══════════════════════════════════════════════
+            if (data.strategicInsights && data.strategicInsights.insights) {
+                const insights = data.strategicInsights.insights;
+                html += `
+                <div class="dashboard-section">
+                    <div class="section-header">
+                        <span class="section-icon">&#9733;</span>
+                        <h2>Strategic Insights</h2>
+                    </div>
+                    <div class="insights-grid">
+                        ${insights.whatsWorking && insights.whatsWorking.length > 0 ? `
+                        <div class="insights-card working">
+                            <h4><span class="icon">✓</span> What's Working</h4>
+                            ${insights.whatsWorking.map(item => `
+                                <div class="insight-item">
+                                    <div class="insight-text">${item.insight}</div>
+                                    <div class="insight-meta">
+                                        <span class="insight-metric">${item.metric}</span>
+                                        <span class="insight-badge ${item.impact}">${item.impact} impact</span>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        ` : ''}
+
+                        ${insights.needsAttention && insights.needsAttention.length > 0 ? `
+                        <div class="insights-card attention">
+                            <h4><span class="icon">!</span> Needs Attention</h4>
+                            ${insights.needsAttention.map(item => `
+                                <div class="insight-item">
+                                    <div class="insight-text">${item.issue}</div>
+                                    <div class="insight-meta">
+                                        <span class="insight-metric">${item.metric}</span>
+                                        <span class="insight-badge ${item.severity}">${item.severity} severity</span>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        ` : ''}
+
+                        ${insights.recommendedActions && insights.recommendedActions.length > 0 ? `
+                        <div class="insights-card actions">
+                            <h4><span class="icon">→</span> Recommended Actions</h4>
+                            ${insights.recommendedActions.map(item => `
+                                <div class="insight-item">
+                                    <div class="insight-text">${item.action}</div>
+                                    <div class="insight-meta">
+                                        <span class="insight-metric">${item.expectedImpact}</span>
+                                        <span class="insight-badge ${item.priority.toLowerCase()}">${item.priority}</span>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        ` : ''}
+                    </div>
+                    ${data.strategicInsights.generatedAt ? `
+                    <div class="insights-timestamp">Generated: ${new Date(data.strategicInsights.generatedAt).toLocaleString()}</div>
+                    ` : ''}
                 </div>
                 `;
             }

@@ -656,10 +656,11 @@ async function runCampaign() {
         const barProfileDocs = Array.from(barProfileMap.values())
             .sort((a, b) => (a.data().randomIndex || 0) - (b.data().randomIndex || 0));
 
-        // Proportional selection: aim for ~50/50 split (or whatever is available)
-        const halfBatch = Math.ceil(BATCH_SIZE / 2);
-        const websiteSelection = websiteDocs.slice(0, halfBatch);
-        const barProfileSelection = barProfileDocs.slice(0, halfBatch);
+        // Proportional selection: 70/30 split favoring website contacts (3.3x higher visit rate)
+        const websiteTarget = Math.ceil(BATCH_SIZE * 0.7);
+        const barProfileTarget = Math.ceil(BATCH_SIZE * 0.3);
+        const websiteSelection = websiteDocs.slice(0, websiteTarget);
+        const barProfileSelection = barProfileDocs.slice(0, barProfileTarget);
 
         // Combine and sort by randomIndex for final ordering
         const contactMap = new Map();
@@ -671,7 +672,7 @@ async function runCampaign() {
         let mergedDocs = Array.from(contactMap.values())
             .sort((a, b) => (a.data().randomIndex || 0) - (b.data().randomIndex || 0));
 
-        console.log(`📊 Proportional selection (50/50 target):`);
+        console.log(`📊 Proportional selection (70/30 website/bar target):`);
         console.log(`   - Website selected: ${websiteSelection.length}`);
         console.log(`   - Bar profile selected: ${barProfileSelection.length}`);
 
@@ -801,13 +802,7 @@ async function runCampaign() {
 
             // Only update Firestore if NOT in test mode
             if (!TEST_EMAIL) {
-                // Determine template version
-                let templateVersion = 'v6-generic';
-                if (isBarProfile && hasLead) {
-                    templateVersion = 'v8-bar-profile';
-                } else if (hasLead) {
-                    templateVersion = 'v6-personalized';
-                }
+                const templateVersion = 'v9-landing-page';
 
                 const updateData = {
                     sent: true,

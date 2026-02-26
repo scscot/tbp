@@ -795,43 +795,41 @@ ABOUT PREINTAKE.AI:
 PreIntake.ai is an AI-powered legal intake screening tool for law firms. It pre-screens potential client inquiries using conversational AI, qualifying leads and delivering case summaries with GREEN/YELLOW/RED routing recommendations.
 
 BUSINESS MODEL:
-- $149 setup fee + $99/month subscription
+- $99/month subscription (no setup fee)
 - Primary acquisition: Cold email campaigns to attorneys scraped from state bar associations
 - Target: Law firms spending $5K+/month on advertising who need better lead qualification
-- Demo model: Personalized demos auto-generated for each firm with their branding
+- Conversion flow: Email → Landing Page → Create Account → Paid Subscriber
 
 CAMPAIGN ARCHITECTURE:
 - Bar profile contacts: Attorneys scraped from state bar websites (CA, FL, OH, MI, MO, KY, GA, IL, IN, MS, NE, NC, OK, WA)
-- Website contacts: Firms with websites get website-branded demos
-- Email templates: v7-bar-profile-demo (bar contacts), v6-personalized-demo (website contacts)
-- Auto-loading demos: Demos load immediately when email link clicked (no "Start Demo" friction)
+- Website contacts: Firms with websites identified from bar profiles
+- Emails link directly to the landing page with value proposition
+- Landing page explains the product and drives to account creation
 
 === RECENTLY IMPLEMENTED (DO NOT RECOMMEND THESE - ALREADY DONE) ===
-- Demo UX friction: FIXED - Removed "Start Demo" button, demo now auto-loads immediately on page visit
-- Demo notice messaging: FIXED - Changed from account-focused to value-focused ("Try It Now ~2 min, receive full case screening report")
 - firmName data quality: FIXED - Cleaned ~6,545 records with bad firm names (placeholders, addresses, PO boxes)
 - SEO meta tags: FIXED - Shortened titles/descriptions, added Twitter Cards, updated sitemap
 - GSC indexing: FIXED - Added 10 redirect rules for clean URLs (/faq → /faq.html, etc.)
-- Header/banner UX: FIXED - Conditional header for paid subscribers, contextual demo notice banner
 - Internal linking: FIXED - Added cross-links between About, FAQ, Contact pages
+- Checkout page UX: FIXED - Redesigned create-account.html with clear "What Happens Next" instructions
 
 === CURRENT ANALYTICS DATA ===
 
 FUNNEL OVERVIEW (All Time Since Feb 9, 2026):
 - Emails Sent: ${data.totalSent || 0}
-- Demo Viewed: ${data.visitedCount || 0} (${demoViewRate}% view rate)
-- Explored Site: ${data.exploredCount || 0} (${exploreRate}% of viewers)
-- Intake Completed: ${data.intakeCompletedCount || 0} (${completionRate}% completion rate)
+- Landing Page Visits: ${data.visitedCount || 0} (${demoViewRate}% click rate)
+- Explored Site: ${data.exploredCount || 0} (${exploreRate}% of visitors)
+- Paid Subscribers: ${data.intakeCompletedCount || 0} (${completionRate}% conversion rate)
 
 LAST 7 DAYS:
 - Sent: ${data.last7DaysSent || 0}
-- Viewed: ${data.last7DaysVisited || 0}
-- Completed: ${data.last7DaysCompleted || 0}
+- Visited: ${data.last7DaysVisited || 0}
+- Converted: ${data.last7DaysCompleted || 0}
 
 TODAY:
 - Sent: ${data.todaySent || 0}
-- Viewed: ${data.todayVisited || 0}
-- Completed: ${data.todayCompleted || 0}
+- Visited: ${data.todayVisited || 0}
+- Converted: ${data.todayCompleted || 0}
 
 EMAIL DATABASE:
 - Total Contacts: ${data.totalContacts || 0}
@@ -840,10 +838,10 @@ EMAIL DATABASE:
 - Failed: ${data.totalFailed || 0}
 
 SOURCE PERFORMANCE (Bar Associations):
-${topSources.map(s => `- ${s.source}: ${s.sent} sent, ${s.viewRate}% view rate, ${s.completionRate}% completion`).join('\n')}
+${topSources.map(s => `- ${s.source}: ${s.sent} sent, ${s.viewRate}% click rate, ${s.completionRate}% conversion`).join('\n')}
 
 TEMPLATE PERFORMANCE:
-${templatePerf.map(t => `- ${t.template}: ${t.sent} sent, ${t.viewRate}% view rate, ${t.completionRate}% completion`).join('\n')}
+${templatePerf.map(t => `- ${t.template}: ${t.sent} sent, ${t.viewRate}% click rate, ${t.completionRate}% conversion`).join('\n')}
 
 GA4 WEBSITE STATS (Last 7 Days):
 ${data.ga4Stats ? `
@@ -855,8 +853,8 @@ ${data.ga4Stats ? `
 ` : 'GA4 data unavailable'}
 
 BENCHMARKS FOR CONTEXT:
-- Cold email view rate: 10-15% is excellent for attorney outreach
-- Demo completion rate: 5-10% is good for unscheduled demos
+- Cold email click rate: 10-15% is excellent for attorney outreach
+- Landing page conversion: 2-5% is typical for B2B SaaS cold traffic
 - Law firms are generally skeptical of AI tools and cold email
 
 Based on this data, provide strategic insights. Return a JSON object with these exact keys:
@@ -874,7 +872,7 @@ Based on this data, provide strategic insights. Return a JSON object with these 
 
 Provide 2-4 items in each category. Be specific and reference actual numbers. Focus on:
 1. Which bar associations are performing best/worst for targeting
-2. Funnel bottlenecks (demo view → completion is critical)
+2. Funnel bottlenecks (email click → landing page → conversion)
 3. Template effectiveness comparison
 4. Email list health (unsubscribe/failure rates)
 5. Actionable next steps to improve conversions

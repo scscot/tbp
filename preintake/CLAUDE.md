@@ -761,12 +761,14 @@ When you're spending $300-500 per lead, even small conversion improvements mean 
   - `MAILGUN_API_KEY`: Mailgun API key for law.preintake.ai domain
   - `FIREBASE_SERVICE_ACCOUNT`: For Firestore access
 
-**Email Templates:**
+**Email Templates (v9 - Feb 26, 2026):**
 - From: Stephen Scott <stephen@law.preintake.ai>
-- **Bar profile contacts**: Subject "I built you a personalized intake demo" (v7-bar-profile-demo)
-- **Website contacts**: Subject "Pre-screen every inquiry before it reaches your team" (v6-personalized-demo)
-- Personalization: `${firmName}` in pre-CTA paragraph
-- CTA: "View Your Demo" → preintake.ai/demo with UTM tracking
+- **Subject Line (unified)**: "Pre-screen every inquiry before it reaches your team"
+- **Messaging**: "Triage" framing - strongest matters rise to the top, practice-specific screening
+- **CTA**: "Learn More" → preintake.ai landing page with UTM tracking (demos eliminated)
+- **Key value props**: Case summary, qualification rating (qualified/needs review/not a fit), plain-English rationale
+- **Trust signals**: Zero Data Retention, embeds on website OR works as hosted link
+- **Performance**: 13.1% click rate (vs 3-4% baseline) - 3x improvement
 
 **Firestore Collection:** `preintake_emails` (in `preintake` database)
 | Field | Description |
@@ -779,7 +781,7 @@ When you're spending $300-500 per lead, even small conversion improvements mean 
 | `batchId` | Batch identifier |
 | `messageId` | SMTP message ID |
 | `subjectLine` | Subject line used |
-| `templateVersion` | Template version (v4-generic) |
+| `templateVersion` | Template version (v9-landing-page current) |
 | `randomIndex` | Random number for shuffled sending order |
 | `failReason` | (optional) Reason for failure if status is `failed` |
 
@@ -1151,12 +1153,12 @@ Email Sent → Link Clicked → Homepage (?demo=) → REDIRECT → /demo/?demo={
 - Exit confirmation modal prevents abandonment during active demo
 - Header navigation stores context in sessionStorage and navigates with `?explore=1`
 
-**Template Distribution (as of 2026-01-31):**
+**Template Distribution (as of 2026-02-26):**
 | Template | Purpose | Usage |
 |----------|---------|-------|
-| v7-bar-profile-demo | Bar contacts (no website) | 62% |
-| v6-personalized-demo | Website contacts | 19% |
-| v6-generic | Fallback (legacy) | 19% |
+| v9-landing-page | All contacts (unified) | 100% |
+
+*Note: Previous v6/v7/v8 templates deprecated. All emails now use unified v9-landing-page template with "triage" messaging and direct landing page conversion.*
 
 **Tracking Flow (updated in Phase 53):**
 1. `trackDemoView?type=visit` - On `/demo/` page load with `?demo=`
@@ -2016,6 +2018,71 @@ Email click → Landing page (?lead=) → Welcome banner + floating CTAs
 | File | Changes |
 |------|---------|
 | `functions/widget-functions.js` | Updated `ANALYTICS_BENCHMARK_DATE` to `2026-02-25`, fixed `generatePreIntakeInsights()` JSON parsing |
+
+### Phase 81: Email Messaging Overhaul - "Triage" Framing (2026-02-25/26)
+- [x] **Messaging Pivot** - Complete rewrite of email body copy
+  - Changed from feature-focused to problem-focused "triage" framing
+  - Core message: "Most law firms treat intake as data collection. It's not. It's triage."
+  - Emphasis on strongest matters rising to the top without staff time investment
+- [x] **Unified Template** - Consolidated to single v9-landing-page template
+  - Deprecated separate v6-personalized-demo, v7-bar-profile-demo, v8-bar-profile-demo templates
+  - Same messaging for all contact types (website and bar profile)
+  - Template version: `v9-landing-page`
+- [x] **Key Messaging Elements**:
+  - Problem statement: Raw narratives compete for attention, best matters get buried
+  - Solution: "Practice-specific screening in front of your intake workflow"
+  - Value props: Case summary, qualification rating (qualified/needs review/not a fit), plain-English rationale
+  - Trust signals: Zero Data Retention, works as embed OR hosted link
+  - Pricing: $99/month. Cancel anytime.
+- [x] **3x Click Rate Improvement** - Dramatic performance increase
+  - Before change (Fri-Tue): 3.0% - 4.4% click rate baseline
+  - After change: Wed 7.6%, Thu 13.1% click rate
+  - Thursday achieved 3x baseline performance
+- [x] **Strategic Insights Update** - Removed demo references from AI analytics
+  - Updated `generatePreIntakeInsights()` prompt to reflect new funnel
+  - Changed terminology: "Demo Viewed" → "Landing Page Visits"
+  - Updated funnel: Email → Landing Page → Create Account → Paid Subscriber
+  - Moved Strategic Insights section to bottom of analytics dashboard
+
+**Performance Data:**
+| Day | Sent | Visited | Click Rate |
+|-----|------|---------|------------|
+| Thu, Feb 26 | 199 | 26 | **13.1%** |
+| Wed, Feb 25 | 671 | 51 | **7.6%** |
+| Tue, Feb 24 | 399 | 12 | 3.0% |
+| Mon, Feb 23 | 396 | 16 | 4.0% |
+| Fri, Feb 20 | 389 | 17 | 4.4% |
+
+**Rationale:** Feature-focused messaging (v6-v8) averaged 3-4% click rates. Shifting to problem-focused "triage" framing that emphasizes efficiency and prioritization resonated strongly with law firm intake pain points.
+
+**Files Modified:**
+| File | Changes |
+|------|---------|
+| `scripts/send-preintake-campaign.js` | Complete email body rewrite, unified v9 template |
+| `functions/widget-functions.js` | Updated `generatePreIntakeInsights()` to remove demo references |
+| `preintake/preintake-analytics.html` | Moved Strategic Insights to bottom of page |
+
+### Phase 82: Contact Type Ratio Optimization (2026-02-26)
+- [x] **Data-Driven Ratio Change** - Updated proportional selection from 50/50 to 70/30
+  - Website contacts: 13.6% visit rate (3.3x higher than bar profile)
+  - Bar profile contacts: 4.1% visit rate
+  - New ratio prioritizes higher-converting website contacts
+- [x] **Queue Analysis**:
+  - Website contacts remaining: 29,320 (51% of queue)
+  - Bar profile contacts remaining: 28,174 (49% of queue)
+  - Balanced queue allows ratio optimization without abandoning either type
+- [x] **Expected Impact**:
+  - Visits per batch: 8.85 (old) → 10.75 (new) = **21% increase**
+  - Website queue depletion: 147 days → 105 days
+  - Bar profile queue depletion: 141 days → 235 days
+- [x] **Template Version Fix** - Unified `templateVersion` field
+  - Removed conditional v6-generic/v8-bar-profile/v6-personalized logic
+  - All sends now record `v9-landing-page` for accurate analytics
+
+**Files Modified:**
+| File | Changes |
+|------|---------|
+| `scripts/send-preintake-campaign.js` | Changed ratio from 50/50 to 70/30, unified templateVersion to v9-landing-page |
 
 ---
 
