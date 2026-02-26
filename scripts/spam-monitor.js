@@ -44,8 +44,6 @@ const db = admin.firestore();
 
 // const TEST_EMAIL = 'Stephen Scott <scscot@gmail.com>';
 // const ALERT_EMAIL = 'scscot@gmail.com';
-// const MAILGUN_DOMAIN = 'news.teambuildpro.com';
-// const FROM_ADDRESS = 'Stephen Scott <stephen@news.teambuildpro.com>';
 
 
 const TEST_EMAIL = 'Patricia Craig <pattycraig80@gmail.com>';
@@ -57,7 +55,7 @@ const CHECK_DELAY_MS = 3 * 60 * 1000; // 3 minutes (Gmail typically delivers in 
 // Single template configuration (no A/B testing)
 const TEMPLATE_CONFIG = {
   templateVersion: 'v14',
-  subject: "It's not a motivation problem",
+  subject: "An AI tool for team builders",
   subjectTag: 'delivery_test_v14',
   description: 'V14 template + AI curiosity subject'
 };
