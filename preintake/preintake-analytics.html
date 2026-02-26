@@ -810,10 +810,14 @@
 
         function formatTemplate(version) {
             const mapping = {
-                'v8-bar-profile-demo': 'Bar Profile (v8)',
-                'v7-bar-profile-demo': 'Bar Profile (v7)',
-                'v6-personalized-demo': 'Website Demo (v6)',
-                'v6-generic': 'Generic (v6)',
+                // Current template versions (consolidated templates, tracks contact type)
+                'v8-bar-profile': 'Bar Profile Contact',
+                'v6-personalized': 'Website Contact',
+                'v6-generic': 'Generic (No Demo)',
+                // Legacy versions (for historical data with -demo suffix)
+                'v8-bar-profile-demo': 'Bar Profile Contact',
+                'v7-bar-profile-demo': 'Bar Profile Contact (Legacy)',
+                'v6-personalized-demo': 'Website Contact',
                 'unknown': 'Unknown'
             };
             return mapping[version] || version;
@@ -992,7 +996,7 @@
             `;
 
             // ═══════════════════════════════════════════════
-            // SECTION 3: TEMPLATE PERFORMANCE
+            // SECTION 3: CONTACT TYPE PERFORMANCE
             // ═══════════════════════════════════════════════
             if (data.templatePerformance && Object.keys(data.templatePerformance).length > 0) {
                 const templates = Object.entries(data.templatePerformance)
@@ -1002,12 +1006,12 @@
                 <div class="dashboard-section">
                     <div class="section-header">
                         <span class="section-icon">&#9670;</span>
-                        <h2>Template Performance</h2>
+                        <h2>Contact Type Performance</h2>
                     </div>
                     <table class="perf-table">
                         <thead>
                             <tr>
-                                <th>Template</th>
+                                <th>Contact Type</th>
                                 <th class="right">Sent</th>
                                 <th class="right">Page Visited</th>
                                 <th class="right">Visit Rate</th>
