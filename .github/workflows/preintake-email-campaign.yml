@@ -2,17 +2,17 @@ name: PreIntake Email Campaign
 
 on:
   schedule:
-    # 4 sends/day at PST offsets (UTC-8). During PDT (Mar-Nov) sends shift
-    # 1 hour earlier (7:30am, 9:30am, 11:30am, 1:30pm) — still business hours.
+    # 4 sends/day between 7:30am-11:30am PT (UTC-8). During PDT (Mar-Nov) sends
+    # shift 1 hour earlier (6:30am, 8:00am, 9:00am, 10:30am) — still morning.
     #
-    #   PST: 8:30am, 10:30am, 12:30pm, 2:30pm PT
-    #   PDT: 7:30am,  9:30am, 11:30am, 1:30pm PT
+    #   PST: 7:30am, 9:00am, 10:00am, 11:30am PT
+    #   PDT: 6:30am, 8:00am,  9:00am, 10:30am PT
     #
     # Day-of-week: 1-5 = Mon-Fri
-    - cron: '30 16 * * 1-5'
-    - cron: '30 18 * * 1-5'
-    - cron: '30 20 * * 1-5'
-    - cron: '30 22 * * 1-5'
+    - cron: '30 15 * * 1-5'
+    - cron: '0 17 * * 1-5'
+    - cron: '0 18 * * 1-5'
+    - cron: '30 19 * * 1-5'
 
   # Allow manual trigger for testing
   workflow_dispatch:
