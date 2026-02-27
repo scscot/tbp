@@ -1785,6 +1785,227 @@ const submitHostedDemoRequest = onRequest(
     }
 );
 
+/**
+ * Submit New Account (Organic Signup)
+ * Creates a preintake_leads document for organic visitors who want to skip the demo
+ * and go directly to payment. No website analysis or demo generation required.
+ *
+ * POST body:
+ *   - name (required): Attorney's full name
+ *   - email (required): Email address
+ *   - firmName (optional): Firm name, defaults to "{name}, Attorney at Law"
+ *   - primaryPracticeArea (required): Main practice area
+ *   - additionalPracticeAreas (optional): Array of additional practice areas
+ *   - website (optional): Firm website URL
+ *
+ * Returns: { success: true, leadId: "..." }
+ */
+const submitNewAccount = onRequest(
+    {
+        cors: true,
+        region: 'us-west1',
+        secrets: []
+    },
+    async (req, res) => {
+        // Only allow POST
+        if (req.method !== 'POST') {
+            return res.status(405).json({ error: 'Method not allowed' });
+        }
+
+        try {
+            // Get client IP for rate limiting
+            const clientIP = req.headers['x-forwarded-for']?.split(',')[0]?.trim() ||
+                           req.headers['x-real-ip'] ||
+                           req.connection?.remoteAddress ||
+                           req.ip ||
+                           'unknown';
+
+            const { name, email, firmName, primaryPracticeArea, additionalPracticeAreas, website } = req.body;
+
+            // Validate required fields
+            if (!name || !name.trim()) {
+                return res.status(400).json({
+                    error: 'Name is required',
+                    field: 'name'
+                });
+            }
+
+            if (!email || !email.trim()) {
+                return res.status(400).json({
+                    error: 'Email is required',
+                    field: 'email'
+                });
+            }
+
+            if (!primaryPracticeArea || !primaryPracticeArea.trim()) {
+                return res.status(400).json({
+                    error: 'Primary practice area is required',
+                    field: 'primaryPracticeArea'
+                });
+            }
+
+            // Admin bypass for rate limiting
+            const ADMIN_EMAILS = ['scscot@gmail.com'];
+            const normalizedEmail = email.trim().toLowerCase();
+            const isAdmin = ADMIN_EMAILS.includes(normalizedEmail);
+
+            // Check server-side rate limit (skip for admins)
+            if (!isAdmin) {
+                const rateLimit = await checkIPRateLimit(clientIP);
+                if (!rateLimit.allowed) {
+                    console.log(`Rate limit exceeded for IP hash: ${hashIP(clientIP)}`);
+                    return res.status(429).json({
+                        error: 'Too many requests. Please try again tomorrow.',
+                        remaining: 0
+                    });
+                }
+            }
+
+            // Validate email (format, domain existence, MX records)
+            const emailValidation = await validateEmail(normalizedEmail);
+            if (!emailValidation.isValid) {
+                console.log(`Email validation failed for ${normalizedEmail}: ${emailValidation.reason}`);
+                return res.status(400).json({
+                    error: emailValidation.reason,
+                    field: 'email'
+                });
+            }
+
+            // Check for duplicate by email (organic signups)
+            const existingByEmail = await db.collection('preintake_leads')
+                .where('email', '==', normalizedEmail)
+                .where('source', '==', 'organic_signup')
+                .limit(1)
+                .get();
+
+            if (!existingByEmail.empty) {
+                const existingDoc = existingByEmail.docs[0];
+                const existingData = existingDoc.data();
+                const existingStatus = existingData.status;
+
+                // If already an active subscriber, tell them to use account portal
+                if (existingStatus === 'active' || existingData.subscriptionStatus === 'active') {
+                    console.log(`Active subscriber attempted re-signup: ${normalizedEmail} - lead: ${existingDoc.id}`);
+                    return res.status(409).json({
+                        error: 'You already have an active PreIntake.ai account.',
+                        isActiveSubscriber: true,
+                        existingLeadId: existingDoc.id
+                    });
+                }
+
+                // For pending_payment status, update the record with new form data and return existing leadId
+                console.log(`Updating existing pending signup for ${normalizedEmail} - lead: ${existingDoc.id}`);
+
+                // Process optional fields for update
+                const trimmedName = name.trim();
+                const resolvedFirmName = firmName && firmName.trim()
+                    ? firmName.trim()
+                    : `${trimmedName}, Attorney at Law`;
+                const additionalAreas = Array.isArray(additionalPracticeAreas) ? additionalPracticeAreas : [];
+                const allPracticeAreas = [primaryPracticeArea, ...additionalAreas.filter(a => a !== primaryPracticeArea)];
+
+                // Process website if provided
+                let websiteUrl = null;
+                let hasWebsite = false;
+                if (website && website.trim()) {
+                    try {
+                        const urlToValidate = website.trim().startsWith('http')
+                            ? website.trim()
+                            : `https://${website.trim()}`;
+                        const parsed = new URL(urlToValidate);
+                        websiteUrl = parsed.href;
+                        hasWebsite = true;
+                    } catch (e) {
+                        console.log(`Invalid website URL provided: ${website}`);
+                    }
+                }
+
+                // Update the existing record
+                await existingDoc.ref.update({
+                    name: trimmedName,
+                    firmName: resolvedFirmName,
+                    primaryPracticeArea: primaryPracticeArea.trim(),
+                    additionalPracticeAreas: additionalAreas,
+                    practiceAreas: allPracticeAreas,
+                    website: websiteUrl,
+                    hasWebsite: hasWebsite,
+                    updatedAt: admin.firestore.FieldValue.serverTimestamp()
+                });
+
+                return res.status(200).json({
+                    success: true,
+                    leadId: existingDoc.id,
+                    updated: true
+                });
+            }
+
+            // Process optional fields
+            const trimmedName = name.trim();
+            const resolvedFirmName = firmName && firmName.trim()
+                ? firmName.trim()
+                : `${trimmedName}, Attorney at Law`;
+
+            // Combine practice areas
+            const additionalAreas = Array.isArray(additionalPracticeAreas) ? additionalPracticeAreas : [];
+            const allPracticeAreas = [primaryPracticeArea, ...additionalAreas.filter(a => a !== primaryPracticeArea)];
+
+            // Process website if provided
+            let websiteUrl = null;
+            let hasWebsite = false;
+            if (website && website.trim()) {
+                try {
+                    const urlToValidate = website.trim().startsWith('http')
+                        ? website.trim()
+                        : `https://${website.trim()}`;
+                    const parsed = new URL(urlToValidate);
+                    websiteUrl = parsed.href;
+                    hasWebsite = true;
+                } catch (e) {
+                    // Invalid URL, just ignore it
+                    console.log(`Invalid website URL provided: ${website}`);
+                }
+            }
+
+            // Record the submission for rate limiting
+            await recordIPSubmission(clientIP);
+
+            // Create lead document
+            const leadData = {
+                name: trimmedName,
+                email: normalizedEmail,
+                firmName: resolvedFirmName,
+                primaryPracticeArea: primaryPracticeArea.trim(),
+                additionalPracticeAreas: additionalAreas,
+                practiceAreas: allPracticeAreas,
+                website: websiteUrl,
+                hasWebsite: hasWebsite,
+                status: 'pending_payment',
+                source: 'organic_signup',
+                createdAt: admin.firestore.FieldValue.serverTimestamp(),
+                updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+                deliveryEmail: normalizedEmail
+            };
+
+            // Store in Firestore
+            const docRef = await db.collection('preintake_leads').add(leadData);
+            const leadId = docRef.id;
+            console.log(`PreIntake organic signup created: ${leadId} - ${normalizedEmail} - ${resolvedFirmName}`);
+
+            return res.status(200).json({
+                success: true,
+                leadId: leadId
+            });
+
+        } catch (error) {
+            console.error('submitNewAccount error:', error);
+            return res.status(500).json({
+                error: 'Internal server error',
+                message: error.message
+            });
+        }
+    }
+);
+
 module.exports = {
     submitDemoRequest,
     verifyDemoEmail,
@@ -1792,5 +2013,6 @@ module.exports = {
     confirmPracticeAreas,
     handlePreIntakeUnsubscribe,
     submitPreIntakeContact,
-    submitHostedDemoRequest
+    submitHostedDemoRequest,
+    submitNewAccount
 };

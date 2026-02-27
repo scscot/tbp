@@ -291,6 +291,7 @@ const {
   handlePreIntakeUnsubscribe,
   submitPreIntakeContact,
   submitHostedDemoRequest,
+  submitNewAccount,
 } = require('./preintake-functions');
 
 const {
@@ -498,6 +499,7 @@ module.exports = {
   handlePreIntakeUnsubscribe,
   submitPreIntakeContact,
   submitHostedDemoRequest,
+  submitNewAccount,
   analyzePreIntakeLead,
   analyzeAfterEmailVerification,
   generatePreIntakeDemo,

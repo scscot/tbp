@@ -1,0 +1,2725 @@
+{
+  "personal_injury": {
+    "contactName": "Maria Rodriguez",
+    "qualification": "green",
+    "confidenceLevel": "High Confidence",
+    "caseType": "Personal Injury",
+    "summary": "On March 15th, 2024, Maria Rodriguez was struck by a delivery truck while crossing in a marked crosswalk at the intersection of Main Street and 5th Avenue. She sustained a fractured left ankle, concussion, and multiple contusions requiring surgery and ongoing physical therapy. The truck driver was cited for failure to yield to a pedestrian and running a red light.",
+    "positiveFactors": [
+      "Clear liability - driver cited for traffic violations",
+      "Documented serious injuries requiring surgery",
+      "Ongoing medical treatment and physical therapy",
+      "Police report confirms driver fault",
+      "Multiple witnesses present at scene"
+    ],
+    "concerns": [
+      "Client mentioned previous ankle injury from 2019"
+    ],
+    "recommendedAction": "Schedule immediate consultation to review medical records, police report, and discuss previous ankle injury history. Obtain witness contact information and truck company insurance details.",
+    "transcript": [
+      {
+        "speaker": "intake",
+        "text": "Hello! Thank you for reaching out to our firm. I'm here to help you with your personal injury matter. Could I start by getting your name?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Hi, yes, my name is Maria Rodriguez."
+      },
+      {
+        "speaker": "intake",
+        "text": "Nice to meet you, Maria. Could you provide me with your phone number and email address so we can follow up with you?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Sure, my phone is 555-342-7891 and my email is maria.rodriguez.email@gmail.com"
+      },
+      {
+        "speaker": "intake",
+        "text": "Perfect, thank you. Now, could you tell me about what happened that brought you to contact our firm today?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "I was hit by a truck while I was crossing the street about three weeks ago. I'm still dealing with injuries and medical bills, and I'm not sure what to do."
+      },
+      {
+        "speaker": "intake",
+        "text": "I'm so sorry to hear about your accident, Maria. Can you tell me more specifically about when and where this happened?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "It was on March 15th, around 2:30 in the afternoon. I was crossing Main Street at 5th Avenue - you know, right downtown - in the crosswalk. This delivery truck just came out of nowhere and hit me."
+      },
+      {
+        "speaker": "intake",
+        "text": "That sounds terrifying. Were you injured in the accident? What kind of medical treatment have you received?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Yes, I was hurt pretty badly. I broke my left ankle and had to have surgery to put pins in it. I also had a concussion and lots of bruises. I'm still going to physical therapy twice a week at Riverside Rehab Center."
+      },
+      {
+        "speaker": "intake",
+        "text": "That sounds like very serious injuries requiring extensive treatment. Was there a police report filed at the scene?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Oh yes, the police came right away. The officer told me the truck driver was getting a ticket for running the red light and not yielding to pedestrians. I have a copy of the police report."
+      },
+      {
+        "speaker": "intake",
+        "text": "That's very helpful documentation. Were there any witnesses to the accident?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Actually yes, there were several people who saw it happen. A couple of them even stayed to talk to the police. One lady, I think her name was Jennifer, she gave me her business card and said she'd be happy to help if I needed a witness."
+      },
+      {
+        "speaker": "intake",
+        "text": "Excellent, witness testimony can be very valuable. Do you know what company the truck driver was working for?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "It was one of those big delivery companies - FastTrack Delivery. It had their logo all over the truck. The police report has all that information too."
+      },
+      {
+        "speaker": "intake",
+        "text": "That's important information. Have you had any previous injuries to your ankle or any other relevant medical history I should know about?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Well, I did sprain my ankle pretty badly playing soccer back in 2019, but it healed up fine. This is completely different though - this time it's actually broken and needed surgery."
+      },
+      {
+        "speaker": "intake",
+        "text": "I understand. Have you been contacted by any insurance companies since the accident?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Yes, someone from the truck company's insurance called me a few days after the accident, but I didn't really know what to say to them. That's part of why I'm calling you - I don't want to mess anything up."
+      },
+      {
+        "speaker": "intake",
+        "text": "You did the right thing by being cautious with the insurance company. Based on what you've told me, this sounds like a case our attorneys would definitely want to review. The next step would be to schedule you for a consultation with one of our personal injury attorneys who can go over all the details with you."
+      },
+      {
+        "speaker": "visitor",
+        "text": "That would be great. I really need help navigating all of this - the medical bills are piling up and I've missed work because of my injuries."
+      },
+      {
+        "speaker": "intake",
+        "text": "Absolutely, we understand how overwhelming this can be. I'm going to have our scheduling team reach out to you within the next 24 hours to set up your consultation. In the meantime, please gather any documents you have - the police report, medical records, bills, and that witness contact information. Does that sound good?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Yes, that sounds perfect. Thank you so much for your help today. I feel much better knowing I'm taking the right steps."
+      },
+      {
+        "speaker": "intake",
+        "text": "You're very welcome, Maria. We'll be in touch soon to get your consultation scheduled. Take care and continue following your doctor's treatment plan."
+      }
+    ]
+  },
+  "bankruptcy": {
+    "contactName": "Maria Rodriguez",
+    "qualification": "green",
+    "confidenceLevel": "High Confidence",
+    "caseType": "Bankruptcy",
+    "summary": "Maria Rodriguez is seeking Chapter 13 bankruptcy relief due to overwhelming credit card debt totaling $87,000 and mounting medical bills from her husband's cancer treatment. She works as a nurse earning $65,000 annually and wants to keep her home while creating a manageable payment plan. Her financial hardship began 18 months ago when her husband was diagnosed and unable to work.",
+    "positiveFactors": [
+      "Stable employment as registered nurse with consistent $65K annual income suitable for Chapter 13 repayment plan",
+      "No previous bankruptcy filings - first-time filer eligible for full discharge benefits",
+      "Income level appropriate for Chapter 13 with ability to fund meaningful repayment plan",
+      "Clear documentation of medical hardship causing financial distress supports good faith filing"
+    ],
+    "concerns": [
+      "Recent $15,000 cash advance taken 2 months ago may be scrutinized as potentially fraudulent transfer"
+    ],
+    "recommendedAction": "Schedule consultation within 48 hours to review cash advance details and begin immediate Chapter 13 preparation to prevent foreclosure proceedings.",
+    "transcript": [
+      {
+        "speaker": "intake",
+        "text": "Hello! Thank you for reaching out to our law firm. I'm here to help you with your legal matter. May I start by getting your full name?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Hi, yes, my name is Maria Rodriguez. I'm calling because I think I need to file for bankruptcy and I'm not sure where to start."
+      },
+      {
+        "speaker": "intake",
+        "text": "I'm sorry to hear you're going through financial difficulties, Maria. I'd be happy to help you understand your options. Can you provide me with your phone number and email address so we can follow up with you?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Sure, my cell phone is 555-847-3921 and my email is mrodriguez.rn@gmail.com"
+      },
+      {
+        "speaker": "intake",
+        "text": "Perfect, thank you. Can you tell me a bit about what's brought you to consider bankruptcy? What's your current financial situation?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Well, my husband was diagnosed with cancer about 18 months ago and he had to stop working. I'm a registered nurse so I still have my income, but between his medical bills and having to use credit cards to cover our expenses, we're drowning in debt."
+      },
+      {
+        "speaker": "intake",
+        "text": "That sounds incredibly stressful, Maria. I'm sorry your family is going through this. Can you give me an idea of how much debt you're dealing with and what your current income is?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "I make about $65,000 a year at the hospital. The credit card debt is around $87,000 now, and we still have medical bills coming in. We're about three months behind on our mortgage too."
+      },
+      {
+        "speaker": "intake",
+        "text": "That's a significant amount of debt. Do you own your home, and is that something you'd like to try to keep if possible?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Yes, we really want to keep the house. We've lived here for eight years and it's where my husband is comfortable during his treatment. I've heard about Chapter 13 - would that let us keep the house and make payments?"
+      },
+      {
+        "speaker": "intake",
+        "text": "Chapter 13 could definitely be an option for you - it would allow you to keep your home and create a payment plan based on your income. Have you ever filed for bankruptcy before?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "No, never. We've always been pretty good with money until this happened. I hate that we're in this situation."
+      },
+      {
+        "speaker": "intake",
+        "text": "You shouldn't feel bad about this - medical debt is one of the leading causes of bankruptcy, and it sounds like you've been doing everything you can. I need to ask about any recent financial transactions - have you taken any cash advances or made any large purchases in the last few months?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Well, about two months ago I did take a $15,000 cash advance from one of our credit cards. I was desperate to catch up on some bills and pay for my husband's medication. Was that a mistake?"
+      },
+      {
+        "speaker": "intake",
+        "text": "It's not necessarily a problem, but it's something we'll need to address carefully in your case since recent cash advances can sometimes be questioned. The important thing is that you had legitimate reasons for it. When you took that advance, was it specifically for medical expenses and household necessities?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Yes, exactly. About $8,000 went to his oncologist bill that insurance didn't cover, and the rest was for our mortgage payment and utilities. I have all the receipts and documentation."
+      },
+      {
+        "speaker": "intake",
+        "text": "That's good that you have documentation. Given your income and debt situation, it sounds like Chapter 13 could work well for you. You'd be able to catch up on your mortgage through the payment plan and discharge most of your credit card debt after 3-5 years."
+      },
+      {
+        "speaker": "visitor",
+        "text": "That sounds like exactly what we need. How quickly can we get this started? I'm worried about the mortgage company starting foreclosure."
+      },
+      {
+        "speaker": "intake",
+        "text": "We can move quickly on this. I'm going to recommend that one of our bankruptcy attorneys meet with you within the next 48 hours. Filing Chapter 13 will immediately stop any foreclosure proceedings through what's called an automatic stay."
+      },
+      {
+        "speaker": "visitor",
+        "text": "Oh thank goodness. What do I need to bring to that meeting?"
+      },
+      {
+        "speaker": "intake",
+        "text": "You'll want to bring your recent pay stubs, tax returns, a list of all your debts and creditors, mortgage statements, and any documentation of your husband's medical expenses. Our office will send you a detailed checklist after this call. Does a consultation this Thursday or Friday work for you?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Thursday would be perfect. Thank you so much - I finally feel like there might be a way out of this mess."
+      },
+      {
+        "speaker": "intake",
+        "text": "You're very welcome, Maria. You're taking the right step by reaching out for help. Our team will contact you within the next few hours to schedule your consultation and send you that document checklist. Is there anything else I can answer for you right now?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "No, I think that covers everything. I really appreciate your help and how you explained everything. I'll wait to hear from your office."
+      }
+    ]
+  },
+  "family_law": {
+    "contactName": "Sarah Martinez",
+    "qualification": "green",
+    "confidenceLevel": "High Confidence",
+    "caseType": "Family Law",
+    "summary": "Client seeks primary custody modification of two minor children (ages 8 and 11) after ex-husband relocated to Austin without proper notice in January 2024. Current joint custody arrangement from their 2019 divorce is no longer feasible due to distance, and children are struggling academically and emotionally with the disruption.",
+    "positiveFactors": [
+      "Clear jurisdiction established in Harris County where children resided for over 6 months",
+      "Two minor children involved creating strong custody case",
+      "Ex-spouse appears cooperative and willing to work out new arrangement",
+      "Documented impact on children's education and wellbeing"
+    ],
+    "concerns": [
+      "Interstate custody complications due to move to Austin"
+    ],
+    "recommendedAction": "Schedule consultation within 48 hours to review custody modification petition and discuss emergency temporary orders if needed.",
+    "transcript": [
+      {
+        "speaker": "intake",
+        "text": "Hello! Welcome to Morrison Family Law. I'm here to help you understand your legal options. Could I start by getting your name?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Hi, yes, my name is Sarah Martinez."
+      },
+      {
+        "speaker": "intake",
+        "text": "Nice to meet you, Sarah. Could you provide me with your phone number and email address so we can follow up with you?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Sure, my phone is 713-555-0892 and email is sarah.martinez.tx@gmail.com"
+      },
+      {
+        "speaker": "intake",
+        "text": "Perfect, thank you. What brings you to us today? What kind of family law matter are you dealing with?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "I need help with a custody situation. My ex-husband moved to Austin in January without telling me beforehand, and now our custody arrangement isn't working at all."
+      },
+      {
+        "speaker": "intake",
+        "text": "That sounds really challenging. Can you tell me a bit more about your current custody arrangement and how long you've been divorced?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "We divorced in 2019 and have had joint custody since then. We have two kids - Emma who's 11 and Jake who's 8. We were doing week on, week off, but now with him in Austin, that's impossible."
+      },
+      {
+        "speaker": "intake",
+        "text": "I can imagine how difficult that must be for you and the children. Where are you and the children currently living?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "We're all still here in Houston, in Harris County. The kids have been going to school here their whole lives. Emma's at Memorial Middle School and Jake's at Bunker Hill Elementary."
+      },
+      {
+        "speaker": "intake",
+        "text": "So the children have remained in Houston with you since January when your ex moved to Austin. How has this change affected them?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "It's been really hard on them. Emma's grades have dropped from A's to C's, and Jake's teacher called me last week because he's been acting out in class. They're confused about when they'll see their dad and the whole situation is just unstable."
+      },
+      {
+        "speaker": "intake",
+        "text": "That must be heartbreaking to watch. Are you looking to modify the custody arrangement to reflect the new reality?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Yes, exactly. I want primary custody since they're settled here with school and friends. I'm not trying to keep them from their dad - he can have them on weekends or school breaks - but this back and forth thing isn't working."
+      },
+      {
+        "speaker": "intake",
+        "text": "That sounds very reasonable. How has your ex-husband been about discussing this change? Is he cooperative about finding a new arrangement?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Actually, yes. He realizes he messed up by not discussing the move with me first. He's been apologetic and said he's open to working something out. He just got a job offer he couldn't refuse, but he admits he handled it badly."
+      },
+      {
+        "speaker": "intake",
+        "text": "It's helpful that he's being cooperative. Sarah, just so I understand the timeline - the children have been primarily living with you here in Houston since January when he moved, correct?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Yes, that's right. It's been about 3 months now. He's seen them a few weekends, but it's been really inconsistent and hard to coordinate."
+      },
+      {
+        "speaker": "intake",
+        "text": "Based on what you've told me, it sounds like you have a strong case for modifying custody given the substantial change in circumstances. I'd recommend we get you scheduled for a consultation within the next day or two so we can review your divorce decree and discuss filing for modification."
+      },
+      {
+        "speaker": "visitor",
+        "text": "That would be great. Should I bring any specific documents with me?"
+      },
+      {
+        "speaker": "intake",
+        "text": "Yes, please bring your original divorce decree, any custody orders, and if you have them, the kids' report cards or any documentation from their teachers about the behavioral changes. We'll also want to document the timeline of events since January."
+      },
+      {
+        "speaker": "visitor",
+        "text": "Perfect, I can get all of that together. How soon can we meet?"
+      },
+      {
+        "speaker": "intake",
+        "text": "Our attorney has availability tomorrow afternoon or Thursday morning. Given that the children's school year is ongoing and this is affecting their education, I'd recommend we move quickly. Would tomorrow at 2 PM work for you?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Tomorrow at 2 PM works perfectly. Thank you so much for your help."
+      }
+    ]
+  },
+  "medical_malpractice": {
+    "contactName": "Sarah Mitchell",
+    "qualification": "yellow",
+    "confidenceLevel": "Moderate Confidence",
+    "caseType": "Medical Malpractice",
+    "summary": "Ms. Mitchell underwent routine gallbladder surgery at St. Mary's Hospital on March 15, 2024, during which Dr. Reynolds allegedly punctured her bile duct, requiring emergency repair surgery and causing ongoing complications including persistent pain and infection. She has complete medical records documenting the surgical error and subsequent complications, with her current gastroenterologist indicating the injury was preventable with proper technique.",
+    "positiveFactors": [
+      "Clear documentation of bile duct puncture during routine laparoscopic surgery with immediate recognition requiring repair",
+      "Significant documented damages including additional surgery, extended hospitalization, ongoing medical treatment, and lost wages",
+      "Complete medical records available from both surgeries and all follow-up care",
+      "Current treating gastroenterologist has indicated the complication was preventable with standard surgical technique"
+    ],
+    "concerns": [
+      "Need to verify whether bile duct injury falls within accepted complication rate for laparoscopic cholecystectomy versus clear negligence"
+    ],
+    "recommendedAction": "Schedule consultation within 48 hours to review complete medical records and obtain surgical expert evaluation of operative technique and standard of care",
+    "transcript": [
+      {
+        "speaker": "intake",
+        "text": "Hello! Thank you for contacting our firm. I'm here to learn about your potential legal matter and see how we might be able to help. Could I start by getting your name?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Hi, yes, my name is Sarah Mitchell."
+      },
+      {
+        "speaker": "intake",
+        "text": "Nice to meet you, Sarah. Could you provide me with your phone number and email address so we can follow up with you?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Sure, my phone is 555-234-7891 and my email is sarah.mitchell.email@gmail.com"
+      },
+      {
+        "speaker": "intake",
+        "text": "Thank you. I understand you're calling about a potential medical malpractice matter. Could you tell me what happened?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Yes, I had my gallbladder removed about three months ago, and something went wrong during the surgery. The doctor punctured something inside me and I ended up needing emergency surgery to fix it."
+      },
+      {
+        "speaker": "intake",
+        "text": "I'm sorry to hear about that experience. Can you tell me more details - where did this happen and who was your surgeon?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "It was at St. Mary's Hospital, and my surgeon was Dr. Reynolds. The surgery was supposed to be routine - laparoscopic gallbladder removal. But during the procedure, he punctured my bile duct."
+      },
+      {
+        "speaker": "intake",
+        "text": "When exactly did this surgery take place?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "March 15th of this year. What was supposed to be a simple outpatient procedure turned into a nightmare."
+      },
+      {
+        "speaker": "intake",
+        "text": "What happened after they discovered the bile duct was punctured?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "They had to do emergency repair surgery right away. Dr. Reynolds brought in another surgeon to help fix what he damaged. Instead of going home that day, I was in the hospital for a week."
+      },
+      {
+        "speaker": "intake",
+        "text": "Have you had ongoing problems since then?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Oh yes, absolutely. I've had persistent pain, I developed an infection that took weeks to clear up, and I've had to see a gastroenterologist regularly. I also missed six weeks of work because of all this."
+      },
+      {
+        "speaker": "intake",
+        "text": "What has your gastroenterologist told you about what happened?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Dr. Chen - that's my gastroenterologist - reviewed all my records and told me that bile duct injuries like this are preventable if proper surgical technique is used. She said the way it happened suggests the surgeon wasn't being careful enough."
+      },
+      {
+        "speaker": "intake",
+        "text": "Do you have copies of your medical records from the surgery and your treatment afterwards?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Yes, I requested all my records from St. Mary's and from Dr. Chen's office. I have everything - the operative reports, the emergency repair surgery notes, all my follow-up visits, everything."
+      },
+      {
+        "speaker": "intake",
+        "text": "That's very helpful. Are you still receiving treatment for complications from this injury?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "I still see Dr. Chen every month, and I'm on medication for ongoing digestive issues. The pain has gotten better but it's not completely gone. I'm worried about long-term effects."
+      },
+      {
+        "speaker": "intake",
+        "text": "I understand your concerns. Based on what you've told me, this sounds like a situation we should definitely review further. Our attorneys will want to examine your medical records and have them evaluated by a surgical expert to determine if the standard of care was met."
+      },
+      {
+        "speaker": "visitor",
+        "text": "That sounds good. I just want to know if what happened to me was preventable, and if so, what my options are."
+      },
+      {
+        "speaker": "intake",
+        "text": "Absolutely. I'm going to recommend that we schedule you for a consultation within the next day or two so one of our medical malpractice attorneys can review your case in detail. Would you be able to bring all your medical records to that meeting?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Yes, definitely. I have everything organized in a folder already. When can I come in?"
+      },
+      {
+        "speaker": "intake",
+        "text": "Perfect. Someone from our office will call you within a few hours to schedule that consultation. Thank you for taking the time to speak with me today, Sarah."
+      },
+      {
+        "speaker": "visitor",
+        "text": "Thank you so much. I really appreciate your help and I look forward to hearing from someone soon."
+      }
+    ]
+  },
+  "workers_compensation": {
+    "contactName": "Maria Santos",
+    "qualification": "green",
+    "confidenceLevel": "High Confidence",
+    "caseType": "Workers' Compensation",
+    "summary": "Maria Santos, a warehouse worker at Consolidated Logistics, suffered a severe back injury on October 15th, 2024, when a forklift operator struck her while she was moving inventory. She immediately reported the incident to her supervisor and has been receiving medical treatment at Valley Medical Center, but the workers' compensation insurance company denied her claim, alleging she was not in her designated work area at the time of the accident.",
+    "positiveFactors": [
+      "Clear workplace accident with witness confirmation",
+      "Injury immediately reported to supervisor with incident report filed",
+      "Ongoing medical treatment with documented injuries requiring physical therapy",
+      "Strong case for appeal given witness testimony contradicts insurer's denial reason"
+    ],
+    "concerns": [
+      "Insurance company denial requires investigation into their specific allegations about work location"
+    ],
+    "recommendedAction": "Schedule consultation within 48 hours to review incident report, witness statements, and medical records before appeal deadline",
+    "transcript": [
+      {
+        "speaker": "intake",
+        "text": "Hello! Thank you for contacting our law firm. I'm here to help you understand your legal options. May I start by getting your name?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Hi, yes, my name is Maria Santos."
+      },
+      {
+        "speaker": "intake",
+        "text": "Nice to meet you, Maria. Could you provide me with your phone number and email address so we can follow up with you?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Sure, my phone is 555-234-7890 and my email is maria.santos.email@gmail.com"
+      },
+      {
+        "speaker": "intake",
+        "text": "Thank you. I understand you're calling about a workers' compensation matter. Can you tell me what happened?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "I got hurt at work about three weeks ago. I work at a warehouse and got hit by a forklift. Injured my back pretty bad and now the insurance company is saying they won't cover it."
+      },
+      {
+        "speaker": "intake",
+        "text": "I'm sorry to hear about your injury. Can you tell me more details about how the accident happened? Where do you work and what were you doing when it occurred?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "I work at Consolidated Logistics - it's a big warehouse operation. On October 15th, I was moving some inventory boxes from one section to another when this forklift came around the corner and hit me. The operator said he didn't see me, but I was doing my regular job duties."
+      },
+      {
+        "speaker": "intake",
+        "text": "That sounds very serious. Did you report this to your supervisor right away? And have you been able to get medical treatment?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Yes, I told my supervisor Mike Rodriguez immediately after it happened. He filled out an incident report that same day. I've been going to Valley Medical Center - saw Dr. Kim in the ER that day and I'm doing physical therapy twice a week now."
+      },
+      {
+        "speaker": "intake",
+        "text": "Good that you reported it right away. You mentioned the insurance company denied your claim - do you know why they're refusing to cover it?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "They sent me a letter saying I wasn't supposed to be in that area of the warehouse when it happened. But that's not true - I was doing exactly what my supervisor told me to do. There were other workers there who saw the whole thing."
+      },
+      {
+        "speaker": "intake",
+        "text": "So there were witnesses to the accident? That's important. How is your back injury now - are you able to work?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Yeah, two other workers saw it happen - James Wilson and Ana Martinez. They both told my supervisor what they saw. And no, I haven't been able to work since it happened. The pain is really bad and Dr. Kim said I need to continue physical therapy for at least another month, maybe longer."
+      },
+      {
+        "speaker": "intake",
+        "text": "I understand this must be very difficult for you, especially not being able to work. Have you been getting any wage replacement benefits, or are they denying everything?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "They're not paying for anything - no medical bills, no lost wages, nothing. I'm struggling to pay for the physical therapy and I have bills piling up since I can't work."
+      },
+      {
+        "speaker": "intake",
+        "text": "That's exactly the kind of situation where you need legal representation. Based on what you've told me - you were injured at work doing your job duties, you reported it immediately, you have witnesses, and you're getting medical treatment - this sounds like a valid workers' compensation claim that was wrongfully denied."
+      },
+      {
+        "speaker": "visitor",
+        "text": "So you think I have a case? I was worried because they denied it that maybe I didn't have any options."
+      },
+      {
+        "speaker": "intake",
+        "text": "You definitely have options. When an insurance company denies a claim, you have the right to appeal that decision. With witnesses who can confirm you were doing your job duties and proper documentation, you have a strong foundation for challenging their denial."
+      },
+      {
+        "speaker": "visitor",
+        "text": "That's such a relief to hear. What happens next?"
+      },
+      {
+        "speaker": "intake",
+        "text": "I'd like to schedule you for a consultation with one of our attorneys within the next day or two. Time can be important with workers' comp appeals, and we'll want to review your incident report, medical records, and get statements from your witnesses. Does that work for you?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Yes, absolutely. The sooner the better. I really need help with this."
+      },
+      {
+        "speaker": "intake",
+        "text": "Perfect, Maria. I'm going to have our scheduling coordinator call you at 555-234-7890 within the next few hours to set up your consultation. In the meantime, please gather any paperwork you have - the denial letter, medical records, and any documentation from your employer. We're going to help you fight this denial."
+      },
+      {
+        "speaker": "visitor",
+        "text": "Thank you so much. I'll get all those papers together and wait for the call."
+      }
+    ]
+  },
+  "elder_law": {
+    "contactName": "Margaret Chen",
+    "qualification": "green",
+    "confidenceLevel": "High Confidence",
+    "caseType": "Elder Law",
+    "summary": "Margaret Chen (72) needs urgent Medicaid planning as her husband Robert (75) requires immediate nursing home placement following a stroke three weeks ago. The couple has approximately $180,000 in assets that need protection, and Robert's monthly care costs are $8,500 at Sunrise Manor.",
+    "positiveFactors": [
+      "Both spouses over 65 with immediate long-term care needs",
+      "Substantial assets requiring spousal protection strategies",
+      "Clear capacity - Margaret is competent to make financial decisions",
+      "Motivated client seeking proactive Medicaid planning"
+    ],
+    "concerns": [
+      "Timeline pressure - nursing home placement needed within 2 weeks",
+      "Potential Medicaid lookback issues if assets transferred improperly"
+    ],
+    "recommendedAction": "Schedule urgent consultation within 48 hours to begin spousal impoverishment protection and Medicaid application process",
+    "transcript": [
+      {
+        "speaker": "intake",
+        "text": "Hello! Welcome to Davidson Elder Law. I'm here to help you understand how we might assist with your legal needs. Could I start by getting your name?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Hi, yes, my name is Margaret Chen. I'm really hoping you can help me - I'm in quite a difficult situation with my husband."
+      },
+      {
+        "speaker": "intake",
+        "text": "I'm sorry to hear you're going through a difficult time, Margaret. I'd be happy to see how we can help. Could I get your phone number and email address so we can follow up with you?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Of course. My cell phone is 555-234-7891 and my email is mchen.retire@gmail.com."
+      },
+      {
+        "speaker": "intake",
+        "text": "Thank you. Now, can you tell me what's happening with your husband and how you think an elder law attorney might be able to help?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Well, my husband Robert had a stroke about three weeks ago. He's 75 and I'm 72. The doctors at St. Mary's Hospital say he's going to need full-time nursing care now. I've been looking at nursing homes and I'm just overwhelmed by the costs."
+      },
+      {
+        "speaker": "intake",
+        "text": "That must be incredibly stressful for you both. I'm so sorry about Robert's stroke. Have you found a facility that you're considering, and do you have an idea of what the monthly costs would be?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Yes, we really like Sunrise Manor - it's close to our house and the staff seems wonderful. But it's $8,500 a month! Our Medicare and insurance will cover some initially, but I know that won't last long. Someone mentioned Medicaid might help, but I'm worried about our savings."
+      },
+      {
+        "speaker": "intake",
+        "text": "You're right to be thinking about Medicaid planning. Can you give me a rough idea of your financial situation? What assets do you and Robert have together - things like savings accounts, your home, retirement accounts?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "We have our house, which is paid off and probably worth around $320,000. Then we have about $180,000 between our savings account and CDs. Robert has a small pension of about $1,800 a month, and we both get Social Security - mine is $1,400 and his is $2,200."
+      },
+      {
+        "speaker": "intake",
+        "text": "That's helpful information. Now, when you're looking at this timeline, how urgent is Robert's need for placement at Sunrise Manor? Is he still in the hospital?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "He's actually at a rehabilitation facility right now, but they've told me he can only stay there for about two more weeks. So I really need to get him placed somewhere permanent soon. The social worker said I should talk to a lawyer about protecting our assets before applying for Medicaid."
+      },
+      {
+        "speaker": "intake",
+        "text": "The social worker gave you good advice. Have you or Robert made any large gifts or transfers of money to family members in the past few years? This is important because Medicaid has a lookback period."
+      },
+      {
+        "speaker": "visitor",
+        "text": "No, we haven't given any large amounts to our children or anyone else. We've been pretty conservative with our money. The most we've done is maybe $100 here and there for birthdays and Christmas."
+      },
+      {
+        "speaker": "intake",
+        "text": "That's good - small gifts like that typically aren't an issue. Now, are you comfortable making financial and healthcare decisions for Robert, or does he still have capacity to be involved in the planning process?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "The stroke affected his speech and his right side, but mentally he's still pretty sharp. We can communicate, though it takes patience. I have power of attorney for finances that we set up a few years ago, so I can handle most of the paperwork. I just want to make sure I'm making the right decisions for both of us."
+      },
+      {
+        "speaker": "intake",
+        "text": "It sounds like you're in a good position to move forward with proper planning. Based on what you've told me, there are definitely strategies we can use to protect assets for you while getting Robert qualified for Medicaid. The key is acting quickly given your timeline."
+      },
+      {
+        "speaker": "visitor",
+        "text": "That's exactly what I was hoping to hear. What would be the next steps? I really don't want to lose everything we've worked for, but I also want to make sure Robert gets the care he needs."
+      },
+      {
+        "speaker": "intake",
+        "text": "I completely understand your concerns. What I'd recommend is scheduling you for an urgent consultation with one of our attorneys within the next day or two. They can review your specific situation and start the Medicaid planning process immediately. We have experience with spousal protection strategies that can help preserve assets for you while getting Robert qualified for benefits. Would you be available to come in tomorrow or the day after?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Yes, absolutely. I can rearrange anything I need to. This is my top priority right now. Tomorrow would actually be perfect if you have an opening."
+      },
+      {
+        "speaker": "intake",
+        "text": "Excellent. I'm going to have our scheduling team call you within the hour to set up an appointment for tomorrow. Please bring any financial documents you have, including bank statements, the deed to your house, and that power of attorney document. Our attorney will be able to start working on a plan right away to protect your assets and get Robert the care he needs."
+      },
+      {
+        "speaker": "visitor",
+        "text": "Thank you so much. I feel like I can actually breathe a little easier knowing there might be options. I really appreciate your help."
+      }
+    ]
+  },
+  "immigration": {
+    "contactName": "Maria Santos",
+    "qualification": "green",
+    "confidenceLevel": "High Confidence",
+    "caseType": "Immigration",
+    "summary": "Maria Santos is seeking to adjust status to permanent resident through marriage to her U.S. citizen husband David, whom she married in June 2023. She entered the U.S. legally on a K-1 fiancé visa in April 2023 and has maintained lawful status throughout her time in the country. The couple is ready to file Form I-485 with strong evidence of their bona fide marriage.",
+    "positiveFactors": [
+      "Legal entry on K-1 fiancé visa with documented status",
+      "No criminal history or immigration violations",
+      "Valid marriage to U.S. citizen with evidence of bona fide relationship",
+      "Strong supporting documentation including joint finances and lease"
+    ],
+    "concerns": [],
+    "recommendedAction": "Schedule consultation within one week to review documents and begin preparation of I-485 adjustment of status application with supporting evidence packet.",
+    "transcript": [
+      {
+        "speaker": "intake",
+        "text": "Hello! Thank you for contacting our immigration law firm. I'm here to help you with your legal matter. May I start by getting your full name?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Hi, yes, my name is Maria Santos."
+      },
+      {
+        "speaker": "intake",
+        "text": "Nice to meet you, Maria. Can you provide me with your phone number and email address so we can follow up with you?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Sure, my phone is 555-234-7891 and my email is maria.santos.email@gmail.com"
+      },
+      {
+        "speaker": "intake",
+        "text": "Perfect, thank you. Now, what brings you to us today? What kind of immigration matter do you need help with?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Well, I'm married to a U.S. citizen and I need to apply for my green card. I came here on a K-1 visa to marry my fiancé David, and we got married in June. I'm not sure what the next steps are."
+      },
+      {
+        "speaker": "intake",
+        "text": "Congratulations on your marriage! That's wonderful. So you entered on a K-1 fiancé visa - when exactly did you arrive in the United States?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "I arrived in April 2023, so about 8 months ago now. We got married on June 15th, so well within the 90-day requirement."
+      },
+      {
+        "speaker": "intake",
+        "text": "That's great timing. Have you had any issues with your immigration status since arriving? Any problems with law enforcement or previous immigration violations?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "No, nothing like that. I've been very careful to follow all the rules. No arrests or anything, and I've never overstayed any visa or had problems with immigration before."
+      },
+      {
+        "speaker": "intake",
+        "text": "Excellent. Can you tell me a bit about your marriage to David? How long have you known each other, and do you have documentation showing you live together as a married couple?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "We met online about two years ago and he visited me in Brazil three times before I came here. We have a joint bank account that we opened in July, and both our names are on the apartment lease. We have lots of photos from our wedding and trips together."
+      },
+      {
+        "speaker": "intake",
+        "text": "That sounds like strong evidence of a genuine marriage. Do you have your K-1 visa documentation and marriage certificate available?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Yes, I have all of that. I also kept my I-94 arrival record and all the paperwork from when I entered. My friend told me to keep everything organized."
+      },
+      {
+        "speaker": "intake",
+        "text": "Your friend gave you great advice! Have you filed any paperwork with immigration since getting married, or would this be your first application?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "This would be my first time applying for anything since I got here. I wasn't sure when I should start the process, but I know there's some kind of deadline."
+      },
+      {
+        "speaker": "intake",
+        "text": "You're being smart to look into this now. With a K-1 visa and marriage to a U.S. citizen, you can apply to adjust your status to permanent resident. Is David supportive of helping with the application process?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Oh yes, absolutely. He's been asking me about it too. He wants to make sure we do everything correctly and he's ready to provide whatever documents or information we need."
+      },
+      {
+        "speaker": "intake",
+        "text": "That's perfect. Based on what you've told me, it sounds like you have a strong case for adjustment of status. You entered legally, married within the required timeframe, have evidence of a real marriage, and no negative history."
+      },
+      {
+        "speaker": "visitor",
+        "text": "That's such a relief to hear! I've been worried about making mistakes. What would be the next step?"
+      },
+      {
+        "speaker": "intake",
+        "text": "I'd like to schedule you for a consultation with one of our attorneys within the next week so we can review all your documents and start preparing your I-485 application. Does that work for you?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Yes, that would be perfect. I'm available most days and can bring David with me if that helps."
+      },
+      {
+        "speaker": "intake",
+        "text": "Bringing David is a great idea since he'll need to be involved as your petitioner. We'll be in touch within 24 hours to schedule your appointment and send you a document checklist to prepare."
+      }
+    ]
+  },
+  "insurance": {
+    "contactName": "Maria Rodriguez",
+    "qualification": "green",
+    "confidenceLevel": "High Confidence",
+    "caseType": "Insurance",
+    "summary": "Client's home suffered significant water damage from burst pipes in January 2024, with estimated repairs of $45,000. State Farm denied the claim citing a policy exclusion for gradual damage, despite plumber's report showing the pipe burst was sudden and accidental. Client has been paying premiums for 8 years without prior claims and properly reported the incident within 48 hours.",
+    "positiveFactors": [
+      "Homeowner's policy was current and premiums paid at time of loss",
+      "Claim was properly filed within 48 hours with photographic documentation",
+      "Formal denial letter received citing specific policy exclusion",
+      "Substantial documented damages of $45,000 with professional estimates"
+    ],
+    "concerns": [
+      "Need to review policy language regarding gradual vs. sudden water damage exclusions"
+    ],
+    "recommendedAction": "Schedule attorney consultation within 48 hours to review denial letter and policy exclusion language before statute of limitations issues arise",
+    "transcript": [
+      {
+        "speaker": "intake",
+        "text": "Hello! Thank you for contacting our law firm. I'm here to help you with your legal matter. Could I start by getting your name?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Hi, yes, my name is Maria Rodriguez."
+      },
+      {
+        "speaker": "intake",
+        "text": "Nice to meet you, Maria. Could I get your phone number and email address so we can follow up with you?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Sure, my phone is 555-234-7891 and email is maria.rodriguez.home@gmail.com"
+      },
+      {
+        "speaker": "intake",
+        "text": "Perfect, thank you. What can we help you with today?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "I'm having a nightmare with my insurance company. They denied my claim for water damage to my house and I don't think they should have. I've been paying them for years and now when I need them, they won't pay."
+      },
+      {
+        "speaker": "intake",
+        "text": "I'm sorry to hear you're dealing with that frustration. Can you tell me which insurance company this is and when the damage occurred?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "It's State Farm. The damage happened back in January when we had that really cold snap. Pipes burst in my wall and flooded my kitchen and living room. It was a mess."
+      },
+      {
+        "speaker": "intake",
+        "text": "That sounds terrible. How long have you had your policy with State Farm, and were your premiums current when this happened?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "I've been with them for about 8 years now, never missed a payment. Yeah, everything was current. I've never even filed a claim before this."
+      },
+      {
+        "speaker": "intake",
+        "text": "When did you report the damage to State Farm, and what was their response initially?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "I called them the same day it happened - actually within a couple hours of discovering it. They sent an adjuster out about a week later. At first they seemed like they were going to cover it, had me get estimates and everything."
+      },
+      {
+        "speaker": "intake",
+        "text": "What kind of estimates did you get, and what was the total damage amount?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "I got three different contractors to look at it. The damage was pretty extensive - had to replace flooring, drywall, kitchen cabinets got warped. The estimates ranged from about $42,000 to $48,000. I went with the middle estimate of $45,000."
+      },
+      {
+        "speaker": "intake",
+        "text": "Did you document the damage with photos or have any professional reports done?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Oh yes, I took tons of pictures right after it happened. And the plumber I called to fix the pipe - Martinez Plumbing - they wrote up a report saying it was a sudden pipe burst, not something that had been leaking for a while."
+      },
+      {
+        "speaker": "intake",
+        "text": "That's good documentation. So when did State Farm deny the claim, and what reason did they give?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "About three weeks ago I got a letter saying they were denying it. They said something about gradual water damage being excluded from my policy. But this wasn't gradual - the pipe just burst! It happened all at once."
+      },
+      {
+        "speaker": "intake",
+        "text": "Do you still have that denial letter from State Farm? And have you reviewed your actual policy to see the exclusion language they're referring to?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Yes, I have the letter. I tried to read through my policy but honestly it's so confusing with all the legal language. That's why I'm calling you guys. I just feel like they're trying to get out of paying when they should cover this."
+      },
+      {
+        "speaker": "intake",
+        "text": "I understand your frustration, and based on what you've told me, it sounds like you may have a good case. You properly reported the claim, have documentation, and the plumber's report supports that this was sudden damage, not gradual."
+      },
+      {
+        "speaker": "visitor",
+        "text": "So you think I have a case? I was starting to think maybe I was just out of luck."
+      },
+      {
+        "speaker": "intake",
+        "text": "It definitely sounds promising, but we'll need one of our attorneys to review that denial letter and your policy language to give you a definitive answer. I'm going to recommend that we get you scheduled for a consultation within the next day or two - timing can be important in insurance cases."
+      },
+      {
+        "speaker": "visitor",
+        "text": "That would be great. I really appreciate your help. What happens next?"
+      },
+      {
+        "speaker": "intake",
+        "text": "I'll have our scheduling team reach out to you at 555-234-7891 within the next few hours to set up your consultation. Please bring that denial letter and your policy if you have it. An attorney will be able to review everything and let you know exactly where you stand."
+      },
+      {
+        "speaker": "visitor",
+        "text": "Perfect, thank you so much. I feel a lot better knowing I have somewhere to turn."
+      }
+    ]
+  },
+  "real_estate": {
+    "contactName": "Sarah Chen",
+    "qualification": "green",
+    "confidenceLevel": "High Confidence",
+    "caseType": "Real Estate",
+    "summary": "Client discovered significant water damage and structural issues in basement of recently purchased home at 847 Maple Drive that were not disclosed by seller. Purchase closed on March 15, 2024 for $485,000, but contractor estimates reveal $35,000+ in hidden damage that existed prior to sale. Seller's disclosure form specifically marked 'no known water damage' despite clear evidence of previous flooding and mold remediation.",
+    "positiveFactors": [
+      "Property clearly identified with complete address and recent closing documentation",
+      "Strong documentation available including signed disclosure forms, inspection reports, and contractor estimates",
+      "All parties clearly identified - seller Margaret Walsh and listing agent from Coldwell Banker",
+      "Timeline is favorable with discovery made within 30 days of closing"
+    ],
+    "concerns": [
+      "Need to verify if home inspection was conducted and what it revealed about these issues"
+    ],
+    "recommendedAction": "Schedule consultation within 48 hours to review all closing documents, disclosure forms, and contractor reports to assess strength of non-disclosure claim.",
+    "transcript": [
+      {
+        "speaker": "intake",
+        "text": "Hello! Thank you for contacting Miller & Associates. I'm here to help you with your legal matter. Could I start by getting your name?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Hi, yes, my name is Sarah Chen. I think I need help with a real estate problem."
+      },
+      {
+        "speaker": "intake",
+        "text": "Nice to meet you, Sarah. I'd be happy to help you explore your real estate matter. Could you provide me with a phone number where we can reach you?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Sure, it's 555-234-7891."
+      },
+      {
+        "speaker": "intake",
+        "text": "Great, and what's the best email address for you?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "sarah.chen.email@gmail.com"
+      },
+      {
+        "speaker": "intake",
+        "text": "Perfect. Now, tell me about your real estate situation. What's been going on?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "We just bought a house last month and discovered some serious problems that the seller never told us about. There's major water damage in the basement that they clearly tried to hide."
+      },
+      {
+        "speaker": "intake",
+        "text": "That sounds very concerning, Sarah. Let me get some specifics. When exactly did you close on the house, and what's the property address?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "We closed on March 15th. The house is at 847 Maple Drive here in town. We paid $485,000 for it."
+      },
+      {
+        "speaker": "intake",
+        "text": "And when did you discover this water damage? Can you tell me more about what you found?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "About two weeks ago, we noticed a musty smell and some discoloration on the basement walls. We had a contractor come out, and he found extensive water damage, mold behind some newly painted walls, and structural issues. He said this definitely didn't happen recently - there was clearly flooding at some point that was covered up."
+      },
+      {
+        "speaker": "intake",
+        "text": "That's definitely problematic. Do you have documentation from the contractor about these findings and the estimated cost to repair?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Yes, I have his written report and estimate. He's saying it's going to cost at least $35,000 to fix everything properly, maybe more once they open up the walls."
+      },
+      {
+        "speaker": "intake",
+        "text": "Good that you have that documentation. Now, regarding disclosure - did the seller provide you with a property disclosure form, and what did it say about water damage or flooding?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "That's the thing that really bothers me. The seller, Margaret Walsh, specifically marked 'no' on the disclosure form where it asked about known water damage, flooding, or moisture problems. But there's no way she didn't know about this - you can see where they tried to patch and paint over everything."
+      },
+      {
+        "speaker": "intake",
+        "text": "That's a significant issue. Do you happen to know who the listing agent was? And did you have your own inspection done before closing?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "The listing agent was someone from Coldwell Banker, I have her card somewhere. As for inspection, we did have one done, but the inspector didn't catch this because they had painted over everything and put up some paneling to hide the worst areas. Our inspector noted some minor moisture readings but said it wasn't a major concern."
+      },
+      {
+        "speaker": "intake",
+        "text": "I understand. So you have the disclosure forms, contractor reports, and inspection documentation from the purchase process?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Yes, I kept all the paperwork from the closing. I have everything - the disclosure forms, inspection report, all the contracts and documents."
+      },
+      {
+        "speaker": "intake",
+        "text": "Excellent. Based on what you've told me, Sarah, it sounds like you may have a strong case for non-disclosure of material defects. The fact that you discovered this within 30 days of closing and have clear evidence of concealment is very important. I'd recommend we schedule you for a consultation within the next couple of days so one of our attorneys can review all your documentation and advise you on the best way to proceed."
+      },
+      {
+        "speaker": "visitor",
+        "text": "That sounds good. I really want to hold them accountable for this. When could we meet?"
+      },
+      {
+        "speaker": "intake",
+        "text": "I'll have our scheduling team contact you tomorrow to set up an appointment within 48 hours. Make sure to bring all your closing documents, the contractor's report and estimate, photos of the damage, and the original disclosure forms. We'll take a thorough look at everything and discuss your options."
+      },
+      {
+        "speaker": "visitor",
+        "text": "Perfect, thank you so much. I feel better knowing there might be something we can do about this."
+      },
+      {
+        "speaker": "intake",
+        "text": "You're very welcome, Sarah. You've done the right thing by documenting everything and reaching out quickly. We'll be in touch tomorrow to schedule your consultation. Have a good day!"
+      }
+    ]
+  },
+  "criminal_defense": {
+    "contactName": "Marcus Thompson",
+    "qualification": "yellow",
+    "confidenceLevel": "Moderate Confidence",
+    "caseType": "Criminal Defense",
+    "summary": "Client was arrested on February 8th for felony drug possession with intent to distribute after police found 2.5 ounces of cocaine during a traffic stop on I-85. He was released on $15,000 bond and has an arraignment scheduled for February 28th. Client claims the drugs belonged to a passenger who fled the scene before officers arrived.",
+    "positiveFactors": [
+      "Felony drug charges with significant penalties warrant experienced representation",
+      "No current attorney representation",
+      "Clear court date of February 28th for arraignment",
+      "Released on bond and available for case preparation"
+    ],
+    "concerns": [
+      "Prior drug conviction from 2019 may impact sentencing"
+    ],
+    "recommendedAction": "Schedule consultation within 48 hours to review police reports and discuss defense strategy before arraignment",
+    "transcript": [
+      {
+        "speaker": "intake",
+        "text": "Hello! Thank you for contacting our criminal defense practice. I'm here to help you get connected with the right attorney. Can I start by getting your name?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Hi, yes, my name is Marcus Thompson. I really need help with a criminal case."
+      },
+      {
+        "speaker": "intake",
+        "text": "I'm glad you reached out, Marcus. Let me get some basic contact information first. What's the best phone number to reach you at?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "It's 678-555-0142. And before you ask, my email is marcus.thompson84@gmail.com."
+      },
+      {
+        "speaker": "intake",
+        "text": "Perfect, thank you. Now, can you tell me about the criminal matter you're dealing with? What happened?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "I got arrested last week on February 8th for drug possession. But it's not what it looks like - the drugs weren't even mine. I'm facing some serious charges and I don't know what to do."
+      },
+      {
+        "speaker": "intake",
+        "text": "I understand this must be very stressful. Can you tell me more about what happened during the arrest? Where did this take place?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "I was driving on I-85 heading home from work when I got pulled over for speeding. My friend Jake was in the car with me. When the officer searched the vehicle, he found a bag with cocaine in it under Jake's seat. Jake jumped out and ran off before they could arrest him, so now they're saying it's all mine."
+      },
+      {
+        "speaker": "intake",
+        "text": "That's a difficult situation. Do you know how much cocaine they found? And what specific charges were you given?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "The police report says it was 2.5 ounces. They charged me with felony possession with intent to distribute because of the amount. I tried to tell them it wasn't mine, but they didn't listen."
+      },
+      {
+        "speaker": "intake",
+        "text": "Those are serious felony charges. Are you currently out on bond, and do you have any upcoming court dates?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Yes, I posted a $15,000 bond and got out the next day. My arraignment is scheduled for February 28th. That's coming up fast and I still don't have a lawyer."
+      },
+      {
+        "speaker": "intake",
+        "text": "It's good that you're reaching out now. Do you currently have any attorney representing you on this case?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "No, nobody yet. I've been calling around trying to find someone who can help. The public defender's office said they're backed up and might not be able to meet with me until right before court."
+      },
+      {
+        "speaker": "intake",
+        "text": "I need to ask - have you had any prior criminal convictions, particularly for drug-related offenses? This can impact how we approach your case."
+      },
+      {
+        "speaker": "visitor",
+        "text": "Yeah, I do have one prior conviction from 2019 for simple possession. I completed probation for that already though. Will that hurt my case?"
+      },
+      {
+        "speaker": "intake",
+        "text": "It's something we'll need to address in your defense strategy. The prior conviction could potentially impact sentencing if convicted, but an experienced attorney can work to minimize that impact. Are you currently on probation or parole for anything?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "No, I'm not on probation or anything right now. I finished all that in 2021. I've been staying out of trouble until this happened."
+      },
+      {
+        "speaker": "intake",
+        "text": "That's good to know. Do you know this friend Jake's full name and contact information? He could potentially be an important witness in your defense."
+      },
+      {
+        "speaker": "visitor",
+        "text": "His name is Jake Morrison. I have his number but he's been avoiding my calls since this happened. I think he's scared he'll get in trouble too."
+      },
+      {
+        "speaker": "intake",
+        "text": "That's understandable but frustrating for you. Based on what you've told me, you have serious felony charges that require immediate attention with your arraignment coming up on February 28th. I'm going to recommend that one of our criminal defense attorneys consult with you within the next day or two to review the police reports and start building your defense strategy. Does that timeline work for you?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Yes, absolutely. I can meet whenever they're available. I really need help with this and I don't want to go in there without proper representation."
+      },
+      {
+        "speaker": "intake",
+        "text": "Perfect. Someone from our office will call you at 678-555-0142 within 24 hours to schedule a consultation. In the meantime, don't discuss your case with anyone else, and if police contact you again, politely tell them you want to speak with your attorney first. Is there anything else about your case I should know?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "No, I think that covers it. Thank you so much for your help. I feel a lot better knowing I might have some real legal help soon."
+      }
+    ]
+  },
+  "civil_litigation": {
+    "contactName": "Marcus Thompson",
+    "qualification": "green",
+    "confidenceLevel": "High Confidence",
+    "caseType": "Civil Litigation",
+    "summary": "Client alleges breach of software development contract by TechSolutions Inc., who failed to deliver a completed e-commerce platform by the agreed September 15, 2024 deadline despite receiving $85,000 in payments. The breach has caused significant business losses as client was unable to launch his online retail business for the holiday shopping season, resulting in approximately $200,000 in lost projected revenue.",
+    "positiveFactors": [
+      "Clear breach of contract with specific performance obligations and deadlines",
+      "Quantifiable damages including paid contract amount ($85,000) and lost business revenue ($200,000)",
+      "Defendant is established technology company with business assets and insurance coverage",
+      "All events occurred within past 6 months, well within statute of limitations"
+    ],
+    "concerns": [
+      "Contract may contain mandatory arbitration clause requiring dispute resolution outside court system"
+    ],
+    "recommendedAction": "Schedule consultation within 48 hours to review complete contract terms and begin demand letter process while preserving all project communications and documentation.",
+    "transcript": [
+      {
+        "speaker": "intake",
+        "text": "Hello! Welcome to Henderson & Associates. I'm here to help you with your legal matter. Could I start by getting your name?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Hi, yes, my name is Marcus Thompson. I think I need help with a contract dispute."
+      },
+      {
+        "speaker": "intake",
+        "text": "Nice to meet you, Marcus. I'd be happy to help you explore your contract dispute. Could you provide me with a phone number where we can reach you?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Sure, it's 555-234-7890."
+      },
+      {
+        "speaker": "intake",
+        "text": "Great, and what's the best email address for you?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "marcus.thompson@retailventures.com"
+      },
+      {
+        "speaker": "intake",
+        "text": "Perfect. Now, tell me about this contract dispute you're dealing with. What kind of contract are we talking about?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "I hired a software development company called TechSolutions Inc. to build an e-commerce website for my new retail business. They completely failed to deliver what they promised and I'm out a lot of money."
+      },
+      {
+        "speaker": "intake",
+        "text": "That sounds frustrating. When did you first enter into this contract with TechSolutions, and what were the main terms?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "We signed the contract back in May. They were supposed to deliver a fully functional e-commerce platform by September 15th for $85,000. I paid them $45,000 upfront and another $40,000 when they showed me some initial mockups in July."
+      },
+      {
+        "speaker": "intake",
+        "text": "So you've paid the full $85,000 already. What exactly did they deliver by the September 15th deadline?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Basically nothing usable. They gave me access to a half-finished site that couldn't process payments, had no inventory management, and crashed constantly. It was completely unusable for launching my business."
+      },
+      {
+        "speaker": "intake",
+        "text": "Have you had any communication with them since the deadline passed? What have they said about the incomplete work?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "I've been going back and forth with their project manager for weeks. First they said they just needed a few more days, then it became a few more weeks. Last week they finally admitted they're having 'technical difficulties' and can't commit to a completion date."
+      },
+      {
+        "speaker": "intake",
+        "text": "This missed deadline has obviously impacted your business plans. Can you tell me about the financial impact this has had on you?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "It's been devastating. I was planning to launch before the holiday shopping season - that's where online retailers make most of their money. My business consultant estimated I'd do at least $200,000 in sales between November and January based on my inventory and marketing plan. Now I'm stuck with $150,000 worth of inventory sitting in a warehouse."
+      },
+      {
+        "speaker": "intake",
+        "text": "That's a significant loss. Do you know anything about TechSolutions as a company? Are they an established business with assets?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Yes, they're not some fly-by-night operation. They have a nice office in the business district, about 25 employees, and they've been around for at least 8 years. They show other big projects on their website, so they definitely have the capability - they just dropped the ball on mine."
+      },
+      {
+        "speaker": "intake",
+        "text": "That's important to know. Do you still have your original contract with them? And do you recall if there were any special dispute resolution clauses in there?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "I have all the paperwork, yes. I remember there was some language about disputes, but honestly I didn't pay close attention to that part when I signed. I was focused on the technical specifications and timeline."
+      },
+      {
+        "speaker": "intake",
+        "text": "That's completely understandable. We'll definitely need to review those dispute resolution terms carefully. Have you made any demands for refund or completion to TechSolutions in writing?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Just emails back and forth. I told them last week that if they can't finish the work, I want my money back so I can hire someone else. They said they'd 'look into it' but haven't given me a real answer."
+      },
+      {
+        "speaker": "intake",
+        "text": "Based on what you've told me, Marcus, this sounds like a strong breach of contract case. You have clear damages, a defendant with assets, and we're well within the time limits for filing suit. I'd like to get you scheduled for a consultation with one of our attorneys within the next couple of days so we can review your contract terms and start putting pressure on TechSolutions. Does that sound like a good next step?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Yes, absolutely. I need to get this resolved quickly. Every day that passes is costing me more money, and I'm worried they might try to drag this out or claim they don't have the funds to refund me."
+      },
+      {
+        "speaker": "intake",
+        "text": "I understand the urgency. Our attorney will review your contract and likely start with a formal demand letter to establish a clear timeline for resolution. Make sure to bring all your contract documents, email communications, and any records of your business losses to the consultation. Someone from our office will call you tomorrow to schedule that appointment. Is there anything else about this situation I should know?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "I think that covers the main points. I just want to get my money back or get this project completed so I can move forward with my business. Thank you for your help."
+      },
+      {
+        "speaker": "intake",
+        "text": "You're welcome, Marcus. We'll be in touch tomorrow to get this moving quickly. Have a good rest of your day."
+      }
+    ]
+  },
+  "civil_rights": {
+    "contactName": "Marcus Thompson",
+    "qualification": "yellow",
+    "confidenceLevel": "Moderate Confidence",
+    "caseType": "Civil Rights",
+    "summary": "Marcus Thompson, a Black warehouse supervisor at Metro Distribution, was terminated on March 8, 2024, three days after filing an internal complaint about his supervisor using racial slurs and excluding him from management meetings. He filed an EEOC charge on April 15, 2024, and received his right-to-sue letter last week, giving him strong documentation of both the discriminatory conduct and retaliatory termination.",
+    "positiveFactors": [
+      "Clear protected class status (race discrimination)",
+      "Strong evidence of adverse employment action (termination)",
+      "Administrative remedies properly exhausted through EEOC process",
+      "Timeline supports retaliation claim with termination occurring 3 days after internal complaint"
+    ],
+    "concerns": [
+      "Need to verify strength of comparator evidence for disparate treatment claims"
+    ],
+    "recommendedAction": "Schedule attorney consultation within 48 hours to review EEOC file and employment records before right-to-sue deadline approaches",
+    "transcript": [
+      {
+        "speaker": "intake",
+        "text": "Hello! Welcome to Henderson & Associates. I'm here to help you tell us about your potential legal matter. To get started, could I have your first and last name?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Hi, my name is Marcus Thompson."
+      },
+      {
+        "speaker": "intake",
+        "text": "Nice to meet you, Marcus. Could you provide me with a phone number where we can reach you?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Sure, it's 555-847-2093."
+      },
+      {
+        "speaker": "intake",
+        "text": "Thank you. And what's the best email address for you?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "marcus.thompson84@email.com"
+      },
+      {
+        "speaker": "intake",
+        "text": "Perfect. Now, what brings you to us today? What kind of legal issue are you dealing with?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "I think I was fired from my job because of racial discrimination. My boss had been making racist comments and then fired me right after I complained about it."
+      },
+      {
+        "speaker": "intake",
+        "text": "I'm sorry to hear you've experienced that. That sounds very serious. Can you tell me about your workplace and what happened? When did this occur?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "I worked at Metro Distribution as a warehouse supervisor for about 4 years. My direct supervisor, Jim Bradley, had been making comments about Black employees for months. He would say things like we were 'naturally lazy' and would exclude me from management meetings that other supervisors attended."
+      },
+      {
+        "speaker": "intake",
+        "text": "That's completely unacceptable. When you say he excluded you from meetings, were there other supervisors at your level who were included?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Yes, there were three other supervisors - two white guys and one Hispanic woman. They all got invited to the weekly management meetings, but I was always told I 'wasn't needed' for those meetings. Then in early March, Jim called one of my team members 'boy' and made a comment about how Black people need more supervision."
+      },
+      {
+        "speaker": "intake",
+        "text": "Did you report these incidents? What happened after that?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "I finally had enough and filed a formal complaint with HR on March 5th. I documented everything - the meetings I was excluded from, the comments, all of it. Three days later, on March 8th, they called me in and said they were terminating me for 'poor performance' - which was complete BS because I had never received a bad review."
+      },
+      {
+        "speaker": "intake",
+        "text": "So you were terminated just three days after filing the HR complaint? Have you taken any legal steps since then?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Yes, exactly. And yes, I filed a charge with the EEOC on April 15th. I just got my right-to-sue letter last week, which is why I'm calling now."
+      },
+      {
+        "speaker": "intake",
+        "text": "That's good that you filed with the EEOC and got your right-to-sue letter. Do you have any documentation of these incidents or your complaint?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "I have copies of emails, my HR complaint, my personnel file showing good performance reviews, and witness contact information. One of my team members heard Jim make those racist comments and said he'd testify if needed."
+      },
+      {
+        "speaker": "intake",
+        "text": "That documentation sounds very helpful. Besides the supervisor who made these comments, did you notice if other Black employees were treated differently compared to employees of other races?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "That's harder to say definitively. There weren't many Black employees in supervisory roles, but I noticed that Black warehouse workers seemed to get written up more often for minor things. I'd need to look at the records more carefully to be sure about patterns."
+      },
+      {
+        "speaker": "intake",
+        "text": "I understand. Marcus, based on what you've shared, it sounds like you have a potentially strong civil rights case. You've followed the proper procedures with the EEOC and have documentation. We'd want to have one of our attorneys review your EEOC file and employment records in detail."
+      },
+      {
+        "speaker": "visitor",
+        "text": "That would be great. What are the next steps?"
+      },
+      {
+        "speaker": "intake",
+        "text": "I'm going to have our intake team prioritize your case for an attorney consultation within the next 48 hours, given that you have your right-to-sue letter. Someone will call you at 555-847-2093 to schedule that appointment. Please bring all your documentation when you come in."
+      },
+      {
+        "speaker": "visitor",
+        "text": "Perfect, thank you so much. I really appreciate your help."
+      },
+      {
+        "speaker": "intake",
+        "text": "You're very welcome, Marcus. We take these matters seriously, and we'll be in touch soon. Have a good day."
+      }
+    ]
+  },
+  "employment_law": {
+    "contactName": "Maria Rodriguez",
+    "qualification": "green",
+    "confidenceLevel": "High Confidence",
+    "caseType": "Employment Law",
+    "summary": "Maria Rodriguez was terminated on March 15, 2024, from TechFlow Solutions after filing a complaint with HR about her supervisor's discriminatory comments regarding her pregnancy and requests for lighter duties. She had worked there for 3 years as a software developer and was told the termination was due to 'performance issues' despite having received positive reviews throughout her employment, including one just two months before termination.",
+    "positiveFactors": [
+      "Clear employment relationship established - 3 years as full-time software developer with benefits and regular performance reviews",
+      "Strong documentation including HR complaint filing, positive performance reviews, and termination letter citing performance",
+      "Timeline clearly shows retaliation pattern - pregnancy disclosure, discriminatory comments, HR complaint, then termination within weeks",
+      "Identifiable damages including lost wages, benefits, and potential pregnancy discrimination and retaliation claims"
+    ],
+    "concerns": [
+      "Need to review employee handbook and any arbitration agreements that may have been signed during onboarding"
+    ],
+    "recommendedAction": "Schedule consultation within 48 hours to review all employment documents, HR complaint records, and performance reviews. Gather complete timeline documentation before statute of limitations concerns arise.",
+    "transcript": [
+      {
+        "speaker": "intake",
+        "text": "Hello! Welcome to Henderson & Associates. I'm here to help you with your potential employment law matter. Could I start by getting your full name?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Hi, yes, my name is Maria Rodriguez. I think I was wrongfully terminated from my job and I'm not sure what to do."
+      },
+      {
+        "speaker": "intake",
+        "text": "I'm sorry to hear about your situation, Maria. I'd like to help you understand your options. Can you provide me with a phone number where we can reach you?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Sure, it's 555-423-7891. My cell phone."
+      },
+      {
+        "speaker": "intake",
+        "text": "Thank you. And what's the best email address for you?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "It's maria.rodriguez.dev@gmail.com"
+      },
+      {
+        "speaker": "intake",
+        "text": "Perfect. Now, can you tell me about what happened with your employment? What kind of work were you doing and when did this termination occur?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "I was a software developer at TechFlow Solutions for about 3 years. They fired me on March 15th, just a few weeks ago. I'm six months pregnant, and I think that's really why they let me go, even though they said it was for performance."
+      },
+      {
+        "speaker": "intake",
+        "text": "That timing does seem concerning, Maria. Can you walk me through what led up to the termination? Had there been any discussions about your pregnancy at work?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Yes, that's the thing. I told my supervisor, David Chen, about my pregnancy in February. At first he seemed okay with it, but then he started making comments like asking if I was sure I could 'keep up with the demanding schedule' and whether I'd really be 'committed to the team' after the baby comes."
+      },
+      {
+        "speaker": "intake",
+        "text": "Those comments are definitely problematic. Did you document these conversations or report them to anyone?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Well, it got worse. In early March, I asked about potentially getting some help with the heavier equipment setup since I was having some back pain, and David said something like 'maybe you should have thought about that before getting pregnant.' I was so upset that I filed a complaint with HR on March 8th."
+      },
+      {
+        "speaker": "intake",
+        "text": "Good for you for reporting it. What happened after you filed the HR complaint?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "That's just it - exactly one week later, on March 15th, they called me into a meeting with HR and said they were terminating me for performance issues. They gave me this letter that mentioned things like 'not meeting project deadlines' but it was so vague."
+      },
+      {
+        "speaker": "intake",
+        "text": "How was your actual performance? Did you have any performance reviews or documentation of your work quality?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "That's what makes this so crazy! I had my annual review in January and got 'exceeds expectations' in most categories. My supervisor even wrote that I was 'a valuable team member with strong technical skills.' I've never had any write-ups or warnings about my performance."
+      },
+      {
+        "speaker": "intake",
+        "text": "That's very strong evidence, Maria. Do you still have copies of those performance reviews and the termination letter?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Yes, I kept everything. I also have the email confirmation from HR acknowledging my complaint. I just felt like something wasn't right about the timing."
+      },
+      {
+        "speaker": "intake",
+        "text": "Your instincts are correct. The timeline here is very telling. Were you a full-time employee with benefits, or were you working as a contractor?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Full-time employee. I had health insurance, paid time off, the whole package. They took taxes out of my paycheck and everything. I was definitely not a contractor."
+      },
+      {
+        "speaker": "intake",
+        "text": "That's important to establish. One thing I need to ask - do you remember signing any arbitration agreements when you started, or any documents that might require disputes to be handled outside of court?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Honestly, I'm not sure. I signed so many papers when I started three years ago. Is that something that would prevent me from taking action?"
+      },
+      {
+        "speaker": "intake",
+        "text": "Not necessarily prevent it, but it might affect how we proceed. We'd want to review any employment agreements you signed. Do you have copies of your hiring paperwork or an employee handbook?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "I think I have some of it at home. I can look for it. What do you think about my situation overall? Do I have a case?"
+      },
+      {
+        "speaker": "intake",
+        "text": "Based on what you've told me, Maria, you have several strong factors working in your favor - the timing of your termination right after filing an HR complaint, the discriminatory comments, and your positive performance history. I'd recommend we schedule you for a consultation with one of our attorneys within the next couple of days to review all your documentation and discuss your options fully. Would that work for you?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Yes, absolutely. I really want to fight this. It's not right what they did, and I need my job, especially with the baby coming."
+      },
+      {
+        "speaker": "intake",
+        "text": "I completely understand, and you're right to stand up for yourself. Someone from our office will call you within 24 hours to schedule your consultation. In the meantime, please gather all the documents we discussed - performance reviews, the termination letter, HR correspondence, and any employment agreements you can find. Is there anything else about your situation you think I should know?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "I think that covers the main points. Thank you so much for listening and taking this seriously. I was worried no one would believe me."
+      },
+      {
+        "speaker": "intake",
+        "text": "Of course, Maria. What happened to you sounds like potential pregnancy discrimination and retaliation, which are serious violations of employment law. We'll be in touch very soon to get this process started. Take care."
+      }
+    ]
+  },
+  "construction_law": {
+    "contactName": "Michael Rodriguez",
+    "qualification": "green",
+    "confidenceLevel": "High Confidence",
+    "caseType": "Construction Law",
+    "summary": "Client hired Pinnacle Construction in March 2024 for a $180,000 home addition but discovered significant structural defects including sagging floors, cracked foundation walls, and water intrusion after final payment in September. Multiple building code violations were documented by an independent inspector in October, and the contractor has refused to address the issues despite written notice provided in early November.",
+    "positiveFactors": [
+      "Written contract with clear scope of work and specifications exists",
+      "Professional building inspector documented multiple code violations and structural defects",
+      "Proper written notice of defects provided to contractor within reasonable timeframe",
+      "Substantial damages with clear documentation and repair estimates available"
+    ],
+    "concerns": [
+      "Project completion was recent - statute of limitations timeline needs verification",
+      "Contractor's insurance coverage and financial capacity unclear"
+    ],
+    "recommendedAction": "Schedule consultation within 48 hours to review contract, inspection report, and photographs. Immediately investigate contractor's bonding and insurance status.",
+    "transcript": [
+      {
+        "speaker": "intake",
+        "text": "Hello! Welcome to Henderson & Associates. I'm here to help you with your legal matter. May I start by getting your name?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Hi, my name is Michael Rodriguez. I'm having some serious problems with a contractor and I'm not sure what to do."
+      },
+      {
+        "speaker": "intake",
+        "text": "I'm sorry to hear you're dealing with contractor issues, Michael. I'd be happy to help you explore your options. Could you provide me with your phone number and email address so we can follow up with you?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Sure, my cell is 555-234-7891 and email is mrodriguez.austin@gmail.com."
+      },
+      {
+        "speaker": "intake",
+        "text": "Thank you. Now, can you tell me about the situation with your contractor? What type of work were they doing for you?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "We hired Pinnacle Construction back in March to build a large addition onto our home - a new master suite and expanded kitchen. The contract was for $180,000 and they said it would take about 5 months."
+      },
+      {
+        "speaker": "intake",
+        "text": "I see. And what problems have you encountered with their work?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Well, they finished in September and we paid them in full, but almost immediately we started noticing issues. The floors in the new addition are sagging, there are cracks appearing in the foundation walls, and we've had water getting in during the recent rains. It's gotten worse over the past few weeks."
+      },
+      {
+        "speaker": "intake",
+        "text": "Those sound like serious structural issues. Have you had anyone inspect the work to document these problems?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Yes, thankfully. My neighbor is in construction and recommended we get an independent building inspector out there. The inspector came out last month - mid-October I think - and found multiple building code violations. He said the foundation work wasn't done properly and some of the framing doesn't meet code either."
+      },
+      {
+        "speaker": "intake",
+        "text": "That's very helpful that you have that professional documentation. Do you have a written contract with Pinnacle Construction that spells out the work they were supposed to do?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Oh yes, definitely. We have a detailed written contract that specifies everything - the materials, the timeline, all the work that was supposed to be done. We made sure to get everything in writing because it was such a big project."
+      },
+      {
+        "speaker": "intake",
+        "text": "Excellent. Have you contacted Pinnacle Construction about these defects? What was their response?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "We sent them a certified letter in early November - maybe three weeks ago - detailing all the problems and asking them to come back and fix everything. They basically brushed us off and said the work was fine and that any issues were 'normal settling.' They refuse to come back out."
+      },
+      {
+        "speaker": "intake",
+        "text": "I'm glad you documented your notice to them in writing. Do you know if Pinnacle Construction is licensed and bonded, or if they carry insurance?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "I know they're licensed - I checked that before we hired them. But honestly, I'm not sure about their bonding or insurance situation. That's something I probably should have looked into more carefully."
+      },
+      {
+        "speaker": "intake",
+        "text": "That's understandable, and it's something we can investigate. Have you gotten any estimates for what it might cost to repair all these defects?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "The inspector gave us a rough estimate that it could be anywhere from $40,000 to $75,000 to fix everything properly, depending on how extensive the foundation issues are. We're devastated - we put our life savings into this project."
+      },
+      {
+        "speaker": "intake",
+        "text": "I can understand how frustrating and concerning this must be for you. Based on what you've told me, it sounds like you may have a strong case for construction defects. You have a written contract, professional documentation of code violations, and you properly notified the contractor of the issues."
+      },
+      {
+        "speaker": "visitor",
+        "text": "That's encouraging to hear. What would be the next steps if we decide to move forward?"
+      },
+      {
+        "speaker": "intake",
+        "text": "I'd recommend scheduling a consultation with one of our construction law attorneys within the next day or two. We'll want to review your contract, the inspection report, and any photos you have of the defects. We'll also need to quickly investigate Pinnacle's insurance and bonding status. Time can be important in these cases."
+      },
+      {
+        "speaker": "visitor",
+        "text": "Okay, that sounds good. I have all those documents ready to go. Should I bring anything else to the consultation?"
+      },
+      {
+        "speaker": "intake",
+        "text": "Yes - bring copies of all correspondence with Pinnacle, your payment records, and any repair estimates you've received. Our team will reach out within 24 hours to schedule your consultation. We'll make sure to prioritize your case given the nature of the structural issues involved."
+      },
+      {
+        "speaker": "visitor",
+        "text": "Thank you so much. I feel better knowing we have options and that we documented everything properly."
+      }
+    ]
+  },
+  "products_liability": {
+    "contactName": "Maria Rodriguez",
+    "qualification": "green",
+    "confidenceLevel": "High Confidence",
+    "caseType": "Products Liability",
+    "summary": "On February 8, 2024, Maria Rodriguez suffered second-degree burns to her right hand and forearm when her BlendMax Pro 3000 kitchen blender exploded while making a morning smoothie. She was hospitalized overnight and required skin grafts, with ongoing physical therapy expected to continue for several months.",
+    "positiveFactors": [
+      "Product clearly identified - BlendMax Pro 3000 purchased in December 2023",
+      "Severe documented injuries - second-degree burns requiring skin grafts and ongoing PT",
+      "Defective product preserved - blender retained with visible crack in pitcher base",
+      "Complete purchase records available - receipt and credit card statements saved"
+    ],
+    "concerns": [
+      "Need to verify proper assembly and operation to rule out misuse defense"
+    ],
+    "recommendedAction": "Schedule in-person consultation within 48 hours to examine preserved product, review medical records, and photograph injuries for case documentation",
+    "transcript": [
+      {
+        "speaker": "intake",
+        "text": "Hello! Thank you for reaching out to our firm. I'm here to help you understand your legal options. May I start by getting your name?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Hi, yes, my name is Maria Rodriguez. I was injured by a kitchen appliance and someone told me I might have a case."
+      },
+      {
+        "speaker": "intake",
+        "text": "I'm sorry to hear about your injury, Maria. I'd be happy to learn more about what happened. Can I get your phone number and email address so we can follow up with you?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Sure, my cell is 555-234-8901 and email is maria.rodriguez.home@gmail.com"
+      },
+      {
+        "speaker": "intake",
+        "text": "Thank you. Now, can you tell me what type of appliance was involved and when this incident occurred?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "It was my BlendMax Pro 3000 blender. This happened about 3 weeks ago, on February 8th. I was just making my usual morning smoothie when the whole pitcher just exploded."
+      },
+      {
+        "speaker": "intake",
+        "text": "That sounds terrifying. What exactly happened when it exploded, and were you injured?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "I had just turned it on and was holding the top steady like I always do. Suddenly there was this loud crack and the bottom of the pitcher just gave way. Hot liquid and glass went everywhere. My right hand and arm got burned really badly from the smoothie - it had hot coffee in it."
+      },
+      {
+        "speaker": "intake",
+        "text": "How severe were your burns? Did you need medical treatment?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Very severe. I had to go to the ER at Memorial Hospital that morning. They said I had second-degree burns on my hand and forearm. I had to stay overnight and then I needed skin grafts a few days later. Dr. Martinez, my plastic surgeon, says I'll need physical therapy for months."
+      },
+      {
+        "speaker": "intake",
+        "text": "I'm so sorry you're going through this. Do you still have the blender that malfunctioned?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Yes, I kept everything. My husband said we should save it. You can clearly see there's a crack that goes all the way across the bottom of the pitcher. It definitely wasn't there before - I would have noticed something like that."
+      },
+      {
+        "speaker": "intake",
+        "text": "That was smart thinking. How long had you owned this blender before the incident?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "I got it for Christmas, so I'd only had it about 6 weeks. I bought it at Williams Sonoma in December with my credit card. I still have the receipt because it was expensive - like $400."
+      },
+      {
+        "speaker": "intake",
+        "text": "Had you been using it regularly, and were you using it the same way you always did that morning?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Yes, I used it almost every morning for smoothies. I always followed the instructions exactly - I'm very careful about that kind of thing. That morning was no different than any other time I used it."
+      },
+      {
+        "speaker": "intake",
+        "text": "Did you modify the blender in any way or use any parts that didn't come with it originally?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "No, absolutely not. I used only the parts it came with and followed the manual exactly. I even hand-washed all the pieces like they recommended instead of putting them in the dishwasher."
+      },
+      {
+        "speaker": "intake",
+        "text": "Maria, based on what you've told me, this sounds like you may have a strong products liability case. The fact that you have the defective blender, clear documentation of your injuries, and proof of purchase is very important. Are you currently working with any other attorneys?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "No, you're the first law firm I've contacted. My friend Sarah had a similar issue with a different product and said I should definitely talk to a lawyer."
+      },
+      {
+        "speaker": "intake",
+        "text": "I'd like to have one of our attorneys meet with you this week to examine the blender and review your medical records. We'll also want to photograph your injuries and get copies of all your medical bills. Would you be available for a consultation in the next day or two?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Yes, definitely. The sooner the better. I'm still dealing with doctor appointments and physical therapy, and the medical bills are really piling up."
+      },
+      {
+        "speaker": "intake",
+        "text": "I completely understand. I'm going to have our case manager call you within the next 2 hours to schedule that appointment. Please make sure to bring the blender, your receipt, and any medical records you have. Is there anything else about the incident you think I should know?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "I don't think so. I just want to make sure this doesn't happen to anyone else. That blender could have seriously hurt someone even worse than it hurt me."
+      },
+      {
+        "speaker": "intake",
+        "text": "You're absolutely right to be concerned about that. Thank you for taking the time to speak with me today, Maria. Someone will be calling you very soon to set up your consultation. Take care."
+      }
+    ]
+  },
+  "estate_planning": {
+    "contactName": "Margaret Chen",
+    "qualification": "green",
+    "confidenceLevel": "High Confidence",
+    "caseType": "Estate Planning",
+    "summary": "Margaret Chen, a 58-year-old divorced professional with two adult children, seeks comprehensive estate planning after her recent remarriage to David in September. She owns significant assets including a home worth $800,000, retirement accounts totaling $650,000, and a growing consulting business, but currently has only a basic will from 2018 that doesn't reflect her new marriage or current financial situation.",
+    "positiveFactors": [
+      "Substantial assets requiring protection ($1.4+ million total)",
+      "Clear family structure with identified beneficiaries",
+      "Existing 2018 will provides starting point for updates",
+      "Specific goals identified including business succession planning"
+    ],
+    "concerns": [
+      "Blended family dynamics with new spouse and adult children from previous marriage"
+    ],
+    "recommendedAction": "Schedule comprehensive estate planning consultation within 2 weeks to review existing will, discuss trust structures, and address blended family considerations.",
+    "transcript": [
+      {
+        "speaker": "intake",
+        "text": "Hello! Welcome to Henderson & Associates Estate Planning. I'm here to help you get started with your legal matter. Could I get your full name please?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Hi, yes, my name is Margaret Chen. I was referred by my financial advisor."
+      },
+      {
+        "speaker": "intake",
+        "text": "Thank you Margaret. Could you provide me with a phone number where we can reach you?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Sure, it's 555-247-8903. That's my cell phone."
+      },
+      {
+        "speaker": "intake",
+        "text": "Perfect, and what's the best email address for you?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "margaret.chen@consultech.com - that's my business email but I check it constantly."
+      },
+      {
+        "speaker": "intake",
+        "text": "Great! Now, what brings you to us today? What kind of estate planning assistance are you looking for?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Well, I just got remarried in September - to my husband David - and I realized my estate planning is completely outdated. I have a will from 2018 but it doesn't reflect any of my current situation."
+      },
+      {
+        "speaker": "intake",
+        "text": "Congratulations on your marriage! That's definitely a major life event that should trigger an estate plan review. Can you tell me a bit about your family situation - do you or David have children?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Yes, I have two adult children from my first marriage - Sarah is 28 and Michael is 25. David has one daughter who's 22, but she lives with her mother. We don't have any children together."
+      },
+      {
+        "speaker": "intake",
+        "text": "I understand. And what are your main concerns or goals with updating your estate plan?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "I want to make sure David is taken care of if something happens to me, but I also want to protect my children's inheritance. I've worked really hard to build up assets and I want to be smart about this. Plus, I have a consulting business that's been growing and I'm not sure how that fits in."
+      },
+      {
+        "speaker": "intake",
+        "text": "Those are very thoughtful considerations. Can you give me a general sense of the types and value of assets we're talking about? This helps us understand the complexity of planning you might need."
+      },
+      {
+        "speaker": "visitor",
+        "text": "Sure. My home is worth about $800,000 - it's just in my name since I bought it after my divorce. I have about $650,000 in retirement accounts, and then my consulting business. The business has really taken off - I'm probably netting around $200,000 a year now."
+      },
+      {
+        "speaker": "intake",
+        "text": "That's substantial growth - congratulations. With assets like that, there are definitely planning strategies we should discuss. You mentioned your current will is from 2018 - what does it currently provide for?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "It's pretty basic. Everything goes to my children equally, with my sister as executor. It doesn't mention David at all, obviously, since I wasn't even dating him then. And it doesn't really address the business either."
+      },
+      {
+        "speaker": "intake",
+        "text": "That makes sense. Have you and David discussed how you both want to handle estate planning as a married couple? Does he have significant assets as well?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "We've talked about it some. He has his own house and retirement savings, nothing like what I have though. He's very understanding that I want to make sure my kids are provided for, but I also want to make sure he's not left out in the cold. It's a delicate balance."
+      },
+      {
+        "speaker": "intake",
+        "text": "Absolutely, and that's exactly the kind of situation where proper planning really makes a difference. For your consulting business, do you have any business partners or is it just you?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "It's just me right now, but I have been thinking about bringing in a partner or maybe eventually selling it. I definitely need to think about what happens to it if something happens to me."
+      },
+      {
+        "speaker": "intake",
+        "text": "Business succession planning is definitely important, especially with a growing business. Based on everything you've shared, it sounds like you have substantial assets that would benefit from comprehensive planning, and clear goals about providing for both your new husband and your children. The complexity with the blended family situation is definitely something our attorneys work with regularly."
+      },
+      {
+        "speaker": "visitor",
+        "text": "That's reassuring. I want to make sure I do this right. What would be the next step?"
+      },
+      {
+        "speaker": "intake",
+        "text": "I'd recommend scheduling you for a comprehensive consultation with one of our estate planning attorneys within the next couple of weeks. They can review your existing will, discuss trust structures that might work well for your blended family situation, and address the business succession planning. We'll also send you a planning worksheet ahead of time to help you organize your thoughts. Does that sound good?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Yes, that sounds perfect. I'd really like to get this handled before the end of the year. Thank you so much for your help."
+      },
+      {
+        "speaker": "intake",
+        "text": "You're very welcome, Margaret. Someone from our scheduling team will call you within 24 hours at 555-247-8903 to set up that appointment. We'll also send a confirmation email to margaret.chen@consultech.com. We look forward to working with you!"
+      }
+    ]
+  },
+  "business_corporate": {
+    "contactName": "Sarah Chen",
+    "qualification": "green",
+    "confidenceLevel": "High Confidence",
+    "caseType": "Business/Corporate",
+    "summary": "Client needs to establish an LLC for her growing e-commerce consulting business that currently operates as a sole proprietorship with $180K annual revenue. She has two potential business partners interested in joining and wants to formalize the structure before bringing them on. Timeline is flexible with goal to complete formation within 60 days.",
+    "positiveFactors": [
+      "Established business with strong revenue ($180K annually) seeking proper legal structure",
+      "Clear goals for LLC formation and partnership structure before expansion",
+      "All stakeholders identified - client plus two specific potential partners",
+      "Reasonable 60-day timeline allows for proper document preparation and review"
+    ],
+    "concerns": [
+      "Multi-state operations may complicate entity formation and tax obligations"
+    ],
+    "recommendedAction": "Schedule consultation within 48 hours to review current business operations, discuss multi-state implications, and begin LLC formation process.",
+    "transcript": [
+      {
+        "speaker": "intake",
+        "text": "Hello! Welcome to Morrison & Associates. I'm here to help you with your business or corporate legal matter. Could I start by getting your name?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Hi, yes. My name is Sarah Chen."
+      },
+      {
+        "speaker": "intake",
+        "text": "Nice to meet you, Sarah. Could you provide me with your phone number and email address so we can follow up with you?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Sure, my phone is 415-555-2847 and email is sarah.chen.consulting@gmail.com."
+      },
+      {
+        "speaker": "intake",
+        "text": "Perfect, thank you. What brings you to us today? What kind of business or corporate matter can we help you with?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "I've been running my own e-commerce consulting business for about three years now, and it's really taken off. I'm currently just a sole proprietor, but I think I need to form an LLC. I also have some potential partners who want to join the business."
+      },
+      {
+        "speaker": "intake",
+        "text": "That sounds like an exciting time for your business! Can you tell me a bit more about your current operation? What's your annual revenue looking like, and how many clients are you working with?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Last year I brought in about $180,000, and this year I'm on track to exceed $200K. I work with about 15-20 active clients at any given time, mostly helping them optimize their Amazon and Shopify stores. The business has really grown beyond what I can handle alone."
+      },
+      {
+        "speaker": "intake",
+        "text": "That's impressive growth! You mentioned potential partners - can you tell me more about that situation? How many partners are we talking about, and what would their role be?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "There are two people I'm considering. One is Marcus Williams, who has a background in digital marketing and has been freelancing with some of my clients. The other is Jennifer Park, who has experience in business operations and could help with the backend stuff. We've talked about it, but nothing's formalized yet."
+      },
+      {
+        "speaker": "intake",
+        "text": "It sounds like you're being smart about formalizing things before bringing partners on board. Are your clients located just in California, or do you work with businesses in other states as well?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Oh, they're all over. I'd say about 40% are California-based, but I have clients in Texas, New York, Florida, and several other states. Most of my work is done remotely anyway."
+      },
+      {
+        "speaker": "intake",
+        "text": "That's helpful to know - multi-state operations can have some implications for how we structure things. What's your timeline looking like for getting this LLC set up? Do you have any pressing deadlines?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Not super urgent, but I'd like to get it done within the next couple months. Marcus and Jennifer are both eager to get started, and I want to have the legal structure in place before we make anything official with them."
+      },
+      {
+        "speaker": "intake",
+        "text": "That's a reasonable timeline. Have you given any thought to how you'd want to structure the ownership percentages, or would that be something you'd want to discuss during the legal consultation?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "I have some initial thoughts, but honestly I'd really value getting professional advice on that. I want to make sure it's fair but also protects the business I've already built."
+      },
+      {
+        "speaker": "intake",
+        "text": "Absolutely, that's exactly the kind of strategic thinking that will serve you well. Have you had any previous legal issues with your business, or any ongoing disputes or regulatory concerns?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "No, nothing like that. I've been pretty careful to keep everything above board, and I haven't had any problems with clients or anything like that."
+      },
+      {
+        "speaker": "intake",
+        "text": "That's great to hear. Based on what you've told me, this sounds like exactly the type of matter our corporate attorneys handle regularly. I'd like to get you scheduled for a consultation within the next day or two so we can dive deeper into the specifics and get your LLC formation process started."
+      },
+      {
+        "speaker": "visitor",
+        "text": "That sounds perfect. I'm really ready to take this next step and do it right."
+      },
+      {
+        "speaker": "intake",
+        "text": "Excellent! Someone from our corporate team will be calling you at 415-555-2847 within the next 48 hours to schedule your consultation. They'll also send a follow-up email to sarah.chen.consulting@gmail.com with some preliminary information to review before your meeting."
+      },
+      {
+        "speaker": "visitor",
+        "text": "Great, thank you so much. I'm looking forward to hearing from them."
+      }
+    ]
+  },
+  "social_security": {
+    "contactName": "Maria Rodriguez",
+    "qualification": "yellow",
+    "confidenceLevel": "Moderate Confidence",
+    "caseType": "Social Security/Disability",
+    "summary": "Ms. Rodriguez, age 52, worked as a warehouse supervisor for 18 years before being terminated in March 2024 due to chronic back pain and diabetic complications. She applied for SSDI in April 2024 and was denied in August 2024, with her request for reconsideration denied in October 2024. She is now seeking representation for the ALJ hearing phase.",
+    "positiveFactors": [
+      "Strong work history with 18 years at same employer demonstrating work ethic",
+      "Multiple documented medical conditions including herniated discs and diabetic neuropathy with regular treatment",
+      "Treating physician Dr. Martinez has provided supportive documentation and restrictions",
+      "Already at ALJ hearing stage with 60-day deadline approaching"
+    ],
+    "concerns": [
+      "Age 52 may present challenges for proving inability to perform any work",
+      "Some gaps in treatment during summer 2024 due to insurance issues"
+    ],
+    "recommendedAction": "Schedule consultation within one week to review medical records and discuss hearing preparation strategy before 60-day deadline expires",
+    "transcript": [
+      {
+        "speaker": "intake",
+        "text": "Hello! Thank you for contacting our law firm. I'm here to help you with your legal matter. Could you please start by telling me your name?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Hi, my name is Maria Rodriguez. I'm calling about my disability case."
+      },
+      {
+        "speaker": "intake",
+        "text": "Nice to meet you, Maria. I'd be happy to help you with your disability matter. Could you provide me with your phone number and email address so we can follow up with you?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Sure, my phone is 555-234-7890 and my email is maria.rodriguez.email@gmail.com"
+      },
+      {
+        "speaker": "intake",
+        "text": "Perfect, thank you. Now, can you tell me a bit about your disability situation? Are you currently receiving benefits, or are you in the application process?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "I've been denied twice already. I applied back in April after I lost my job, got denied in August, then they denied my reconsideration in October. Now I think I need to request a hearing but I'm not sure how to handle it."
+      },
+      {
+        "speaker": "intake",
+        "text": "I understand how frustrating that must be. Can you tell me what medical conditions you're dealing with and what type of work you were doing before?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "I have chronic back problems - herniated discs at L4-L5 and L5-S1. I also have diabetes that's gotten worse, and now I have neuropathy in my feet. I was a warehouse supervisor at Johnson Distribution for 18 years before they let me go in March."
+      },
+      {
+        "speaker": "intake",
+        "text": "That sounds like you have some significant medical issues. Are you currently being treated by doctors for these conditions?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Yes, I see Dr. Martinez at Valley Medical Center regularly. He's been treating my back since 2022 and he's the one who told me I shouldn't be lifting more than 10 pounds or standing for more than 2 hours at a time. My endocrinologist Dr. Kim manages my diabetes."
+      },
+      {
+        "speaker": "intake",
+        "text": "That's helpful that you have treating physicians providing restrictions. Have there been any issues with keeping up with your medical appointments or treatments?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Well, after I lost my job, my insurance got messed up and I had to miss some appointments over the summer. But I've been back on track since September when I got on my husband's insurance plan."
+      },
+      {
+        "speaker": "intake",
+        "text": "I see. How old are you currently, Maria, and what's your educational background?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "I'm 52 years old. I have my high school diploma and I took some business courses at the community college, but I've basically been doing warehouse work my whole career."
+      },
+      {
+        "speaker": "intake",
+        "text": "When you say you've been denied twice, do you know what reasons Social Security gave for the denials?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "They kept saying I could do other types of work, like sedentary office jobs. But I've never done office work, and with my back pain and the neuropathy in my feet, even sitting for long periods is really difficult."
+      },
+      {
+        "speaker": "intake",
+        "text": "That makes sense given your work history and medical conditions. Do you know when the deadline is to request your hearing before an administrative law judge?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "I think I have 60 days from when I got the reconsideration denial, so that would be coming up in early December. That's why I'm calling now - I don't want to miss the deadline."
+      },
+      {
+        "speaker": "intake",
+        "text": "You're absolutely right to be concerned about that timeline. Have your doctors provided any written statements or completed forms about your limitations and inability to work?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Dr. Martinez filled out some forms for Social Security already, and he wrote a letter saying I can't do my old job anymore. He's been really supportive and understands how much pain I'm in every day."
+      },
+      {
+        "speaker": "intake",
+        "text": "That physician support is very valuable for your case. Maria, based on what you've told me, it sounds like you have a case that could benefit from legal representation. I'd like to have one of our attorneys review your situation more thoroughly. Would you be available for a consultation in the next week or so?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Yes, absolutely. I really need help with this hearing process and I don't want to mess it up. What do I need to bring?"
+      },
+      {
+        "speaker": "intake",
+        "text": "Great! We'll send you a list of documents to gather, including your denial letters, medical records, and work history information. Our team will contact you within the next two business days to schedule your consultation. Is the phone number you provided the best way to reach you?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Yes, that's perfect. Thank you so much for your help. I feel a lot more hopeful now."
+      }
+    ]
+  },
+  "toxic_torts": {
+    "contactName": "Maria Gonzalez",
+    "qualification": "yellow",
+    "confidenceLevel": "Moderate Confidence",
+    "caseType": "Toxic Torts",
+    "summary": "Ms. Gonzalez worked at Riverside Manufacturing from 2001-2019 where she was regularly exposed to trichloroethylene (TCE) used in metal degreasing operations. In September 2023, she was diagnosed with non-Hodgkin's lymphoma, and her oncologist at City Medical Center has indicated the cancer may be linked to her occupational chemical exposure. The company has since been cited by OSHA for inadequate safety protocols regarding TCE handling.",
+    "positiveFactors": [
+      "18-year documented employment history with specific chemical exposure records",
+      "Medical diagnosis of non-Hodgkin's lymphoma confirmed by oncologist Dr. Patricia Mills",
+      "Clear identification of exposure source - Riverside Manufacturing's TCE degreasing operations",
+      "Well within statute of limitations for occupational disease claims"
+    ],
+    "concerns": [
+      "Multiple potential exposure sources including previous employment at auto repair shop may complicate causation analysis"
+    ],
+    "recommendedAction": "Schedule attorney consultation within 5 business days to review employment records, medical documentation, and OSHA citations. Request complete work history and medical records from City Medical Center.",
+    "transcript": [
+      {
+        "speaker": "intake",
+        "text": "Hello! Thank you for reaching out to our firm. I'm here to help you understand if we might be able to assist with your legal matter. Could I start by getting your name?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Hi, yes, my name is Maria Gonzalez. I think I might have a case related to chemicals I was exposed to at work."
+      },
+      {
+        "speaker": "intake",
+        "text": "Thank you, Maria. I'd be happy to learn more about your situation. Could you provide me with a phone number and email address where we can reach you?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Sure, my cell is 555-234-7891 and email is maria.gonzalez.rn@gmail.com"
+      },
+      {
+        "speaker": "intake",
+        "text": "Perfect, thank you. Now, you mentioned exposure to chemicals at work. Can you tell me more about what happened and what concerns you have?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "I worked at Riverside Manufacturing for almost 20 years, from 2001 until 2019. We used a lot of industrial solvents for cleaning metal parts. Last month I was diagnosed with cancer - non-Hodgkin's lymphoma - and my doctor thinks it might be related to the chemicals I was exposed to."
+      },
+      {
+        "speaker": "intake",
+        "text": "I'm very sorry to hear about your diagnosis, Maria. That must be incredibly difficult. Can you tell me more about the specific chemicals you were exposed to and how the exposure occurred?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "The main one was something called TCE - trichloroethylene I think? We used it in these big degreasing tanks to clean engine parts. I worked right next to them for years, and honestly, the ventilation wasn't great. We'd smell those fumes all day long."
+      },
+      {
+        "speaker": "intake",
+        "text": "That sounds like significant exposure. Did the company provide any protective equipment, and do you have any documentation of your work there or the chemicals used?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "They gave us gloves sometimes, but not much else. I have all my old pay stubs and employee records though. And actually, about 3 weeks ago I saw in the local paper that OSHA fined Riverside for safety violations related to chemical handling - apparently after I left, other workers complained."
+      },
+      {
+        "speaker": "intake",
+        "text": "That's very important information. You mentioned your doctor thinks there might be a connection between your cancer and the chemical exposure. Can you tell me more about what your doctor said specifically?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "My oncologist is Dr. Patricia Mills at City Medical Center. When I told her about my work history, she said TCE is a known carcinogen that's been linked to lymphomas like mine. She said given how long I was exposed and the type of cancer I have, it's very possible that's what caused it."
+      },
+      {
+        "speaker": "intake",
+        "text": "Dr. Mills' assessment is very significant. When exactly were you diagnosed, and have you worked anywhere else where you might have been exposed to similar chemicals?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "I was officially diagnosed on September 15th, so just about two months ago now. Before Riverside, I worked at Tony's Auto Repair for a few years in the late 90s where we used solvents too, but nothing like the daily exposure I had at Riverside."
+      },
+      {
+        "speaker": "intake",
+        "text": "I understand. The timeline and your work history are important details. Are you currently undergoing treatment, and has this impacted your ability to work or your daily life?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Yes, I started chemotherapy in October. I had to take early retirement because of the treatment schedule and fatigue. It's been really hard financially and emotionally on my whole family."
+      },
+      {
+        "speaker": "intake",
+        "text": "I can only imagine how challenging this must be for you and your family. Based on what you've shared - your long-term exposure to TCE at Riverside, your medical diagnosis, and your doctor's assessment of the potential connection - this does sound like it could be a viable case."
+      },
+      {
+        "speaker": "visitor",
+        "text": "Really? I wasn't sure if I had any legal options. What would be the next steps if you think this might be a case worth pursuing?"
+      },
+      {
+        "speaker": "intake",
+        "text": "Yes, there are several positive factors here. You have documented employment history, a clear diagnosis from an oncologist who has identified a potential link, and there's even recent OSHA action against your former employer. I'd recommend scheduling a consultation with one of our attorneys within the next week."
+      },
+      {
+        "speaker": "visitor",
+        "text": "That would be great. What should I bring to that meeting?"
+      },
+      {
+        "speaker": "intake",
+        "text": "You'll want to gather your employment records from Riverside, all medical records related to your diagnosis and treatment, and any documentation about the OSHA violations if you can find that news article. Our team will also help you obtain additional records we might need."
+      },
+      {
+        "speaker": "visitor",
+        "text": "Okay, I can do that. How soon could I meet with an attorney?"
+      },
+      {
+        "speaker": "intake",
+        "text": "I'll have someone from our scheduling team call you within the next business day to set up a consultation within the week. They'll also send you a list of documents to gather beforehand. Is there anything else about your situation that you think might be important for us to know?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "I don't think so. I just really appreciate you taking the time to listen and letting me know this might be something worth pursuing. It gives me some hope."
+      },
+      {
+        "speaker": "intake",
+        "text": "Of course, Maria. You've provided very helpful information today, and I can understand why you'd want to explore your legal options. Someone will be in touch with you soon about scheduling that consultation. Take care, and thank you for reaching out to us."
+      }
+    ]
+  },
+  "tax_law": {
+    "contactName": "Margaret Chen",
+    "qualification": "green",
+    "confidenceLevel": "High Confidence",
+    "caseType": "Tax Law",
+    "summary": "Client received IRS CP2000 notice in September 2024 proposing $18,000 in additional taxes for 2022 tax year due to unreported 1099-MISC income from consulting work. She has documentation showing business expenses that offset most of the income and maintained contemporaneous records. The IRS initially requested $18,000 plus penalties and interest, but client has strong documentation to dispute the assessment.",
+    "positiveFactors": [
+      "Clear tax year identified (2022) with specific IRS notice (CP2000) received recently",
+      "Well-documented business expenses with receipts and records that can offset reported income",
+      "Strong compliance history - no prior audit issues or tax problems with IRS",
+      "Sufficient financial resources disclosed to pay legal fees and any remaining tax liability"
+    ],
+    "concerns": [
+      "Response deadline to IRS notice is approaching in early December 2024"
+    ],
+    "recommendedAction": "Schedule consultation within 48 hours to review CP2000 notice and supporting documentation before response deadline",
+    "transcript": [
+      {
+        "speaker": "intake",
+        "text": "Hello! Welcome to Morrison Tax Law. I'm here to help you understand how we might assist with your tax matter. Could I start by getting your name?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Hi, yes, my name is Margaret Chen. I received a notice from the IRS and I'm not sure what to do about it."
+      },
+      {
+        "speaker": "intake",
+        "text": "I understand how concerning that can be, Margaret. I'd be happy to help you understand your options. Could I get your phone number and email address so we can follow up properly?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Sure, my phone is 415-555-2847 and my email is margaret.chen.sf@gmail.com"
+      },
+      {
+        "speaker": "intake",
+        "text": "Perfect, thank you. Now, could you tell me more about the IRS notice you received? What type of notice was it and when did you get it?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "I got it about 3 weeks ago. It's called a CP2000 notice I think? They're saying I owe an additional $18,000 in taxes for 2022, plus penalties and interest."
+      },
+      {
+        "speaker": "intake",
+        "text": "A CP2000 is what's called a matching notice - the IRS believes there's unreported income on your 2022 return. Do you know what income they're referring to?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Yes, they say I didn't report income from some 1099-MISC forms. I did some consulting work for three different companies in 2022 after I was laid off from my regular job. The total was about $28,000 that they're questioning."
+      },
+      {
+        "speaker": "intake",
+        "text": "I see. Did you actually receive those 1099-MISC forms and report that consulting income on your return?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "That's the thing - I reported most of it, but I think one of the companies sent me their 1099 late, after I'd already filed. But I also had a lot of business expenses for that consulting work that I deducted."
+      },
+      {
+        "speaker": "intake",
+        "text": "That makes sense. What kind of business expenses did you have, and do you have documentation for them?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "I have receipts for everything - my home office setup, a new computer, software subscriptions, professional development courses, even mileage for client meetings. I probably spent close to $25,000 setting up my consulting business. I keep very detailed records."
+      },
+      {
+        "speaker": "intake",
+        "text": "Excellent record-keeping will definitely help your case. Have you had any previous issues with the IRS - audits, payment problems, anything like that?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "No, never. I've always filed my taxes on time and paid what I owed. This is the first time I've ever heard from them about anything. I'm usually very careful with my taxes."
+      },
+      {
+        "speaker": "intake",
+        "text": "That's a good position to be in. Looking at the notice, what's the deadline for responding to the IRS?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Let me check... it says I have to respond by December 8th. That's coming up pretty soon, isn't it?"
+      },
+      {
+        "speaker": "intake",
+        "text": "Yes, that doesn't give us much time, but it's definitely manageable. If this matter isn't resolved in your favor, would you be able to handle the financial obligation, both for legal representation and any taxes that might ultimately be owed?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Yes, I've been working steadily since then and I have some savings. I can handle reasonable legal fees, and honestly, if I really do owe some taxes after accounting for all my expenses, I can pay that too. I just want to make sure I'm only paying what I actually owe."
+      },
+      {
+        "speaker": "intake",
+        "text": "That's completely understandable, Margaret. Based on what you've told me, this sounds like a matter our tax attorneys can definitely help you with. You have good documentation, a clean history with the IRS, and a reasonable position to dispute the assessment."
+      },
+      {
+        "speaker": "visitor",
+        "text": "Oh good, I was worried you might not be able to take my case. What would be the next step?"
+      },
+      {
+        "speaker": "intake",
+        "text": "Given that December 8th deadline, I'd recommend we schedule you for a consultation within the next day or two. One of our tax attorneys can review your CP2000 notice and your supporting documentation, then prepare an appropriate response to the IRS. Would you be available for a consultation tomorrow or Thursday?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Yes, I can make time tomorrow afternoon if that works. I really appreciate your help with this."
+      },
+      {
+        "speaker": "intake",
+        "text": "Perfect, Margaret. I'll have someone from our scheduling team reach out to you at 415-555-2847 within the next few hours to set up that consultation. Please bring your CP2000 notice and all your documentation for the consulting income and expenses. We'll get this sorted out for you."
+      }
+    ]
+  },
+  "health_care_law": {
+    "contactName": "Sarah Chen",
+    "qualification": "yellow",
+    "confidenceLevel": "Moderate Confidence",
+    "caseType": "Health Care Law",
+    "summary": "Dr. Sarah Chen, an emergency medicine physician, received notice in February 2024 that her hospital privileges at Metro General Hospital are being terminated due to alleged EMTALA violations from three patient encounters in December 2023. She has maintained detailed patient records and believes the hospital is retaliating against her for reporting understaffing concerns to administration.",
+    "positiveFactors": [
+      "Licensed emergency medicine physician with clear provider credentials",
+      "Specific EMTALA regulatory framework applies to alleged violations",
+      "Timeline is well-documented with December 2023 incidents and February 2024 termination notice",
+      "Comprehensive patient records and written communications with hospital administration available"
+    ],
+    "concerns": [
+      "Potential ongoing state medical board investigation may complicate defense strategy"
+    ],
+    "recommendedAction": "Schedule consultation with Partner Martinez within 48 hours to review termination notice and patient records before March 15th response deadline.",
+    "transcript": [
+      {
+        "speaker": "intake",
+        "text": "Hello! Thank you for contacting Reynolds & Associates. I'm here to help you get connected with the right attorney for your health care law matter. Could I start by getting your name?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Hi, yes, my name is Sarah Chen."
+      },
+      {
+        "speaker": "intake",
+        "text": "Nice to meet you, Sarah. Could you provide me with the best phone number to reach you?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Sure, it's 555-847-2091. That's my cell phone."
+      },
+      {
+        "speaker": "intake",
+        "text": "Perfect, and what's the best email address for you?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "s.chen.md@gmail.com"
+      },
+      {
+        "speaker": "intake",
+        "text": "Thank you. Now, could you tell me about the health care law issue you're facing? What's brought you to us today?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "I'm a doctor - emergency medicine - and I just got notice that my hospital privileges are being terminated. They're saying I violated EMTALA, but I think this is retaliation."
+      },
+      {
+        "speaker": "intake",
+        "text": "I'm sorry to hear you're dealing with this situation. Can you tell me which hospital this involves and when you received this notice?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Metro General Hospital here in town. I got the official notice about three weeks ago, so early February. But they've been investigating since January."
+      },
+      {
+        "speaker": "intake",
+        "text": "And when did the alleged EMTALA violations occur? Do you know what specific incidents they're referencing?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "They're claiming three different patient encounters from back in December - December 8th, 15th, and 22nd specifically. All were busy nights in the ER, and I followed proper protocols for each case."
+      },
+      {
+        "speaker": "intake",
+        "text": "You mentioned you think this might be retaliation. What makes you believe that?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Well, starting in November, I had been raising concerns with hospital administration about dangerous understaffing levels in our ER. I put it in writing multiple times, including emails to the chief medical officer. Then suddenly in January they start this investigation."
+      },
+      {
+        "speaker": "intake",
+        "text": "That's very relevant context. Do you still have copies of those communications with administration?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Yes, I saved everything - all the emails, my incident reports about staffing, even some photos I took of packed waiting rooms. I'm pretty meticulous about documentation."
+      },
+      {
+        "speaker": "intake",
+        "text": "That's excellent. What about the patient records from those December incidents - do you have access to those?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "I have my own notes and copies of the charts. I always keep detailed records of my clinical decision-making, especially for complex cases. I can show exactly why I made each decision."
+      },
+      {
+        "speaker": "intake",
+        "text": "Very good. Has the state medical board gotten involved at all, or is this just the hospital at this point?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "That's what I'm worried about. The hospital notice mentioned they may be reporting this to the state board. I haven't heard from them yet, but I know these things can snowball quickly."
+      },
+      {
+        "speaker": "intake",
+        "text": "I understand your concern. What's the timeline you're working with for responding to the hospital?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "The termination notice gives me until March 15th to respond if I want to contest it. That's why I'm calling now - I know I need legal help, but I'm not sure if I should fight this or try to negotiate something."
+      },
+      {
+        "speaker": "intake",
+        "text": "You're smart to reach out now while you still have time. Just to confirm, you're currently licensed to practice emergency medicine in this state?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Yes, I'm board certified in emergency medicine and my state license is current. I've been practicing for eight years with no prior disciplinary issues."
+      },
+      {
+        "speaker": "intake",
+        "text": "Thank you for all that information, Sarah. Based on what you've told me, this sounds like something our health care law team should review promptly given your March deadline. I'm going to recommend that we get you scheduled for a consultation with one of our partners within the next day or two. Does that work for you?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Yes, absolutely. I really need someone who understands both the EMTALA issues and the employment side of this. How quickly can we set something up?"
+      },
+      {
+        "speaker": "intake",
+        "text": "I'll reach out to Partner Martinez who handles these types of cases. Expect a call from our office within 24 hours to schedule your consultation. In the meantime, please gather all those documents you mentioned - the termination notice, your correspondence with administration, and your patient records from December. Does that sound good?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Perfect, thank you so much. I feel better knowing I'll have experienced counsel looking at this."
+      }
+    ]
+  },
+  "legal_malpractice": {
+    "contactName": "Patricia Chen",
+    "qualification": "yellow",
+    "confidenceLevel": "Moderate Confidence",
+    "caseType": "Legal Malpractice",
+    "summary": "Client hired attorney Michael Rodriguez in March 2023 to handle her personal injury claim from a slip and fall at a grocery store. Rodriguez failed to file the lawsuit before the two-year statute of limitations expired in February 2024, despite having medical records showing $45,000 in damages and surveillance video supporting liability. The underlying case had strong merit with clear damages, but is now barred due to the missed deadline.",
+    "positiveFactors": [
+      "Clear attorney-client relationship with signed retainer agreement and documented communications",
+      "Obvious breach of duty - failure to file lawsuit before statute of limitations deadline",
+      "Underlying personal injury case had strong merit with surveillance video and medical documentation",
+      "Quantifiable damages of $45,000 in medical bills plus lost wages and pain and suffering"
+    ],
+    "concerns": [
+      "Case-within-a-case complexity requiring proof that underlying PI case would have succeeded"
+    ],
+    "recommendedAction": "Schedule consultation with Partner Thompson to review retainer agreement, medical records, and surveillance footage to assess strength of underlying PI case for malpractice evaluation.",
+    "transcript": [
+      {
+        "speaker": "intake",
+        "text": "Hello! I'm here to help you understand if we might be able to assist with your legal matter. Could I start by getting your name?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Hi, my name is Patricia Chen. I think my lawyer messed up my case really badly."
+      },
+      {
+        "speaker": "intake",
+        "text": "I'm sorry to hear you're having difficulties with your legal representation, Patricia. Let me gather some basic contact information first. What's the best phone number to reach you?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "My cell is 555-234-7891. This is just so frustrating because I feel like he completely dropped the ball."
+      },
+      {
+        "speaker": "intake",
+        "text": "I understand your frustration. And what email address should we use to contact you?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "It's patricia.chen.email@gmail.com. I just want to know if I have any options here."
+      },
+      {
+        "speaker": "intake",
+        "text": "Thank you for that information, Patricia. Can you tell me what type of legal matter your attorney was handling for you, and what happened that concerns you?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "I hired Michael Rodriguez - he's a personal injury lawyer here in town - back in March of last year after I had a bad slip and fall at the grocery store. I broke my wrist and hurt my back pretty badly."
+      },
+      {
+        "speaker": "intake",
+        "text": "That sounds like it was a serious accident. What specifically happened with Mr. Rodriguez that makes you feel he mishandled your case?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Well, I kept asking him about the status of my case for months. He kept saying everything was fine, that he was 'working on it.' Then in March this year - so about 3 weeks ago - he calls me and says it's too late to file a lawsuit because some deadline passed in February!"
+      },
+      {
+        "speaker": "intake",
+        "text": "That must have been shocking to hear. Do you recall when your accident originally occurred?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "February 15th, 2022. I remember because it was right after Valentine's Day. I slipped on some spilled juice in the produce section at Riverside Market."
+      },
+      {
+        "speaker": "intake",
+        "text": "So there was about a two-year gap between your accident and when he told you the deadline had passed. Do you have any documentation of your agreement with Mr. Rodriguez?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Oh yes, I signed a retainer agreement when I hired him. I have all his business cards, emails, the whole thing. He definitely was my lawyer - I paid him a $2,500 retainer fee up front."
+      },
+      {
+        "speaker": "intake",
+        "text": "That's important documentation. Can you tell me more about your underlying case - how strong do you feel your slip and fall claim was?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "That's the thing that makes this so infuriating! The store had it all on security camera - you can clearly see me slip on this puddle that had been there for a while. And I have all my medical records showing I broke my wrist, needed surgery, physical therapy. My medical bills alone were over $45,000."
+      },
+      {
+        "speaker": "intake",
+        "text": "It sounds like you had significant medical treatment. Did the injuries affect your ability to work as well?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Absolutely. I'm a dental hygienist, so I use my hands all day. I was out of work for 8 weeks initially, then on light duty for another month. I lost probably $12,000 in wages, and my wrist still bothers me sometimes."
+      },
+      {
+        "speaker": "intake",
+        "text": "This does sound like you had a substantial case with clear documentation. During the time Mr. Rodriguez was representing you, did he communicate with you regularly about the case progress?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "That's part of the problem - I'd email him asking for updates and he'd just say 'still negotiating with their insurance' or 'gathering more documentation.' I trusted him! I had no idea there was some deadline he had to meet to file in court."
+      },
+      {
+        "speaker": "intake",
+        "text": "Patricia, based on what you've shared, it does sound like there may be grounds to investigate whether Mr. Rodriguez properly handled your case. The next step would be to have one of our attorneys review your retainer agreement, the communications you had with him, and your medical records from the original accident."
+      },
+      {
+        "speaker": "visitor",
+        "text": "So you think I might have a case against him? I just want to know if there's something I can do about this."
+      },
+      {
+        "speaker": "intake",
+        "text": "I can't make any promises about the outcome, but you've described several concerning factors that warrant a thorough review. We'll need to have an attorney evaluate both what happened with Mr. Rodriguez and how strong your underlying slip and fall case was. Would you be available for a consultation with one of our partners in the next week?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Yes, definitely. I have all the paperwork at home - the retainer agreement, medical records, even some photos from the accident scene. When can we meet?"
+      },
+      {
+        "speaker": "intake",
+        "text": "Perfect. I'm going to have our office contact you within 24 hours to schedule a consultation with Partner Thompson, who handles these types of cases. Please gather all those documents you mentioned - especially anything showing your communications with Mr. Rodriguez and your medical records. Is there anything else about this situation I should note for the attorney?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "I think that covers it. I just really hope there's something that can be done. It feels so unfair to lose out on everything because my own lawyer didn't do his job."
+      }
+    ]
+  },
+  "professional_liability": {
+    "contactName": "Sarah Mitchell",
+    "qualification": "yellow",
+    "confidenceLevel": "Moderate Confidence",
+    "caseType": "Professional Liability",
+    "summary": "Client hired certified financial advisor James Patterson in March 2023 to manage $180,000 retirement portfolio with conservative investment strategy. Patterson invested 85% of funds in high-risk cryptocurrency and penny stocks without authorization, resulting in $142,000 loss by September 2023. Client has written investment policy statement specifying conservative approach and documented communications showing advisor acknowledged but ignored client's risk tolerance.",
+    "positiveFactors": [
+      "Clear professional advisory relationship established with signed contract and fiduciary duty",
+      "Written investment policy statement documenting breach of agreed conservative strategy",
+      "Substantial documented damages of $142,000 in portfolio losses",
+      "Direct causation between unauthorized high-risk investments and financial losses"
+    ],
+    "concerns": [
+      "Market volatility may complicate causation analysis requiring financial expert testimony"
+    ],
+    "recommendedAction": "Schedule attorney consultation within 48 hours to review investment documents and discuss statute of limitations timeline",
+    "transcript": [
+      {
+        "speaker": "intake",
+        "text": "Hello! Thank you for contacting our firm. I'm here to help you with your potential professional liability matter. May I start by getting your name?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Hi, my name is Sarah Mitchell. I think my financial advisor really messed up and cost me a lot of money."
+      },
+      {
+        "speaker": "intake",
+        "text": "I'm sorry to hear you're dealing with this situation, Sarah. Let me get your contact information first, then we can discuss what happened. What's the best phone number to reach you?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "You can reach me at 555-847-2916. That's my cell phone."
+      },
+      {
+        "speaker": "intake",
+        "text": "Thank you. And what email address should we use for any follow-up communications?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "It's sarah.mitchell.email@gmail.com"
+      },
+      {
+        "speaker": "intake",
+        "text": "Perfect. Now, can you tell me about what happened with your financial advisor? When did this situation occur?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "I hired James Patterson, he's a certified financial advisor, back in March of last year to manage my retirement savings. I was very clear that I wanted a conservative approach since I'm planning to retire in a few years. But he put almost all my money into really risky investments."
+      },
+      {
+        "speaker": "intake",
+        "text": "That sounds concerning. How much money are we talking about, and what kind of risky investments did he make without your approval?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "I gave him $180,000 to manage. When I found out what he was doing in September, he had put like 85% of my money into cryptocurrency and penny stocks. I specifically told him I wanted safe, stable investments. I've lost about $142,000."
+      },
+      {
+        "speaker": "intake",
+        "text": "I can understand how upsetting this must be. Do you have any written documentation of your investment preferences or communications with Mr. Patterson about your risk tolerance?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Yes, actually I do. When we first met, we filled out this investment policy statement where I clearly marked that I wanted conservative investments. And I have emails where I reminded him about this, and he even acknowledged it but said he knew better ways to grow my money."
+      },
+      {
+        "speaker": "intake",
+        "text": "That documentation could be very important. Was Mr. Patterson licensed and did you have a formal contract with him for advisory services?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Yes, he's a certified financial advisor and we signed a contract. He was supposed to be acting in my best interest as my fiduciary. That's what he told me anyway."
+      },
+      {
+        "speaker": "intake",
+        "text": "When exactly did you discover what had happened with your investments? And have you documented the actual losses?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "I found out in September when I got my quarterly statement. I was shocked. I have all the statements showing how my account went from $180,000 down to about $38,000. It's all documented."
+      },
+      {
+        "speaker": "intake",
+        "text": "Have you spoken with any other financial professionals about whether these losses could be attributed to general market conditions versus the specific investment choices Mr. Patterson made?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "Not really. I mean, I know the market had some ups and downs, but my friend who has a conservative portfolio with another advisor didn't lose anywhere near this much. His risky choices seem to be the problem."
+      },
+      {
+        "speaker": "intake",
+        "text": "That's helpful context. Have you attempted to resolve this directly with Mr. Patterson or his firm? And are you aware of any insurance coverage they might have?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "I tried talking to him but he just said investing always has risks and that markets go up and down. He wouldn't take responsibility. I'm not sure about insurance - how would I find that out?"
+      },
+      {
+        "speaker": "intake",
+        "text": "We can help investigate insurance coverage as part of our evaluation. Based on what you've shared - the documented breach of your investment policy, the substantial losses, and the clear professional relationship - this appears to be a matter our attorneys should review promptly. Professional liability cases can have time limitations, so I'd like to schedule you for a consultation within the next 48 hours."
+      },
+      {
+        "speaker": "visitor",
+        "text": "Yes, I'd like that. I just want to know if I have any options to recover my retirement money. This has been devastating."
+      },
+      {
+        "speaker": "intake",
+        "text": "I completely understand, and I think our attorneys can provide you with a clear assessment of your legal options. Someone from our team will contact you within 24 hours to schedule your consultation. Please gather all your documentation - the investment policy statement, contract, email communications, and account statements. Is there anything else about this situation I should note for the attorney?"
+      },
+      {
+        "speaker": "visitor",
+        "text": "I think we've covered the main points. I just really hope there's something that can be done. Thank you for listening and taking this seriously."
+      },
+      {
+        "speaker": "intake",
+        "text": "Of course, Sarah. We'll be in touch very soon to move forward with your consultation. Take care."
+      }
+    ]
+  }
+}

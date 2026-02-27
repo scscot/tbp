@@ -28,7 +28,7 @@
                     </button>
                     <nav class="nav-menu">
                         <a href="/">Home</a>
-                        <a href="/#demo" id="nav-demo-link">Demo</a>
+                        <a href="/new-account.html" id="nav-get-started-link">Get Started</a>
                         <a href="/#pricing">Pricing</a>
                         <a href="/about-us.html">About</a>
                         <a href="/faq.html">FAQs</a>
@@ -52,11 +52,11 @@
             accountBtn.textContent = 'Create Account →';
             accountBtn.classList.add('nav-get-started');
 
-            // Also update the "Demo" link to go to their existing demo (not request a new one)
-            const demoLink = container.querySelector('#nav-demo-link');
-            if (demoLink) {
-                demoLink.href = `/demo/?demo=${demoViewedId}`;
-                demoLink.textContent = 'View Demo';
+            // Also update the "Get Started" link to go to their existing demo (not request a new one)
+            const getStartedLink = container.querySelector('#nav-get-started-link');
+            if (getStartedLink) {
+                getStartedLink.href = `/demo/?demo=${demoViewedId}`;
+                getStartedLink.textContent = 'View Demo';
             }
         }
 

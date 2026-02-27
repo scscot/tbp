@@ -1,7 +1,7 @@
 # PreIntake.ai: Comprehensive Project Documentation
 
-**Last Updated**: 2026-02-24
-**Version**: 7.4 (demo elimination - direct landing page conversion)
+**Last Updated**: 2026-02-27
+**Version**: 7.5 (Get Started flow for organic visitors)
 
 ---
 
@@ -198,13 +198,21 @@ Your CRM manages leads. We make sure only real cases get there in the first plac
 
 ### Overview
 
-The PreIntake.ai customer journey spans 7 phases from initial discovery to ongoing subscription management.
+PreIntake.ai has two distinct customer acquisition flows:
 
+**Flow A: Organic Visitors** (Google search, direct visit, referrals)
 ```
-Discovery → Demo → Payment → Onboarding → Implementation → Lead Flow → Subscription
+Homepage → "Get Started" → new-account.html → create-account.html → Stripe → payment-success.html
 ```
 
-### Phase 1: Discovery
+**Flow B: Email Campaign Visitors** (from bar scraper campaigns)
+```
+Email CTA → Homepage (?lead=) → create-account.html → Stripe → payment-success.html
+```
+
+### Flow A: Organic Visitor Journey
+
+**Phase 1: Discovery**
 
 **Entry Points:**
 - Google search → preintake.ai landing page
@@ -213,47 +221,39 @@ Discovery → Demo → Payment → Onboarding → Implementation → Lead Flow �
 - Legal tech conferences / webinars
 
 **User Actions:**
-- Views landing page (practice areas, pricing, demo video)
-- Enters law firm website URL in demo request form
-- Provides email and practice area breakdown
+- Views landing page (features, pricing, value proposition)
+- Clicks "Get Started" (header nav or hero CTA)
+
+### Phase 2: Registration (new-account.html)
+
+**Page:** `/new-account.html`
+
+**User Provides:**
+- Full Name (required)
+- Email (required, validated)
+- Firm Name (optional - defaults to "{Name}, Attorney at Law")
+- Primary Practice Area (required - dropdown with 41 options)
+- Additional Practice Areas (optional - checkbox grid)
+- Website URL (optional)
+
+**Practice Area Options:**
+- 39 standard practice areas (Administrative Law through Workers' Compensation)
+- "General Practice" (for solo/generalist attorneys)
+- "Other (specify)" (with custom text input)
 
 **System Response:**
-- Validates email (MX lookup, disposable domain check)
-- Validates website (legal keyword detection)
-- Stores lead in Firestore with status `pending`
-- Sends confirmation email: "Your AI Intake Demo is Being Built"
-- Notifies Stephen of new demo request
+- Validates required fields
+- Checks for existing account (duplicate handling)
+- Calls `submitNewAccount` Cloud Function
+- Creates `preintake_leads` document with `status: 'pending_payment'`
+- Redirects to `/create-account.html?lead={leadId}`
 
-### Phase 2: Demo Generation
-
-**Trigger:** Firestore onCreate for new lead document
-
-**System Actions:**
-1. Website Analysis (`analyzePreIntakeLead`)
-   - Scrapes homepage for firm name, logo, colors, contact info
-   - Extracts practice areas from navigation and content
-2. Deep Research (`performDeepResearch`)
-   - Discovers additional pages (attorneys, results, testimonials)
-   - Extracts attorney names, bios, case results
-   - Structures data with Claude Haiku
-3. Demo Generation (`generatePreIntakeDemo`)
-   - Applies firm branding to intake template
-   - Configures practice-area-specific prompts
-   - Uploads to Firebase Storage
-
-**Output:**
-- Working demo intake at `https://preintake.ai/demo/{leadId}`
-- Demo ready email to Stephen with firm details and demo URL
-
-**User Actions:**
-- Receives demo URL (via Stephen or automated email)
-- Tests intake conversation
-- Sees their branding, practice areas, and screening logic in action
-- Receives sample lead notification email
+**Duplicate Handling:**
+- If email already exists in `preintake_leads`, returns existing `leadId`
+- Frontend shows "Welcome back!" message
+- Redirects to existing checkout page
 
 ### Phase 3: Payment
-
-**Entry:** User clicks "Activate Your Account" from demo page or direct link
 
 **Page:** `/create-account.html?lead={leadId}`
 
@@ -267,6 +267,26 @@ Discovery → Demo → Payment → Onboarding → Implementation → Lead Flow �
 **Account Activation:**
 - `subscriptionStatus` set to `active`
 - Customer receives activation email
+
+### Flow B: Email Campaign Visitor Journey
+
+**Phase 1: Email Click**
+
+Email recipients from bar scraper campaigns receive personalized emails with direct links to the landing page including their `?lead=` parameter.
+
+**Phase 2: Landing Page**
+
+When visitors arrive with `?lead=` parameter:
+- Personalized welcome banner displayed
+- Direct path to create-account.html (skips new-account.html)
+
+**Phase 3: Payment**
+
+Same as Flow A Phase 3 - Stripe checkout and activation.
+
+### Legacy Demo Flow (deprecated)
+
+The previous demo-first flow (Discovery → Demo Generation → Demo Testing → Payment) is still functional but de-emphasized. Email campaigns now link directly to landing page for conversion.
 - Stephen receives notification
 
 ### Phase 4: Onboarding
@@ -2084,6 +2104,56 @@ Email click → Landing page (?lead=) → Welcome banner + floating CTAs
 |------|---------|
 | `scripts/send-preintake-campaign.js` | Changed ratio from 50/50 to 70/30, unified templateVersion to v9-landing-page |
 
+### Phase 83: "Get Started" Flow for Organic Visitors (2026-02-27)
+- [x] **New Registration Flow** - Direct signup path for organic visitors (not from email campaigns)
+  - Created `/new-account.html` registration form page
+  - Form collects: Name, Email, Firm Name (optional), Primary Practice Area, Additional Practice Areas, Website (optional)
+  - 39 practice areas + "General Practice" + "Other (specify)" options
+  - Primary dropdown disables corresponding checkbox in additional areas grid
+  - Separate "Other" text input for primary selection (appears directly below dropdown)
+  - Separate "Other" text input for additional areas (appears when checkbox selected)
+- [x] **New Cloud Function** - `submitNewAccount` in `preintake-functions.js`
+  - Creates document in `preintake_leads` collection with `status: 'pending_payment'`
+  - Combines primary + additional practice areas into single `practiceAreas` array
+  - Handles "Other" custom values for both primary and additional areas
+  - Sets `source: 'organic_signup'` for analytics tracking
+  - Returns `leadId` for redirect to `create-account.html?lead={id}`
+- [x] **Header Navigation Update** - Changed "Demo" → "Get Started" in `components.js`
+  - Links to `/new-account.html` for organic visitors
+- [x] **Hero CTA Update** - Changed "See How It Works" → "Get Started" in `index.html`
+  - Links to `/new-account.html`
+  - Demo CTA Section hidden (commented out)
+- [x] **Duplicate Handling** - Returning users redirected to existing checkout
+  - If email exists in `preintake_leads`, returns existing `leadId`
+  - Frontend shows "Welcome back!" message and redirects to `create-account.html`
+- [x] **Bug Fix** - "Other" text input visibility for Primary Practice Area
+  - Added separate `primary-other-container` below primary dropdown
+  - Split visibility logic into `updatePrimaryOtherVisibility()` and `updateAdditionalOtherVisibility()`
+
+**New Flow (Organic Visitors):**
+```
+Homepage → "Get Started" → new-account.html (form) → create-account.html?lead={id} → Payment
+```
+
+**Campaign Visitors (unchanged):**
+```
+Email CTA → Homepage (?lead=) → create-account.html → Payment
+```
+
+**Files Created:**
+| File | Purpose |
+|------|---------|
+| `/preintake/new-account.html` | Registration form for organic visitors |
+
+**Files Modified:**
+| File | Changes |
+|------|---------|
+| `functions/preintake-functions.js` | Added `submitNewAccount` Cloud Function |
+| `functions/index.js` | Export `submitNewAccount` |
+| `preintake/js/components.js` | Changed "Demo" → "Get Started" in header |
+| `preintake/index.html` | Changed hero CTA text + link, hid Demo CTA Section |
+| `preintake/css/styles.css` | Added form styling for new-account.html |
+
 ---
 
 ## Architecture
@@ -2097,7 +2167,8 @@ pending → analyzing → researching → generating_demo → demo_ready
 
 ```
 /preintake/
-├── index.html              # Landing page with demo request form (redirects ?demo= to /demo/)
+├── index.html              # Landing page (redirects ?demo= to /demo/, ?lead= to create-account)
+├── new-account.html        # "Get Started" registration form for organic visitors
 ├── create-account.html     # Account activation + Stripe checkout
 ├── payment-success.html    # Post-payment success page
 ├── account.html            # My Account page (subscriber portal)
@@ -2439,6 +2510,7 @@ EOF
 | Function | Trigger | Purpose |
 |----------|---------|---------|
 | `submitDemoRequest` | HTTP | Handle demo request form submission |
+| `submitNewAccount` | HTTP | Handle "Get Started" registration form for organic visitors |
 | `submitHostedDemoRequest` | HTTP | Handle hosted demo requests (bar profiles without websites) |
 | `submitPreIntakeContact` | HTTP | Handle contact form submissions |
 | `verifyDemoEmail` | HTTP | Verify email before demo starts |
@@ -2470,6 +2542,7 @@ EOF
 | Endpoint | Method | Purpose |
 |----------|--------|---------|
 | `/submitDemoRequest` | POST | Submit demo request |
+| `/submitNewAccount` | POST | Submit "Get Started" registration form |
 | `/submitHostedDemoRequest` | POST | Submit hosted demo request (bar profiles) |
 | `/submitPreIntakeContact` | POST | Submit contact form |
 | `/verifyDemoEmail` | POST | Verify email before demo starts |

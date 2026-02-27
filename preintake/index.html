@@ -71,36 +71,6 @@
     <script src="js/components.js"></script>
     <style>
         /* Page-specific overrides can go here if needed */
-
-        /* Examples Toggle Button */
-        .examples-toggle {
-            text-align: center;
-            margin: 2rem 0;
-        }
-        .examples-toggle-btn {
-            background: transparent;
-            border: 1px solid rgba(201, 169, 98, 0.3);
-            color: var(--gold);
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 500;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: all 0.2s ease;
-        }
-        .examples-toggle-btn:hover {
-            background: rgba(201, 169, 98, 0.1);
-            border-color: var(--gold);
-        }
-        .examples-toggle-btn svg {
-            transition: transform 0.3s ease;
-        }
-        .examples-toggle-btn.expanded svg {
-            transform: rotate(180deg);
-        }
         .examples-container {
             overflow: hidden;
             transition: max-height 0.3s ease;
@@ -122,11 +92,18 @@
         <div class="hero-content">
             <div class="hero-badge">AI-Powered Legal Intake</div>
             <h1>Pre-Screen Every Inquiry <br class="desktop-only"><span>Before They Reach Your Firm</span></h1>
-            <p class="hero-subtitle">
-                Every inquiry assessed and delivered with a case summary tailored to your firm's practice area, a qualification rating, and a clear next-step recommendation—qualified, needs review, or not a fit.
-            </p>
-            <p class="hero-privacy"><strong>Zero Data Retention</strong> — Inquiries processed and delivered, never stored.</p>
-            <p class="hero-privacy">Branded to your firm. Seamless for your clients.</p>
+            <p class="hero-subtitle">Most law firms treat intake as data collection. It's not—it's triage. Without structured screening, your strongest matters compete for attention with submissions that should never reach your desk.</p>
+            <p class="hero-outcome">PreIntake.ai puts practice-specific screening in front of your intake workflow, so the best matters rise to the top immediately.</p>
+            <div class="hero-trust-row">
+                <div class="hero-privacy-note">
+                    <span class="privacy-icon">🔒</span>
+                    <span><strong>Zero Data Retention</strong> — Processed and delivered, never stored.</span>
+                </div>
+                <div class="hero-deploy-note">
+                    <span class="deploy-icon">⚡</span>
+                    <span><strong>Live in Minutes</strong> — Embed on your website or use a hosted link.</span>
+                </div>
+            </div>
 
             <!-- Campaign Hero CTA (shown for ?demo= visitors) -->
             <a href="#" class="hero-cta campaign-hero-cta" id="campaign-hero-cta" style="display: none;">
@@ -134,8 +111,8 @@
             </a>
 
             <!-- Default Hero CTA (shown for non-campaign visitors) -->
-            <a href="#demo" class="hero-cta" id="default-hero-cta">
-                Create Your Custom Demo
+            <a href="new-account.html" class="hero-cta" id="default-hero-cta">
+                Get Started
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
@@ -173,8 +150,241 @@
         </div>
     </section>
 
-    <!-- Demo CTA Section -->
-    <section class="cta-section" id="demo">
+    <!-- Every Inquiry Includes Section -->
+    <section class="section every-inquiry-section">
+        <div class="container">
+            <div class="every-inquiry-content">
+                <h2>Every Inquiry Delivered With:</h2>
+                <ul class="inquiry-list">
+                    <li><strong>Complete case summary</strong> — Not raw form data</li>
+                    <li><strong>Qualification rating</strong> — Green / Yellow / Red</li>
+                    <li><strong>Recommended next step</strong> — Priority follow-up or polite decline</li>
+                    <li><strong>Full conversation transcript</strong> — See exactly what was asked</li>
+                </ul>
+            </div>
+            <!-- Examples Toggle Button -->
+            <div class="examples-toggle">
+                <button class="examples-toggle-btn" id="examples-toggle-btn" onclick="toggleExamples()">
+                    <span id="examples-toggle-text">See Full Intake Examples</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" id="examples-toggle-icon">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+            </div>
+            <!-- Collapsible Examples Container -->
+            <div class="examples-container" id="examples-container" style="display: none;">
+            <div class="lead-examples">
+                <!-- Qualified Lead Example -->
+                <div class="lead-card">
+                    <div class="lead-card-header qualified">
+                        <span class="lead-badge qualified">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                            </svg>
+                            Qualified
+                        </span>
+                        <span class="lead-card-meta">Confidence: high · Schedule Consultation</span>
+                    </div>
+                    <div class="lead-card-body">
+                        <!-- Contact Information -->
+                        <div class="lead-card-section contact-section">
+                            <div class="lead-card-section-title">Contact Information</div>
+                            <div class="contact-grid">
+                                <div class="contact-item">
+                                    <span class="contact-label">Name:</span>
+                                    <span class="contact-value">Steve Martinez</span>
+                                </div>
+                                <div class="contact-item">
+                                    <span class="contact-label">Phone:</span>
+                                    <span class="contact-value">(415) 555-3874</span>
+                                </div>
+                                <div class="contact-item">
+                                    <span class="contact-label">Email:</span>
+                                    <span class="contact-value">steve@email.com</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Case Summary -->
+                        <div class="lead-card-summary">
+                            <div class="lead-card-summary-title">Case Summary</div>
+                            <p>Received 30-day eviction notice last Friday alleging lease violation. Client believes notice is invalid. Minor alleged violation (plants on balcony). Not currently represented. Located in California. Time-sensitive matter requiring immediate attention.</p>
+                        </div>
+                        <!-- Case Information -->
+                        <div class="lead-card-section">
+                            <div class="lead-card-section-title">Case Information</div>
+                            <div class="lead-card-details">
+                                <div class="lead-detail">
+                                    <div class="lead-detail-label">Case Type</div>
+                                    <div class="lead-detail-value">Tenant Rights</div>
+                                </div>
+                                <div class="lead-detail">
+                                    <div class="lead-detail-label">Date Occurred</div>
+                                    <div class="lead-detail-value">Last Friday</div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Key Factors -->
+                        <div class="lead-card-factors">
+                            <div class="lead-card-section-title">Key Factors</div>
+                            <div class="factor-pills">
+                                <span class="factor-pill positive">✓ Recent eviction notice</span>
+                                <span class="factor-pill positive">✓ Believes notice invalid</span>
+                                <span class="factor-pill positive">✓ Within service area</span>
+                                <span class="factor-pill positive">✓ Not represented</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="lead-card-transcript" id="transcript-qualified">
+                        <div class="lead-card-transcript-title">Full Conversation Transcript</div>
+                        <div class="transcript-message">
+                            <div class="transcript-role ai">Intake:</div>
+                            <div class="transcript-text">Hello! I'm here to help you with a free case evaluation. To get started, may I have your name?</div>
+                        </div>
+                        <div class="transcript-message">
+                            <div class="transcript-role user">Steve:</div>
+                            <div class="transcript-text">Steve Martinez</div>
+                        </div>
+                        <div class="transcript-message">
+                            <div class="transcript-role ai">Intake:</div>
+                            <div class="transcript-text">Thank you, Steve. Could you briefly describe what happened and why you're seeking legal help?</div>
+                        </div>
+                        <div class="transcript-message">
+                            <div class="transcript-role user">Steve:</div>
+                            <div class="transcript-text">I got a 30-day eviction notice last Friday. They're saying I violated my lease but I think it's bogus.</div>
+                        </div>
+                        <div class="transcript-message">
+                            <div class="transcript-role ai">Intake:</div>
+                            <div class="transcript-text">I understand. What reason did they give for the alleged lease violation?</div>
+                        </div>
+                        <div class="transcript-message">
+                            <div class="transcript-role user">Steve:</div>
+                            <div class="transcript-text">They said I have plants on my balcony which is apparently not allowed. But I've had them there for 2 years and no one said anything.</div>
+                        </div>
+                        <div class="transcript-message">
+                            <div class="transcript-role ai">Intake:</div>
+                            <div class="transcript-text">Are you currently represented by an attorney in this matter?</div>
+                        </div>
+                        <div class="transcript-message">
+                            <div class="transcript-role user">Steve:</div>
+                            <div class="transcript-text">No, not yet. That's why I'm reaching out.</div>
+                        </div>
+                    </div>
+                    <div class="lead-card-footer">
+                        <a href="javascript:void(0)" class="transcript-toggle" onclick="toggleTranscript('transcript-qualified', this)">View Full Transcript →</a>
+                        <span class="lead-card-time">Delivered via email or CRM</span>
+                    </div>
+                </div>
+
+                <!-- Declined Lead Example -->
+                <div class="lead-card">
+                    <div class="lead-card-header declined">
+                        <span class="lead-badge declined">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                            Not a Fit
+                        </span>
+                        <span class="lead-card-meta declined-meta">Reason: SOL exceeded</span>
+                    </div>
+                    <div class="lead-card-body">
+                        <!-- Contact Information -->
+                        <div class="lead-card-section contact-section">
+                            <div class="lead-card-section-title">Contact Information</div>
+                            <div class="contact-grid">
+                                <div class="contact-item">
+                                    <span class="contact-label">Name:</span>
+                                    <span class="contact-value">James Wilson</span>
+                                </div>
+                                <div class="contact-item">
+                                    <span class="contact-label">Phone:</span>
+                                    <span class="contact-value">(510) 555-9821</span>
+                                </div>
+                                <div class="contact-item">
+                                    <span class="contact-label">Email:</span>
+                                    <span class="contact-value">jwilson@email.com</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Assessment Rationale -->
+                        <div class="lead-card-summary declined-summary">
+                            <div class="lead-card-summary-title">Assessment Rationale</div>
+                            <p>Incident occurred 3 years ago. Statute of limitations has expired for premises liability claims in this jurisdiction. Caller was unaware of time limits. Advised to consult with attorney regarding potential exceptions.</p>
+                        </div>
+                        <!-- Case Information -->
+                        <div class="lead-card-section">
+                            <div class="lead-card-section-title">Case Information</div>
+                            <div class="lead-card-details">
+                                <div class="lead-detail">
+                                    <div class="lead-detail-label">Case Type</div>
+                                    <div class="lead-detail-value">Personal Injury</div>
+                                </div>
+                                <div class="lead-detail">
+                                    <div class="lead-detail-label">Date Occurred</div>
+                                    <div class="lead-detail-value">Dec 2022</div>
+                                </div>
+                                <div class="lead-detail">
+                                    <div class="lead-detail-label">SOL Status</div>
+                                    <div class="lead-detail-value" style="color: #ef4444;">Expired</div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Key Factors -->
+                        <div class="lead-card-factors">
+                            <div class="lead-card-section-title">Key Factors</div>
+                            <div class="factor-pills">
+                                <span class="factor-pill negative">✗ SOL exceeded (3+ years)</span>
+                                <span class="factor-pill negative">✗ No documentation</span>
+                                <span class="factor-pill neutral">○ No prior treatment</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="lead-card-transcript" id="transcript-declined">
+                        <div class="lead-card-transcript-title">Full Conversation Transcript</div>
+                        <div class="transcript-message">
+                            <div class="transcript-role ai">Intake:</div>
+                            <div class="transcript-text">Hello! I'm here to help you with a free case evaluation. To get started, may I have your name?</div>
+                        </div>
+                        <div class="transcript-message">
+                            <div class="transcript-role user">James:</div>
+                            <div class="transcript-text">James Wilson</div>
+                        </div>
+                        <div class="transcript-message">
+                            <div class="transcript-role ai">Intake:</div>
+                            <div class="transcript-text">Thank you, James. Could you briefly describe what happened?</div>
+                        </div>
+                        <div class="transcript-message">
+                            <div class="transcript-role user">James:</div>
+                            <div class="transcript-text">I slipped and fell at a grocery store back in December 2022. Hurt my back pretty bad.</div>
+                        </div>
+                        <div class="transcript-message">
+                            <div class="transcript-role ai">Intake:</div>
+                            <div class="transcript-text">I'm sorry to hear that. Did you receive any medical treatment for your injuries?</div>
+                        </div>
+                        <div class="transcript-message">
+                            <div class="transcript-role user">James:</div>
+                            <div class="transcript-text">No, I couldn't afford it at the time. I just rested at home.</div>
+                        </div>
+                        <div class="transcript-message">
+                            <div class="transcript-role ai">Intake:</div>
+                            <div class="transcript-text">Did you document the incident? For example, did you file an incident report with the store or take photos?</div>
+                        </div>
+                        <div class="transcript-message">
+                            <div class="transcript-role user">James:</div>
+                            <div class="transcript-text">No, I didn't think to do that. I just wanted to get out of there.</div>
+                        </div>
+                    </div>
+                    <div class="lead-card-footer">
+                        <a href="javascript:void(0)" class="transcript-toggle" onclick="toggleTranscript('transcript-declined', this)">View Full Transcript →</a>
+                        <span class="lead-card-time">Delivered via email or CRM</span>
+                    </div>
+                </div>
+            </div>
+            </div><!-- End examples-container -->
+        </div>
+    </section>
+
+    <!-- Demo CTA Section - HIDDEN (replaced by Get Started flow)
+    <section class="cta-section" id="demo" style="display: none !important;">
         <div class="container">
             <h2 id="demo-section-title">Get Your Custom Demo</h2>
 
@@ -521,235 +731,6 @@
             </div>
         </div>
     </section>
-
-    <!-- What You Receive Section -->
-    <section class="section section-dark">
-        <div class="container">
-            <div class="section-header">
-                <h2>What Your Firm Receives</h2>
-                <p>Every intake arrives as a complete, actionable summary—not a data dump. Here's exactly what lands in your inbox.</p>
-            </div>
-            <!-- Examples Toggle Button -->
-            <div class="examples-toggle">
-                <button class="examples-toggle-btn" id="examples-toggle-btn" onclick="toggleExamples()">
-                    <span id="examples-toggle-text">See Full Intake Examples</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" id="examples-toggle-icon">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                    </svg>
-                </button>
-            </div>
-            <!-- Collapsible Examples Container -->
-            <div class="examples-container" id="examples-container" style="display: none;">
-            <div class="lead-examples">
-                <!-- Qualified Lead Example -->
-                <div class="lead-card">
-                    <div class="lead-card-header qualified">
-                        <span class="lead-badge qualified">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
-                            </svg>
-                            Qualified
-                        </span>
-                        <span class="lead-card-meta">Confidence: high · Schedule Consultation</span>
-                    </div>
-                    <div class="lead-card-body">
-                        <!-- Contact Information -->
-                        <div class="lead-card-section contact-section">
-                            <div class="lead-card-section-title">Contact Information</div>
-                            <div class="contact-grid">
-                                <div class="contact-item">
-                                    <span class="contact-label">Name:</span>
-                                    <span class="contact-value">Steve Martinez</span>
-                                </div>
-                                <div class="contact-item">
-                                    <span class="contact-label">Phone:</span>
-                                    <span class="contact-value">(415) 555-3874</span>
-                                </div>
-                                <div class="contact-item">
-                                    <span class="contact-label">Email:</span>
-                                    <span class="contact-value">steve@email.com</span>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Case Summary -->
-                        <div class="lead-card-summary">
-                            <div class="lead-card-summary-title">Case Summary</div>
-                            <p>Received 30-day eviction notice last Friday alleging lease violation. Client believes notice is invalid. Minor alleged violation (plants on balcony). Not currently represented. Located in California. Time-sensitive matter requiring immediate attention.</p>
-                        </div>
-                        <!-- Case Information -->
-                        <div class="lead-card-section">
-                            <div class="lead-card-section-title">Case Information</div>
-                            <div class="lead-card-details">
-                                <div class="lead-detail">
-                                    <div class="lead-detail-label">Case Type</div>
-                                    <div class="lead-detail-value">Tenant Rights</div>
-                                </div>
-                                <div class="lead-detail">
-                                    <div class="lead-detail-label">Date Occurred</div>
-                                    <div class="lead-detail-value">Last Friday</div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Key Factors -->
-                        <div class="lead-card-factors">
-                            <div class="lead-card-section-title">Key Factors</div>
-                            <div class="factor-pills">
-                                <span class="factor-pill positive">✓ Recent eviction notice</span>
-                                <span class="factor-pill positive">✓ Believes notice invalid</span>
-                                <span class="factor-pill positive">✓ Within service area</span>
-                                <span class="factor-pill positive">✓ Not represented</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="lead-card-transcript" id="transcript-qualified">
-                        <div class="lead-card-transcript-title">Full Conversation Transcript</div>
-                        <div class="transcript-message">
-                            <div class="transcript-role ai">Intake:</div>
-                            <div class="transcript-text">Hello! I'm here to help you with a free case evaluation. To get started, may I have your name?</div>
-                        </div>
-                        <div class="transcript-message">
-                            <div class="transcript-role user">Steve:</div>
-                            <div class="transcript-text">Steve Martinez</div>
-                        </div>
-                        <div class="transcript-message">
-                            <div class="transcript-role ai">Intake:</div>
-                            <div class="transcript-text">Thank you, Steve. Could you briefly describe what happened and why you're seeking legal help?</div>
-                        </div>
-                        <div class="transcript-message">
-                            <div class="transcript-role user">Steve:</div>
-                            <div class="transcript-text">I got a 30-day eviction notice last Friday. They're saying I violated my lease but I think it's bogus.</div>
-                        </div>
-                        <div class="transcript-message">
-                            <div class="transcript-role ai">Intake:</div>
-                            <div class="transcript-text">I understand. What reason did they give for the alleged lease violation?</div>
-                        </div>
-                        <div class="transcript-message">
-                            <div class="transcript-role user">Steve:</div>
-                            <div class="transcript-text">They said I have plants on my balcony which is apparently not allowed. But I've had them there for 2 years and no one said anything.</div>
-                        </div>
-                        <div class="transcript-message">
-                            <div class="transcript-role ai">Intake:</div>
-                            <div class="transcript-text">Are you currently represented by an attorney in this matter?</div>
-                        </div>
-                        <div class="transcript-message">
-                            <div class="transcript-role user">Steve:</div>
-                            <div class="transcript-text">No, not yet. That's why I'm reaching out.</div>
-                        </div>
-                    </div>
-                    <div class="lead-card-footer">
-                        <a href="javascript:void(0)" class="transcript-toggle" onclick="toggleTranscript('transcript-qualified', this)">View Full Transcript →</a>
-                        <span class="lead-card-time">Delivered via email or CRM</span>
-                    </div>
-                </div>
-
-                <!-- Declined Lead Example -->
-                <div class="lead-card">
-                    <div class="lead-card-header declined">
-                        <span class="lead-badge declined">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                            Not a Fit
-                        </span>
-                        <span class="lead-card-meta declined-meta">Reason: SOL exceeded</span>
-                    </div>
-                    <div class="lead-card-body">
-                        <!-- Contact Information -->
-                        <div class="lead-card-section contact-section">
-                            <div class="lead-card-section-title">Contact Information</div>
-                            <div class="contact-grid">
-                                <div class="contact-item">
-                                    <span class="contact-label">Name:</span>
-                                    <span class="contact-value">James Wilson</span>
-                                </div>
-                                <div class="contact-item">
-                                    <span class="contact-label">Phone:</span>
-                                    <span class="contact-value">(510) 555-9821</span>
-                                </div>
-                                <div class="contact-item">
-                                    <span class="contact-label">Email:</span>
-                                    <span class="contact-value">jwilson@email.com</span>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Assessment Rationale -->
-                        <div class="lead-card-summary declined-summary">
-                            <div class="lead-card-summary-title">Assessment Rationale</div>
-                            <p>Incident occurred 3 years ago. Statute of limitations has expired for premises liability claims in this jurisdiction. Caller was unaware of time limits. Advised to consult with attorney regarding potential exceptions.</p>
-                        </div>
-                        <!-- Case Information -->
-                        <div class="lead-card-section">
-                            <div class="lead-card-section-title">Case Information</div>
-                            <div class="lead-card-details">
-                                <div class="lead-detail">
-                                    <div class="lead-detail-label">Case Type</div>
-                                    <div class="lead-detail-value">Personal Injury</div>
-                                </div>
-                                <div class="lead-detail">
-                                    <div class="lead-detail-label">Date Occurred</div>
-                                    <div class="lead-detail-value">Dec 2022</div>
-                                </div>
-                                <div class="lead-detail">
-                                    <div class="lead-detail-label">SOL Status</div>
-                                    <div class="lead-detail-value" style="color: #ef4444;">Expired</div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Key Factors -->
-                        <div class="lead-card-factors">
-                            <div class="lead-card-section-title">Key Factors</div>
-                            <div class="factor-pills">
-                                <span class="factor-pill negative">✗ SOL exceeded (3+ years)</span>
-                                <span class="factor-pill negative">✗ No documentation</span>
-                                <span class="factor-pill neutral">○ No prior treatment</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="lead-card-transcript" id="transcript-declined">
-                        <div class="lead-card-transcript-title">Full Conversation Transcript</div>
-                        <div class="transcript-message">
-                            <div class="transcript-role ai">Intake:</div>
-                            <div class="transcript-text">Hello! I'm here to help you with a free case evaluation. To get started, may I have your name?</div>
-                        </div>
-                        <div class="transcript-message">
-                            <div class="transcript-role user">James:</div>
-                            <div class="transcript-text">James Wilson</div>
-                        </div>
-                        <div class="transcript-message">
-                            <div class="transcript-role ai">Intake:</div>
-                            <div class="transcript-text">Thank you, James. Could you briefly describe what happened?</div>
-                        </div>
-                        <div class="transcript-message">
-                            <div class="transcript-role user">James:</div>
-                            <div class="transcript-text">I slipped and fell at a grocery store back in December 2022. Hurt my back pretty bad.</div>
-                        </div>
-                        <div class="transcript-message">
-                            <div class="transcript-role ai">Intake:</div>
-                            <div class="transcript-text">I'm sorry to hear that. Did you receive any medical treatment for your injuries?</div>
-                        </div>
-                        <div class="transcript-message">
-                            <div class="transcript-role user">James:</div>
-                            <div class="transcript-text">No, I couldn't afford it at the time. I just rested at home.</div>
-                        </div>
-                        <div class="transcript-message">
-                            <div class="transcript-role ai">Intake:</div>
-                            <div class="transcript-text">Did you document the incident? For example, did you file an incident report with the store or take photos?</div>
-                        </div>
-                        <div class="transcript-message">
-                            <div class="transcript-role user">James:</div>
-                            <div class="transcript-text">No, I didn't think to do that. I just wanted to get out of there.</div>
-                        </div>
-                    </div>
-                    <div class="lead-card-footer">
-                        <a href="javascript:void(0)" class="transcript-toggle" onclick="toggleTranscript('transcript-declined', this)">View Full Transcript →</a>
-                        <span class="lead-card-time">Delivered via email or CRM</span>
-                    </div>
-                </div>
-            </div>
-            </div><!-- End examples-container -->
-        </div>
-    </section>
-
     <!-- Stats Bar (HIDDEN)
     <div class="stats-bar">
         <div class="stats-container">
@@ -1013,6 +994,348 @@
         let currentLeadId = null;
         let practiceAreas = [];
         let primaryArea = null;
+
+        // Sample intakes data (loaded for campaign visitors)
+        let sampleIntakes = null;
+
+        /**
+         * Normalize practice area strings to sample intake keys
+         * Maps 40+ raw terms from bar associations to 23 consolidated sample keys
+         */
+        function normalizePracticeArea(raw) {
+            if (!raw) return 'personal_injury';
+
+            const normalized = raw.toLowerCase().trim();
+
+            // Direct mappings from raw bar association terms to sample keys
+            const mapping = {
+                // Personal Injury variations
+                'personal injury': 'personal_injury',
+                'personal injury law': 'personal_injury',
+                'personal injury litigation': 'personal_injury',
+                'plaintiff personal injury': 'personal_injury',
+                'catastrophic injury': 'personal_injury',
+                'automobile accidents': 'personal_injury',
+                'auto accidents': 'personal_injury',
+                'motor vehicle accidents': 'personal_injury',
+                'car accidents': 'personal_injury',
+                'premises liability': 'personal_injury',
+                'slip and fall': 'personal_injury',
+
+                // Bankruptcy
+                'bankruptcy': 'bankruptcy',
+                'bankruptcy law': 'bankruptcy',
+                'debtor and creditor': 'bankruptcy',
+                'debtor/creditor': 'bankruptcy',
+                'creditor rights': 'bankruptcy',
+                'debt collection': 'bankruptcy',
+
+                // Family Law variations
+                'family law': 'family_law',
+                'family': 'family_law',
+                'domestic relations': 'family_law',
+                'matrimonial': 'family_law',
+                'divorce': 'family_law',
+                'child custody': 'family_law',
+                'child support': 'family_law',
+                'adoption': 'family_law',
+
+                // Immigration variations
+                'immigration': 'immigration',
+                'immigration law': 'immigration',
+                'immigration and naturalization': 'immigration',
+                'immigration & naturalization': 'immigration',
+                'immigration and nationality': 'immigration',
+
+                // Estate Planning variations
+                'estate planning': 'estate_planning',
+                'probate law': 'estate_planning',
+                'probate': 'estate_planning',
+                'estate planning/trusts': 'estate_planning',
+                'wills & probate': 'estate_planning',
+                'wills and probate': 'estate_planning',
+                'estate planning and probate': 'estate_planning',
+                'trusts and estates': 'estate_planning',
+                'trusts & estates': 'estate_planning',
+                'wills': 'estate_planning',
+                'trusts': 'estate_planning',
+
+                // Criminal Defense variations
+                'criminal defense': 'criminal_defense',
+                'criminal law': 'criminal_defense',
+                'criminal': 'criminal_defense',
+                'criminal litigation': 'criminal_defense',
+                'dui/dwi': 'criminal_defense',
+                'dui': 'criminal_defense',
+                'dwi': 'criminal_defense',
+
+                // Workers' Compensation
+                'workers compensation': 'workers_compensation',
+                "workers' compensation": 'workers_compensation',
+                'workers comp': 'workers_compensation',
+                'workman\'s compensation': 'workers_compensation',
+                'workplace injury': 'workers_compensation',
+
+                // Elder Law
+                'elder law': 'elder_law',
+                'elder': 'elder_law',
+                'senior law': 'elder_law',
+                'medicaid planning': 'elder_law',
+
+                // Medical Malpractice
+                'medical malpractice': 'medical_malpractice',
+                'medical negligence': 'medical_malpractice',
+                'healthcare malpractice': 'medical_malpractice',
+
+                // Construction Law
+                'construction law': 'construction_law',
+                'construction': 'construction_law',
+                'construction litigation': 'construction_law',
+                'construction defects': 'construction_law',
+
+                // Employment Law variations
+                'employment law': 'employment_law',
+                'labor & employment': 'employment_law',
+                'labor and employment': 'employment_law',
+                'employment': 'employment_law',
+                'employment discrimination': 'employment_law',
+                'wrongful termination': 'employment_law',
+
+                // Insurance
+                'insurance': 'insurance',
+                'insurance law': 'insurance',
+                'insurance coverage': 'insurance',
+                'insurance defense': 'insurance',
+                'bad faith insurance': 'insurance',
+
+                // Business/Corporate
+                'business law': 'business_corporate',
+                'corporate law': 'business_corporate',
+                'corporate/business': 'business_corporate',
+                'business': 'business_corporate',
+                'corporate': 'business_corporate',
+                'business litigation': 'business_corporate',
+                'commercial law': 'business_corporate',
+                'commercial litigation': 'business_corporate',
+
+                // Real Estate
+                'real estate': 'real_estate',
+                'real estate law': 'real_estate',
+                'real property': 'real_estate',
+                'property law': 'real_estate',
+                'land use': 'real_estate',
+
+                // Civil Litigation
+                'civil litigation': 'civil_litigation',
+                'civil rights litigation': 'civil_litigation',
+                'general litigation': 'civil_litigation',
+                'litigation': 'civil_litigation',
+
+                // Tax Law
+                'tax': 'tax_law',
+                'tax law': 'tax_law',
+                'taxation': 'tax_law',
+                'irs': 'tax_law',
+                'tax litigation': 'tax_law',
+
+                // Civil Rights
+                'civil rights': 'civil_rights',
+                'civil rights law': 'civil_rights',
+                'constitutional law': 'civil_rights',
+                'section 1983': 'civil_rights',
+
+                // Products Liability
+                'products liability': 'products_liability',
+                'product liability': 'products_liability',
+                'defective products': 'products_liability',
+
+                // Social Security/Disability
+                'social security': 'social_security_disability',
+                'social security disability': 'social_security_disability',
+                'ssdi': 'social_security_disability',
+                'ssi': 'social_security_disability',
+                'disability': 'social_security_disability',
+
+                // Toxic Torts
+                'toxic torts': 'toxic_torts',
+                'toxic tort': 'toxic_torts',
+                'environmental litigation': 'toxic_torts',
+                'mass torts': 'toxic_torts',
+
+                // Health Care Law
+                'health care law': 'health_care_law',
+                'healthcare law': 'health_care_law',
+                'health': 'health_care_law',
+                'health law': 'health_care_law',
+                'hipaa': 'health_care_law',
+
+                // Legal Malpractice
+                'legal malpractice': 'legal_malpractice',
+                'attorney malpractice': 'legal_malpractice',
+                'lawyer malpractice': 'legal_malpractice',
+
+                // Professional Liability
+                'professional liability': 'professional_liability',
+                'professional negligence': 'professional_liability',
+                'professional malpractice': 'professional_liability',
+
+                // Wrongful Death
+                'wrongful death': 'wrongful_death',
+
+                // General Practice (fallback)
+                'general practice': 'general_practice',
+                'general': 'general_practice'
+            };
+
+            // Try direct match first
+            if (mapping[normalized]) {
+                return mapping[normalized];
+            }
+
+            // Try partial match (for variations like "Personal Injury - Plaintiff")
+            for (const [key, value] of Object.entries(mapping)) {
+                if (normalized.includes(key) || key.includes(normalized)) {
+                    return value;
+                }
+            }
+
+            // Default fallback
+            return 'personal_injury';
+        }
+
+        /**
+         * Load sample intakes data for campaign visitors
+         */
+        async function loadSampleIntakes() {
+            if (sampleIntakes) return sampleIntakes;
+
+            try {
+                const response = await fetch('/data/sample-intakes.json');
+                if (response.ok) {
+                    sampleIntakes = await response.json();
+                    return sampleIntakes;
+                }
+            } catch (err) {
+                console.warn('Failed to load sample intakes:', err);
+            }
+            return null;
+        }
+
+        /**
+         * Render a practice-area-specific sample intake card
+         */
+        function renderDynamicSample(sample, containerId = 'examples-container') {
+            if (!sample) return;
+
+            const container = document.getElementById(containerId);
+            if (!container) return;
+
+            // Determine badge styling based on qualification
+            const qualificationStyles = {
+                'green': {
+                    class: 'qualified',
+                    label: 'Qualified',
+                    icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />'
+                },
+                'yellow': {
+                    class: 'review',
+                    label: 'Needs Review',
+                    icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 8v4m0 4h.01" />'
+                },
+                'red': {
+                    class: 'declined',
+                    label: 'Not a Fit',
+                    icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12" />'
+                }
+            };
+
+            const qual = qualificationStyles[sample.qualification] || qualificationStyles['green'];
+
+            // Build positive factors HTML
+            const positiveFactorsHtml = sample.positiveFactors.map(f =>
+                `<span class="factor-pill positive">✓ ${f}</span>`
+            ).join('\n                                ');
+
+            // Build concerns HTML (if any)
+            const concernsHtml = sample.concerns && sample.concerns.length > 0
+                ? sample.concerns.map(c =>
+                    `<span class="factor-pill negative">⚠ ${c}</span>`
+                  ).join('\n                                ')
+                : '';
+
+            // Build transcript HTML
+            const transcriptHtml = sample.transcript.map(msg => {
+                const role = msg.speaker === 'intake' ? 'ai' : 'user';
+                const roleLabel = msg.speaker === 'intake' ? 'Intake:' : 'Visitor:';
+                return `
+                        <div class="transcript-message">
+                            <div class="transcript-role ${role}">${roleLabel}</div>
+                            <div class="transcript-text">${msg.text}</div>
+                        </div>`;
+            }).join('');
+
+            // Render the complete card
+            const cardHtml = `
+            <div class="lead-examples">
+                <!-- Dynamic Practice-Area Sample -->
+                <div class="lead-card" style="max-width: 800px; margin: 0 auto;">
+                    <div class="lead-card-header ${qual.class}">
+                        <span class="lead-badge ${qual.class}">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                ${qual.icon}
+                            </svg>
+                            ${qual.label}
+                        </span>
+                        <span class="lead-card-meta">${sample.confidenceLevel} · ${sample.recommendedAction.split('.')[0]}</span>
+                    </div>
+                    <div class="lead-card-body">
+                        <!-- Contact Information -->
+                        <div class="lead-card-section contact-section">
+                            <div class="lead-card-section-title">Contact Information</div>
+                            <div class="contact-grid">
+                                <div class="contact-item">
+                                    <span class="contact-label">Name:</span>
+                                    <span class="contact-value">${sample.contactName}</span>
+                                </div>
+                                <div class="contact-item">
+                                    <span class="contact-label">Case Type:</span>
+                                    <span class="contact-value">${sample.caseType}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Case Summary -->
+                        <div class="lead-card-summary">
+                            <div class="lead-card-summary-title">Case Summary</div>
+                            <p>${sample.summary}</p>
+                        </div>
+                        <!-- Key Factors -->
+                        <div class="lead-card-factors">
+                            <div class="lead-card-section-title">Key Factors</div>
+                            <div class="factor-pills">
+                                ${positiveFactorsHtml}
+                                ${concernsHtml}
+                            </div>
+                        </div>
+                        <!-- Recommended Action -->
+                        <div class="lead-card-section">
+                            <div class="lead-card-section-title">Recommended Action</div>
+                            <p style="color: #94a3b8; line-height: 1.6;">${sample.recommendedAction}</p>
+                        </div>
+                    </div>
+                    <div class="lead-card-transcript" id="transcript-dynamic" style="display: none;">
+                        <div class="lead-card-transcript-title">Full Conversation Transcript</div>
+                        ${transcriptHtml}
+                    </div>
+                    <div class="lead-card-footer">
+                        <a href="javascript:void(0)" class="transcript-toggle" onclick="toggleTranscript('transcript-dynamic', this)">View Full Transcript →</a>
+                        <span class="lead-card-time">Delivered via email or CRM</span>
+                    </div>
+                </div>
+            </div>`;
+
+            container.innerHTML = cardHtml;
+            container.style.display = 'block';
+        }
 
         // Check rate limit (client-side)
         function checkRateLimit() {
@@ -2124,6 +2447,23 @@
                             welcomeBanner.classList.add('visible');
                         }
 
+                        // Load and render practice-area-specific sample for campaign visitors
+                        const samples = await loadSampleIntakes();
+                        if (samples && statusData.primaryArea) {
+                            const sampleKey = normalizePracticeArea(statusData.primaryArea);
+                            const sample = samples[sampleKey] || samples['personal_injury'];
+                            if (sample) {
+                                // Render the dynamic sample
+                                renderDynamicSample(sample);
+
+                                // Hide the toggle button since we're showing it automatically
+                                const toggleBtn = document.getElementById('examples-toggle-btn');
+                                if (toggleBtn) {
+                                    toggleBtn.parentElement.style.display = 'none';
+                                }
+                            }
+                        }
+
                         // If they already have an active subscription, show Account Active modal
                         if (statusData.subscriptionStatus === 'active') {
                             showAccountActiveModal(statusData);
@@ -2370,7 +2710,7 @@
     </script>
 
     <!-- Sticky CTA Button -->
-    <a href="#demo" class="sticky-cta" id="sticky-cta">See It In Action →</a>
+    <a href="new-account.html" class="sticky-cta" id="sticky-cta">Get Started →</a>
     <script>
         (function() {
             const stickyCta = document.getElementById('sticky-cta');

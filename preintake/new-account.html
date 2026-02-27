@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get Started | PreIntake.ai</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" type="image/svg+xml" href="/images/icon.svg">
+    <link rel="icon" type="image/png" href="/images/icon.png">
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-dark: #0a1628;
+            --primary-blue: #1a2d4a;
+            --accent-gold: #c9a962;
+            --accent-gold-hover: #d4b87a;
+            --text-light: #ffffff;
+            --text-muted: rgba(255, 255, 255, 0.7);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --input-bg: rgba(255, 255, 255, 0.05);
+            --error-red: #ef4444;
+            --success-green: #22c55e;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-blue) 100%);
+            min-height: 100vh;
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        .page-container {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 4rem;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 2.5rem;
+        }
+
+        @media (max-width: 600px) {
+            .card {
+                padding: 1.5rem;
+                border-radius: 16px;
+            }
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--text-light);
+        }
+
+        .form-group label .required {
+            color: var(--accent-gold);
+        }
+
+        .form-hint {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 0.35rem;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="url"],
+        select {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-light);
+            font-size: 1rem;
+            transition: border-color 0.2s, background-color 0.2s;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="url"]:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='rgba(255,255,255,0.5)' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            padding-right: 2.5rem;
+        }
+
+        select option {
+            background: var(--primary-dark);
+            color: var(--text-light);
+        }
+
+        /* Practice Area Grid */
+        .practice-areas-section {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .practice-areas-section h3 {
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .practice-area-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.4rem 0.75rem;
+            margin-top: 1rem;
+        }
+
+        @media (max-width: 900px) {
+            .practice-area-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .practice-area-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .practice-area-item {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.35rem 0;
+        }
+
+        .practice-area-item input[type="checkbox"] {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 3px;
+            background: rgba(255, 255, 255, 0.05);
+            cursor: pointer;
+            flex-shrink: 0;
+            position: relative;
+            transition: all 0.15s ease;
+        }
+
+        .practice-area-item input[type="checkbox"]:checked {
+            background: var(--accent-gold);
+            border-color: var(--accent-gold);
+        }
+
+        .practice-area-item input[type="checkbox"]:checked::after {
+            content: '';
+            position: absolute;
+            left: 5px;
+            top: 2px;
+            width: 4px;
+            height: 8px;
+            border: solid var(--primary-dark);
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+
+        .practice-area-item input[type="checkbox"]:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .practice-area-item label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            line-height: 1.3;
+            user-select: none;
+        }
+
+        .practice-area-item input[type="checkbox"]:checked + label {
+            color: var(--text-light);
+        }
+
+        .practice-area-item input[type="checkbox"]:disabled + label {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        /* Other Practice Area Input */
+        .other-practice-area {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(201, 169, 98, 0.05);
+            border: 1px solid rgba(201, 169, 98, 0.3);
+            border-radius: 8px;
+        }
+
+        .other-practice-area label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .other-practice-area input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .other-practice-area input:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        /* Submit Button */
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            width: 100%;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--accent-gold) 0%, #b8944d 100%);
+            color: var(--primary-dark);
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 1rem;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(201, 169, 98, 0.3);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-primary svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Spinner */
+        .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--primary-dark);
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .btn-primary.loading .spinner {
+            display: block;
+        }
+
+        .btn-primary.loading .btn-text {
+            display: none;
+        }
+
+        /* Error/Success Messages */
+        .form-error {
+            display: none;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid var(--error-red);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            margin-bottom: 1.5rem;
+            color: var(--error-red);
+            font-size: 0.9rem;
+        }
+
+        .form-error.visible {
+            display: block;
+        }
+
+        .field-error {
+            color: var(--error-red);
+            font-size: 0.8rem;
+            margin-top: 0.35rem;
+            display: none;
+        }
+
+        .field-error.visible {
+            display: block;
+        }
+
+        input.error,
+        select.error {
+            border-color: var(--error-red);
+        }
+
+        /* Pricing Note */
+        .pricing-note {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .pricing-note .price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-gold);
+        }
+
+        .pricing-note .price-details {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: 0.25rem;
+        }
+    </style>
+</head>
+<body>
+    <div id="preintake-header"></div>
+
+    <main class="page-container">
+        <div class="page-header">
+            <h1>Get Started with PreIntake.ai</h1>
+            <p>Tell us about your firm and we'll set up your AI intake in minutes.</p>
+        </div>
+
+        <div class="card">
+            <div class="form-error" id="form-error"></div>
+
+            <form id="registration-form" novalidate>
+                <div class="form-group">
+                    <label for="name">Full Name <span class="required">*</span></label>
+                    <input type="text" id="name" name="name" placeholder="e.g., John Smith" required>
+                    <div class="field-error" id="name-error"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address <span class="required">*</span></label>
+                    <input type="email" id="email" name="email" placeholder="e.g., john@smithlaw.com" required>
+                    <div class="field-error" id="email-error"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="firmName">Firm Name</label>
+                    <input type="text" id="firmName" name="firmName" placeholder="e.g., Smith Law Group">
+                    <p class="form-hint">Leave blank to use "[Your Name], Attorney at Law"</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="primaryPracticeArea">Primary Practice Area <span class="required">*</span></label>
+                    <select id="primaryPracticeArea" name="primaryPracticeArea" required>
+                        <option value="">Select your primary practice area...</option>
+                    </select>
+                    <div class="field-error" id="primaryPracticeArea-error"></div>
+                    <!-- "Other" input for Primary Practice Area -->
+                    <div class="other-practice-area" id="primary-other-container" style="display: none; margin-top: 0.75rem;">
+                        <label for="primaryOtherPracticeArea">Please specify your primary practice area:</label>
+                        <input type="text" id="primaryOtherPracticeArea" name="primaryOtherPracticeArea" placeholder="e.g., Maritime Law, Aviation Law">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="website">Website URL</label>
+                    <input type="url" id="website" name="website" placeholder="e.g., https://smithlaw.com">
+                    <p class="form-hint">Optional. We'll use this to customize your intake page styling.</p>
+                    <div class="field-error" id="website-error"></div>
+                </div>
+
+                <div class="practice-areas-section">
+                    <h3>Additional Practice Areas</h3>
+                    <p class="form-hint">Select any additional areas your firm handles</p>
+                    <div class="practice-area-grid" id="practice-area-grid">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                    <div class="other-practice-area" id="other-practice-area-container" style="display: none;">
+                        <label for="otherPracticeArea">Please specify:</label>
+                        <input type="text" id="otherPracticeArea" name="otherPracticeArea" placeholder="e.g., Maritime Law, Aviation Law">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-primary" id="submit-btn">
+                    <span class="btn-text">Continue to Payment</span>
+                    <span class="spinner"></span>
+                    <svg class="btn-text" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                </button>
+
+                <div class="pricing-note">
+                    <div class="price">$99/month</div>
+                    <div class="price-details">No setup fee. Cancel anytime.</div>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <div id="preintake-footer"></div>
+
+    <script src="/js/components.js"></script>
+    <script>
+        const STANDARD_PRACTICE_AREAS = [
+            'Administrative Law', 'Appellate Law', 'Bankruptcy', 'Business Law',
+            'Civil Litigation', 'Civil Rights Law', 'Class Action Litigation',
+            'Commercial Litigation', 'Construction Law', 'Consumer Protection',
+            'Contract Law', 'Corporate Law', 'Criminal Defense',
+            'Cybersecurity & Privacy Law', 'Debt Defense', 'Education Law',
+            'Elder Law', 'Employment & Labor Law', 'Entertainment & Media Law',
+            'Environmental Law', 'Estate Planning', 'Family Law',
+            'General Practice', 'Health Care Law', 'Immigration Law', 'Insurance Defense',
+            'Intellectual Property Law', 'Juvenile Law', 'Landlord-Tenant Law',
+            'Medical Malpractice', 'Mergers & Acquisitions', 'Personal Injury',
+            'Probate & Trust Administration', 'Product Liability', 'Real Estate Law',
+            'Securities Law', 'Social Security Disability', 'Sports Law',
+            'Tax Law', 'Workers\' Compensation'
+        ];
+
+        const API_BASE = 'https://us-west1-teambuilder-plus-fe74d.cloudfunctions.net';
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', () => {
+            populatePracticeAreas();
+            setupFormValidation();
+        });
+
+        function populatePracticeAreas() {
+            const select = document.getElementById('primaryPracticeArea');
+            const grid = document.getElementById('practice-area-grid');
+            const primaryOtherContainer = document.getElementById('primary-other-container');
+            const primaryOtherInput = document.getElementById('primaryOtherPracticeArea');
+            const additionalOtherContainer = document.getElementById('other-practice-area-container');
+            const additionalOtherInput = document.getElementById('otherPracticeArea');
+
+            // Populate dropdown (including "Other" at the end)
+            STANDARD_PRACTICE_AREAS.forEach(area => {
+                const option = document.createElement('option');
+                option.value = area;
+                option.textContent = area;
+                select.appendChild(option);
+            });
+            // Add "Other" option to dropdown
+            const otherOption = document.createElement('option');
+            otherOption.value = 'Other';
+            otherOption.textContent = 'Other (specify)';
+            select.appendChild(otherOption);
+
+            // Populate checkbox grid
+            STANDARD_PRACTICE_AREAS.forEach(area => {
+                const item = document.createElement('div');
+                item.className = 'practice-area-item';
+
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.id = `area-${area.replace(/[^a-zA-Z0-9]/g, '-')}`;
+                checkbox.name = 'additionalPracticeAreas';
+                checkbox.value = area;
+
+                const label = document.createElement('label');
+                label.htmlFor = checkbox.id;
+                label.textContent = area;
+
+                item.appendChild(checkbox);
+                item.appendChild(label);
+                grid.appendChild(item);
+            });
+
+            // Add "Other" checkbox at the end of the grid
+            const otherItem = document.createElement('div');
+            otherItem.className = 'practice-area-item';
+
+            const otherCheckbox = document.createElement('input');
+            otherCheckbox.type = 'checkbox';
+            otherCheckbox.id = 'area-Other';
+            otherCheckbox.name = 'additionalPracticeAreas';
+            otherCheckbox.value = 'Other';
+
+            const otherLabel = document.createElement('label');
+            otherLabel.htmlFor = 'area-Other';
+            otherLabel.textContent = 'Other (specify)';
+
+            otherItem.appendChild(otherCheckbox);
+            otherItem.appendChild(otherLabel);
+            grid.appendChild(otherItem);
+
+            // Show/hide primary "Other" text input
+            function updatePrimaryOtherVisibility() {
+                if (select.value === 'Other') {
+                    primaryOtherContainer.style.display = 'block';
+                } else {
+                    primaryOtherContainer.style.display = 'none';
+                    primaryOtherInput.value = '';
+                }
+            }
+
+            // Show/hide additional "Other" text input (for checkbox)
+            function updateAdditionalOtherVisibility() {
+                const checkboxIsOther = document.getElementById('area-Other')?.checked;
+                if (checkboxIsOther) {
+                    additionalOtherContainer.style.display = 'block';
+                } else {
+                    additionalOtherContainer.style.display = 'none';
+                    additionalOtherInput.value = '';
+                }
+            }
+
+            // Listen for "Other" checkbox changes
+            document.getElementById('area-Other').addEventListener('change', updateAdditionalOtherVisibility);
+
+            // Disable checkbox when selected as primary + handle Other visibility
+            select.addEventListener('change', () => {
+                const primaryValue = select.value;
+                grid.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                    if (checkbox.value === primaryValue) {
+                        checkbox.checked = false;
+                        checkbox.disabled = true;
+                    } else {
+                        checkbox.disabled = false;
+                    }
+                });
+                updatePrimaryOtherVisibility();
+                updateAdditionalOtherVisibility();
+            });
+        }
+
+        function setupFormValidation() {
+            const form = document.getElementById('registration-form');
+            const submitBtn = document.getElementById('submit-btn');
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                clearErrors();
+
+                // Validate fields
+                const name = document.getElementById('name').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const firmName = document.getElementById('firmName').value.trim();
+                const primaryPracticeArea = document.getElementById('primaryPracticeArea').value;
+                const website = document.getElementById('website').value.trim();
+
+                let hasErrors = false;
+
+                if (!name || name.length < 2) {
+                    showFieldError('name', 'Please enter your full name');
+                    hasErrors = true;
+                }
+
+                if (!email || !isValidEmail(email)) {
+                    showFieldError('email', 'Please enter a valid email address');
+                    hasErrors = true;
+                }
+
+                if (!primaryPracticeArea) {
+                    showFieldError('primaryPracticeArea', 'Please select your primary practice area');
+                    hasErrors = true;
+                }
+
+                if (website && !isValidUrl(website)) {
+                    showFieldError('website', 'Please enter a valid URL (e.g., https://example.com)');
+                    hasErrors = true;
+                }
+
+                if (hasErrors) return;
+
+                // Handle primary "Other" selection
+                const primaryOtherValue = document.getElementById('primaryOtherPracticeArea').value.trim();
+                let finalPrimaryPracticeArea = primaryPracticeArea;
+                if (primaryPracticeArea === 'Other') {
+                    if (primaryOtherValue) {
+                        finalPrimaryPracticeArea = primaryOtherValue;
+                    } else {
+                        showFieldError('primaryPracticeArea', 'Please specify your practice area');
+                        return;
+                    }
+                }
+
+                // Collect additional practice areas
+                const additionalPracticeAreas = [];
+                const additionalOtherValue = document.getElementById('otherPracticeArea').value.trim();
+                document.querySelectorAll('input[name="additionalPracticeAreas"]:checked').forEach(checkbox => {
+                    // Replace "Other" with the actual specified value
+                    if (checkbox.value === 'Other' && additionalOtherValue) {
+                        additionalPracticeAreas.push(additionalOtherValue);
+                    } else if (checkbox.value !== 'Other') {
+                        additionalPracticeAreas.push(checkbox.value);
+                    }
+                });
+
+                // Submit form
+                submitBtn.classList.add('loading');
+                submitBtn.disabled = true;
+
+                try {
+                    const response = await fetch(`${API_BASE}/submitNewAccount`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            name,
+                            email,
+                            firmName: firmName || '',
+                            primaryPracticeArea: finalPrimaryPracticeArea,
+                            additionalPracticeAreas,
+                            website: website || ''
+                        })
+                    });
+
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        // Check if this is an active subscriber trying to re-register
+                        if (response.status === 409 && data.isActiveSubscriber) {
+                            showActiveSubscriberMessage();
+                            submitBtn.classList.remove('loading');
+                            submitBtn.disabled = false;
+                            return;
+                        }
+                        throw new Error(data.error || 'Failed to create account. Please try again.');
+                    }
+
+                    if (data.success && data.leadId) {
+                        // Redirect to payment page
+                        window.location.href = `/create-account.html?lead=${data.leadId}`;
+                    } else {
+                        throw new Error('Unexpected response from server');
+                    }
+
+                } catch (error) {
+                    console.error('Submission error:', error);
+                    showFormError(error.message || 'An error occurred. Please try again.');
+                    submitBtn.classList.remove('loading');
+                    submitBtn.disabled = false;
+                }
+            });
+        }
+
+        function isValidEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        function isValidUrl(url) {
+            try {
+                const parsed = new URL(url);
+                return parsed.protocol === 'http:' || parsed.protocol === 'https:';
+            } catch {
+                return false;
+            }
+        }
+
+        function showFieldError(fieldId, message) {
+            const input = document.getElementById(fieldId);
+            const errorEl = document.getElementById(`${fieldId}-error`);
+            if (input) input.classList.add('error');
+            if (errorEl) {
+                errorEl.textContent = message;
+                errorEl.classList.add('visible');
+            }
+        }
+
+        function showFormError(message) {
+            const errorEl = document.getElementById('form-error');
+            errorEl.textContent = message;
+            errorEl.classList.add('visible');
+        }
+
+        function showActiveSubscriberMessage() {
+            const errorEl = document.getElementById('form-error');
+            errorEl.innerHTML = `
+                You already have an active PreIntake.ai account.<br>
+                <a href="/account.html" style="color: var(--accent-gold); text-decoration: underline;">
+                    Go to My Account →
+                </a>
+            `;
+            errorEl.classList.add('visible');
+        }
+
+        function clearErrors() {
+            document.querySelectorAll('.field-error').forEach(el => {
+                el.classList.remove('visible');
+                el.textContent = '';
+            });
+            document.querySelectorAll('input.error, select.error').forEach(el => {
+                el.classList.remove('error');
+            });
+            document.getElementById('form-error').classList.remove('visible');
+        }
+    </script>
+</body>
+</html>
