@@ -202,7 +202,7 @@ CONTEXT: Team Build Pro is a SaaS tool ($6.99/month) that helps professionals bu
 exports.chatbot = onRequest(
   {
     region: 'us-central1',
-    minInstances: 1,
+    minInstances: 0,
     secrets: [OPENAI_API_KEY],
     timeoutSeconds: 60,
     memory: '512MiB',

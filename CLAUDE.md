@@ -1673,6 +1673,22 @@ Corporate email domains are excluded from all contact collections using a **blac
 - ✅ **Scripts Synchronized**: `scripts/update-v14-templates.js` rewritten to match current Mailgun templates
 - ✅ **Spam Monitor Updated**: Full recipient name format ("Stephen Scott <scscot@gmail.com>") for better deliverability
 
+**GCP Cost Optimization & App Store Description Restoration (Feb 26, 2026)**
+- ✅ **Chatbot minInstances Reduced**: Changed from `minInstances: 1` to `minInstances: 0` in `functions/chatbot.js`
+  - Saves ~$15-25/month by eliminating 24/7 warm instance
+  - Cold start latency (1-3s) acceptable for AI Coach chatbot use case
+  - Deployment pending (Firebase Extensions API permission issue)
+- ✅ **App Store Descriptions Restored**: Reverted from shortened ~450 word versions to original ~900 word descriptions
+  - Shortened versions (Feb 16) caused ~60% decline in App Store impressions
+  - Restored EN, ES, PT, DE descriptions from v1.0.79 content via git history
+  - Content retrieved from `git show 6770abf^:documents/App_Store_Description*.md`
+- ✅ **v1.0.81 Built & Uploaded**: Build 111 successfully uploaded to App Store Connect
+  - Delivery UUID: `fc6f8366-5881-4a83-8fa9-df7dfb3777a0`
+  - Size: 49MB, transferred in 32.4 seconds
+- ✅ **Unused GCP Resources Identified** (for future cleanup):
+  - `testing-database` Firestore database: No indexes, no code references
+  - Composite indexes for deleted collections: `contacts_yahoo`, `beta_testers`
+
 **FSR Campaign & Subscription Updates (Feb 19, 2026)**
 - ✅ **FSR Email Campaign Created**: New campaign for FindSalesRep contacts
   - File: `functions/email-campaign-fsr.js`
