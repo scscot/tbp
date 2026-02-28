@@ -40,7 +40,7 @@ const db = admin.firestore();
 // CONFIGURATION
 // =============================================================================
 
-const TEST_EMAIL = 'scscot1@gmail.com';
+const TEST_EMAIL = 'scscot@gmail.com';
 const TEST_RECIPIENT_NAME = 'Stephen Scott';
 const ALERT_EMAIL = 'scscot@gmail.com';
 const MAILGUN_DOMAIN = 'law.preintake.ai';
