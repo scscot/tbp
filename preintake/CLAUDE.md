@@ -1,6 +1,6 @@
 # PreIntake.ai: Comprehensive Project Documentation
 
-**Last Updated**: 2026-02-27
+**Last Updated**: 2026-02-28
 **Version**: 7.5 (Get Started flow for organic visitors)
 
 ---
@@ -72,7 +72,7 @@ After 15+ demo flow iterations with 0% completion rate, pivoting to direct landi
 
 **How it works:**
 1. Queries Mailgun API for permanent failures (last 24 hours)
-2. Filters for emails from `stephen@law.preintake.ai`
+2. Filters for emails from `stephen@legal.preintake.ai`
 3. Marks matching contacts in `preintake_emails` collection with:
    - `status: 'failed'`
    - `failReason: 'permanent_bounce'`
@@ -774,15 +774,16 @@ When you're spending $300-500 per lead, even small conversion improvements mean 
   - Cloud Function: `handlePreIntakeUnsubscribe` (updates Firestore status)
   - Unsubscribe page: `preintake.ai/unsubscribe.html`
   - Email footer includes personalized unsubscribe link
-- [x] **Email Deliverability** - Using Mailgun for law.preintake.ai
+- [x] **Email Deliverability** - Using Mailgun for legal.preintake.ai
   - SPF, DKIM, DMARC configured via Mailgun DNS records
   - All authentication checks passing
+  - Domain switch from `law.preintake.ai` to `legal.preintake.ai` (Feb 28, 2026)
 - [x] **GitHub Secrets Configured**
-  - `MAILGUN_API_KEY`: Mailgun API key for law.preintake.ai domain
+  - `MAILGUN_API_KEY`: Mailgun API key for legal.preintake.ai domain
   - `FIREBASE_SERVICE_ACCOUNT`: For Firestore access
 
 **Email Templates (v9 - Feb 26, 2026):**
-- From: Stephen Scott <stephen@law.preintake.ai>
+- From: Stephen Scott <stephen@legal.preintake.ai>
 - **Subject Line (unified)**: "Pre-screen every inquiry before it reaches your team"
 - **Messaging**: "Triage" framing - strongest matters rise to the top, practice-specific screening
 - **CTA**: "Learn More" → preintake.ai landing page with UTM tracking (demos eliminated)
@@ -2153,6 +2154,41 @@ Email CTA → Homepage (?lead=) → create-account.html → Payment
 | `preintake/js/components.js` | Changed "Demo" → "Get Started" in header |
 | `preintake/index.html` | Changed hero CTA text + link, hid Demo CTA Section |
 | `preintake/css/styles.css` | Added form styling for new-account.html |
+
+### Phase 84: Domain Switch to legal.preintake.ai (2026-02-28)
+- [x] **New Sending Domain** - Switched from `law.preintake.ai` to `legal.preintake.ai`
+  - `law.preintake.ai` had prior spam issues; starting fresh with new domain
+  - `legal.preintake.ai` activated in Mailgun with SPF/DKIM/DMARC configured
+  - Parent domain `preintake.ai` created Dec 26, 2025 (~2 months old)
+- [x] **Campaign Script Updates** - `scripts/send-preintake-campaign.js`
+  - Changed `MAILGUN_DOMAIN` default: `law.preintake.ai` → `legal.preintake.ai`
+  - Changed `FROM_ADDRESS`: `stephen@law.preintake.ai` → `stephen@legal.preintake.ai`
+  - Added Gmail exclusion support (`EXCLUDE_GMAIL` env var, `isGmailEmail()` function)
+  - Gmail domains: `gmail.com`, `googlemail.com`
+- [x] **Workflow Updates** - `.github/workflows/preintake-email-campaign.yml`
+  - Added `MAILGUN_DOMAIN: legal.preintake.ai` env var
+  - Added `EXCLUDE_GMAIL: 'true'` for week 1 domain warming
+  - Updated failure notification to use `legal.preintake.ai`
+- [x] **Conservative Warming Strategy** - Starting fresh with reduced volume
+  - Batch size: 25 (set via Firestore `preintakeBatchSize`)
+  - Gmail excluded week 1 (aggressive spam filtering)
+  - 4-week warming schedule: 25 → 50 → 75 → 100
+
+**Domain Warming Schedule:**
+| Week | Batch Size | Gmail | Notes |
+|------|------------|-------|-------|
+| 1 | 25 | Excluded | Conservative start |
+| 2 | 50 | Enabled | Remove `EXCLUDE_GMAIL` from workflow |
+| 3 | 75 | Enabled | Ramp continues |
+| 4+ | 100 | Enabled | Full capacity |
+
+**To disable Gmail exclusion after week 1:** Remove `EXCLUDE_GMAIL: 'true'` line from workflow.
+
+**Files Modified:**
+| File | Changes |
+|------|---------|
+| `scripts/send-preintake-campaign.js` | Domain defaults, FROM address, Gmail exclusion logic |
+| `.github/workflows/preintake-email-campaign.yml` | Domain env var, Gmail exclusion, failure notification |
 
 ---
 

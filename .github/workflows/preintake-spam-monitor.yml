@@ -2,9 +2,10 @@ name: PreIntake Email Spam Monitor
 
 on:
   schedule:
-    # Daily at 7:00 AM PT (15:00 UTC)
+    # Mon-Fri at 7:00 AM PT (15:00 UTC)
     # PST: 7:00 AM, PDT: 6:00 AM (shifts 1 hour earlier in summer)
-    - cron: '0 15 * * *'
+    # Day-of-week: 1-5 = Mon-Fri
+    - cron: '0 15 * * 1-5'
 
   # Allow manual trigger for testing
   workflow_dispatch:

@@ -14,7 +14,7 @@
  *
  * Environment Variables:
  *   MAILGUN_API_KEY - Mailgun API key
- *   MAILGUN_DOMAIN - Mailgun sending domain (default: law.preintake.ai)
+ *   MAILGUN_DOMAIN - Mailgun sending domain (default: legal.preintake.ai)
  *   BATCH_SIZE - Number of emails to send per run (default: 5)
  *   TEST_EMAIL - Override recipient for testing (won't mark as sent)
  *   DOC_ID - Specific document ID from preintake_emails to process
@@ -53,9 +53,9 @@ db.settings({ databaseId: 'preintake' });
 
 // Mailgun configuration
 const MAILGUN_API_KEY = process.env.MAILGUN_API_KEY;
-const MAILGUN_DOMAIN = process.env.MAILGUN_DOMAIN || 'law.preintake.ai';
+const MAILGUN_DOMAIN = process.env.MAILGUN_DOMAIN || 'legal.preintake.ai';
 const MAILGUN_BASE_URL = `https://api.mailgun.net/v3/${MAILGUN_DOMAIN}`;
-const FROM_ADDRESS = 'Stephen Scott <stephen@law.preintake.ai>';
+const FROM_ADDRESS = 'Stephen Scott <stephen@legal.preintake.ai>';
 
 // Configuration
 const COLLECTION_NAME = 'preintake_emails';
@@ -98,8 +98,15 @@ const TEST_LEAD_ID = process.env.TEST_LEAD_ID || null;
 // Yahoo/AOL use aggressive spam filtering and can hurt sender reputation during warming
 const EXCLUDE_YAHOO_AOL = process.env.EXCLUDE_YAHOO_AOL === 'true';
 
+// Exclude Gmail emails during domain warming (set to 'true' to enable)
+// Gmail has sophisticated spam filtering; skip during first week of warming
+const EXCLUDE_GMAIL = process.env.EXCLUDE_GMAIL === 'true';
+
 // Yahoo/AOL domains to exclude during warming
 const YAHOO_AOL_DOMAINS = ['yahoo.com', 'yahoo.co.uk', 'yahoo.ca', 'yahoo.com.au', 'yahoo.co.in', 'ymail.com', 'aol.com', 'aim.com'];
+
+// Gmail domains to exclude during warming
+const GMAIL_DOMAINS = ['gmail.com', 'googlemail.com'];
 
 /**
  * Check if an email address is from Yahoo/AOL (should be excluded during warming)
@@ -109,6 +116,16 @@ function isYahooAolEmail(email) {
     const domain = email.split('@')[1]?.toLowerCase();
     if (!domain) return false;
     return YAHOO_AOL_DOMAINS.includes(domain) || domain.startsWith('yahoo.');
+}
+
+/**
+ * Check if an email address is from Gmail (should be excluded during warming week 1)
+ */
+function isGmailEmail(email) {
+    if (!email) return false;
+    const domain = email.split('@')[1]?.toLowerCase();
+    if (!domain) return false;
+    return GMAIL_DOMAINS.includes(domain);
 }
 
 /**
@@ -532,6 +549,7 @@ async function runCampaign() {
     console.log(`   From: ${FROM_ADDRESS}`);
     console.log(`   Batch Size: ${BATCH_SIZE}`);
     console.log(`   Yahoo/AOL Exclusion: ${EXCLUDE_YAHOO_AOL ? 'ENABLED (domain warming)' : 'DISABLED'}`);
+    console.log(`   Gmail Exclusion: ${EXCLUDE_GMAIL ? 'ENABLED (domain warming week 1)' : 'DISABLED'}`);
     if (TEST_EMAIL) {
         console.log(`   ⚠️  TEST MODE: All emails will be sent to ${TEST_EMAIL}`);
         console.log(`   ⚠️  Firestore records will NOT be marked as sent`);
@@ -679,6 +697,16 @@ async function runCampaign() {
             const filtered = before - mergedDocs.length;
             if (filtered > 0) {
                 console.log(`🛡️  Excluded ${filtered} Yahoo/AOL emails (domain warming mode)`);
+            }
+        }
+
+        // Apply Gmail filter if enabled (week 1 warming)
+        if (EXCLUDE_GMAIL) {
+            const before = mergedDocs.length;
+            mergedDocs = mergedDocs.filter(doc => !isGmailEmail(doc.data().email));
+            const filtered = before - mergedDocs.length;
+            if (filtered > 0) {
+                console.log(`🛡️  Excluded ${filtered} Gmail emails (domain warming week 1)`);
             }
         }
 

@@ -38,9 +38,9 @@ db.settings({ databaseId: 'preintake' });
 const mailgunConfigPath = path.join(__dirname, '../secrets/mailgun_config.json');
 const mailgunConfig = require(mailgunConfigPath);
 
-const MAILGUN_API_KEY = mailgunConfig.preintake_api_key;
-const MAILGUN_DOMAIN = mailgunConfig.preintake_domain;
-const FROM_EMAIL = 'stephen@law.preintake.ai';
+const MAILGUN_API_KEY = mailgunConfig.preintake_api_key2;
+const MAILGUN_DOMAIN = mailgunConfig.preintake_domain2;
+const FROM_EMAIL = 'stephen@legal.preintake.ai';
 
 /**
  * Fetch failed events from Mailgun API (last 24 hours only)

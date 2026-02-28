@@ -98,18 +98,21 @@ jobs:
       - name: Send email batch
         env:
           BATCH_SIZE: ${{ github.event.inputs.batch_size || steps.warming.outputs.batch_size }}
+          MAILGUN_DOMAIN: legal.preintake.ai
+          EXCLUDE_GMAIL: 'true'
         run: |
           echo "Starting PreIntake email campaign..."
           echo "Batch size: $BATCH_SIZE"
+          echo "Mailgun domain: $MAILGUN_DOMAIN"
+          echo "Gmail exclusion: $EXCLUDE_GMAIL"
           node scripts/send-preintake-campaign.js
 
       - name: Notify on failure
         if: failure()
         run: |
-          DOMAIN="${MAILGUN_DOMAIN:-law.preintake.ai}"
           curl -s --user "api:$MAILGUN_API_KEY" \
-            "https://api.mailgun.net/v3/${DOMAIN}/messages" \
-            -F from="Stephen Scott <stephen@law.preintake.ai>" \
+            "https://api.mailgun.net/v3/legal.preintake.ai/messages" \
+            -F from="Stephen Scott <stephen@legal.preintake.ai>" \
             -F to="scscot@gmail.com" \
             -F subject="GitHub Actions: PreIntake Email Campaign FAILED" \
             -F text="Workflow failed: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
