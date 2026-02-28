@@ -45,7 +45,7 @@ jobs:
       - name: Run PreIntake spam monitor
         env:
           GOOGLE_APPLICATION_CREDENTIALS: secrets/serviceAccountKey.json
-          MAILGUN_API_KEY: ${{ secrets.MAILGUN_API_KEY }}
+          MAILGUN_API_KEY: ${{ secrets.PREINTAKE_MAILGUN_API_KEY2 }}
           GMAIL_OAUTH_CREDENTIALS: ${{ secrets.GMAIL_OAUTH_CREDENTIALS }}
           GMAIL_OAUTH_TOKEN: ${{ secrets.GMAIL_OAUTH_TOKEN }}
         run: |
@@ -55,11 +55,11 @@ jobs:
       - name: Notify on failure
         if: failure()
         env:
-          MAILGUN_API_KEY: ${{ secrets.MAILGUN_API_KEY }}
+          MAILGUN_API_KEY: ${{ secrets.PREINTAKE_MAILGUN_API_KEY2 }}
         run: |
           curl -s --user "api:$MAILGUN_API_KEY" \
-            "https://api.mailgun.net/v3/law.preintake.ai/messages" \
-            -F from="Stephen Scott <stephen@law.preintake.ai>" \
+            "https://api.mailgun.net/v3/legal.preintake.ai/messages" \
+            -F from="Stephen Scott <stephen@legal.preintake.ai>" \
             -F to="scscot@gmail.com" \
             -F subject="GitHub Actions: PreIntake Spam Monitor FAILED" \
             -F text="Workflow failed: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \

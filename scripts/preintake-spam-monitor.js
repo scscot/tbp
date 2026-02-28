@@ -43,8 +43,8 @@ const db = admin.firestore();
 const TEST_EMAIL = 'scscot@gmail.com';
 const TEST_RECIPIENT_NAME = 'Stephen Scott';
 const ALERT_EMAIL = 'scscot@gmail.com';
-const MAILGUN_DOMAIN = 'law.preintake.ai';
-const FROM_ADDRESS = 'Stephen Scott <stephen@law.preintake.ai>';
+const MAILGUN_DOMAIN = 'legal.preintake.ai';
+const FROM_ADDRESS = 'Stephen Scott <stephen@legal.preintake.ai>';
 const SUBJECT = 'Pre-screen every inquiry before it reaches you';
 const CHECK_DELAY_MS = 3 * 60 * 1000; // 3 minutes (Gmail typically delivers in 1-2 min)
 
