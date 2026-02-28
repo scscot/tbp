@@ -40,7 +40,7 @@ const db = admin.firestore();
 // CONFIGURATION
 // =============================================================================
 
-const TEST_EMAIL = 'scscot@gmail.com';
+const TEST_EMAIL = 'scscot1@gmail.com';
 const TEST_RECIPIENT_NAME = 'Stephen Scott';
 const ALERT_EMAIL = 'scscot@gmail.com';
 const MAILGUN_DOMAIN = 'law.preintake.ai';
@@ -60,7 +60,7 @@ const TEST_FIRM_NAME = 'Test Law Firm';
  * IDENTICAL to generateEmailHTML() in send-preintake-campaign.js
  * to ensure testing reflects actual campaign emails
  */
-function generateTestEmailHtml(subjectSuffix) {
+function generateTestEmailHtml() {
   const ctaUrl = 'https://preintake.ai/?lead=delivery_test&utm_source=email&utm_medium=outreach&utm_campaign=law_firms&utm_content=cta_button';
   const unsubscribeUrl = `https://preintake.ai/unsubscribe.html?email=${encodeURIComponent(TEST_EMAIL)}`;
   const firstName = TEST_RECIPIENT_NAME.split(' ')[0];
@@ -153,7 +153,7 @@ function generateTestEmailHtml(subjectSuffix) {
  * Generate test email plain text content
  * IDENTICAL to generateEmailPlainText() in send-preintake-campaign.js
  */
-function generateTestEmailText(subjectSuffix) {
+function generateTestEmailText() {
   const ctaUrl = 'https://preintake.ai/?lead=delivery_test&utm_source=email&utm_medium=outreach&utm_campaign=law_firms&utm_content=cta_button';
   const unsubscribeUrl = `https://preintake.ai/unsubscribe.html?email=${encodeURIComponent(TEST_EMAIL)}`;
   const firstName = TEST_RECIPIENT_NAME.split(' ')[0];
@@ -231,16 +231,16 @@ async function getGmailClient() {
 // SEND TEST EMAIL VIA MAILGUN
 // =============================================================================
 
-async function sendTestEmail(subjectSuffix) {
+async function sendTestEmail() {
   const apiKey = process.env.MAILGUN_API_KEY;
 
   if (!apiKey) {
     throw new Error('MAILGUN_API_KEY not configured');
   }
 
-  const fullSubject = subjectSuffix ? `${SUBJECT} ${subjectSuffix}` : SUBJECT;
-  const htmlContent = generateTestEmailHtml(subjectSuffix);
-  const textContent = generateTestEmailText(subjectSuffix);
+  const fullSubject = SUBJECT;
+  const htmlContent = generateTestEmailHtml();
+  const textContent = generateTestEmailText();
 
   const form = new FormData();
   form.append('from', FROM_ADDRESS);
@@ -255,8 +255,7 @@ async function sendTestEmail(subjectSuffix) {
   form.append('o:tracking-clicks', 'no');
 
   // Tags for identification
-  form.append('o:tag', 'preintake_delivery_test');
-  form.append('o:tag', 'delivery_check');
+  form.append('o:tag', 'delivery');
 
   console.log(`Sending test email to ${TEST_EMAIL}...`);
   console.log(`Subject: ${fullSubject}`);
@@ -438,20 +437,12 @@ async function main() {
   console.log(`Target: ${TEST_EMAIL}`);
   console.log(`Domain: ${MAILGUN_DOMAIN}\n`);
 
-  // Generate date suffix for Gmail search accuracy
-  const dateSuffix = `(${new Date().toLocaleString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: '2-digit'
-  })})`;
-
   // Step 1: Send test email
   console.log('Step 1: Sending test email...\n');
 
   let sentEmail;
   try {
-    sentEmail = await sendTestEmail(dateSuffix);
+    sentEmail = await sendTestEmail();
     console.log(`\nTest email sent successfully`);
   } catch (error) {
     console.error('Failed to send test email:', error.message);
