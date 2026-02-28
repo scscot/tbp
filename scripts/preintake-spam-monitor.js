@@ -282,7 +282,7 @@ async function sendTestEmail() {
 
 async function checkEmailPlacement(gmail, subject) {
   // Search with from: and newer_than: filters for precision
-  const baseQuery = `subject:"${subject}" from:stephen@law.preintake.ai newer_than:1d`;
+  const baseQuery = `subject:"${subject}" from:stephen@legal.preintake.ai newer_than:1d`;
 
   // Search in INBOX
   const inboxResponse = await gmail.users.messages.list({
