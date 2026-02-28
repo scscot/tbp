@@ -75,10 +75,6 @@ function generateTestEmailHtml() {
     <!--<![endif]-->
 </head>
 <body style="margin:0; padding:0; background-color:#f8fafc;">
-  <div style="display:none; max-height:0; overflow:hidden;">
-    Pre-screen every inquiry before it reaches your team—see how it works for ${TEST_FIRM_NAME}.
-  </div>
-
   <div style="max-width:600px; margin:0 auto; padding:20px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; line-height:1.6; color:#1a1a2e;">
 
     <div style="background-color:#0c1f3f; background:linear-gradient(135deg,#0c1f3f 0%,#1a3a5c 100%); padding:20px; border-radius:12px 12px 0 0; text-align:center;">
