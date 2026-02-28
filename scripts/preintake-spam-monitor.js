@@ -52,8 +52,8 @@ const CHECK_DELAY_MS = 3 * 60 * 1000; // 3 minutes (Gmail typically delivers in 
 // TEST EMAIL CONTENT
 // =============================================================================
 
-// Test firm name for the email template
-const TEST_FIRM_NAME = 'Test Law Firm';
+// Firm name for the email template (realistic name to avoid spam triggers)
+const TEST_FIRM_NAME = 'Scott Law Group';
 
 /**
  * Generate test email HTML content
