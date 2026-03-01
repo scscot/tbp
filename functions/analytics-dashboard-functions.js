@@ -1698,7 +1698,7 @@ function buildExecutiveSummary(ga4Data, iosData, androidData, emailStats) {
       // GA4-based click tracking (actual website visits from email)
       websiteVisits: emailVisitsFromGA4,
       websiteSessions: emailSessionsFromGA4,
-      clickRate: ga4ClickRate,
+      overallClickRate: ga4ClickRate,
       trackingMethod: 'GA4',
       mostActiveCampaign: emailStats?.mostActiveCampaign || null
     },
@@ -2053,6 +2053,12 @@ const getTBPAnalytics = onRequest({
       logger.info('Strategic AI insights generated successfully');
     } catch (insightsError) {
       logger.warn('Failed to generate strategic insights:', insightsError.message);
+    }
+
+    // Augment emailCampaigns.totals with GA4-based click data from executive summary
+    if (allCampaignStats?.totals && executiveSummary?.email) {
+      allCampaignStats.totals.totalClicked = executiveSummary.email.websiteVisits || 0;
+      allCampaignStats.totals.overallClickRate = executiveSummary.email.overallClickRate || '0.00%';
     }
 
     const response = {

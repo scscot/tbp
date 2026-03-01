@@ -1248,6 +1248,66 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        /* Campaign Cards - Dynamically Generated */
+        .campaign-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .campaign-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 15px;
+            border-left: 4px solid var(--campaign-color, #007AFF);
+        }
+
+        .campaign-card h4 {
+            margin: 0 0 12px 0;
+            color: var(--campaign-color, #007AFF);
+            font-size: 0.9rem;
+        }
+
+        .campaign-card-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .campaign-stat-label {
+            font-size: 0.7rem;
+            color: #666;
+            text-transform: uppercase;
+        }
+
+        .campaign-stat-value {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .campaign-stat-value.sent {
+            color: #34c759;
+        }
+
+        .campaign-stat-value.remaining {
+            color: var(--campaign-color, #007AFF);
+        }
+
+        .campaign-card-footer {
+            grid-column: span 2;
+            margin-top: 5px;
+            font-size: 0.7rem;
+            color: #999;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .campaign-cards-grid {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1515,152 +1575,8 @@
                 <div class="section-card" id="emailCampaignSection">
                     <h3>Email Campaign Performance <span style="font-size: 0.7rem; color: #999; background: #f0f0f0; padding: 2px 8px; border-radius: 4px; margin-left: 8px; font-weight: 400;">Firestore Sends &middot; GA4 Clicks</span></h3>
 
-                    <!-- Three Campaign Cards -->
-                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 15px;">
-                        <!-- Main Campaign -->
-                        <div style="background: #f8f9fa; border-radius: 12px; padding: 15px; border-left: 4px solid #007AFF;">
-                            <h4 style="margin: 0 0 12px 0; color: #007AFF; font-size: 0.9rem;">MAIN CAMPAIGN</h4>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                                <div>
-                                    <div style="font-size: 0.7rem; color: #666; text-transform: uppercase;">Sent</div>
-                                    <div style="font-size: 1.3rem; font-weight: 600; color: #34c759;" id="execMainSent">-</div>
-                                </div>
-                                <div>
-                                    <div style="font-size: 0.7rem; color: #666; text-transform: uppercase;">Remaining</div>
-                                    <div style="font-size: 1.3rem; font-weight: 600; color: #007AFF;" id="execMainRemaining">-</div>
-                                </div>
-                                <div style="grid-column: span 2; margin-top: 5px;">
-                                    <div style="font-size: 0.7rem; color: #999; text-align: center;">Clicks tracked via GA4 below</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Purchased Campaign -->
-                        <div style="background: #f8f9fa; border-radius: 12px; padding: 15px; border-left: 4px solid #FF9500;">
-                            <h4 style="margin: 0 0 12px 0; color: #FF9500; font-size: 0.9rem;">PURCHASED LEADS</h4>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                                <div>
-                                    <div style="font-size: 0.7rem; color: #666; text-transform: uppercase;">Sent</div>
-                                    <div style="font-size: 1.3rem; font-weight: 600; color: #34c759;" id="execPurchasedSent">-</div>
-                                </div>
-                                <div>
-                                    <div style="font-size: 0.7rem; color: #666; text-transform: uppercase;">Remaining</div>
-                                    <div style="font-size: 1.3rem; font-weight: 600; color: #FF9500;" id="execPurchasedRemaining">-</div>
-                                </div>
-                                <div style="grid-column: span 2; margin-top: 5px;">
-                                    <div style="font-size: 0.7rem; color: #999; text-align: center;">Clicks tracked via GA4 below</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- BFH Campaign -->
-                        <div style="background: #f8f9fa; border-radius: 12px; padding: 15px; border-left: 4px solid #AF52DE;">
-                            <h4 style="margin: 0 0 12px 0; color: #AF52DE; font-size: 0.9rem;">BFH CAMPAIGN</h4>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                                <div>
-                                    <div style="font-size: 0.7rem; color: #666; text-transform: uppercase;">Sent</div>
-                                    <div style="font-size: 1.3rem; font-weight: 600; color: #34c759;" id="execBfhSent">-</div>
-                                </div>
-                                <div>
-                                    <div style="font-size: 0.7rem; color: #666; text-transform: uppercase;">Remaining</div>
-                                    <div style="font-size: 1.3rem; font-weight: 600; color: #AF52DE;" id="execBfhRemaining">-</div>
-                                </div>
-                                <div style="grid-column: span 2; margin-top: 5px;">
-                                    <div style="font-size: 0.7rem; color: #999; text-align: center;">Clicks tracked via GA4 below</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Zinzino Campaign -->
-                        <div style="background: #f8f9fa; border-radius: 12px; padding: 15px; border-left: 4px solid #be185d;">
-                            <h4 style="margin: 0 0 12px 0; color: #be185d; font-size: 0.9rem;">ZINZINO CAMPAIGN</h4>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                                <div>
-                                    <div style="font-size: 0.7rem; color: #666; text-transform: uppercase;">Sent</div>
-                                    <div style="font-size: 1.3rem; font-weight: 600; color: #34c759;" id="execZinzinoSent">-</div>
-                                </div>
-                                <div>
-                                    <div style="font-size: 0.7rem; color: #666; text-transform: uppercase;">Remaining</div>
-                                    <div style="font-size: 1.3rem; font-weight: 600; color: #be185d;" id="execZinzinoRemaining">-</div>
-                                </div>
-                                <div style="grid-column: span 2; margin-top: 5px;">
-                                    <div style="font-size: 0.7rem; color: #999; text-align: center;">Clicks tracked via GA4 below</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- FSR Campaign -->
-                        <div style="background: #f8f9fa; border-radius: 12px; padding: 15px; border-left: 4px solid #0d9488;">
-                            <h4 style="margin: 0 0 12px 0; color: #0d9488; font-size: 0.9rem;">FSR CAMPAIGN</h4>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                                <div>
-                                    <div style="font-size: 0.7rem; color: #666; text-transform: uppercase;">Sent</div>
-                                    <div style="font-size: 1.3rem; font-weight: 600; color: #34c759;" id="execFsrSent">-</div>
-                                </div>
-                                <div>
-                                    <div style="font-size: 0.7rem; color: #666; text-transform: uppercase;">Remaining</div>
-                                    <div style="font-size: 1.3rem; font-weight: 600; color: #0d9488;" id="execFsrRemaining">-</div>
-                                </div>
-                                <div style="grid-column: span 2; margin-top: 5px;">
-                                    <div style="font-size: 0.7rem; color: #999; text-align: center;">Clicks tracked via GA4 below</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Paparazzi Campaign -->
-                        <div style="background: #f8f9fa; border-radius: 12px; padding: 15px; border-left: 4px solid #a16207;">
-                            <h4 style="margin: 0 0 12px 0; color: #a16207; font-size: 0.9rem;">PAPARAZZI CAMPAIGN</h4>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                                <div>
-                                    <div style="font-size: 0.7rem; color: #666; text-transform: uppercase;">Sent</div>
-                                    <div style="font-size: 1.3rem; font-weight: 600; color: #34c759;" id="execPaparazziSent">-</div>
-                                </div>
-                                <div>
-                                    <div style="font-size: 0.7rem; color: #666; text-transform: uppercase;">Remaining</div>
-                                    <div style="font-size: 1.3rem; font-weight: 600; color: #a16207;" id="execPaparazziRemaining">-</div>
-                                </div>
-                                <div style="grid-column: span 2; margin-top: 5px;">
-                                    <div style="font-size: 0.7rem; color: #999; text-align: center;">Clicks tracked via GA4 below</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Pruvit Campaign -->
-                        <div style="background: #f8f9fa; border-radius: 12px; padding: 15px; border-left: 4px solid #7c3aed;">
-                            <h4 style="margin: 0 0 12px 0; color: #7c3aed; font-size: 0.9rem;">PRUVIT CAMPAIGN</h4>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                                <div>
-                                    <div style="font-size: 0.7rem; color: #666; text-transform: uppercase;">Sent</div>
-                                    <div style="font-size: 1.3rem; font-weight: 600; color: #34c759;" id="execPruvitSent">-</div>
-                                </div>
-                                <div>
-                                    <div style="font-size: 0.7rem; color: #666; text-transform: uppercase;">Remaining</div>
-                                    <div style="font-size: 1.3rem; font-weight: 600; color: #7c3aed;" id="execPruvitRemaining">-</div>
-                                </div>
-                                <div style="grid-column: span 2; margin-top: 5px;">
-                                    <div style="font-size: 0.7rem; color: #999; text-align: center;">Clicks tracked via GA4 below</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Scentsy Campaign -->
-                        <div style="background: #f8f9fa; border-radius: 12px; padding: 15px; border-left: 4px solid #2e7d32;">
-                            <h4 style="margin: 0 0 12px 0; color: #2e7d32; font-size: 0.9rem;">SCENTSY CAMPAIGN</h4>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                                <div>
-                                    <div style="font-size: 0.7rem; color: #666; text-transform: uppercase;">Sent</div>
-                                    <div style="font-size: 1.3rem; font-weight: 600; color: #34c759;" id="execScentsySent">-</div>
-                                </div>
-                                <div>
-                                    <div style="font-size: 0.7rem; color: #666; text-transform: uppercase;">Remaining</div>
-                                    <div style="font-size: 1.3rem; font-weight: 600; color: #2e7d32;" id="execScentsyRemaining">-</div>
-                                </div>
-                                <div style="grid-column: span 2; margin-top: 5px;">
-                                    <div style="font-size: 0.7rem; color: #999; text-align: center;">Clicks tracked via GA4 below</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <!-- Campaign Cards - Dynamically Generated -->
+                    <div id="campaignCardsContainer" class="campaign-cards-grid"></div>
 
                     <!-- GA4 Campaign Traffic -->
                     <div id="emailGa4Traffic" style="margin-top: 20px; display: none;">
@@ -2662,6 +2578,50 @@
             'zinzino_v10a_en': 'V10a EN: "AI is changing how teams grow"',
             'zinzino_v10b_en': 'V10b EN: "Your AI-powered recruiting assistant"'
         };
+
+        // Get subject label with fallback for unknown tags
+        function getSubjectLabel(tag) {
+            if (!tag) return 'Unknown';
+            return SUBJECT_LABELS[tag] || tag.replace(/_/g, ' ').toUpperCase();
+        }
+
+        // Campaign configuration for dynamic card generation
+        const CAMPAIGNS = [
+            { id: 'main', name: 'MAIN CAMPAIGN', color: '#007AFF' },
+            { id: 'purchased', name: 'PURCHASED LEADS', color: '#FF9500' },
+            { id: 'bfh', name: 'BFH CAMPAIGN', color: '#AF52DE' },
+            { id: 'zinzino', name: 'ZINZINO CAMPAIGN', color: '#be185d' },
+            { id: 'fsr', name: 'FSR CAMPAIGN', color: '#0d9488' },
+            { id: 'paparazzi', name: 'PAPARAZZI CAMPAIGN', color: '#a16207' },
+            { id: 'pruvit', name: 'PRUVIT CAMPAIGN', color: '#7c3aed' },
+            { id: 'scentsy', name: 'SCENTSY CAMPAIGN', color: '#2e7d32' }
+        ];
+
+        // Generate campaign cards dynamically
+        function generateCampaignCards() {
+            const container = document.getElementById('campaignCardsContainer');
+            if (!container) return;
+
+            container.innerHTML = CAMPAIGNS.map(campaign => {
+                const idPrefix = campaign.id.charAt(0).toUpperCase() + campaign.id.slice(1);
+                return `
+                    <div class="campaign-card" style="--campaign-color: ${campaign.color};">
+                        <h4>${campaign.name}</h4>
+                        <div class="campaign-card-stats">
+                            <div>
+                                <div class="campaign-stat-label">Sent</div>
+                                <div class="campaign-stat-value sent" id="exec${idPrefix}Sent">-</div>
+                            </div>
+                            <div>
+                                <div class="campaign-stat-label">Remaining</div>
+                                <div class="campaign-stat-value remaining" id="exec${idPrefix}Remaining">-</div>
+                            </div>
+                            <div class="campaign-card-footer">Clicks tracked via GA4 below</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
 
         // Authentication
         function authenticate() {
@@ -4649,6 +4609,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('passwordInput').focus();
             loadSavedAndroidData(); // Load any previously imported Android CSV data
+            generateCampaignCards(); // Generate campaign cards dynamically
         });
     </script>
 </body>

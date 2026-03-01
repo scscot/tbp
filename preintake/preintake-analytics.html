@@ -352,13 +352,13 @@
             margin-left: 8px;
         }
 
-        /* Performance Tables */
-        .perf-table {
+        /* Data Tables (consolidated) */
+        .data-table {
             width: 100%;
             border-collapse: collapse;
         }
 
-        .perf-table th {
+        .data-table th {
             text-align: left;
             padding: 10px 12px;
             color: #94a3b8;
@@ -368,237 +368,27 @@
             border-bottom: 2px solid #334155;
         }
 
-        .perf-table th.right {
+        .data-table th.right {
             text-align: right;
         }
 
-        .perf-table td {
+        .data-table td {
             padding: 12px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
             font-size: 0.85rem;
         }
 
-        .perf-table td.right {
+        .data-table td.right {
             text-align: right;
         }
 
-        .perf-table tr:hover td {
+        .data-table tr:hover td {
             background: rgba(255, 255, 255, 0.02);
         }
 
-        .perf-table .highlight {
+        .data-table .highlight {
             color: #c9a962;
             font-weight: 600;
-        }
-
-        /* Traffic Sources Table */
-        .traffic-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .traffic-table th {
-            text-align: left;
-            padding: 10px 12px;
-            color: #94a3b8;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            border-bottom: 2px solid #334155;
-        }
-
-        .traffic-table td {
-            padding: 12px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            font-size: 0.85rem;
-        }
-
-        .traffic-table tr:hover td {
-            background: rgba(255, 255, 255, 0.02);
-        }
-
-        /* Lead Details Table */
-        .leads-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .leads-table th {
-            text-align: left;
-            padding: 12px 12px;
-            color: #94a3b8;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            border-bottom: 2px solid #334155;
-        }
-
-        .leads-table td {
-            padding: 12px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            font-size: 0.85rem;
-        }
-
-        .leads-table tr:hover td {
-            background: rgba(255, 255, 255, 0.02);
-        }
-
-        .view-count {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .view-count.viewed {
-            color: #10b981;
-        }
-
-        .view-count.not-viewed {
-            color: #64748b;
-        }
-
-        /* Source Badge */
-        .source-badge {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .source-badge.campaign {
-            background: rgba(59, 130, 246, 0.2);
-            color: #60a5fa;
-        }
-
-        .source-badge.bar_profile_campaign {
-            background: rgba(168, 85, 247, 0.2);
-            color: #c084fc;
-        }
-
-        .source-badge.unknown {
-            background: rgba(100, 116, 139, 0.2);
-            color: #94a3b8;
-        }
-
-        /* Status badges */
-        .status-badge {
-            display: inline-block;
-            padding: 3px 10px;
-            border-radius: 20px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        .status-badge.completed {
-            background: rgba(16, 185, 129, 0.2);
-            color: #34d399;
-        }
-
-        .status-badge.active {
-            background: rgba(16, 185, 129, 0.2);
-            color: #34d399;
-        }
-
-        .status-badge.none {
-            background: rgba(100, 116, 139, 0.15);
-            color: #64748b;
-        }
-
-        /* Strategic Insights */
-        .insights-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 24px;
-        }
-
-        .insights-card {
-            background: #0f172a;
-            border-radius: 12px;
-            padding: 24px;
-            border-left: 4px solid;
-        }
-
-        .insights-card.working { border-left-color: #10b981; }
-        .insights-card.attention { border-left-color: #f59e0b; }
-        .insights-card.actions { border-left-color: #3b82f6; }
-
-        .insights-card h4 {
-            color: #ffffff;
-            font-size: 1rem;
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .insights-card h4 .icon { font-size: 1.1rem; }
-        .insights-card.working h4 .icon { color: #10b981; }
-        .insights-card.attention h4 .icon { color: #f59e0b; }
-        .insights-card.actions h4 .icon { color: #3b82f6; }
-
-        .insight-item {
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 8px;
-            padding: 14px;
-            margin-bottom: 12px;
-        }
-
-        .insight-item:last-child { margin-bottom: 0; }
-
-        .insight-text {
-            color: #e2e8f0;
-            font-size: 0.9rem;
-            line-height: 1.5;
-            margin-bottom: 8px;
-        }
-
-        .insight-meta {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .insight-metric {
-            color: #94a3b8;
-            font-size: 0.8rem;
-            background: rgba(255, 255, 255, 0.05);
-            padding: 3px 8px;
-            border-radius: 4px;
-        }
-
-        .insight-badge {
-            font-size: 0.7rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            padding: 3px 8px;
-            border-radius: 4px;
-        }
-
-        .insight-badge.high {
-            background: rgba(239, 68, 68, 0.2);
-            color: #f87171;
-        }
-
-        .insight-badge.medium {
-            background: rgba(245, 158, 11, 0.2);
-            color: #fbbf24;
-        }
-
-        .insight-badge.low {
-            background: rgba(16, 185, 129, 0.2);
-            color: #34d399;
-        }
-
-        .insights-timestamp {
-            color: #64748b;
-            font-size: 0.75rem;
-            margin-top: 16px;
-            text-align: right;
         }
 
         /* Loading State */
@@ -635,7 +425,7 @@
                 align-items: flex-start;
             }
 
-            .leads-table, .traffic-table, .perf-table {
+            .data-table {
                 display: block;
                 overflow-x: auto;
             }
@@ -777,37 +567,6 @@
             return (rate * 100).toFixed(1) + '%';
         }
 
-        function formatSource(source) {
-            if (!source || source === 'unknown') return 'Unknown';
-            const mapping = {
-                'campaign': 'Website',
-                'bar_profile_campaign': 'Bar Profile'
-            };
-            return mapping[source] || source;
-        }
-
-        function formatBarSource(source) {
-            const mapping = {
-                'calbar': 'California',
-                'flbar': 'Florida',
-                'ohbar': 'Ohio',
-                'mibar': 'Michigan',
-                'mobar': 'Missouri',
-                'kybar': 'Kentucky',
-                'gabar': 'Georgia',
-                'ilbar': 'Illinois',
-                'inbar': 'Indiana',
-                'msbar': 'Mississippi',
-                'nebar': 'Nebraska',
-                'ncbar': 'North Carolina',
-                'okbar': 'Oklahoma',
-                'wsba': 'Washington',
-                'nsba': 'Nebraska SBA',
-                'unknown': 'Unknown'
-            };
-            return mapping[source] || source;
-        }
-
         function formatTemplate(version) {
             const mapping = {
                 // Current template versions (consolidated templates, tracks contact type)
@@ -934,7 +693,7 @@
                         <span class="section-icon">&#9670;</span>
                         <h2>Contact Type Performance</h2>
                     </div>
-                    <table class="perf-table">
+                    <table class="data-table">
                         <thead>
                             <tr>
                                 <th>Contact Type</th>
@@ -959,47 +718,7 @@
             }
 
             // ═══════════════════════════════════════════════
-            // SECTION 4: SOURCE PERFORMANCE (Bar Associations)
-            // ═══════════════════════════════════════════════
-            if (data.sourcePerformance && Object.keys(data.sourcePerformance).length > 0) {
-                const sources = Object.entries(data.sourcePerformance)
-                    .filter(([src]) => src !== 'unknown')
-                    .sort((a, b) => b[1].sent - a[1].sent);
-
-                if (sources.length > 0) {
-                    html += `
-                    <div class="dashboard-section">
-                        <div class="section-header">
-                            <span class="section-icon">&#9670;</span>
-                            <h2>Source Performance (Bar Associations)</h2>
-                        </div>
-                        <table class="perf-table">
-                            <thead>
-                                <tr>
-                                    <th>Source</th>
-                                    <th class="right">Sent</th>
-                                    <th class="right">Page Visited</th>
-                                    <th class="right">Visit Rate</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${sources.map(([source, perf]) => `
-                                    <tr>
-                                        <td style="color: #e2e8f0; font-weight: 500;">${formatBarSource(source)}</td>
-                                        <td class="right">${perf.sent.toLocaleString()}</td>
-                                        <td class="right">${perf.visited}</td>
-                                        <td class="right highlight">${pct(perf.visited, perf.sent)}%</td>
-                                    </tr>
-                                `).join('')}
-                            </tbody>
-                        </table>
-                    </div>
-                    `;
-                }
-            }
-
-            // ═══════════════════════════════════════════════
-            // SECTION 5: GA4 WEBSITE TRAFFIC
+            // SECTION 4: GA4 WEBSITE TRAFFIC
             // ═══════════════════════════════════════════════
             if (data.ga4Stats) {
                 const g = data.ga4Stats;
@@ -1040,34 +759,6 @@
                         <div class="big-number-sub">last 7 days</div>
                     </div>
                 </div>
-
-                ${g.trafficSources && g.trafficSources.length > 0 ? `
-                <div class="dashboard-section" style="margin-bottom: 40px;">
-                    <div class="section-header" style="margin-bottom: 16px;">
-                        <h2 style="font-size: 1.1rem;">Traffic Sources (Last 7 Days)</h2>
-                    </div>
-                    <table class="traffic-table">
-                        <thead>
-                            <tr>
-                                <th>Source / Medium</th>
-                                <th>Sessions</th>
-                                <th>Users</th>
-                                <th>Engagement</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${g.trafficSources.map(t => `
-                                <tr>
-                                    <td style="color: #e2e8f0; font-weight: 500;">${t.source} / ${t.medium}</td>
-                                    <td>${t.sessions.toLocaleString()}</td>
-                                    <td>${t.users.toLocaleString()}</td>
-                                    <td>${fmtEngagement(t.engagementRate)}</td>
-                                </tr>
-                            `).join('')}
-                        </tbody>
-                    </table>
-                </div>
-                ` : ''}
                 `;
             }
 
@@ -1102,113 +793,6 @@
                 </div>
             </div>
             `;
-
-            // ═══════════════════════════════════════════════
-            // SECTION 7: LEAD DETAILS TABLE
-            // ═══════════════════════════════════════════════
-            const visitedLeads = data.leadDetails ? data.leadDetails.filter(lead => lead.visitCount > 0) : [];
-            if (visitedLeads.length > 0) {
-                html += `
-                <div class="dashboard-section">
-                    <div class="section-header">
-                        <span class="section-icon">&#9670;</span>
-                        <h2>Campaign Lead Details (${visitedLeads.length} with visits)</h2>
-                    </div>
-                    <table class="leads-table">
-                        <thead>
-                            <tr>
-                                <th>Firm Name</th>
-                                <th>Website</th>
-                                <th>Visit Date</th>
-                                <th>Subscriber</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${visitedLeads.map(lead => `
-                                <tr>
-                                    <td style="color: #e2e8f0; font-weight: 500;">${lead.firmName}</td>
-                                    <td>
-                                        <span class="view-count ${lead.hasWebsite ? 'viewed' : 'not-viewed'}">
-                                            ${lead.hasWebsite ? '✓' : '-'}
-                                        </span>
-                                    </td>
-                                    <td style="color: #94a3b8; font-size: 0.8rem;">${lead.firstVisitAt || '-'}</td>
-                                    <td>
-                                        ${lead.subscriptionStatus === 'active'
-                                            ? '<span class="status-badge active">Active</span>'
-                                            : '<span class="status-badge none">-</span>'}
-                                    </td>
-                                </tr>
-                            `).join('')}
-                        </tbody>
-                    </table>
-                </div>
-                `;
-            }
-
-            // ═══════════════════════════════════════════════
-            // SECTION 8: STRATEGIC INSIGHTS (AI-Generated)
-            // ═══════════════════════════════════════════════
-            if (data.strategicInsights && data.strategicInsights.insights) {
-                const insights = data.strategicInsights.insights;
-                html += `
-                <div class="dashboard-section">
-                    <div class="section-header">
-                        <span class="section-icon">&#9733;</span>
-                        <h2>Strategic Insights</h2>
-                    </div>
-                    <div class="insights-grid">
-                        ${insights.whatsWorking && insights.whatsWorking.length > 0 ? `
-                        <div class="insights-card working">
-                            <h4><span class="icon">✓</span> What's Working</h4>
-                            ${insights.whatsWorking.map(item => `
-                                <div class="insight-item">
-                                    <div class="insight-text">${item.insight}</div>
-                                    <div class="insight-meta">
-                                        <span class="insight-metric">${item.metric}</span>
-                                        <span class="insight-badge ${item.impact}">${item.impact} impact</span>
-                                    </div>
-                                </div>
-                            `).join('')}
-                        </div>
-                        ` : ''}
-
-                        ${insights.needsAttention && insights.needsAttention.length > 0 ? `
-                        <div class="insights-card attention">
-                            <h4><span class="icon">!</span> Needs Attention</h4>
-                            ${insights.needsAttention.map(item => `
-                                <div class="insight-item">
-                                    <div class="insight-text">${item.issue}</div>
-                                    <div class="insight-meta">
-                                        <span class="insight-metric">${item.metric}</span>
-                                        <span class="insight-badge ${item.severity}">${item.severity} severity</span>
-                                    </div>
-                                </div>
-                            `).join('')}
-                        </div>
-                        ` : ''}
-
-                        ${insights.recommendedActions && insights.recommendedActions.length > 0 ? `
-                        <div class="insights-card actions">
-                            <h4><span class="icon">→</span> Recommended Actions</h4>
-                            ${insights.recommendedActions.map(item => `
-                                <div class="insight-item">
-                                    <div class="insight-text">${item.action}</div>
-                                    <div class="insight-meta">
-                                        <span class="insight-metric">${item.expectedImpact}</span>
-                                        <span class="insight-badge ${item.priority.toLowerCase()}">${item.priority}</span>
-                                    </div>
-                                </div>
-                            `).join('')}
-                        </div>
-                        ` : ''}
-                    </div>
-                    ${data.strategicInsights.generatedAt ? `
-                    <div class="insights-timestamp">Generated: ${new Date(data.strategicInsights.generatedAt).toLocaleString()}</div>
-                    ` : ''}
-                </div>
-                `;
-            }
 
             content.innerHTML = html;
         }
