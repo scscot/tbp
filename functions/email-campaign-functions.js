@@ -7,7 +7,7 @@
  * Templates stored in Mailgun under 'mailer' template:
  * - v14: Current production template (gradient header, white card design)
  *
- * Subject: "Using AI to grow your team faster"
+ * Subject: "AI is changing how teams grow"
  */
 
 const { onSchedule } = require("firebase-functions/v2/scheduler");
@@ -42,7 +42,7 @@ const LANDING_PAGE_URL = 'https://teambuildpro.com';
 // Single template and subject line for all sends
 const TEMPLATE_CONFIG = {
   templateVersion: 'v14',
-  subject: 'Using AI to grow your team faster',
+  subject: 'AI is changing how teams grow',
   subjectTag: 'main_v14'
 };
 

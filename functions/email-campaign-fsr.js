@@ -7,7 +7,7 @@
  * Templates stored in Mailgun under 'mailer' template:
  * - v14: English (gradient header, white card design)
  *
- * Subject: "Using AI to grow your team faster"
+ * Subject: "AI is changing how teams grow"
  *
  * Collection: fsr_contacts
  * Schedule: 10am, 1pm, 4pm, 7pm PT
@@ -39,7 +39,7 @@ const LANDING_PAGE_URL = 'https://teambuildpro.com';
 // Single template and subject line for all sends (no A/B testing)
 const TEMPLATE_CONFIG = {
   templateVersion: 'v14',
-  subject: 'Using AI to grow your team faster',
+  subject: 'AI is changing how teams grow',
   subjectTag: 'fsr_v14'
 };
 

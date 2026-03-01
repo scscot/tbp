@@ -7,7 +7,7 @@
  * Templates stored in Mailgun under 'mailer' template:
  * - v14: English (gradient header, white card design)
  *
- * Subject: "Using AI to grow your team faster"
+ * Subject: "AI is changing how teams grow"
  *
  * Collection: paparazzi_contacts
  * Query: status == 'pending', sent == false
@@ -46,7 +46,7 @@ const CTA_DOMAIN = 'teambuildpro.com';
 // Single template and subject line for all sends
 const TEMPLATE_CONFIG = {
   templateVersion: 'v14',
-  subject: 'Using AI to grow your team faster',
+  subject: 'AI is changing how teams grow',
   subjectTag: 'paparazzi_v14'
 };
 

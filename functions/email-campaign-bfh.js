@@ -10,7 +10,7 @@
  * - v14-pt: Portuguese (Brazil)
  * - v14-de: German
  *
- * Subject: "Using AI to grow your team faster" (localized per language)
+ * Subject: "AI is changing how teams grow" (localized per language)
  *
  * Collection: bfh_contacts
  * Query: bfhScraped == true, email != null, sent == false
@@ -49,7 +49,7 @@ const LANDING_PAGE_URL = 'https://teambuildpro.com';
 const TEMPLATE_CONFIG = {
   en: {
     templateVersion: 'v14',
-    subject: 'Using AI to grow your team faster',
+    subject: 'AI is changing how teams grow',
     subjectTag: 'bfh_v14_en'
   },
   es: {
