@@ -1185,8 +1185,8 @@ const getEmailAnalytics = onRequest(
             const totalFailed = failedSnap.size;
             // Pending = still waiting to be sent (remaining pool)
             const totalPending = pendingSnap.size;
-            // Total contacts = pending pool (not including already-sent before benchmark)
-            const totalContacts = totalPending;
+            // Total contacts = all contacts in the database
+            const totalContacts = totalSent + totalPending + totalUnsubscribed + totalFailed;
 
             let withDemo = 0;
             let withoutDemo = 0;

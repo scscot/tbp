@@ -569,14 +569,15 @@
 
         function formatTemplate(version) {
             const mapping = {
-                // Current template versions (consolidated templates, tracks contact type)
-                'v8-bar-profile': 'Bar Profile Contact',
-                'v6-personalized': 'Website Contact',
-                'v6-generic': 'Generic (No Demo)',
-                // Legacy versions (for historical data with -demo suffix)
-                'v8-bar-profile-demo': 'Bar Profile Contact',
-                'v7-bar-profile-demo': 'Bar Profile Contact (Legacy)',
-                'v6-personalized-demo': 'Website Contact',
+                // Current template version (single consolidated template)
+                'v9-landing-page': 'All Contacts',
+                // Legacy versions (historical data, tracks contact type separately)
+                'v8-bar-profile': 'Bar Profile (Legacy)',
+                'v8-bar-profile-demo': 'Bar Profile (Legacy)',
+                'v7-bar-profile-demo': 'Bar Profile (Legacy)',
+                'v6-personalized': 'Website (Legacy)',
+                'v6-personalized-demo': 'Website (Legacy)',
+                'v6-generic': 'Generic (Legacy)',
                 'unknown': 'Unknown'
             };
             return mapping[version] || version;

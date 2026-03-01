@@ -2190,6 +2190,32 @@ Email CTA → Homepage (?lead=) → create-account.html → Payment
 | `scripts/send-preintake-campaign.js` | Domain defaults, FROM address, Gmail exclusion logic |
 | `.github/workflows/preintake-email-campaign.yml` | Domain env var, Gmail exclusion, failure notification |
 
+### Phase 85: Analytics Dashboard Simplification (2026-03-01)
+- [x] **Removed Strategic Insights** - Eliminated Claude API calls causing OOM errors
+  - Removed `generatePreIntakeInsights()` call from `getEmailAnalytics` Cloud Function
+  - Removed `anthropicApiKey` secret from function definition
+  - Removed Strategic Insights section from frontend dashboard
+  - Fixes 500 errors from memory exhaustion
+- [x] **Dashboard Simplification** - Reduced complexity for faster load times
+  - Removed Lead Details table (SECTION 7)
+  - Removed Traffic Sources table from GA4 section
+  - Removed Source Performance table
+  - Consolidated duplicate CSS (`.leads-table`, `.traffic-table`, `.perf-table` → `.data-table`)
+  - Removed unused JS functions (`formatSource`, `formatBarSource`)
+  - File size reduced from 968 to 801 lines (17% smaller)
+- [x] **Fixed totalContacts Calculation** - Email Database metrics now accurate
+  - Changed from `totalContacts = totalPending` to `totalContacts = totalSent + totalPending + totalUnsubscribed + totalFailed`
+  - "Total Contacts" now shows actual database total, "remaining" shows unsent count
+- [x] **Fixed Template Mapping** - Contact Type Performance labels
+  - Added `v9-landing-page` → "All Contacts" (current template)
+  - Relabeled legacy templates (v6, v7, v8) with "(Legacy)" suffix
+
+**Files Modified:**
+| File | Changes |
+|------|---------|
+| `functions/widget-functions.js` | Removed Strategic Insights, fixed totalContacts calculation |
+| `preintake/preintake-analytics.html` | Dashboard simplification, template mapping fix |
+
 ---
 
 ## Architecture
@@ -2599,7 +2625,7 @@ EOF
 | `/verifyAccountToken` | GET | Verify magic link, return account data |
 | `/updateAccountSettings` | POST | Update account settings |
 | `/createBillingPortalSession` | POST | Create Stripe billing portal session |
-| `/getEmailAnalytics` | GET | Return campaign analytics + AI strategic insights |
+| `/getEmailAnalytics` | GET | Return campaign analytics (GA4 + Firestore) |
 
 ### Firestore Collections (preintake database)
 
