@@ -325,6 +325,7 @@ BRAND VOICE & STYLE:
 - Emphasize Team Build Pro's unique pre-qualification approach
 - Professional but conversational tone
 - No emojis in content (only in examples if relevant)
+- TERMINOLOGY: Vary between "MLM", "direct sales", and "network marketing" throughout the content - do not over-rely on any single term
 
 CONTENT STRUCTURE:
 1. **Opening Hook** (1-2 paragraphs)
@@ -1120,6 +1121,7 @@ ${colors.bright}BRAND VOICE & STYLE:${colors.reset}
 - Emphasize Team Build Pro's unique pre-qualification approach
 - Professional but conversational tone
 - No emojis in content (only in examples if relevant)
+- TERMINOLOGY: Vary between "MLM", "direct sales", and "network marketing" throughout the content - do not over-rely on any single term
 
 ${colors.bright}CONTENT STRUCTURE:${colors.reset}
 1. **Opening Hook** (1-2 paragraphs)
@@ -1737,6 +1739,7 @@ REQUIREMENTS:
 - Focus on topics where Team Build Pro's unique perspective adds value
 - Prioritize evergreen content that will rank well in search
 - Ensure titles are SEO-optimized (include relevant keywords naturally)
+- IMPORTANT: Balance industry terminology in titles - rotate between "MLM", "Direct Sales", and "Network Marketing" rather than using "MLM" in every title. Aim for roughly equal distribution across recommendations.
 - Return ONLY the JSON object, no other text`;
 }
 
