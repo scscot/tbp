@@ -1365,6 +1365,7 @@ Corporate email domains are excluded from all contact collections using a **blac
   - `--full-auto` - Full automation: research, generate, deploy, notify
   - `--notify-email=EMAIL` - Recipient for notification emails
   - Generates 4 language versions: English, Spanish, Portuguese, German
+  - Terminology balance: Rotates between "MLM", "Direct Sales", and "Network Marketing" in titles and content for SEO diversity
 - `generate-blog.js` - Legacy blog generation (static template approach)
 - `set-analytics-benchmark.js` - Set/clear analytics benchmark date in Firestore
   - `node scripts/set-analytics-benchmark.js` - Set to today
@@ -1534,6 +1535,7 @@ Corporate email domains are excluded from all contact collections using a **blac
   - Generates posts in EN, ES, PT, DE
   - Auto-deploys to Firebase Hosting
   - Pings Google and Bing sitemaps after deploy
+  - Terminology balance: Rotates between "MLM", "Direct Sales", "Network Marketing" in titles/content (Mar 1, 2026)
   - Scripts: `generate-ai-blog.js`, `generate-sscott-blog.js`
 - ✅ **PreIntake.ai Workflows**: Bar scrapers + email campaign + analytics (see `preintake/CLAUDE.md`)
 
