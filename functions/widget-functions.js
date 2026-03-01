@@ -1011,7 +1011,6 @@ const getEmailAnalytics = onRequest(
     {
         cors: true,
         region: 'us-west1',
-        secrets: [anthropicApiKey],
     },
     async (req, res) => {
         try {
@@ -1444,41 +1443,6 @@ const getEmailAnalytics = onRequest(
                 return bDate.localeCompare(aDate);
             });
 
-            // Generate AI strategic insights
-            let strategicInsights = null;
-            try {
-                const analyticsData = {
-                    totalSent,
-                    visitedCount,
-                    viewedCount,
-                    exploredCount,
-                    intakeCompletedCount,
-                    // In-demo milestones
-                    conversationStartedCount,
-                    contactCollectedCount,
-                    screeningStartedCount,
-                    // Paid subscribers
-                    activeSubscribers,
-                    last7DaysSent,
-                    last7DaysVisited,
-                    last7DaysCompleted,
-                    todaySent,
-                    todayVisited,
-                    todayCompleted,
-                    totalContacts,
-                    totalPending,
-                    totalUnsubscribed,
-                    totalFailed,
-                    templatePerformance,
-                    sourcePerformance,
-                    ga4Stats
-                };
-                strategicInsights = await generatePreIntakeInsights(analyticsData, anthropicApiKey.value());
-            } catch (insightsError) {
-                console.error('Error generating strategic insights:', insightsError);
-                strategicInsights = { error: insightsError.message };
-            }
-
             return res.json({
                 benchmarkDate: ANALYTICS_BENCHMARK_DATE.toISOString().split('T')[0],
                 dateRange: `${startDate.toISOString().split('T')[0]} to ${now.toISOString().split('T')[0]}`,
@@ -1529,8 +1493,6 @@ const getEmailAnalytics = onRequest(
                 stateBreakdown,
                 // GA4 website analytics
                 ga4Stats,
-                // AI strategic insights
-                strategicInsights,
             });
 
         } catch (error) {
