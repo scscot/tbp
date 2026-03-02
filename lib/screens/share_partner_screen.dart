@@ -245,69 +245,65 @@ class _SharePartnerScreenState extends State<SharePartnerScreen>
       'general_team_tool': {
         'title': context.l10n?.sharePartnerGeneralTeamToolTitle ?? 'General Invitation',
         'description': context.l10n?.sharePartnerGeneralTeamToolDescription ?? 'A versatile message for any partner situation',
-        'subject': context.l10n?.sharePartnerGeneralTeamToolSubject ?? 'The AI Recruiting Advantage for Your $_bizOppName Team',
+        'subject': context.l10n?.sharePartnerGeneralTeamToolSubject ?? 'Give your team an AI recruiting advantage',
         'message': (context.l10n?.sharePartnerGeneralTeamToolMessage(_bizOppName, _partnerReferralLink ?? '') ??
-            'Your $_bizOppName team deserves a real competitive edge.\n\nTeam Build Pro gives your entire $_bizOppName organization AI recruiting tools that actually duplicate:\n\n- 16 pre-written recruiting messages for any situation\n- Track prospect engagement in real-time\n- 24/7 AI Coach for recruiting guidance\n- True duplication - everyone gets the same tools\n\nYour team\'s prospects pre-build their teams BEFORE joining. Your partners duplicate the exact same AI tools. Everyone in your $_bizOppName organization grows faster.\n\nGive your team the AI advantage: $_partnerReferralLink\n\nThis is how modern leaders scale their teams.'),
+            'Want to help your $_bizOppName team grow faster?\n\nTeam Build Pro gives everyone on your team the same AI recruiting tools - 16 pre-written messages, prospect tracking, and a 24/7 AI Coach.\n\nTrue duplication. Everyone succeeds the same way.\n\nShare with your team: $_partnerReferralLink'),
       },
       'warm_market_exhausted': {
         'title': context.l10n?.sharePartnerWarmMarketExhaustedTitle ?? 'Warm Market Exhausted',
         'description': context.l10n?.sharePartnerWarmMarketExhaustedDescription ?? 'For partners who\'ve tapped out friends and family',
-        'subject': context.l10n?.sharePartnerWarmMarketExhaustedSubject ?? 'Give Your $_bizOppName Team an AI Recruiting Companion',
+        'subject': context.l10n?.sharePartnerWarmMarketExhaustedSubject ?? 'When your warm market runs dry',
         'message': (context.l10n?.sharePartnerWarmMarketExhaustedMessage(_bizOppName, _partnerReferralLink ?? '') ??
-            'Your $_bizOppName team tapped out their warm market? Tired of watching them chase leads that ghost them?\n\nGive your entire $_bizOppName organization an AI recruiting companion.\n\nTeam Build Pro works for every person on your team:\n- 16 pre-written messages eliminate "what do I say?"\n- Track prospect interest and engagement\n- 24/7 AI Coach answers their questions\n- Everyone duplicates the same proven system\n\nTheir prospects pre-build teams BEFORE joining - launching with momentum, not from zero.\n\nYour entire $_bizOppName team gets the same AI advantage. True duplication at scale.\n\nEmpower your team: $_partnerReferralLink\n\nStop watching them chase. Start watching them succeed.'),
+            'Tapped out your warm market? Your team probably has too.\n\nTeam Build Pro gives them AI-written messages for any situation - cold outreach, follow-ups, objection handling. Plus a 24/7 AI Coach when they get stuck.\n\nHelp them keep recruiting: $_partnerReferralLink'),
       },
       'expensive_system_fatigue': {
         'title': context.l10n?.sharePartnerExpensiveSystemFatigueTitle ?? 'System Fatigue & Expense',
         'description': context.l10n?.sharePartnerExpensiveSystemFatigueDescription ?? 'For partners burned out on expensive recruiting methods',
-        'subject': context.l10n?.sharePartnerExpensiveSystemFatigueSubject ?? 'Stop Overpaying. Empower Your $_bizOppName Team with AI',
+        'subject': context.l10n?.sharePartnerExpensiveSystemFatigueSubject ?? 'Stop overpaying for recruiting tools',
         'message': (context.l10n?.sharePartnerExpensiveSystemFatigueMessage(_bizOppName, _partnerReferralLink ?? '') ??
-            'Your $_bizOppName team burning money on leads, funnels, and systems that don\'t duplicate?\n\nTeam Build Pro gives your entire $_bizOppName organization AI recruiting tools - built right in. No extra costs. No complex setup.\n\nEvery person on your team gets:\n- 16 pre-written recruiting messages\n- Real-time engagement tracking\n- 24/7 AI Coach for guidance\n- One simple system that duplicates\n\nTheir prospects pre-build teams BEFORE joining. Your $_bizOppName team duplicates the exact same AI tools. Everyone wins.\n\nOne simple system. Real results.\n\nEmpower your team: $_partnerReferralLink\n\nStop overpaying. Start scaling smart.'),
+            'Tired of expensive leads, funnels, and systems that don\'t duplicate?\n\nTeam Build Pro is one simple tool: AI messages, prospect tracking, 24/7 coaching. Works for everyone on your team the same way.\n\nSimple. Affordable. Duplicatable.\n\nShare with your team: $_partnerReferralLink'),
       },
       'duplication_struggle': {
         'title': context.l10n?.sharePartnerDuplicationStruggleTitle ?? 'Duplication Challenges',
         'description': context.l10n?.sharePartnerDuplicationStruggleDescription ?? 'For leaders struggling to get their team to duplicate',
-        'subject': context.l10n?.sharePartnerDuplicationStruggleSubject ?? 'Finally, Real Duplication for Your $_bizOppName Team',
+        'subject': context.l10n?.sharePartnerDuplicationStruggleSubject ?? 'Finally - real duplication for your team',
         'message': (context.l10n?.sharePartnerDuplicationStruggleMessage(_bizOppName, _partnerReferralLink ?? '') ??
-            'Your $_bizOppName team struggles to duplicate your recruiting success? That ends today.\n\nTeam Build Pro gives every person on your $_bizOppName team the same AI recruiting coach you wish you\'d had:\n- Drafts their recruiting messages\n- Times their follow-ups perfectly\n- Tracks their prospects automatically\n- Coaches their next steps\n\nNew recruit or veteran leader - everyone in your $_bizOppName organization gets identical AI tools. True system duplication.\n\nTheir prospects pre-build teams BEFORE joining. Your team grows faster. Consistently.\n\nEmpower true duplication: $_partnerReferralLink\n\nFinally, your entire team succeeds the same way.'),
+            'Struggling to get your team to duplicate?\n\nTeam Build Pro gives every person the same AI tools - new recruit or veteran. Same messages. Same tracking. Same coaching.\n\nThey don\'t need your skills. They just need the same system.\n\nShare with your team: $_partnerReferralLink'),
       },
       'retention_crisis': {
         'title': context.l10n?.sharePartnerRetentionCrisisTitle ?? 'Team Dropout Problem',
         'description': context.l10n?.sharePartnerRetentionCrisisDescription ?? 'For leaders frustrated by team members quitting early',
-        'subject': context.l10n?.sharePartnerRetentionCrisisSubject ?? 'Stop Losing Your $_bizOppName Team in the First Year',
+        'subject': context.l10n?.sharePartnerRetentionCrisisSubject ?? 'Keep your team from quitting',
         'message': (context.l10n?.sharePartnerRetentionCrisisMessage(_bizOppName, _partnerReferralLink ?? '') ??
-            'Watching your $_bizOppName team quit before they succeed?\n\n75% drop out in their first year - usually because they feel lost, unsupported, or overwhelmed.\n\nTeam Build Pro changes that for your entire $_bizOppName organization. Every person on your team gets an AI Coach that:\n- Guides them through every recruiting conversation\n- Tracks their progress and celebrates wins\n- Reminds them what to do next\n- Keeps momentum going when motivation dips\n\nThey\'re never alone. They always know their next step. They stay engaged longer.\n\nYour $_bizOppName team finally has the support they need to succeed.\n\nEmpower your team: $_partnerReferralLink\n\nStop watching them quit. Start watching them win.'),
+            '75% quit in their first year. Usually because they feel lost.\n\nTeam Build Pro keeps them on track - AI Coach answers questions 24/7, tracks their progress, tells them what to do next.\n\nThey\'re never alone. They stay engaged longer.\n\nShare with your team: $_partnerReferralLink'),
       },
       'skill_gap_team': {
         'title': context.l10n?.sharePartnerSkillGapTeamTitle ?? 'Non-Sales Team Members',
         'description': context.l10n?.sharePartnerSkillGapTeamDescription ?? 'Perfect for teams where most people lack sales experience',
-        'subject': context.l10n?.sharePartnerSkillGapTeamSubject ?? 'Your Non-Sales $_bizOppName Team Can Win with AI',
+        'subject': context.l10n?.sharePartnerSkillGapTeamSubject ?? 'Your non-sales team can recruit too',
         'message': (context.l10n?.sharePartnerSkillGapTeamMessage(_bizOppName, _partnerReferralLink ?? '') ??
-            'Most of your $_bizOppName team aren\'t natural salespeople. That\'s been holding them back.\n\nTeam Build Pro turns your non-sales $_bizOppName partners into confident recruiters:\n- Drafts their recruiting messages for them\n- Suggests exactly who to contact next\n- Coaches them through every conversation\n- Tracks progress so they see real momentum\n\nYour introverts, your part-timers, your "I\'m not good at sales" people - everyone in your $_bizOppName organization gets the same AI advantage.\n\nFinally, your entire team can duplicate your success.\n\nEmpower everyone: $_partnerReferralLink\n\nYou don\'t need a team of salespeople. You need a team with AI.'),
+            'Most of your team aren\'t natural salespeople. That\'s okay.\n\nTeam Build Pro writes their messages for them. AI handles the "what do I say?" problem so they can just share.\n\nIntroverts, part-timers, non-sales types - everyone can recruit now.\n\nShare with your team: $_partnerReferralLink'),
       },
       'recruitment_fatigue': {
         'title': context.l10n?.sharePartnerRecruitmentFatigueTitle ?? 'Tired of Constant Recruiting',
         'description': context.l10n?.sharePartnerRecruitmentFatigueDescription ?? 'For partners exhausted from the endless recruiting cycle',
-        'subject': context.l10n?.sharePartnerRecruitmentFatigueSubject ?? 'Automate the Grind. Grow Your $_bizOppName Team.',
+        'subject': context.l10n?.sharePartnerRecruitmentFatigueSubject ?? 'Let AI handle the recruiting grind',
         'message': (context.l10n?.sharePartnerRecruitmentFatigueMessage(_bizOppName, _partnerReferralLink ?? '') ??
-            'Your $_bizOppName team burned out from constant recruiting? The endless follow-ups? The manual tracking?\n\nTeam Build Pro\'s AI handles the grind for your entire $_bizOppName organization.\n\nFor every person on your team, the AI:\n- Provides 16 pre-written recruiting messages\n- Tracks every prospect and their status\n- Answers recruiting questions 24/7\n- Keeps everyone focused on what works\n\nYou stay focused on leadership. Your $_bizOppName team stays productive without burning out.\n\nThe AI never gets tired. Your team\'s momentum never stops.\n\nEmpower sustainable growth: $_partnerReferralLink\n\nGrowth without the burnout. Finally.'),
+            'Burned out from constant recruiting? Your team probably is too.\n\nTeam Build Pro handles the grind - AI writes messages, tracks prospects, answers questions 24/7.\n\nThe AI never gets tired. Your team keeps growing.\n\nShare with your team: $_partnerReferralLink'),
       },
       'availability_gap': {
         'title': context.l10n?.sharePartnerAvailabilityGapTitle ?? 'Can\'t Be There 24/7',
         'description': context.l10n?.sharePartnerAvailabilityGapDescription ?? 'Ideal for leaders who can\'t be constantly available to their team',
-        'subject': context.l10n?.sharePartnerAvailabilityGapSubject ?? 'Your $_bizOppName Team Grows Even When You\'re Not There',
+        'subject': context.l10n?.sharePartnerAvailabilityGapSubject ?? 'Your team grows even when you\'re busy',
         'message': (context.l10n?.sharePartnerAvailabilityGapMessage(_bizOppName, _partnerReferralLink ?? '') ??
-            'Your $_bizOppName team needs you. But you can\'t be available 24/7.\n\nTeam Build Pro gives your entire $_bizOppName organization an AI Coach that\'s always on.\n\nWhile you sleep, work your day job, or spend time with family, the AI:\n- Guides your team through recruiting conversations\n- Answers their "what do I do next?" questions\n- Tracks their progress and keeps them motivated\n- Ensures nothing falls through the cracks\n\n'
-            'Your $_bizOppName team gets support exactly when they need it - not just when you\'re available.\n\n'
-            'You stay focused on leadership. The AI handles daily coaching.\n\n'
-            'Empower your team: $_partnerReferralLink\n\n'
-            'Finally, your team grows without needing you every minute.'),
+            'Your team needs support but you can\'t be available 24/7.\n\nTeam Build Pro\'s AI Coach is always on - answers their questions, guides their conversations, keeps them moving forward.\n\nThey get help when they need it. You focus on leadership.\n\nShare with your team: $_partnerReferralLink'),
       },
       'ai_script_generator': {
         'title': context.l10n?.sharePartnerAiScriptGeneratorTitle ?? 'Share AI Script Generator',
         'description': context.l10n?.sharePartnerAiScriptGeneratorDescription ?? 'Give your team a free AI recruiting script tool',
-        'subject': context.l10n?.sharePartnerAiScriptGeneratorSubject(_bizOppName) ?? 'Free AI Tool for Your $_bizOppName Team\'s Recruiting',
+        'subject': context.l10n?.sharePartnerAiScriptGeneratorSubject(_bizOppName) ?? 'Free AI recruiting scripts for your team',
         'message': (context.l10n?.sharePartnerAiScriptGeneratorMessage(_bizOppName, _scriptsReferralLink ?? '') ??
-            'Want to help your $_bizOppName team recruit more effectively?\n\nShare this free AI Script Generator with them. No signup required - it creates personalized recruiting messages for any scenario in seconds.\n\nYour team can generate scripts for:\n- Cold outreach\n- Follow-ups\n- Objection handling (no time, no money, is this MLM?)\n- Re-engaging old contacts\n\nShare with your team: $_scriptsReferralLink\n\nIt\'s an easy win - give them AI tools that help them succeed.'),
+            'Quick win for your team - a free AI Script Generator.\n\nNo signup needed. Creates recruiting messages for cold outreach, follow-ups, objections - any scenario in seconds.\n\nShare this free tool: $_scriptsReferralLink'),
       },
     };
   }
@@ -510,7 +506,7 @@ class _SharePartnerScreenState extends State<SharePartnerScreen>
   @override
   Widget build(BuildContext context) {
     // Dynamic title based on bizOppName
-    final partnerTitle = context.l10n?.sharePartnerTitle ?? 'Current $_bizOppName Partners';
+    final partnerTitle = context.l10n?.sharePartnerTitle ?? 'Your Team Partners';
 
     return Scaffold(
       appBar: AppScreenBar(title: partnerTitle, appId: widget.appId),
@@ -567,7 +563,7 @@ class _SharePartnerScreenState extends State<SharePartnerScreen>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      context.l10n?.sharePartnerTitle ?? 'Current $_bizOppName Partners',
+                      context.l10n?.sharePartnerHeaderTitle ?? 'Customized Messages',
                       style: const TextStyle(
                           fontSize: 16, fontWeight: FontWeight.bold),
                     ),
@@ -663,13 +659,16 @@ class _SharePartnerScreenState extends State<SharePartnerScreen>
   }
 
   Widget _buildMessageOption(String messageKey, String title, String description, Color buttonColor) {
+    final selectedLanguage = _selectedLanguages[messageKey];
+    final isExpanded = selectedLanguage != null;
+
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: isExpanded ? buttonColor.withValues(alpha: 0.5) : AppColors.border),
         boxShadow: AppColors.lightShadow,
       ),
       child: Column(
@@ -702,6 +701,19 @@ class _SharePartnerScreenState extends State<SharePartnerScreen>
             ],
           ),
           const SizedBox(height: 12),
+          // Language selection hint
+          if (!isExpanded)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Text(
+                'Select language to preview message:',
+                style: TextStyle(
+                  fontSize: 11,
+                  color: AppColors.textSecondary,
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+            ),
           Wrap(
             spacing: 8,
             runSpacing: 8,
@@ -712,48 +724,168 @@ class _SharePartnerScreenState extends State<SharePartnerScreen>
               _buildLanguageButton(messageKey, 'de', 'Deutsch'),
             ],
           ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              Expanded(
-                child: ElevatedButton.icon(
-                  onPressed: () => _sharePartnerMessage(context, messageKey),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: buttonColor,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  icon: const Icon(Icons.share, size: 18),
-                  label: Text(context.l10n?.shareButtonShare ?? 'Share', style: const TextStyle(fontSize: 14)),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: OutlinedButton.icon(
-                  onPressed: () {
-                    final targetedLink = _buildTargetedLink(messageKey);
-                    _copyLink(targetedLink);
-                  },
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: buttonColor,
-                    side: BorderSide(color: buttonColor),
-                    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  icon: const Icon(Icons.copy_rounded, size: 18),
-                  label: Text(context.l10n?.shareButtonCopyLink ?? 'Copy Link', style: const TextStyle(fontSize: 14)),
-                ),
-              ),
-            ],
+          // Animated expandable message preview
+          AnimatedSize(
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+            child: isExpanded
+                ? _buildMessagePreviewSection(messageKey, selectedLanguage, buttonColor)
+                : const SizedBox.shrink(),
           ),
         ],
       ),
     );
+  }
+
+  Widget _buildMessagePreviewSection(String messageKey, String languageCode, Color buttonColor) {
+    return FutureBuilder<Map<String, String>?>(
+      future: _getMessageForLanguage(messageKey, languageCode),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            child: Center(
+              child: SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: buttonColor,
+                ),
+              ),
+            ),
+          );
+        }
+
+        final message = snapshot.data;
+        if (message == null) {
+          return const SizedBox.shrink();
+        }
+
+        final subject = message['subject'] ?? '';
+        final body = message['message'] ?? '';
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 12),
+            // Message preview container
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade50,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.grey.shade300),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Subject line
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Subject:',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: Text(
+                          subject,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const Divider(height: 16),
+                  // Message body
+                  Text(
+                    body,
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: AppColors.textPrimary,
+                      height: 1.4,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 12),
+            // Action buttons
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton.icon(
+                    onPressed: () => _sharePartnerMessage(context, messageKey),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: buttonColor,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    icon: const Icon(Icons.share, size: 18),
+                    label: Text(context.l10n?.shareButtonShare ?? 'Share', style: const TextStyle(fontSize: 14)),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: () {
+                      // Use scripts link for AI Script Generator, otherwise use regular link
+                      final targetedLink = messageKey == 'ai_script_generator'
+                          ? _buildScriptsLink(messageKey)
+                          : _buildTargetedLink(messageKey);
+                      _copyLink(targetedLink);
+                    },
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: buttonColor,
+                      side: BorderSide(color: buttonColor),
+                      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    icon: const Icon(Icons.copy_rounded, size: 18),
+                    label: Text(context.l10n?.shareButtonCopyLink ?? 'Copy Link', style: const TextStyle(fontSize: 14)),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<Map<String, String>?> _getMessageForLanguage(String messageKey, String languageCode) async {
+    try {
+      final currentLocale = Localizations.localeOf(context).languageCode;
+
+      if (languageCode == currentLocale) {
+        // Use current context's localization
+        final messages = _getPartnerMessages(context);
+        return messages[messageKey];
+      } else {
+        // Load specific language localization
+        final l10n = await _getLocalizationForLanguage(languageCode);
+        final messages = _getPartnerMessagesForL10n(l10n);
+        return messages[messageKey];
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('Error getting message for language $languageCode: $e');
+      }
+      return null;
+    }
   }
 
   Widget _buildLanguageButton(String messageKey, String languageCode, String label) {
@@ -762,7 +894,12 @@ class _SharePartnerScreenState extends State<SharePartnerScreen>
     return GestureDetector(
       onTap: () {
         setState(() {
-          _selectedLanguages[messageKey] = languageCode;
+          // Toggle: if already selected, deselect (collapse); otherwise select
+          if (_selectedLanguages[messageKey] == languageCode) {
+            _selectedLanguages.remove(messageKey);
+          } else {
+            _selectedLanguages[messageKey] = languageCode;
+          }
         });
       },
       child: Container(

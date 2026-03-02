@@ -54,13 +54,12 @@ class AnalyticsEvents {
   /// Tracks when a user submits an authentication form.
   ///
   /// **Parameters:**
-  /// - `method`: String - The auth method used ('email', 'biometric', 'google', 'apple')
+  /// - `method`: String - The auth method used ('email')
   /// - `screen`: String - The screen name ('login' or 'signup')
   ///
   /// **Where to add in Phase 1C:**
   /// - `lib/screens/login_screen_enhanced.dart`:
   ///   - In `_handleSignIn()` method (for email/password)
-  ///   - In biometric auth handler (for Face ID/Touch ID)
   /// - `lib/screens/new_registration_screen.dart`:
   ///   - In `_handleCreateAccount()` method
   ///
@@ -87,7 +86,6 @@ class AnalyticsEvents {
   /// **Where to add in Phase 1C:**
   /// - `lib/screens/login_screen_enhanced.dart`:
   ///   - In error handler of `_handleSignIn()`
-  ///   - In biometric auth error handler
   /// - `lib/screens/new_registration_screen.dart`:
   ///   - In error handler of `_handleCreateAccount()`
   ///

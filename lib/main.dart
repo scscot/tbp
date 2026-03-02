@@ -41,6 +41,8 @@ import 'services/badge_service.dart';
 import 'screens/homepage_screen.dart';
 import 'widgets/navigation_shell.dart';
 import 'widgets/localized_text.dart';
+import 'services/subscription_navigation_guard.dart';
+import 'widgets/subscription_required_modal.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
@@ -337,13 +339,31 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               );
             } else if (settings.name == '/message_thread') {
               final args = settings.arguments as Map<String, dynamic>?;
+              final recipientId = args?['recipientId'] as String? ?? '';
               return MaterialPageRoute(
-                builder: (context) => MessageThreadScreen(
-                  threadId: args?['threadId'] as String? ?? '',
-                  recipientId: args?['recipientId'] as String? ?? '',
-                  recipientName: args?['recipientName'] as String? ?? '',
-                  appId: appId,
-                ),
+                builder: (context) {
+                  final user = Provider.of<UserModel?>(context, listen: false);
+                  // Check if user can message this specific recipient
+                  // Full access users can message anyone; free prospects only sponsor/admin
+                  if (!SubscriptionNavigationGuard.canMessageUser(user, recipientId)) {
+                    // Show subscription modal and return empty widget
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      showSubscriptionRequiredModal(
+                        context,
+                        user?.subscriptionStatus ?? 'expired',
+                        appId,
+                      );
+                      Navigator.of(context).pop();
+                    });
+                    return const SizedBox.shrink();
+                  }
+                  return MessageThreadScreen(
+                    threadId: args?['threadId'] as String? ?? '',
+                    recipientId: recipientId,
+                    recipientName: args?['recipientName'] as String? ?? '',
+                    appId: appId,
+                  );
+                },
                 settings: settings,
               );
             }

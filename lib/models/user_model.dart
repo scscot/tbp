@@ -39,6 +39,12 @@ class UserModel {
   // --- MULTI-LANGUAGE: User's preferred language for push notifications ---
   final String? preferredLanguage;
 
+  // --- USER TYPE: Professional vs Prospect for two-sided business model ---
+  final String userType; // 'professional' | 'prospect'
+  final String? invitedBy; // UID of professional who invited (for prospects)
+  final bool milestoneReached; // Did they hit 3+12?
+  final DateTime? milestoneReachedAt;
+
   // --- PHASE 1: Apple Store Subscription Fields ---
   final String subscriptionStatus; // 'trial', 'active', 'cancelled', 'expired', 'paused', 'on_hold'
   final DateTime? subscriptionExpiry;
@@ -86,6 +92,11 @@ class UserModel {
     this.bizOppEducationShown = false,
     // --- MULTI-LANGUAGE: User's preferred language ---
     this.preferredLanguage,
+    // --- USER TYPE: Professional vs Prospect ---
+    this.userType = 'professional',
+    this.invitedBy,
+    this.milestoneReached = false,
+    this.milestoneReachedAt,
     // --- PHASE 1: Apple Store Subscription Fields ---
     this.subscriptionStatus = 'trial',
     this.subscriptionExpiry,
@@ -183,6 +194,11 @@ class UserModel {
       bizOppEducationShown: map['bizOppEducationShown'] == true,
       // --- MULTI-LANGUAGE: Parse preferredLanguage from the map ---
       preferredLanguage: map['preferredLanguage'],
+      // --- USER TYPE: Parse userType fields from the map ---
+      userType: map['userType'] ?? 'professional',
+      invitedBy: map['invitedBy'],
+      milestoneReached: map['milestoneReached'] == true,
+      milestoneReachedAt: parseDate(map['milestoneReachedAt']),
       // --- PHASE 1: Parse subscription fields from the map ---
       subscriptionStatus: map['subscriptionStatus'] ?? 'trial',
       subscriptionExpiry: parseDate(map['subscriptionExpiry']),
@@ -235,6 +251,13 @@ class UserModel {
       'bizOppEducationShown': bizOppEducationShown,
       // --- MULTI-LANGUAGE: Add preferredLanguage to Firestore format ---
       'preferredLanguage': preferredLanguage,
+      // --- USER TYPE: Add userType fields to Firestore format ---
+      'userType': userType,
+      'invitedBy': invitedBy,
+      'milestoneReached': milestoneReached,
+      'milestoneReachedAt': milestoneReachedAt != null
+          ? Timestamp.fromDate(milestoneReachedAt!)
+          : null,
       // --- PHASE 1: Convert subscription fields to Firestore format ---
       'subscriptionStatus': subscriptionStatus,
       'subscriptionExpiry': subscriptionExpiry != null
@@ -284,6 +307,12 @@ class UserModel {
       'currentPartner': currentPartner,
       'bizOppEducationShown': bizOppEducationShown,
       'preferredLanguage': preferredLanguage,
+      // --- USER TYPE: Add userType fields to JSON format ---
+      'userType': userType,
+      'invitedBy': invitedBy,
+      'milestoneReached': milestoneReached,
+      'milestoneReachedAt': milestoneReachedAt?.toIso8601String(),
+      // --- PHASE 1: Subscription fields ---
       'subscriptionStatus': subscriptionStatus,
       'subscriptionExpiry': subscriptionExpiry?.toIso8601String(),
       'trialStartDate': trialStartDate?.toIso8601String(),

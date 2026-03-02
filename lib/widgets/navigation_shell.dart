@@ -180,19 +180,21 @@ class NavigationShellState extends State<NavigationShell> {
     final navContext = _navigatorKeys[0].currentState?.context;
     if (navContext == null) return;
 
-    if (tabIndex < 1 || tabIndex > 3) {
+    // Tabs 0 (Dashboard), 3 (Messages), 4 (Notifications) are always accessible
+    // Messages tab shows filtered content for free prospects (sponsor + admin only)
+    if (tabIndex == 0 || tabIndex == 3 || tabIndex == 4) {
       navigateToTab(tabIndex);
       return;
     }
 
-    if (SubscriptionNavigationGuard.hasValidSubscription(
-        Provider.of<UserModel?>(navContext, listen: false))) {
+    // Tabs 1 (Network) and 2 (Share) require valid subscription
+    final user = Provider.of<UserModel?>(navContext, listen: false);
+    if (SubscriptionNavigationGuard.hasValidSubscription(user)) {
       navigateToTab(tabIndex);
     } else {
       showSubscriptionRequiredModal(
         navContext,
-        Provider.of<UserModel?>(navContext, listen: false)?.subscriptionStatus ??
-            'expired',
+        user?.subscriptionStatus ?? 'expired',
         widget.appId,
       );
     }

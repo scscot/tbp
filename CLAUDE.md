@@ -1,6 +1,6 @@
 # Team Build Pro - Comprehensive Knowledge Base
 
-**Last Updated**: 2026-03-01
+**Last Updated**: 2026-03-02
 **Purpose**: Persistent knowledge base for AI assistants across sessions
 
 ---
@@ -42,7 +42,7 @@ The Team Build Pro ecosystem is a comprehensive, interconnected network of digit
 │    114 Company            Localized              Localized             │
 │    Landing Pages       Content (ES/PT/DE)     Content (ES/PT/DE)      │
 │         │                      │                        │               │
-│    Blog (24 posts)        Blog (23-24 each)     Blog (23-24 each)     │
+│    Blog (28 posts)        Blog (28 each)        Blog (28 each)        │
 │         │                      │                        │               │
 │    FAQ/Books              FAQ/Books              FAQ/Books             │
 └─────────────────────────────────────────────────────────────────────────┘
@@ -160,7 +160,7 @@ The world's first AI-powered platform that lets **prospects pre-build their team
 - **16 pre-written messages** (8 for recruiting prospects + 8 for existing business partners)
 - **24/7 AI Coach** for instant recruiting guidance in 4 languages
 - **4 languages supported**: English, Spanish (Español), Portuguese (Português), German (Deutsch)
-- **4 direct sponsors + 20 total downline members** = qualification milestones
+- **3 direct sponsors + 12 total team members** = qualification milestones
 - **120+ countries supported** with timezone-aware features
 - **100+ direct sales companies** compatible
 - **$6.99/month** after 30-day free trial
@@ -690,7 +690,23 @@ The email campaign system consists of multiple parallel campaigns targeting diff
   - `.github/workflows/scentsy-scraper.yml` - 4x daily (every 6 hours), 20 postal codes/run
   - Data source: `scentsy_zipcodes` collection (ordered by population DESC)
 
-- **Two-Script Architecture** (Feb 2026):
+### Zinzino Campaign (Mailgun API - Automated)
+- **Function**: `sendHourlyZinzinoCampaign` in `functions/email-campaign-zinzino.js`
+- **Tags**: `zinzino_campaign`, `tracked`
+- **Schedule**: 11am, 2pm, 5pm, 8pm PT (4 runs/day)
+- **Data Source**: Firestore `zinzino_contacts` collection (scraped from Zinzino partner finder)
+- **Control Variable**: ZINZINO_CAMPAIGN_ENABLED
+- **Batch Size**: Dynamic via Firestore `config/emailCampaign.batchSizeZinzino`
+- **Subject**: V14 template with language variants (`zinzino_v14_en`, `zinzino_v14_es`, `zinzino_v14_de`) - "AI is changing how teams grow"
+- **Query**: `status == 'pending' && sent == false`, ordered by randomIndex
+- **Template Variables**: `first_name`, `tracked_cta_url`, `unsubscribe_url`
+- **Language Selection**: Based on country field (EN default, ES for Spain/Mexico/etc., DE for Germany/Austria/etc.)
+
+- **Scraper Architecture**:
+  - `scripts/zinzino-scraper.js` - Puppeteer scraper for Zinzino partner finder
+  - `.github/workflows/zinzino-scraper.yml` - Scheduled scraper workflow
+
+- **FSR Two-Script Architecture** (Feb 2026):
   - `scripts/fsr-id-harvester.js` - Fast ID harvester (no CAPTCHA, 12x daily, 50 pages/run)
   - `scripts/fsr-scraper.js` - Contact scraper with 2Captcha reCAPTCHA solver (4x daily, 75/run)
 
@@ -1667,6 +1683,26 @@ Corporate email domains are excluded from all contact collections using a **blac
   - All 9 email campaign scripts updated with reverted subject line
   - Localized subjects updated accordingly
 
+**Website Consistency Audit (Mar 2, 2026)**
+- ✅ **Comprehensive 4-Language Audit**: Verified consistency across EN, ES, PT, DE websites
+- ✅ **Round 1 Fixes**:
+  - German sitemap.xml: Fixed domain URLs (es.teambuildpro.com → de.teambuildpro.com)
+  - German index.html: Fixed message count (15 → 16 pre-written messages)
+  - Portuguese/German blog categories: Fixed "Estratégia" → "Estrategia" (ES), "Recruiting" → "Rekrutierung" (DE)
+  - Spanish OG images: Fixed paths from /images/ to /assets/
+  - All sitemaps: Verified all pages included (blog posts, company pages, legal pages)
+  - EN robots.txt: Added missing Disallow rules for prospects.html/professionals.html
+- ✅ **Round 2 Fixes**:
+  - PT/DE Twitter card image URLs: Fixed to use canonical teambuildpro.com domain
+  - PT/DE Organization schema URLs: Fixed to use canonical teambuildpro.com domain
+  - EN books.html: Fixed company count (100 → 100+)
+  - EN sitemap.xml: Removed delete-account.html (blocked by robots.txt)
+- ✅ **Round 3 Fixes**:
+  - PT/DE MobileApplication schema screenshot URLs: Fixed to use teambuildpro.com domain
+  - ES/PT/DE scripts.html meta tags: Translated titles and descriptions to respective languages
+  - EN companies.html meta description: Fixed count from "80+" to "100+"
+- ✅ **Final Verification**: All pages confirmed consistent across all 4 languages
+
 **V14 Template & Subject Line Update (Feb 26, 2026)**
 - ✅ **Subject Line Unified**: Changed from "AI is changing how teams grow" to "Using AI to grow your team faster"
   - All 9 email campaign scripts updated with new subject line
@@ -1712,7 +1748,7 @@ Corporate email domains are excluded from all contact collections using a **blac
   - Reminders unnecessary and potentially confusing for auto-renewing subscriptions
   - Users don't need to take action - billing happens automatically
 
-### Current System Status (Mar 1, 2026)
+### Current System Status (Mar 2, 2026)
 
 **PROJECT STATUS: DYNAMIC BATCH SIZING LIVE**
 Main Campaign disabled. All scraper-fed campaigns use V14 template with unified subject "AI is changing how teams grow". Dynamic batch sizing auto-adjusts based on queue sizes with 4-week warming schedule (40%→60%→80%→100%).
@@ -1737,7 +1773,7 @@ Main Campaign disabled. All scraper-fed campaigns use V14 template with unified 
 | Email Tracking | GA4 | Clicks via UTM parameters; opens disabled |
 | Analytics Dashboard | Enhanced | 6 campaign cards, GA4 click tracking, A/B testing removed (Feb 25) |
 | Push Notifications | Working | profile_reminder, trial_expired verified |
-| Blog Automation | Running | Mon/Thu schedule, 4 languages (24/24/24/23 posts) |
+| Blog Automation | Running | Mon/Thu schedule, 4 languages (28/28/28/28 posts) |
 | Sitemap Pings | Active | Google + Bing pinged after each blog deploy |
 | URL Discovery | Active | Every 2h, 120 companies/batch (processing 1,082 companies) |
 | Contacts Seeder | Active | Every 4h, 3 sources (Common Crawl + Wayback + crt.sh) |

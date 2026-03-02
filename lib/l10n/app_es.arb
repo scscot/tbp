@@ -288,7 +288,7 @@
     "description": "Bottom navigation tab label for profile",
     "maxLength": 14
   },
-  "dashTitle": "Centro de Control",
+  "dashTitle": "Back Office",
   "@dashTitle": {
     "description": "Dashboard screen title in app bar",
     "maxLength": 32
@@ -2473,6 +2473,8 @@
   "gettingStartedStep2Button": "Abrir compartir",
   "gettingStartedProTipTitle": "Consejo profesional",
   "gettingStartedProTipMessage": "El seguimiento constante y el compromiso son clave para construir un equipo fuerte y activo.",
+  "gettingStartedProspectStep1Description": "Crea una lista de amigos, familiares y contactos que puedan estar interesados en generar ingresos residuales. Tu objetivo es reclutar 3 patrocinadores directos y hacer crecer tu equipo total a 12 miembros.",
+  "gettingStartedProspectStep2Description": "Usa la función Compartir para invitar a tus contactos a unirse a tu equipo. Cada persona que se una a través de tu enlace te acerca a tu meta de 3 patrocinadores directos + 12 miembros totales del equipo.",
   "eligibilityHeroTitleQualified": "¡FELICITACIONES!\n¡Estás calificado!",
   "eligibilityHeroTitleNotQualified": "Construye tu impulso",
   "eligibilityHeroMessageQualified": "¡Trabajo increíble! Has construido tu equipo fundamental y desbloqueado la oportunidad de {business}. Continúa creciendo tu red para ayudar a otros a lograr el mismo éxito.",
@@ -2494,10 +2496,12 @@
   "shareHeading": "Poderoso sistema de referencias",
   "shareSubheading": "Comparte tus enlaces de referencia para pre-construir un nuevo equipo con prospectos de reclutamiento o expandir tu equipo existente.",
   "shareStrategiesTitle": "Estrategias de crecimiento comprobadas",
-  "shareProspectTitle": "Nuevos prospectos de reclutamiento",
+  "shareProspectTitle": "Construyendo Tu Equipo",
+  "shareProspectHeaderTitle": "Mensajes Personalizados",
   "shareProspectSubtitle": "Invita a prospectos de reclutamiento para comenzar con ventaja.",
   "shareProspectDescription": "Invita a prospectos de reclutamiento a pre-construir su equipo de {business} con esta aplicación. Pueden crear un poderoso impulso antes de unirse oficialmente a {business}, asegurando el éxito desde el primer día.",
-  "sharePartnerTitle": "Socios comerciales actuales",
+  "sharePartnerTitle": "Socios de Tu Equipo",
+  "sharePartnerHeaderTitle": "Mensajes Personalizados",
   "sharePartnerSubtitle": "Ideal para tu equipo existente de {business}",
   "sharePartnerDescription": "Empodera a tus socios existentes de {business} con la misma herramienta que usas. Esto promueve la duplicación y ayuda a acelerar el crecimiento en toda tu organización de {business}.",
   "shareSelectMessageLabel": "Seleccionar mensaje para enviar",
@@ -3017,7 +3021,7 @@
   "howItWorksStep2Title": "Construya de Manera Inteligente, No Difícil",
   "howItWorksStep2Description": "Use coaching impulsado por IA para redactar mensajes, programar seguimientos y rastrear interés. Construya relaciones con prospectos antes de que se unan a su oportunidad de negocio.",
   "howItWorksStep3Title": "Calificación Automática",
-  "howItWorksStep3Description": "A medida que los prospectos construyen sus propios equipos dentro de la aplicación, automáticamente alcanzan hitos de calificación (4 patrocinadores directos + 20 equipo total), demostrando su compromiso antes de unirse.",
+  "howItWorksStep3Description": "A medida que los prospectos construyen sus propios equipos dentro de la aplicación, automáticamente alcanzan hitos de calificación (3 patrocinadores directos + 12 equipo total), demostrando su compromiso antes de unirse.",
   "howItWorksStep4Title": "Crecimiento Rápido",
   "howItWorksStep4Description": "Sus prospectos precalificados se lanzan con impulso, equipos ya establecidos y capacidad comprobada para reclutar. Esto crea un motor de crecimiento autosostenible.",
   "howItWorksKeyTargetsTitle": " OBJETIVOS CLAVE DE CRECIMIENTO",
@@ -3332,7 +3336,7 @@
   "@faqQ3": {
     "description": "FAQ question 3"
   },
-  "faqA3": "¡Absolutamente! Esta es nuestra innovación principal. Puedes invitar prospectos y miembros de equipo existentes a Team Build Pro, dejar que experimenten el éxito en la construcción de equipos, y cuando alcancen los hitos de calificación (4 patrocinadores directos + 20 miembros totales del equipo), automáticamente reciben una invitación para unirse a tu oportunidad de negocio. Elimina el problema del \"inicio en frío\" que mata a la mayoría de los nuevos distribuidores.",
+  "faqA3": "¡Absolutamente! Esta es nuestra innovación principal. Puedes invitar prospectos y miembros de equipo existentes a Team Build Pro, dejar que experimenten el éxito en la construcción de equipos, y cuando alcancen los hitos de calificación (3 patrocinadores directos + 12 miembros totales del equipo), automáticamente reciben una invitación para unirse a tu oportunidad de negocio. Elimina el problema del \"inicio en frío\" que mata a la mayoría de los nuevos distribuidores.",
   "@faqA3": {
     "description": "FAQ answer 3"
   },
@@ -3372,7 +3376,7 @@
   "@faqQ8": {
     "description": "FAQ question 8"
   },
-  "faqA8": "Cuando alguien se une a Team Build Pro a través de tu referencia, comienza a construir su propio equipo. Una vez que alcancen nuestros hitos de éxito (4 patrocinadores directos + 20 miembros totales del equipo), automáticamente reciben una invitación para unirse a tu oportunidad de negocio. Esto asegura que solo constructores de equipos motivados y probados avancen a tu negocio real.",
+  "faqA8": "Cuando alguien se une a Team Build Pro a través de tu referencia, comienza a construir su propio equipo. Una vez que alcancen nuestros hitos de éxito (3 patrocinadores directos + 12 miembros totales del equipo), automáticamente reciben una invitación para unirse a tu oportunidad de negocio. Esto asegura que solo constructores de equipos motivados y probados avancen a tu negocio real.",
   "@faqA8": {
     "description": "FAQ answer 8"
   },
@@ -3404,7 +3408,7 @@
   "@faqQ12": {
     "description": "FAQ question 12"
   },
-  "faqA12": "Los patrocinadores directos son personas que invitas personalmente y que se unen a través de tu enlace de referencia. Los miembros totales del equipo incluyen tus patrocinadores directos más todos a quienes ellos patrocinan (tu línea descendente). Para la calificación, necesitas 4 patrocinadores directos y 20 miembros totales del equipo.",
+  "faqA12": "Los patrocinadores directos son personas que invitas personalmente y que se unen a través de tu enlace de referencia. Los miembros totales del equipo incluyen tus patrocinadores directos más todos a quienes ellos patrocinan (tu línea descendente). Para la calificación, necesitas 3 patrocinadores directos y 12 miembros totales del equipo.",
   "@faqA12": {
     "description": "FAQ answer 12"
   },
@@ -3580,7 +3584,7 @@
   "@faqQ34": {
     "description": "FAQ question 34"
   },
-  "faqA34": "Esto varía mucho según el esfuerzo individual y el mercado, pero nuestros usuarios más exitosos logran la calificación (4 directos, 20 totales) dentro de unas semanas de actividad consistente. Recuerda, estás construyendo relaciones, no solo recolectando inscripciones.",
+  "faqA34": "Esto varía mucho según el esfuerzo individual y el mercado, pero nuestros usuarios más exitosos logran la calificación (3 directos, 12 totales) dentro de unas semanas de actividad consistente. Recuerda, estás construyendo relaciones, no solo recolectando inscripciones.",
   "@faqA34": {
     "description": "FAQ answer 34"
   },
@@ -3722,7 +3726,7 @@
   "hiwStep2Title": "Construye Inteligentemente, No Duramente",
   "hiwStep2Desc": "Comparte Team Build Pro con prospectos y miembros del equipo existentes. Los miembros actuales del equipo crean impulso instantáneo, y los prospectos de reclutamiento experimentan un éxito real en la construcción del equipo antes de unirse a tu oportunidad, eliminando el problema del \"arranque en frío\".",
   "hiwStep3Title": "Calificación Automática",
-  "hiwStep3Desc": "Cuando los prospectos de reclutamiento alcanzan nuestros hitos de éxito (4 patrocinadores directos + 20 miembros totales del equipo), automáticamente reciben una invitación para unirse a tu oportunidad.",
+  "hiwStep3Desc": "Cuando los prospectos de reclutamiento alcanzan nuestros hitos de éxito (3 patrocinadores directos + 12 miembros totales del equipo), automáticamente reciben una invitación para unirse a tu oportunidad.",
   "hiwStep4Title": "Crecimiento Rápido",
   "hiwStep4Desc": "A medida que tu organización de Team Build Pro se expande, cada líder calificado alimenta nuevos prospectos pre-entrenados en tu oportunidad, creando un motor de crecimiento autosostenible.",
   "hiwKeyTargets": "OBJETIVOS CLAVE DE CRECIMIENTO",

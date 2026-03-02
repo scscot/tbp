@@ -161,7 +161,7 @@ const registerUser = onCall({ region: "us-central1" }, async (request) => {
   logger.info(`Starting registerUser function for project ${process.env.GCLOUD_PROJECT}`);
   logger.info("Request data:", JSON.stringify(request.data, null, 2));
 
-  const { email, password, firstName, lastName, sponsorReferralCode, adminReferralCode, role, country, state, city, preferredLanguage, requestId } = request.data;
+  const { email, password, firstName, lastName, sponsorReferralCode, adminReferralCode, role, country, state, city, preferredLanguage, requestId, userType, invitedBy } = request.data;
 
   // Validate required fields
   validateInput(request.data, {
@@ -345,8 +345,14 @@ const registerUser = onCall({ region: "us-central1" }, async (request) => {
       totalTeamCount: 0,
       isProfileComplete: false,
       currentPartner: false,
-      subscriptionStatus: 'trial',
-      trialStartDate: FieldValue.serverTimestamp(),
+      // --- USER TYPE: Professional vs Prospect for two-sided business model ---
+      userType: userType || 'professional', // Default to professional if not specified
+      invitedBy: invitedBy || null, // UID of professional who invited (for prospects)
+      milestoneReached: false,
+      milestoneReachedAt: null,
+      // --- SUBSCRIPTION: Professionals get trial, Prospects are free until milestone ---
+      subscriptionStatus: (userType === 'prospect') ? 'prospect_free' : 'trial',
+      trialStartDate: (userType === 'prospect') ? null : FieldValue.serverTimestamp(),
       hasPromptedForReview: false,
       reviewPromptedAt: null,
     };

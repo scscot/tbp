@@ -10,7 +10,6 @@ import 'package:cloud_functions/cloud_functions.dart';
 import '../models/user_model.dart';
 import '../models/admin_settings_model.dart';
 import '../services/session_manager.dart';
-import '../services/biometric_service.dart';
 
 /// Enhanced AuthStateProvider with ChangeNotifier for centralized state management
 /// Extends your existing AuthService with proper Provider pattern implementation
@@ -28,9 +27,6 @@ class AuthStateProvider extends ChangeNotifier {
   AdminSettingsModel? _adminSettings;
   String? _errorMessage;
   bool _isLoading = false;
-  bool _biometricAvailable = false;
-  bool _biometricEnabled = false;
-  String? _storedEmail;
 
   // Stream subscriptions
   StreamSubscription<User?>? _authStateSubscription;
@@ -47,9 +43,6 @@ class AuthStateProvider extends ChangeNotifier {
   String? get errorMessage => _errorMessage;
   bool get isLoading => _isLoading;
   bool get isAuthenticated => _currentUser != null && _state == AuthState.authenticated;
-  bool get biometricAvailable => _biometricAvailable;
-  bool get biometricEnabled => _biometricEnabled;
-  String? get storedEmail => _storedEmail;
 
   // Legacy streams for backward compatibility
   Stream<UserModel?> get user {
@@ -101,26 +94,7 @@ class AuthStateProvider extends ChangeNotifier {
   }
 
   void _initialize() {
-    _initializeBiometric();
     _setupAuthStateListener();
-  }
-
-  Future<void> _initializeBiometric() async {
-    try {
-      final available = await BiometricService.isDeviceSupported();
-      final enabled = await BiometricService.isBiometricEnabled();
-      final storedEmail = await BiometricService.getStoredEmail();
-
-      _biometricAvailable = available;
-      _biometricEnabled = enabled;
-      _storedEmail = storedEmail;
-
-      notifyListeners();
-
-      debugPrint('🔐 AUTH_STATE_PROVIDER: Biometric initialized - Available: $available, Enabled: $enabled');
-    } catch (e) {
-      debugPrint('❌ AUTH_PROVIDER: Error initializing biometric: $e');
-    }
   }
 
   void _setupAuthStateListener() {
@@ -230,16 +204,6 @@ class AuthStateProvider extends ChangeNotifier {
 
       // Clear logout state on successful login
       await SessionManager.instance.clearLogoutState();
-
-      // Store credentials if biometric is enabled (for future biometric login)
-      final biometricEnabled = await BiometricService.isBiometricEnabled();
-      if (biometricEnabled) {
-        await BiometricService.storeCredentials(
-          email: email,
-          password: password,
-        );
-        debugPrint('🔐 AUTH_PROVIDER: Stored credentials for biometric login');
-      }
 
       debugPrint('🔐 AUTH_PROVIDER: Login successful');
 
@@ -385,30 +349,6 @@ class AuthStateProvider extends ChangeNotifier {
       _setLoading(false);
     }
     */
-  }
-
-  /// Sign in with biometric
-  Future<bool> signInWithBiometric() async {
-    try {
-      _setLoading(true);
-
-      debugPrint('🔐 AUTH_PROVIDER: Starting biometric authentication');
-
-      final credentials = await BiometricService.authenticateAndGetCredentials();
-      if (credentials == null) {
-        debugPrint('🔐 AUTH_PROVIDER: Biometric authentication failed or cancelled');
-        return false;
-      }
-
-      await signInWithEmailAndPassword(credentials['email']!, credentials['password']!);
-      return _state == AuthState.authenticated;
-    } catch (e) {
-      debugPrint('❌ AUTH_PROVIDER: Biometric sign-in failed: $e');
-      _setState(AuthState.error, errorMessage: _getErrorMessage(e));
-      return false;
-    } finally {
-      _setLoading(false);
-    }
   }
 
   /// Register new user

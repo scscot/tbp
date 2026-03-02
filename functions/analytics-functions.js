@@ -471,11 +471,20 @@ const checkUserSubscriptionStatus = onCall({ region: "us-central1" }, async (req
     const isActive = userData.isActive || false;
     const trialStartDate = userData.trialStartDate || userData.createdAt;
 
+    // --- USER TYPE: Professional vs Prospect for two-sided business model ---
+    const userType = userData.userType || 'professional';
+    const milestoneReached = userData.milestoneReached || false;
+
     // Calculate trial validity and days remaining
     let isTrialValid = false;
     let trialDaysRemaining = 0;
 
-    if (trialStartDate) {
+    // Prospects with 'prospect_free' status don't have a trial - they're free until milestone
+    if (subscriptionStatus === 'prospect_free') {
+      // Prospects are "valid" (have access) until they hit the milestone
+      isTrialValid = !milestoneReached;
+      trialDaysRemaining = milestoneReached ? 0 : -1; // -1 indicates "no trial, milestone-based"
+    } else if (trialStartDate) {
       const trialStart = trialStartDate.toDate ? trialStartDate.toDate() : new Date(trialStartDate);
       const daysSinceTrialStart = Math.floor((Date.now() - trialStart.getTime()) / (1000 * 60 * 60 * 24));
       trialDaysRemaining = Math.max(0, 30 - daysSinceTrialStart);
@@ -507,6 +516,9 @@ const checkUserSubscriptionStatus = onCall({ region: "us-central1" }, async (req
       isInGracePeriod,
       subscriptionExpiry: subscriptionExpiry ? (subscriptionExpiry.toDate ? subscriptionExpiry.toDate().toISOString() : subscriptionExpiry) : null,
       daysUntilExpiry,
+      // --- USER TYPE: Include for two-sided business model ---
+      userType,
+      milestoneReached,
       analytics: {
         networkCount,
         directSponsors,

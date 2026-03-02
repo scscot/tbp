@@ -218,7 +218,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get navProfile => 'Perfil';
 
   @override
-  String get dashTitle => 'Centro de Controle';
+  String get dashTitle => 'Back Office';
 
   @override
   String get dashKpiDirectSponsors => 'Patrocinadores Diretos';
@@ -1733,6 +1733,14 @@ class AppLocalizationsPt extends AppLocalizations {
       'O acompanhamento consistente e o engajamento são fundamentais para construir uma equipe forte e ativa.';
 
   @override
+  String get gettingStartedProspectStep1Description =>
+      'Crie uma lista de amigos, familiares e contatos que possam estar interessados em criar renda residual. Seu objetivo é recrutar 3 patrocinadores diretos e crescer sua equipe total para 12 membros.';
+
+  @override
+  String get gettingStartedProspectStep2Description =>
+      'Use o recurso Compartilhar para convidar seus contatos a se juntarem à sua equipe. Cada pessoa que entrar através do seu link te aproxima da sua meta de 3 patrocinadores diretos + 12 membros totais da equipe.';
+
+  @override
   String get eligibilityHeroTitleQualified =>
       'PARABÉNS!\nVocê está qualificado!';
 
@@ -1807,7 +1815,10 @@ class AppLocalizationsPt extends AppLocalizations {
   String get shareStrategiesTitle => 'Estratégias de crescimento comprovadas';
 
   @override
-  String get shareProspectTitle => 'Novos prospects de recrutamento';
+  String get shareProspectTitle => 'Construindo Sua Equipe';
+
+  @override
+  String get shareProspectHeaderTitle => 'Mensagens Personalizadas';
 
   @override
   String get shareProspectSubtitle =>
@@ -1819,7 +1830,10 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
-  String get sharePartnerTitle => 'Parceiros de negócios atuais';
+  String get sharePartnerTitle => 'Parceiros da Sua Equipe';
+
+  @override
+  String get sharePartnerHeaderTitle => 'Mensagens Personalizadas';
 
   @override
   String sharePartnerSubtitle(String business) {
@@ -3671,7 +3685,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String howItWorksStep3Description(Object business) {
-    return 'À medida que os prospects constroem suas próprias equipes dentro do app, eles automaticamente atingem marcos de qualificação (4 patrocinadores diretos + 20 equipe total) - provando seu comprometimento antes de entrar.';
+    return 'À medida que os prospects constroem suas próprias equipes dentro do app, eles automaticamente atingem marcos de qualificação (3 patrocinadores diretos + 12 equipe total) - provando seu comprometimento antes de entrar.';
   }
 
   @override
@@ -4350,7 +4364,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get hiwStep3Desc =>
-      'Quando os prospects de recrutamento atingem nossos marcos de sucesso (4 patrocinadores diretos + 20 membros totais da equipe), eles recebem automaticamente um convite para ingressar em sua oportunidade.';
+      'Quando os prospects de recrutamento atingem nossos marcos de sucesso (3 patrocinadores diretos + 12 membros totais da equipe), eles recebem automaticamente um convite para ingressar em sua oportunidade.';
 
   @override
   String get hiwStep4Title => 'Crescimento Rápido';

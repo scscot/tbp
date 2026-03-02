@@ -13,6 +13,7 @@ Disallow: /TBP-analytics.html
 Disallow: /faq-test.html
 Disallow: /claim-google.html
 Disallow: /unsubscribe.html
+Disallow: /delete-account.html
 
 # Block audience-specific landing pages (accessed via ?new= and ?ref= links)
 Disallow: /professionals.html

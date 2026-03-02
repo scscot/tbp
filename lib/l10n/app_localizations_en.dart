@@ -214,7 +214,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get navProfile => 'Profile';
 
   @override
-  String get dashTitle => 'Control Center';
+  String get dashTitle => 'Back Office';
 
   @override
   String get dashKpiDirectSponsors => 'Direct Sponsors';
@@ -1716,6 +1716,14 @@ class AppLocalizationsEn extends AppLocalizations {
       'Consistent follow-up and engagement are key to building a strong, active team.';
 
   @override
+  String get gettingStartedProspectStep1Description =>
+      'Create a list of friends, family, and contacts who might be interested in creating residual income. Your goal is to recruit 3 direct sponsors and grow your total team to 12 members.';
+
+  @override
+  String get gettingStartedProspectStep2Description =>
+      'Use the Share feature to invite your contacts to join your team. Each person who joins through your link brings you closer to your 3 direct sponsors + 12 total team member goal.';
+
+  @override
   String get eligibilityHeroTitleQualified =>
       'CONGRATULATIONS\nYou\'re Qualified!';
 
@@ -1790,7 +1798,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get shareStrategiesTitle => 'Proven Growth Strategies';
 
   @override
-  String get shareProspectTitle => 'New Recruiting Prospects';
+  String get shareProspectTitle => 'Building Your Team';
+
+  @override
+  String get shareProspectHeaderTitle => 'Customized Messages';
 
   @override
   String get shareProspectSubtitle =>
@@ -1802,7 +1813,10 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get sharePartnerTitle => 'Current Business Partners';
+  String get sharePartnerTitle => 'Your Team Partners';
+
+  @override
+  String get sharePartnerHeaderTitle => 'Customized Messages';
 
   @override
   String sharePartnerSubtitle(String business) {
@@ -3625,7 +3639,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String howItWorksStep3Description(Object business) {
-    return 'As prospects build their own teams within the app, they automatically hit qualification milestones (4 direct sponsors + 20 total team) - proving their commitment before joining.';
+    return 'As prospects build their own teams within the app, they automatically hit qualification milestones (3 direct sponsors + 12 total team) - proving their commitment before joining.';
   }
 
   @override
@@ -3941,7 +3955,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get faqA3 =>
-      'Absolutely! This is our core innovation. You can invite prospects and existing team members to Team Build Pro, let them experience team building success, and when they hit qualification milestones (4 direct sponsors + 20 total team members), they automatically get invited to join your business opportunity. It eliminates the \"cold start\" problem that kills most new distributors.';
+      'Absolutely! This is our core innovation. You can invite prospects and existing team members to Team Build Pro, let them experience team building success, and when they hit qualification milestones (3 direct sponsors + 12 total team members), they automatically get invited to join your business opportunity. It eliminates the \"cold start\" problem that kills most new distributors.';
 
   @override
   String get faqQ4 => 'Do I need a credit card to try it?';
@@ -3977,7 +3991,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get faqA8 =>
-      'When someone joins Team Build Pro through your referral, they begin building their own team. Once they reach our success milestones (4 direct sponsors + 20 total team members), they automatically receive an invitation to join your business opportunity. This ensures only motivated, proven team builders advance to your actual business.';
+      'When someone joins Team Build Pro through your referral, they begin building their own team. Once they reach our success milestones (3 direct sponsors + 12 total team members), they automatically receive an invitation to join your business opportunity. This ensures only motivated, proven team builders advance to your actual business.';
 
   @override
   String get faqQ9 =>
@@ -4007,7 +4021,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get faqA12 =>
-      'Direct sponsors are people you personally invite who join through your referral link. Total team members include your direct sponsors plus everyone they sponsor (your downline). For qualification, you need 4 direct sponsors and 20 total team members.';
+      'Direct sponsors are people you personally invite who join through your referral link. Total team members include your direct sponsors plus everyone they sponsor (your downline). For qualification, you need 3 direct sponsors and 12 total team members.';
 
   @override
   String get faqQ13 => 'Can my team members message each other?';
@@ -4166,7 +4180,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get faqA34 =>
-      'This varies greatly by individual effort and market, but our most successful users achieve qualification (4 direct, 20 total) within a few weeks of consistent activity. Remember, you\'re building relationships, not just collecting sign-ups.';
+      'This varies greatly by individual effort and market, but our most successful users achieve qualification (3 direct, 12 total) within a few weeks of consistent activity. Remember, you\'re building relationships, not just collecting sign-ups.';
 
   @override
   String get faqQ35 => 'Do you guarantee results?';
@@ -4303,7 +4317,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get hiwStep3Desc =>
-      'When recruiting prospects reach our success milestones (4 direct sponsors + 20 total team members), they automatically receive an invitation to join your opportunity.';
+      'When recruiting prospects reach our success milestones (3 direct sponsors + 12 total team members), they automatically receive an invitation to join your opportunity.';
 
   @override
   String get hiwStep4Title => 'Rapid Growth';

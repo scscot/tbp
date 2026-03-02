@@ -288,7 +288,7 @@
     "description": "Bottom navigation tab label for profile",
     "maxLength": 14
   },
-  "dashTitle": "Control Center",
+  "dashTitle": "Back Office",
   "@dashTitle": {
     "description": "Dashboard screen title in app bar",
     "maxLength": 32
@@ -2889,6 +2889,14 @@
   "@gettingStartedProTipMessage": {
     "description": "Pro tip message"
   },
+  "gettingStartedProspectStep1Description": "Create a list of friends, family, and contacts who might be interested in creating residual income. Your goal is to recruit 3 direct sponsors and grow your total team to 12 members.",
+  "@gettingStartedProspectStep1Description": {
+    "description": "Getting started step 1 description for prospects"
+  },
+  "gettingStartedProspectStep2Description": "Use the Share feature to invite your contacts to join your team. Each person who joins through your link brings you closer to your 3 direct sponsors + 12 total team member goal.",
+  "@gettingStartedProspectStep2Description": {
+    "description": "Getting started step 2 description for prospects"
+  },
   "eligibilityHeroTitleQualified": "CONGRATULATIONS\nYou're Qualified!",
   "@eligibilityHeroTitleQualified": {
     "description": "Hero title when qualified",
@@ -3012,9 +3020,14 @@
     "description": "Title for strategies section",
     "maxLength": 28
   },
-  "shareProspectTitle": "New Recruiting Prospects",
+  "shareProspectTitle": "Building Your Team",
   "@shareProspectTitle": {
-    "description": "Title for prospect strategy",
+    "description": "Title for prospect share screen AppBar",
+    "maxLength": 32
+  },
+  "shareProspectHeaderTitle": "Customized Messages",
+  "@shareProspectHeaderTitle": {
+    "description": "Header title on prospect share screen",
     "maxLength": 32
   },
   "shareProspectSubtitle": "Invite recruiting prospects to get a head start.",
@@ -3031,9 +3044,14 @@
       }
     }
   },
-  "sharePartnerTitle": "Current Business Partners",
+  "sharePartnerTitle": "Your Team Partners",
   "@sharePartnerTitle": {
-    "description": "Title for partner strategy",
+    "description": "Title for partner share screen AppBar",
+    "maxLength": 32
+  },
+  "sharePartnerHeaderTitle": "Customized Messages",
+  "@sharePartnerHeaderTitle": {
+    "description": "Header title on partner share screen",
     "maxLength": 32
   },
   "sharePartnerSubtitle": "Great for your existing {business} team",
@@ -4215,7 +4233,7 @@
   "howItWorksStep2Title": "Build Smart, Not Hard",
   "howItWorksStep2Description": "Use AI-powered coaching to draft messages, schedule follow-ups, and track interest. Build relationships with prospects before they even join your business opportunity.",
   "howItWorksStep3Title": "Automatic Qualification",
-  "howItWorksStep3Description": "As prospects build their own teams within the app, they automatically hit qualification milestones (4 direct sponsors + 20 total team) - proving their commitment before joining.",
+  "howItWorksStep3Description": "As prospects build their own teams within the app, they automatically hit qualification milestones (3 direct sponsors + 12 total team) - proving their commitment before joining.",
   "howItWorksStep4Title": "Rapid Growth",
   "howItWorksStep4Description": "Your pre-qualified prospects launch with momentum, teams already in place, and proven ability to recruit. This creates a self-sustaining growth engine.",
   "howItWorksKeyTargetsTitle": " KEY GROWTH TARGETS",
@@ -4467,7 +4485,7 @@
   "@faqQ3": {
     "description": "FAQ question 3"
   },
-  "faqA3": "Absolutely! This is our core innovation. You can invite prospects and existing team members to Team Build Pro, let them experience team building success, and when they hit qualification milestones (4 direct sponsors + 20 total team members), they automatically get invited to join your business opportunity. It eliminates the \"cold start\" problem that kills most new distributors.",
+  "faqA3": "Absolutely! This is our core innovation. You can invite prospects and existing team members to Team Build Pro, let them experience team building success, and when they hit qualification milestones (3 direct sponsors + 12 total team members), they automatically get invited to join your business opportunity. It eliminates the \"cold start\" problem that kills most new distributors.",
   "@faqA3": {
     "description": "FAQ answer 3"
   },
@@ -4507,7 +4525,7 @@
   "@faqQ8": {
     "description": "FAQ question 8"
   },
-  "faqA8": "When someone joins Team Build Pro through your referral, they begin building their own team. Once they reach our success milestones (4 direct sponsors + 20 total team members), they automatically receive an invitation to join your business opportunity. This ensures only motivated, proven team builders advance to your actual business.",
+  "faqA8": "When someone joins Team Build Pro through your referral, they begin building their own team. Once they reach our success milestones (3 direct sponsors + 12 total team members), they automatically receive an invitation to join your business opportunity. This ensures only motivated, proven team builders advance to your actual business.",
   "@faqA8": {
     "description": "FAQ answer 8"
   },
@@ -4539,7 +4557,7 @@
   "@faqQ12": {
     "description": "FAQ question 12"
   },
-  "faqA12": "Direct sponsors are people you personally invite who join through your referral link. Total team members include your direct sponsors plus everyone they sponsor (your downline). For qualification, you need 4 direct sponsors and 20 total team members.",
+  "faqA12": "Direct sponsors are people you personally invite who join through your referral link. Total team members include your direct sponsors plus everyone they sponsor (your downline). For qualification, you need 3 direct sponsors and 12 total team members.",
   "@faqA12": {
     "description": "FAQ answer 12"
   },
@@ -4715,7 +4733,7 @@
   "@faqQ34": {
     "description": "FAQ question 34"
   },
-  "faqA34": "This varies greatly by individual effort and market, but our most successful users achieve qualification (4 direct, 20 total) within a few weeks of consistent activity. Remember, you're building relationships, not just collecting sign-ups.",
+  "faqA34": "This varies greatly by individual effort and market, but our most successful users achieve qualification (3 direct, 12 total) within a few weeks of consistent activity. Remember, you're building relationships, not just collecting sign-ups.",
   "@faqA34": {
     "description": "FAQ answer 34"
   },
@@ -4909,7 +4927,7 @@
     "description": "Title for pipeline step 3",
     "maxLength": 30
   },
-  "hiwStep3Desc": "When recruiting prospects reach our success milestones (4 direct sponsors + 20 total team members), they automatically receive an invitation to join your opportunity.",
+  "hiwStep3Desc": "When recruiting prospects reach our success milestones (3 direct sponsors + 12 total team members), they automatically receive an invitation to join your opportunity.",
   "@hiwStep3Desc": {
     "description": "Description for pipeline step 3",
     "maxLength": 200

@@ -17,8 +17,8 @@ class AppConstants {
       FirebaseRemoteConfig.instance;
 
   static final Map<String, dynamic> _defaultValues = {
-    'projectWideDirectSponsorMin': 4,
-    'projectWideTotalTeamMin': 20,
+    'projectWideDirectSponsorMin': 3,
+    'projectWideTotalTeamMin': 12,
     'enable_sharing': true,
   };
 

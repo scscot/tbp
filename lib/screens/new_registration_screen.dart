@@ -8,13 +8,8 @@ import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:io' show Platform;
-import 'package:flutter/foundation.dart' show kIsWeb, kDebugMode;
+import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/services.dart' show Clipboard, ClipboardData;
-import 'package:sign_in_with_apple/sign_in_with_apple.dart';
-import 'package:crypto/crypto.dart';
-import 'dart:math' as math;
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:uuid/uuid.dart';
 import '../services/auth_service.dart';
@@ -27,7 +22,6 @@ import '../i18n/analytics_events.dart';
 import 'edit_profile_screen.dart';
 import 'admin_edit_profile_screen.dart';
 import 'login_screen_enhanced.dart';
-import '../models/user_model.dart';
 import '../main.dart';
 import 'dart:async';
 
@@ -64,24 +58,28 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
   bool _userHasStartedRegistration = false; // Track if registration process has begun
   bool _isLoading = true;
   bool _acceptedPrivacyPolicy = false;
-  bool _isAppleSignUp = false;
-  bool _isGoogleSignUp = false;
-  Map<String, String?>? _appleUserData;
   bool _navigated = false;
   StreamSubscription<User?>? _authSub;
-  bool _isAppleSignInAvailable = false;
-  bool _isGoogleSignInAvailable = false;
 
   // Clipboard paste affordance - hidden by default, revealed on demand
   bool _canOfferPaste = false;
   bool _checkedPasteOffer = false;
   bool _showPasteUI = false;
 
+  // User type selection - Professional vs Prospect
+  String _selectedUserType = 'professional';
+
   bool isDevMode = true;
 
   @override
   void initState() {
     super.initState();
+
+    // Auto-set user type based on query string:
+    // ?new=ABC → prospect (invited by a professional)
+    // ?ref=ABC or none → professional
+    _selectedUserType = widget.queryType == 'new' ? 'prospect' : 'professional';
+    debugPrint('🔐 REGISTER: User type set to $_selectedUserType (queryType: ${widget.queryType})');
 
     FirebaseAnalytics.instance.logEvent(
       name: AnalyticsEvents.authView,
@@ -92,12 +90,6 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
       if (!mounted || user == null || _navigated) return;
 
       debugPrint('🔐 REGISTER: Auth state -> ${user.email} (${user.uid})');
-      
-      // CRITICAL: Don't interfere if we're actively processing Apple or Google sign-up
-      if (_isAppleSignUp || _isGoogleSignUp) {
-        debugPrint('🔐 REGISTER: Sign-up in progress, skipping auth state navigation');
-        return;
-      }
 
       try {
         final userDoc = await FirebaseFirestore.instance
@@ -129,8 +121,6 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
       }
     });
     _initializeScreen();
-    _checkAppleSignInAvailability();
-    _checkGoogleSignInAvailability();
     _setupFormListeners();
 
     // After first frame, check if clipboard has content (for "I have an invite link" fallback)
@@ -146,26 +136,6 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
         }
       }
     });
-  }
-
-  Future<void> _checkAppleSignInAvailability() async {
-    // TEMPORARILY DISABLED FOR APP STORE APPROVAL
-    debugPrint('🍎 REGISTER: Apple Sign-In temporarily disabled for App Store approval');
-    if (mounted) {
-      setState(() {
-        _isAppleSignInAvailable = false;
-      });
-    }
-  }
-
-  Future<void> _checkGoogleSignInAvailability() async {
-    // TEMPORARILY DISABLED FOR APP STORE APPROVAL
-    debugPrint('🔵 REGISTER: Google Sign-In temporarily disabled for App Store approval');
-    if (mounted) {
-      setState(() {
-        _isGoogleSignInAvailable = false;
-      });
-    }
   }
 
   void _setupFormListeners() {
@@ -532,9 +502,6 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
   }
 
   Future<void> _register() async {
-    // Skip form validation if this is social sign-up (already handled)
-    if (_isAppleSignUp || _isGoogleSignUp) return;
-
     if (!_formKey.currentState!.validate() || _isLoading) return;
 
     if (!_acceptedPrivacyPolicy) {
@@ -602,6 +569,9 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
         'role': _initialReferralCode == null ? 'admin' : 'user',
         'preferredLanguage': deviceLanguage,
         'requestId': requestId, // Idempotency token
+        // --- USER TYPE: Professional vs Prospect ---
+        'userType': _selectedUserType,
+        'invitedBy': _selectedUserType == 'prospect' ? _initialReferralCode : null,
       };
 
       debugPrint(
@@ -629,9 +599,9 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
         throw Exception("Failed to fetch new user profile.");
       }
 
-      // Store user data for biometric authentication
+      // Store user data in session manager
       await SessionManager.instance.setCurrentUser(userModel);
-      debugPrint('✅ REGISTER: User data stored for biometric authentication');
+      debugPrint('✅ REGISTER: User data stored in session manager');
 
       debugPrint(
           '✅ REGISTER: User model fetched successfully: ${userModel.firstName} ${userModel.lastName}');
@@ -732,531 +702,6 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
         builder: (context) => LoginScreenEnhanced(appId: widget.appId),
       ),
     );
-  }
-
-  /// Apple Sign-In credential generation - native iOS flow
-  Future<AuthCredential> _getAppleCredential() async {
-    final rawNonce = _generateNonce();
-    final nonce = sha256.convert(utf8.encode(rawNonce)).toString();
-
-    debugPrint("🍎 REGISTER: Starting Apple Sign In...");
-
-    try {
-      // Check Apple Sign-In availability first (should already be checked, but double-check for safety)
-      if (!await SignInWithApple.isAvailable()) {
-        debugPrint('🔄 APPLE_REGISTER: Apple Sign-In not available on this device');
-        throw Exception('USER_CANCELED_APPLE_SIGNIN'); // Use cancellation marker for silent handling
-      }
-
-      late final AuthorizationCredentialAppleID appleCredential;
-
-      if (kIsWeb) {
-        // Web flow with proper Service ID
-        appleCredential = await SignInWithApple.getAppleIDCredential(
-          scopes: [
-            AppleIDAuthorizationScopes.email,
-            AppleIDAuthorizationScopes.fullName
-          ],
-          nonce: nonce,
-          webAuthenticationOptions: WebAuthenticationOptions(
-            clientId: 'com.scott.ultimatefix.auth', // Proper Service ID for web
-            redirectUri: Uri.parse('https://teambuildpro.com/apple-signin-callback'),
-          ),
-        );
-      } else {
-        // Native iOS/iPadOS flow - NO webAuthenticationOptions
-        appleCredential = await SignInWithApple.getAppleIDCredential(
-          scopes: [
-            AppleIDAuthorizationScopes.email,
-            AppleIDAuthorizationScopes.fullName
-          ],
-          nonce: nonce,
-          // IMPORTANT: No webAuthenticationOptions on iOS - uses native flow
-        );
-      }
-
-      debugPrint("🍎 REGISTER: Apple credential received successfully");
-      debugPrint("🍎 REGISTER: User identifier: ${appleCredential.userIdentifier}");
-      
-      // Store Apple-provided user data for creating user profile
-      _appleUserData = {
-        'email': appleCredential.email,
-        'givenName': appleCredential.givenName,
-        'familyName': appleCredential.familyName,
-      };
-      debugPrint("🍎 REGISTER: Apple user data stored: $_appleUserData");
-
-      return OAuthProvider('apple.com').credential(
-        idToken: appleCredential.identityToken,
-        accessToken: appleCredential.authorizationCode,
-        rawNonce: rawNonce,
-      );
-    } on SignInWithAppleAuthorizationException catch (e) {
-      debugPrint("🍎 REGISTER: Apple Sign-In authorization error: ${e.code}");
-      switch (e.code) {
-        case AuthorizationErrorCode.canceled:
-        case AuthorizationErrorCode.unknown:  // Error 1000 - also user cancellation
-          debugPrint("🔄 APPLE_REGISTER: User canceled Apple Sign-In (${e.code}), treating as cancellation");
-          throw Exception('USER_CANCELED_APPLE_SIGNIN');
-        case AuthorizationErrorCode.failed:
-        case AuthorizationErrorCode.invalidResponse:
-        case AuthorizationErrorCode.notHandled:
-        case AuthorizationErrorCode.notInteractive:
-        default:
-          rethrow;
-      }
-    }
-  }
-
-  String _generateNonce([int length = 32]) {
-    const charset = '0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._';
-    final random = math.Random.secure();
-    return List.generate(length, (_) => charset[random.nextInt(charset.length)]).join();
-  }
-
-  /// Google Sign-In credential generation
-  Future<AuthCredential> _getGoogleCredential() async {
-    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-    final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
-    if (googleAuth == null) throw Exception('Google sign-in aborted.');
-    return GoogleAuthProvider.credential(
-      accessToken: googleAuth.accessToken,
-      idToken: googleAuth.idToken,
-    );
-  }
-
-  /// Handle Google Sign-In Registration
-  Future<void> _signUpWithGoogle() async {
-    if (_isLoading) return;
-    
-    setState(() {
-      _isLoading = true;
-      _isGoogleSignUp = true;
-    });
-
-    final authService = context.read<AuthService>();
-    final scaffoldMessenger = ScaffoldMessenger.of(context);
-    final navigator = Navigator.of(context);
-
-    try {
-      debugPrint("🔍 REGISTER: Getting Google credential...");
-      final credential = await _getGoogleCredential();
-      
-      debugPrint("🔍 REGISTER: Credential obtained, signing up with Firebase...");
-      await authService.signInWithCredential(credential);
-
-      // Get current user after authentication
-      final currentUser = FirebaseAuth.instance.currentUser;
-      debugPrint('🔍 REGISTER: Current user after auth: ${currentUser?.uid}');
-      
-      if (currentUser != null) {
-        debugPrint('🔍 REGISTER: Checking if user document exists...');
-        final userDoc = await FirebaseFirestore.instance
-            .collection('users')
-            .doc(currentUser.uid)
-            .get();
-            
-        if (userDoc.exists) {
-          debugPrint('🔍 REGISTER: User already exists, treating as login...');
-          // User already exists - this is effectively a login
-          final userModel = UserModel.fromFirestore(userDoc);
-          await SessionManager.instance.setCurrentUser(userModel);
-          
-          // Let the auth state listener handle navigation
-          debugPrint('🔄 GOOGLE_REGISTER: User already exists, auth listener will handle navigation');
-        } else {
-          debugPrint('🔍 REGISTER: Creating new user profile with Google data...');
-          await _createGoogleUserProfile(currentUser);
-          
-          // Navigate based on user role
-          final userModel = await FirestoreService().getUser(currentUser.uid);
-          if (userModel != null) {
-            await SessionManager.instance.setCurrentUser(userModel);
-            
-            if (mounted) {
-              if (userModel.role == 'admin') {
-                navigator.pushAndRemoveUntil(
-                  MaterialPageRoute(
-                    builder: (context) => AdminEditProfileScreen(appId: widget.appId),
-                  ),
-                  (Route<dynamic> route) => false,
-                );
-              } else {
-                navigator.pushAndRemoveUntil(
-                  MaterialPageRoute(
-                    builder: (context) => EditProfileScreen(
-                      appId: widget.appId, 
-                      user: userModel, 
-                      isFirstTimeSetup: true
-                    ),
-                  ),
-                  (Route<dynamic> route) => false,
-                );
-              }
-            }
-          }
-        }
-      }
-
-      debugPrint("✅ REGISTER: Google Sign-In registration successful!");
-
-    } on FirebaseAuthException catch (e) {
-      debugPrint("❌ REGISTER: Google Sign-In failed: ${e.code} - ${e.message}");
-      scaffoldMessenger.showSnackBar(SnackBar(
-          content: Text(e.message ?? 'Google Sign-In failed.'),
-          backgroundColor: Colors.red));
-    } catch (e) {
-      debugPrint("❌ REGISTER: Unexpected Google Sign-In error: $e");
-
-      // Check if this is a user cancellation
-      if (_isUserCancellation(null, e.toString())) {
-        debugPrint('🔄 GOOGLE_REGISTER: User canceled Google Sign-In, returning silently');
-        return; // Exit gracefully without showing error
-      }
-
-      scaffoldMessenger.showSnackBar(const SnackBar(
-          content: Text('An unexpected error occurred with Google Sign-In.'),
-          backgroundColor: Colors.red));
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-          _isGoogleSignUp = false;
-        });
-      }
-    }
-  }
-
-  /// Creates user profile for Google Sign-In using Google-provided data
-  Future<void> _createGoogleUserProfile(User firebaseUser) async {
-    try {
-      debugPrint('🔍 GOOGLE_REGISTER: Creating user profile with Google data...');
-      
-      // Use Google-provided data
-      final email = firebaseUser.email ?? '';
-      final displayName = firebaseUser.displayName ?? '';
-      final nameParts = displayName.split(' ');
-      final firstName = nameParts.isNotEmpty ? nameParts.first : 'Google';
-      final lastName = nameParts.length > 1 ? nameParts.sublist(1).join(' ') : 'User';
-      
-      debugPrint('🔍 GOOGLE_REGISTER: Email: $email, FirstName: $firstName, LastName: $lastName');
-
-      // Create user document in Firestore
-      final userDoc = FirebaseFirestore.instance.collection('users').doc(firebaseUser.uid);
-      
-      final userData = {
-        'uid': firebaseUser.uid,
-        'email': email,
-        'firstName': firstName,
-        'lastName': lastName,
-        'photoUrl': firebaseUser.photoURL,
-        'role': _initialReferralCode == null ? 'admin' : 'user',
-        'isActive': true,
-        'createdAt': FieldValue.serverTimestamp(),
-        'updatedAt': FieldValue.serverTimestamp(),
-        'authProvider': 'google',
-        'subscriptionStatus': 'trial',
-        'trialStartDate': FieldValue.serverTimestamp(),
-        'country': 'US', // Default country
-        'deviceSelection': 'both', // Default for Google users
-        'notificationsEnabled': true,
-        'soundEnabled': true,
-        'sponsorReferralCode': _initialReferralCode,
-        'referralSource': _referralSource, // Track attribution source
-      };
-
-      await userDoc.set(userData);
-      debugPrint('✅ GOOGLE_REGISTER: User profile created successfully in Firestore');
-
-      // Clear referral data after successful registration
-      await SessionManager.instance.clearReferralData();
-      debugPrint('🧹 GOOGLE_REGISTER: Referral data cleared after successful registration');
-
-    } catch (e) {
-      debugPrint('❌ GOOGLE_REGISTER: Error creating user profile: $e');
-      rethrow;
-    }
-  }
-
-  /// Handle Apple Sign-In Registration
-  Future<void> _signUpWithApple() async {
-    if (_isLoading) return;
-    
-    setState(() {
-      _isLoading = true;
-      _isAppleSignUp = true;
-    });
-
-    final authService = context.read<AuthService>();
-    final scaffoldMessenger = ScaffoldMessenger.of(context);
-    final navigator = Navigator.of(context);
-
-    try {
-      debugPrint("🍎 REGISTER: Getting Apple credential...");
-      final credential = await _getAppleCredential();
-      
-      debugPrint("🍎 REGISTER: Credential obtained, signing up with Firebase...");
-      await authService.signInWithCredential(credential);
-
-      // Get current user after authentication
-      final currentUser = FirebaseAuth.instance.currentUser;
-      debugPrint('🍎 REGISTER: Current user after auth: ${currentUser?.uid}');
-      
-      if (currentUser != null) {
-        debugPrint('🍎 REGISTER: Checking if user document exists...');
-        final userDoc = await FirebaseFirestore.instance
-            .collection('users')
-            .doc(currentUser.uid)
-            .get();
-            
-        if (userDoc.exists) {
-          debugPrint('🍎 REGISTER: User already exists, treating as login...');
-          // User already exists - this is effectively a login
-          final userModel = UserModel.fromFirestore(userDoc);
-          await SessionManager.instance.setCurrentUser(userModel);
-          
-          // Let the auth state listener handle navigation
-          debugPrint('🔄 APPLE_REGISTER: User already exists, auth listener will handle navigation');
-        } else {
-          debugPrint('🍎 REGISTER: Creating new user profile with Apple data...');
-          await _createAppleUserProfile(currentUser);
-          
-          // Navigate based on user role
-          final userModel = await FirestoreService().getUser(currentUser.uid);
-          if (userModel != null) {
-            await SessionManager.instance.setCurrentUser(userModel);
-            
-            if (mounted) {
-              if (userModel.role == 'admin') {
-                navigator.pushAndRemoveUntil(
-                  MaterialPageRoute(
-                    builder: (context) => AdminEditProfileScreen(appId: widget.appId),
-                  ),
-                  (Route<dynamic> route) => false,
-                );
-              } else {
-                navigator.pushAndRemoveUntil(
-                  MaterialPageRoute(
-                    builder: (context) => EditProfileScreen(
-                      appId: widget.appId, 
-                      user: userModel, 
-                      isFirstTimeSetup: true
-                    ),
-                  ),
-                  (Route<dynamic> route) => false,
-                );
-              }
-            }
-          }
-        }
-      }
-
-      debugPrint("✅ REGISTER: Apple Sign-In registration successful!");
-
-    } on FirebaseAuthException catch (e) {
-      debugPrint("❌ REGISTER: Apple Sign-In failed: ${e.code} - ${e.message}");
-
-      // Check if this is a user cancellation disguised as a Firebase error
-      if (_isUserCancellation(e.code, e.message)) {
-        debugPrint('🔄 APPLE_REGISTER: User canceled Apple Sign-In (Firebase error), returning silently');
-        return; // Exit gracefully without showing error
-      }
-
-      scaffoldMessenger.showSnackBar(SnackBar(
-          content: Text(e.message ?? 'Apple Sign-In failed.'),
-          backgroundColor: Colors.red));
-    } catch (e) {
-      debugPrint("❌ REGISTER: Unexpected Apple Sign-In error: $e");
-
-      // Enhanced user cancellation detection
-      if (_isUserCancellation(null, e.toString())) {
-        debugPrint('🔄 APPLE_REGISTER: User canceled Apple Sign-In, returning silently');
-        return; // Exit gracefully without showing error
-      }
-
-      // Handle Apple Sign-In availability error
-      if (e.toString().contains('not available')) {
-        debugPrint('🔄 APPLE_REGISTER: Apple Sign-In not available on device');
-        // Show brief, non-disruptive info message
-        scaffoldMessenger.showSnackBar(const SnackBar(
-            content: Text('Apple Sign-In is not available on this device'),
-            backgroundColor: Colors.blue,
-            duration: Duration(seconds: 2)));
-        return;
-      }
-
-      // Handle authentication errors
-      if (e.toString().contains('authentication') || e.toString().contains('credential')) {
-        debugPrint('🔄 APPLE_REGISTER: Apple authentication failed, returning silently');
-        // Don't show error message - just return silently for better UX
-        return;
-      }
-
-      // Handle network and other transient errors silently
-      if (e.toString().contains('network') ||
-          e.toString().contains('timeout') ||
-          e.toString().contains('connection') ||
-          e.toString().contains('unavailable')) {
-        debugPrint('🔄 APPLE_REGISTER: Network/connection issue, returning silently');
-        return;
-      }
-
-      // Only show error for truly unexpected errors
-      debugPrint('❌ APPLE_REGISTER: Unexpected error, showing minimal notification');
-      scaffoldMessenger.showSnackBar(const SnackBar(
-          content: Text('Apple Sign-In is temporarily unavailable'),
-          backgroundColor: Colors.orange,
-          duration: Duration(seconds: 2)));
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-          _isAppleSignUp = false;
-        });
-      }
-    }
-  }
-
-  /// Creates user profile for Apple Sign-In using Apple-provided data
-  Future<void> _createAppleUserProfile(User firebaseUser) async {
-    try {
-      if (_appleUserData == null) {
-        debugPrint('❌ APPLE_REGISTER: No Apple user data available');
-        return;
-      }
-
-      debugPrint('🍎 APPLE_REGISTER: Creating user profile with Apple data...');
-      
-      // Use Apple-provided data or fallback to Firebase Auth data
-      final email = _appleUserData!['email'] ?? firebaseUser.email ?? '';
-      final firstName = _appleUserData!['givenName'] ?? 'Apple';
-      final lastName = _appleUserData!['familyName'] ?? 'User';
-      
-      debugPrint('🍎 APPLE_REGISTER: Email: $email, FirstName: $firstName, LastName: $lastName');
-
-      // Create user document in Firestore
-      final userDoc = FirebaseFirestore.instance.collection('users').doc(firebaseUser.uid);
-      
-      final userData = {
-        'uid': firebaseUser.uid,
-        'email': email,
-        'firstName': firstName,
-        'lastName': lastName,
-        'photoUrl': firebaseUser.photoURL,
-        'role': _initialReferralCode == null ? 'admin' : 'user',
-        'isActive': true,
-        'createdAt': FieldValue.serverTimestamp(),
-        'updatedAt': FieldValue.serverTimestamp(),
-        'authProvider': 'apple',
-        'subscriptionStatus': 'trial',
-        'trialStartDate': FieldValue.serverTimestamp(),
-        'country': 'US', // Default country
-        'deviceSelection': 'ios', // Default for Apple users
-        'notificationsEnabled': true,
-        'soundEnabled': true,
-        'sponsorReferralCode': _initialReferralCode,
-        'referralSource': _referralSource, // Track attribution source
-      };
-
-      await userDoc.set(userData);
-      debugPrint('✅ APPLE_REGISTER: User profile created successfully in Firestore');
-
-      // Clear Apple user data after successful creation
-      _appleUserData = null;
-
-      // Clear referral data after successful registration
-      await SessionManager.instance.clearReferralData();
-      debugPrint('🧹 APPLE_REGISTER: Referral data cleared after successful registration');
-
-    } catch (e) {
-      debugPrint('❌ APPLE_REGISTER: Error creating user profile: $e');
-      _appleUserData = null;
-      rethrow;
-    }
-  }
-
-  /// Helper method to detect user cancellation vs actual errors
-  bool _isUserCancellation(String? errorCode, String? errorMessage) {
-    final code = errorCode?.toLowerCase() ?? '';
-    final message = (errorMessage ?? '').toLowerCase();
-
-    // Check for our specific Apple cancellation marker first
-    if (message.contains('user_canceled_apple_signin')) {
-      return true;
-    }
-
-    // Apple Sign-In and Google Sign-In cancellation keywords
-    final cancellationKeywords = [
-      'user_cancelled',
-      'user_canceled',
-      'cancelled',
-      'canceled',
-      'user cancelled',
-      'user canceled',
-      'user_cancelled_authorize',
-      'user_cancelled_login',
-      'authorization_cancelled',
-      'authorization_canceled',
-      'user interaction was cancelled',
-      'user interaction was canceled',
-      'the user canceled',
-      'the user cancelled',
-      'operation_cancelled',
-      'operation_canceled',
-      'request was cancelled',
-      'request was canceled',
-      'user closed',
-      'user dismissed',
-      'user pressed cancel',
-      'authentication cancelled',
-      'authentication canceled',
-      'sign_in_cancelled',
-      'sign_in_canceled',
-      'apple_id_auth_cancelled',
-      'apple_id_auth_canceled',
-      'cancelled by user',
-      'canceled by user',
-      'user aborted',
-      'user declined',
-      'user rejected',
-      'authorization denied by user',
-      'access_denied',
-      'user_denied',
-      'authentication_cancelled',
-      'authentication_canceled',
-      'login_cancelled',
-      'login_canceled',
-      'abort',
-      'aborted',  // Added for Google Sign-In
-      'dismiss',
-      'close',
-      'user backed out',
-      'user exited',
-      'flow cancelled',
-      'flow canceled',
-      'signin_cancelled',
-      'signin_canceled',
-      'google sign-in aborted',  // Specific Google cancellation
-      'sign-in aborted'  // Generic sign-in aborted
-    ];
-
-    // Check error code first
-    if (code.isNotEmpty) {
-      for (final keyword in cancellationKeywords) {
-        if (code.contains(keyword)) {
-          return true;
-        }
-      }
-    }
-
-    // Check error message
-    for (final keyword in cancellationKeywords) {
-      if (message.contains(keyword)) {
-        return true;
-      }
-    }
-
-    return false;
   }
 
   PreferredSizeWidget _buildCustomAppBar(BuildContext context) {
@@ -1460,58 +905,10 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
                           ],
                         ),
                       ),
+
                     const SizedBox(height: 24),
-                    
-                    // Social Sign-In Section
-                    if (!kIsWeb && Platform.isIOS && _isAppleSignInAvailable) ...[
-                      ElevatedButton.icon(
-                        icon: const FaIcon(FontAwesomeIcons.apple,
-                            color: Colors.white, size: 20),
-                        label: const Text('Sign up with Apple'),
-                        onPressed: (_isLoading && !_isAppleSignUp) ? null : _signUpWithApple,
-                        style: ElevatedButton.styleFrom(
-                          foregroundColor: Colors.white,
-                          backgroundColor: Colors.black,
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          minimumSize: const Size(double.infinity, 50),
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                    ],
-                    
-                    if (_isGoogleSignInAvailable) ...[
-                      ElevatedButton.icon(
-                        icon: const FaIcon(FontAwesomeIcons.google, size: 20),
-                        label: const Text('Sign up with Google'),
-                        onPressed: (_isLoading && !_isGoogleSignUp) ? null : _signUpWithGoogle,
-                        style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          minimumSize: const Size(double.infinity, 50),
-                        ),
-                      ),
-                      const SizedBox(height: 24),
-                    ],
-                    
-                    // Only show divider if at least one social sign-in option is available
-                    if (_isAppleSignInAvailable || _isGoogleSignInAvailable) ...[
-                      const Row(
-                        children: [
-                          Expanded(child: Divider()),
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 16),
-                            child: Text('or sign up with email',
-                              style: TextStyle(
-                                color: Colors.grey,
-                                fontSize: 14,
-                              )
-                            ),
-                          ),
-                          Expanded(child: Divider()),
-                        ],
-                      ),
-                      const SizedBox(height: 24),
-                    ],
-                    
+
+                    // Email registration form (social sign-in removed for simplicity)
                     TextFormField(
                         controller: _firstNameController,
                         decoration: InputDecoration(

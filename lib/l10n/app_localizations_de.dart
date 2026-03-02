@@ -228,7 +228,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get navProfile => 'Profil';
 
   @override
-  String get dashTitle => 'Kontrollzentrum';
+  String get dashTitle => 'Back Office';
 
   @override
   String get dashKpiDirectSponsors => 'Direkte Sponsoren';
@@ -1750,6 +1750,14 @@ class AppLocalizationsDe extends AppLocalizations {
       'Konsequente Nachverfolgung und Engagement sind der Schlüssel zum Aufbau eines starken, aktiven Teams.';
 
   @override
+  String get gettingStartedProspectStep1Description =>
+      'Erstellen Sie eine Liste von Freunden, Familie und Kontakten, die an der Generierung von Residualeinkommen interessiert sein könnten. Ihr Ziel ist es, 3 direkte Sponsoren zu rekrutieren und Ihr Team auf insgesamt 12 Mitglieder zu erweitern.';
+
+  @override
+  String get gettingStartedProspectStep2Description =>
+      'Nutzen Sie die Teilen-Funktion, um Ihre Kontakte einzuladen, Ihrem Team beizutreten. Jede Person, die über Ihren Link beitritt, bringt Sie Ihrem Ziel von 3 direkten Sponsoren + 12 Gesamtteammitgliedern näher.';
+
+  @override
   String get eligibilityHeroTitleQualified =>
       'HERZLICHEN GLÜCKWUNSCH!\nSie sind qualifiziert!';
 
@@ -1827,7 +1835,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get shareStrategiesTitle => 'Bewährte Wachstumsstrategien';
 
   @override
-  String get shareProspectTitle => 'Neue Rekrutierungskandidaten';
+  String get shareProspectTitle => 'Team aufbauen';
+
+  @override
+  String get shareProspectHeaderTitle => 'Personalisierte Nachrichten';
 
   @override
   String get shareProspectSubtitle =>
@@ -1839,7 +1850,10 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get sharePartnerTitle => 'Aktuelle Geschäftspartner';
+  String get sharePartnerTitle => 'Ihre Teampartner';
+
+  @override
+  String get sharePartnerHeaderTitle => 'Personalisierte Nachrichten';
 
   @override
   String sharePartnerSubtitle(String business) {
@@ -4383,7 +4397,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get hiwStep3Desc =>
-      'Wenn Rekrutierungsinteressenten unsere Erfolgsmeilensteine erreichen (4 direkte Sponsoren + 20 Teammitglieder insgesamt), erhalten sie automatisch eine Einladung, Ihrer Gelegenheit beizutreten.';
+      'Wenn Rekrutierungsinteressenten unsere Erfolgsmeilensteine erreichen (3 direkte Sponsoren + 12 Teammitglieder insgesamt), erhalten sie automatisch eine Einladung, Ihrer Gelegenheit beizutreten.';
 
   @override
   String get hiwStep4Title => 'Schnelles Wachstum';

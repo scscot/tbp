@@ -249,58 +249,58 @@ class _ShareScreenState extends State<ShareScreen>
       'general_invitation': {
         'title': context.l10n?.shareProspectGeneralInvitationTitle ?? 'General Invitation',
         'description': context.l10n?.shareProspectGeneralInvitationDescription ?? 'A versatile message for any prospect situation',
-        'subject': context.l10n?.shareProspectGeneralInvitationSubject(_bizOppName) ?? 'Build Your Team Before Joining $_bizOppName',
+        'subject': context.l10n?.shareProspectGeneralInvitationSubject(_bizOppName) ?? 'See if you can build a team - before you join anything',
         'message': (context.l10n?.shareProspectGeneralInvitationMessage(_bizOppName, _prospectReferralLink ?? '') ??
-            'Thinking about $_bizOppName? Here\'s a smarter way to start.\n\nTeam Build Pro lets you build your team BEFORE you officially join. An AI Coach helps you:\n\n- 16 pre-written recruiting messages ready to share\n- Track who\'s interested and ready\n- Get 24/7 AI coaching for recruiting questions\n- Build real momentum risk-free\n\nSo when you do join $_bizOppName, you\'re not starting from zero. You launch with people already waiting for you.\n\nSee how it works: $_prospectReferralLink\n\nDay 1 isn\'t a cold start. It\'s a running start.'),
+            'Thinking about $_bizOppName? What if you could test-drive success first?\n\nTeam Build Pro lets you build your team BEFORE you join anything - completely FREE until you qualify (3 direct + 12 total).\n\nAI handles the recruiting messages. You just share with people you know.\n\nSee results before you commit: $_prospectReferralLink'),
       },
       'past_struggles': {
         'title': context.l10n?.shareProspectPastStrugglesTitle ?? 'Addressing Past Struggles',
         'description': context.l10n?.shareProspectPastStrugglesDescription ?? 'Perfect for prospects who have tried before and struggled',
-        'subject': context.l10n?.shareProspectPastStrugglesSubject(_bizOppName) ?? 'Try $_bizOppName Differently This Time',
+        'subject': context.l10n?.shareProspectPastStrugglesSubject(_bizOppName) ?? 'This time, see results BEFORE you commit',
         'message': (context.l10n?.shareProspectPastStrugglesMessage(_bizOppName, _prospectReferralLink ?? '') ??
-            'Been burned before in direct sales? Past attempts at $_bizOppName or similar businesses left you stuck at zero?\n\nThis time, start smarter.\n\nTeam Build Pro lets you build your $_bizOppName team BEFORE you officially join. Choose from 16 pre-written recruiting messages, track who\'s interested, and get 24/7 AI coaching support.\n\nSo you don\'t start from scratch. You launch with real people already waiting for you.\n\nThe AI walks you through every step. You won\'t be alone.\n\nSee how it works: $_prospectReferralLink\n\nYou deserve a real shot this time.'),
+            'Been burned before? Started from zero and stayed there?\n\nTeam Build Pro lets you build a team BEFORE joining $_bizOppName - completely FREE until you hit the 3+12 milestone.\n\nYou\'ll see real people interested before you invest anything.\n\nDifferent approach this time: $_prospectReferralLink'),
       },
       'not_salesperson': {
         'title': context.l10n?.shareProspectNotSalespersonTitle ?? 'For Non-Sales Minded',
         'description': context.l10n?.shareProspectNotSalespersonDescription ?? 'Great for people who don\'t see themselves as "salespeople"',
-        'subject': context.l10n?.shareProspectNotSalespersonSubject ?? 'Build Your $_bizOppName Team Without Being "Salesy"',
+        'subject': context.l10n?.shareProspectNotSalespersonSubject ?? 'No sales pitch needed - AI writes it for you',
         'message': (context.l10n?.shareProspectNotSalespersonMessage(_bizOppName, _prospectReferralLink ?? '') ??
-            'Not a "natural salesperson"? Considering $_bizOppName but worried about the recruiting part?\n\nYou don\'t need a sales personality. You just need smart AI tools.\n\nTeam Build Pro lets you build your $_bizOppName team BEFORE you join - with an AI Coach that:\n\n- 16 pre-written recruiting messages ready to customize\n- 24/7 AI guidance for any recruiting question\n- Track your prospects and their interest level\n- Build confidence with proven messaging\n\nIt\'s like having a recruiting assistant who never sleeps. You focus on genuine relationships. The AI handles the awkward sales stuff.\n\nStart building before you even join: $_prospectReferralLink'),
+            'Not a "salesperson"? Neither am I.\n\nTeam Build Pro uses AI to write your recruiting messages. You just share them. No pitching. No scripts to memorize.\n\nFREE to use until you qualify (3 direct + 12 total team).\n\nLet AI handle the awkward stuff: $_prospectReferralLink'),
       },
       'hope_after_disappointment': {
         'title': context.l10n?.shareProspectHopeAfterDisappointmentTitle ?? 'Hope After Disappointment',
         'description': context.l10n?.shareProspectHopeAfterDisappointmentDescription ?? 'Ideal for prospects burned by previous opportunities',
-        'subject': context.l10n?.shareProspectHopeAfterDisappointmentSubject(_bizOppName) ?? 'Try $_bizOppName With Real Support This Time',
+        'subject': context.l10n?.shareProspectHopeAfterDisappointmentSubject(_bizOppName) ?? 'See it working before you believe it',
         'message': (context.l10n?.shareProspectHopeAfterDisappointmentMessage(_bizOppName, _prospectReferralLink ?? '') ??
-            'Been burned before? Promised the world by $_bizOppName or other opportunities, then left starting from zero?\n\nThis time is different.\n\nTeam Build Pro lets you build your $_bizOppName team BEFORE you officially join. The AI Coach drafts your recruiting messages, times your follow-ups, tracks who\'s interested, and coaches every step.\n\nYou gain real momentum before Day 1. No hype. No empty promises. Just AI-powered tools that actually work.\n\nSee how: $_prospectReferralLink\n\nYou deserve a system that sets you up to win.'),
+            'I know you\'ve heard promises before. This isn\'t one.\n\nTeam Build Pro lets you build a team BEFORE joining $_bizOppName. You see real interest from real people - before you invest anything.\n\nCompletely FREE until you qualify.\n\nNo promises. Just proof: $_prospectReferralLink'),
       },
       'social_anxiety': {
         'title': context.l10n?.shareProspectSocialAnxietyTitle ?? 'Avoiding Awkward Conversations',
         'description': context.l10n?.shareProspectSocialAnxietyDescription ?? 'Perfect for introverts or those uncomfortable with face-to-face recruiting',
-        'subject': context.l10n?.shareProspectSocialAnxietySubject ?? 'Build Your $_bizOppName Team Without Awkward Conversations',
+        'subject': context.l10n?.shareProspectSocialAnxietySubject ?? 'Build your team online - no awkward conversations',
         'message': (context.l10n?.shareProspectSocialAnxietyMessage(_bizOppName, _prospectReferralLink ?? '') ??
-            'Considering $_bizOppName but uncomfortable with awkward conversations? You\'re not alone.\n\nTeam Build Pro lets you build your $_bizOppName team BEFORE you officially join - online, at your own pace, where it feels comfortable.\n\nThe AI Coach:\n- 16 pre-written messages - no awkward "what do I say?"\n- Track prospects at your own pace\n- Get 24/7 AI guidance when you need it\n- Build your network online, comfortably\n\nNo cold calls. No awkward face-to-face pitches. Just genuine online connections guided by AI.\n\nYou build real momentum risk-free. So when you do join $_bizOppName, you\'re launching with people already waiting for you.\n\nStart building on your terms: $_prospectReferralLink'),
+            'Hate awkward sales conversations? Same.\n\nTeam Build Pro lets you recruit through text and email with AI-written messages. No cold calls. No face-to-face pitches.\n\nFREE until you qualify (3 direct + 12 total).\n\nBuild on your terms: $_prospectReferralLink'),
       },
       'time_constrained': {
         'title': context.l10n?.shareProspectTimeConstrainedTitle ?? 'For Busy Professionals',
         'description': context.l10n?.shareProspectTimeConstrainedDescription ?? 'Ideal for prospects juggling job, family, and other commitments',
-        'subject': context.l10n?.shareProspectTimeConstrainedSubject(_bizOppName) ?? 'Build Your $_bizOppName Team in the Gaps',
+        'subject': context.l10n?.shareProspectTimeConstrainedSubject(_bizOppName) ?? '10 minutes here and there adds up',
         'message': (context.l10n?.shareProspectTimeConstrainedMessage(_bizOppName, _prospectReferralLink ?? '') ??
-            'Interested in $_bizOppName but can\'t dedicate full-time hours? You don\'t need to.\n\nTeam Build Pro lets you build your $_bizOppName team BEFORE you officially join - in the gaps of your busy life.\n\nMorning coffee? Lunch break? Evening downtime? The AI Coach works around your schedule:\n- 16 pre-written messages ready to send anytime\n- Track all your prospects in one place\n- Get AI guidance whenever you have a few minutes\n- See your progress and momentum grow\n\nWork 15 minutes here, 20 minutes there. The AI makes every minute count.\n\nSo when you do join $_bizOppName, you\'re launching with people already waiting - not starting from zero.\n\nSee how it fits your life: $_prospectReferralLink'),
+            'No time for a side business? I get it.\n\nTeam Build Pro fits in the gaps. Coffee break? Send a message. Waiting for kids? View your team growth.\n\nFREE until you qualify. Build before you commit to $_bizOppName.\n\nStart small: $_prospectReferralLink'),
       },
       'financial_risk_averse': {
         'title': context.l10n?.shareProspectFinancialRiskAverseTitle ?? 'Afraid of Losing Money',
         'description': context.l10n?.shareProspectFinancialRiskAverseDescription ?? 'Great for prospects worried about financial risk',
-        'subject': context.l10n?.shareProspectFinancialRiskAverseSubject(_bizOppName) ?? 'See Results Before Investing in $_bizOppName',
+        'subject': context.l10n?.shareProspectFinancialRiskAverseSubject(_bizOppName) ?? 'Zero risk way to test the waters',
         'message': (context.l10n?.shareProspectFinancialRiskAverseMessage(_bizOppName, _prospectReferralLink ?? '') ??
-            'Considering $_bizOppName but worried about losing money? Smart.\n\nTeam Build Pro lets you build your $_bizOppName team BEFORE you officially join - so you see real results before investing heavily.\n\nStart for free. Test the AI recruiting system. Track your actual progress in real-time:\n- See who\'s interested in joining your team\n- Watch your momentum build\n- Prove the system works for you\n\nOnly \$6.99/month once you\'re ready to invite prospects. No expensive lead funnels. No complex systems.\n\nWhen you finally join $_bizOppName, you\'re launching with people already waiting - not risking everything on zero momentum.\n\nSee proof first: $_prospectReferralLink'),
+            'Worried about losing money on $_bizOppName? Smart.\n\nTeam Build Pro is FREE until you qualify (3 direct sponsors + 12 total team). You see if you can actually build a team before spending a dime.\n\nZero financial risk to try: $_prospectReferralLink'),
       },
       'skeptical_realist': {
         'title': context.l10n?.shareProspectSkepticalRealistTitle ?? 'Show Me Proof',
         'description': context.l10n?.shareProspectSkepticalRealistDescription ?? 'Perfect for prospects burned by false promises',
-        'subject': context.l10n?.shareProspectSkepticalRealistSubject(_bizOppName) ?? 'No Hype. Track Your Real $_bizOppName Progress',
+        'subject': context.l10n?.shareProspectSkepticalRealistSubject(_bizOppName) ?? 'Track your actual progress - no hype',
         'message': (context.l10n?.shareProspectSkepticalRealistMessage(_bizOppName, _prospectReferralLink ?? '') ??
-            'Considering $_bizOppName but tired of empty promises and hype?\n\nTeam Build Pro lets you build your $_bizOppName team BEFORE you officially join - and shows you real metrics every step of the way.\n\nNo fluff. No exaggeration. Your dashboard tracks:\n- How many people you\'ve contacted\n- Who\'s responded and who\'s interested\n- Your actual momentum toward qualification (4 direct + 20 total)\n- Next steps the AI Coach recommends\n\nYou see exactly where you stand before joining $_bizOppName. No surprises. No false hope. Just data.\n\nWhen you finally do join, you\'re launching with proof - not blind faith.\n\nSee the transparency: $_prospectReferralLink'),
+            'Tired of hype? Me too.\n\nTeam Build Pro shows you real data: who\'s interested, your team size, your progress toward qualifying (3 direct + 12 total).\n\nFREE until you hit that milestone. See exactly where you stand before joining $_bizOppName.\n\nJust the numbers: $_prospectReferralLink'),
       },
     };
   }
@@ -847,13 +847,16 @@ class _ShareScreenState extends State<ShareScreen>
   }
 
   Widget _buildMessageOption(String messageKey, String title, String description, Color buttonColor, {bool isPartner = false}) {
+    final selectedLanguage = _selectedLanguages[messageKey];
+    final isExpanded = selectedLanguage != null;
+
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: Colors.grey.shade50,
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.grey.shade200),
+        border: Border.all(color: isExpanded ? buttonColor.withValues(alpha: 0.5) : Colors.grey.shade200),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -885,6 +888,19 @@ class _ShareScreenState extends State<ShareScreen>
             ],
           ),
           const SizedBox(height: 12),
+          // Language selection hint
+          if (!isExpanded)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Text(
+                'Select language to preview message:',
+                style: TextStyle(
+                  fontSize: 11,
+                  color: AppColors.textSecondary,
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+            ),
           Wrap(
             spacing: 8,
             runSpacing: 8,
@@ -895,48 +911,165 @@ class _ShareScreenState extends State<ShareScreen>
               _buildLanguageButton(messageKey, 'de', '🇩🇪', 'Deutsch'),
             ],
           ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              Expanded(
-                child: ElevatedButton.icon(
-                  onPressed: () => isPartner ? _sharePartnerMessage(context, messageKey) : _shareProspectMessage(context, messageKey),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: buttonColor,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  icon: const Icon(Icons.share, size: 16),
-                  label: Text(context.l10n?.shareButtonShare ?? 'Share', style: const TextStyle(fontSize: 13)),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: OutlinedButton.icon(
-                  onPressed: () {
-                    final targetedLink = _buildTargetedLink(messageKey, isPartner);
-                    _copyLink(targetedLink);
-                  },
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: buttonColor,
-                    side: BorderSide(color: buttonColor),
-                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  icon: const Icon(Icons.copy_rounded, size: 16),
-                  label: Text(context.l10n?.shareButtonCopyLink ?? 'Copy Link', style: const TextStyle(fontSize: 13)),
-                ),
-              ),
-            ],
+          // Animated expandable message preview
+          AnimatedSize(
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+            child: isExpanded
+                ? _buildMessagePreviewSection(messageKey, selectedLanguage, buttonColor, isPartner)
+                : const SizedBox.shrink(),
           ),
         ],
       ),
     );
+  }
+
+  Widget _buildMessagePreviewSection(String messageKey, String languageCode, Color buttonColor, bool isPartner) {
+    return FutureBuilder<Map<String, String>?>(
+      future: _getMessageForLanguage(messageKey, languageCode, isPartner),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            child: Center(
+              child: SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: buttonColor,
+                ),
+              ),
+            ),
+          );
+        }
+
+        final message = snapshot.data;
+        if (message == null) {
+          return const SizedBox.shrink();
+        }
+
+        final subject = message['subject'] ?? '';
+        final body = message['message'] ?? '';
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 12),
+            // Message preview container
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.grey.shade300),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Subject line
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Subject:',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: Text(
+                          subject,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const Divider(height: 16),
+                  // Message body
+                  Text(
+                    body,
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: AppColors.textPrimary,
+                      height: 1.4,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 12),
+            // Action buttons
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton.icon(
+                    onPressed: () => isPartner ? _sharePartnerMessage(context, messageKey) : _shareProspectMessage(context, messageKey),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: buttonColor,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    icon: const Icon(Icons.share, size: 16),
+                    label: Text(context.l10n?.shareButtonShare ?? 'Share', style: const TextStyle(fontSize: 13)),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: () {
+                      final targetedLink = _buildTargetedLink(messageKey, isPartner);
+                      _copyLink(targetedLink);
+                    },
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: buttonColor,
+                      side: BorderSide(color: buttonColor),
+                      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    icon: const Icon(Icons.copy_rounded, size: 16),
+                    label: Text(context.l10n?.shareButtonCopyLink ?? 'Copy Link', style: const TextStyle(fontSize: 13)),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<Map<String, String>?> _getMessageForLanguage(String messageKey, String languageCode, bool isPartner) async {
+    try {
+      final currentLocale = Localizations.localeOf(context).languageCode;
+
+      if (languageCode == currentLocale) {
+        // Use current context's localization
+        final messages = isPartner ? _getPartnerMessages(context) : _getProspectMessages(context);
+        return messages[messageKey];
+      } else {
+        // Load specific language localization
+        final l10n = await _getLocalizationForLanguage(languageCode);
+        final messages = isPartner ? _getPartnerMessagesForL10n(l10n) : _getProspectMessagesForL10n(l10n);
+        return messages[messageKey];
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('Error getting message for language $languageCode: $e');
+      }
+      return null;
+    }
   }
 
   Widget _buildLanguageButton(String messageKey, String languageCode, String flag, String label) {
@@ -945,7 +1078,12 @@ class _ShareScreenState extends State<ShareScreen>
     return GestureDetector(
       onTap: () {
         setState(() {
-          _selectedLanguages[messageKey] = languageCode;
+          // Toggle: if already selected, deselect (collapse); otherwise select
+          if (_selectedLanguages[messageKey] == languageCode) {
+            _selectedLanguages.remove(messageKey);
+          } else {
+            _selectedLanguages[messageKey] = languageCode;
+          }
         });
       },
       child: Container(

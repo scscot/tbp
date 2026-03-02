@@ -4,11 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:cloud_functions/cloud_functions.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import '../models/user_model.dart';
 import '../services/firestore_service.dart';
 import '../services/storage_service.dart';
-import '../services/biometric_service.dart';
 import '../widgets/header_widgets.dart';
 import '../widgets/localized_text.dart';
 import '../data/states_by_country.dart';
@@ -44,11 +42,6 @@ class UpdateProfileScreenState extends State<UpdateProfileScreen> {
 
   // Added state variable to hold the image validation error text.
   String? _imageErrorText;
-  
-  // Biometric authentication variables
-  bool _biometricAvailable = false;
-  bool _biometricEnabled = false;
-  bool _checkingBiometric = true;
 
   List<String> get statesForSelectedCountry =>
       statesByCountry[_selectedCountry] ?? [];
@@ -71,33 +64,6 @@ class UpdateProfileScreenState extends State<UpdateProfileScreen> {
         _selectedState = null;
       }
     }
-    
-    // Initialize biometric settings
-    _initializeBiometric();
-  }
-  
-  Future<void> _initializeBiometric() async {
-    try {
-      final available = await BiometricService.isDeviceSupported();
-      final enabled = await BiometricService.isBiometricEnabled();
-      
-      if (mounted) {
-        setState(() {
-          _biometricAvailable = available;
-          _biometricEnabled = enabled && available; // Only enable if device supports it
-          _checkingBiometric = false;
-        });
-      }
-    } catch (e) {
-      debugPrint('Error initializing biometric: $e');
-      if (mounted) {
-        setState(() {
-          _biometricAvailable = false;
-          _biometricEnabled = false;
-          _checkingBiometric = false;
-        });
-      }
-    }
   }
 
   @override
@@ -117,194 +83,6 @@ class UpdateProfileScreenState extends State<UpdateProfileScreen> {
         _imageErrorText = null;
       });
     }
-  }
-  
-  Future<void> _handleBiometricToggle(bool value) async {
-    if (!_biometricAvailable) return;
-
-    final scaffoldMessenger = ScaffoldMessenger.of(context);
-
-    if (value) {
-      // Enabling biometric - test authentication first
-      try {
-        final authenticated = await BiometricService.authenticate(
-          localizedReason: 'Test biometric authentication to enable this feature',
-        );
-
-        if (!authenticated) {
-          if (!mounted) return;
-          scaffoldMessenger.showSnackBar(
-            SnackBar(
-              content: Text(context.l10n?.profileUpdateBiometricFailed ?? 'Biometric authentication failed. Please try again.'),
-              backgroundColor: Colors.orange,
-            ),
-          );
-          return;
-        }
-
-        // Request password to securely store credentials
-        final password = await _showPasswordDialog();
-        if (!mounted) return;
-        if (password == null || password.isEmpty) {
-          scaffoldMessenger.showSnackBar(
-            SnackBar(
-              content: Text(context.l10n?.profileUpdatePasswordRequired ?? 'Password required to enable biometric login'),
-              backgroundColor: Colors.orange,
-            ),
-          );
-          return;
-        }
-
-        // Verify password by attempting Firebase authentication
-        final email = widget.user.email;
-        if (email == null) {
-          if (!mounted) return;
-          scaffoldMessenger.showSnackBar(
-            SnackBar(
-              content: Text(context.l10n?.profileUpdateEmailNotFound ?? 'User email not found'),
-              backgroundColor: Colors.red,
-            ),
-          );
-          return;
-        }
-
-        try {
-          // Verify password is correct
-          await FirebaseAuth.instance.signInWithEmailAndPassword(
-            email: email,
-            password: password,
-          );
-
-          // Password is correct - store credentials
-          await BiometricService.storeCredentials(
-            email: email,
-            password: password,
-          );
-
-          // Enable biometric setting
-          await BiometricService.setBiometricEnabled(true);
-          if (!mounted) return;
-          setState(() => _biometricEnabled = true);
-
-          scaffoldMessenger.showSnackBar(
-            SnackBar(
-              content: Text(context.l10n?.profileUpdateBiometricEnabled ?? '✅ Biometric login enabled successfully'),
-              backgroundColor: Colors.green,
-            ),
-          );
-        } on FirebaseAuthException catch (e) {
-          debugPrint('Password verification failed: ${e.code}');
-          if (!mounted) return;
-          scaffoldMessenger.showSnackBar(
-            SnackBar(
-              content: Text(context.l10n?.profileUpdatePasswordIncorrect ?? 'Incorrect password. Please try again.'),
-              backgroundColor: Colors.red,
-            ),
-          );
-        }
-      } catch (e) {
-        debugPrint('Biometric enable error: $e');
-        if (!mounted) return;
-        scaffoldMessenger.showSnackBar(
-          SnackBar(
-            content: Text(context.l10n?.profileUpdateBiometricError(e) ?? 'Error enabling biometric: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
-    } else {
-      // Disabling biometric - show confirmation dialog
-      final confirmed = await _showDisableBiometricDialog();
-      if (!mounted) return;
-      if (confirmed) {
-        await BiometricService.setBiometricEnabled(false);
-        if (!mounted) return;
-        setState(() => _biometricEnabled = false);
-
-        scaffoldMessenger.showSnackBar(
-          SnackBar(
-            content: Text(context.l10n?.profileUpdateBiometricDisabled ?? 'Biometric login disabled'),
-            backgroundColor: Colors.blue,
-          ),
-        );
-      }
-    }
-  }
-
-  Future<String?> _showPasswordDialog() async {
-    final passwordController = TextEditingController();
-
-    return await showDialog<String>(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(context.l10n?.profileUpdateConfirmPasswordTitle ?? 'Confirm Password'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                context.l10n?.profileUpdateConfirmPasswordMessage ?? 'To securely store your credentials for biometric login, please enter your password.',
-                style: const TextStyle(fontSize: 14),
-              ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: passwordController,
-                obscureText: true,
-                autofocus: true,
-                decoration: InputDecoration(
-                  labelText: context.l10n?.profileUpdatePasswordLabel ?? 'Password',
-                  border: const OutlineInputBorder(),
-                  prefixIcon: const Icon(Icons.lock),
-                ),
-                onSubmitted: (value) => Navigator.of(context).pop(value),
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(null),
-              child: Text(context.l10n?.profileUpdateCancelButton ?? 'Cancel'),
-            ),
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(passwordController.text),
-              style: TextButton.styleFrom(
-                foregroundColor: Colors.blue,
-              ),
-              child: Text(context.l10n?.profileUpdateConfirmButton ?? 'Confirm'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-  
-  Future<bool> _showDisableBiometricDialog() async {
-    return await showDialog<bool>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(context.l10n?.profileUpdateDisableBiometricTitle ?? 'Disable Biometric Login'),
-          content: Text(
-            context.l10n?.profileUpdateDisableBiometricMessage ?? 'Are you sure you want to disable biometric login? You will need to use your email and password to sign in.',
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: Text(context.l10n?.profileUpdateCancelButton ?? 'Cancel'),
-            ),
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(true),
-              style: TextButton.styleFrom(
-                foregroundColor: Colors.red,
-              ),
-              child: Text(context.l10n?.profileUpdateDisableButton ?? 'Disable'),
-            ),
-          ],
-        );
-      },
-    ) ?? false;
   }
 
   Future<void> _saveProfile() async {
@@ -603,73 +381,6 @@ class UpdateProfileScreenState extends State<UpdateProfileScreen> {
                     ),
                     validator: (value) =>
                         value!.isEmpty ? (context.l10n?.profileUpdateCityRequired ?? 'Please enter a city') : null,
-                  ),
-
-                  const SizedBox(height: 24),
-                  
-                  // Security Settings Section
-                  const Divider(),
-                  const SizedBox(height: 16),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.security,
-                        size: 20,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        context.l10n?.profileUpdateSecurityHeader ?? 'Security Settings',
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  
-                  // Biometric Login Toggle
-                  Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.grey.shade300,
-                      ),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: SwitchListTile(
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 4,
-                      ),
-                      title: Text(context.l10n?.profileUpdateBiometricToggle ?? 'Enable Biometric Login'),
-                      subtitle: _checkingBiometric
-                          ? Text(context.l10n?.profileUpdateBiometricChecking ?? 'Checking device compatibility...')
-                          : Text(
-                              _biometricAvailable
-                                  ? (context.l10n?.profileUpdateBiometricDescription ?? 'Use fingerprint or face recognition to login')
-                                  : (context.l10n?.profileUpdateBiometricNotAvailable ?? 'Not available on this device'),
-                            ),
-                      value: _biometricEnabled && _biometricAvailable,
-                      onChanged: _biometricAvailable && !_checkingBiometric
-                          ? _handleBiometricToggle
-                          : null,
-                      secondary: _checkingBiometric
-                          ? const SizedBox(
-                              width: 20,
-                              height: 20,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                              ),
-                            )
-                          : Icon(
-                              _biometricAvailable
-                                  ? Icons.fingerprint
-                                  : Icons.fingerprint_outlined,
-                              color: _biometricAvailable
-                                  ? Theme.of(context).colorScheme.primary
-                                  : Colors.grey,
-                            ),
-                    ),
                   ),
 
                   const SizedBox(height: 24),

@@ -219,7 +219,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get navProfile => 'Perfil';
 
   @override
-  String get dashTitle => 'Centro de Control';
+  String get dashTitle => 'Back Office';
 
   @override
   String get dashKpiDirectSponsors => 'Patrocinadores Directos';
@@ -1742,6 +1742,14 @@ class AppLocalizationsEs extends AppLocalizations {
       'El seguimiento constante y el compromiso son clave para construir un equipo fuerte y activo.';
 
   @override
+  String get gettingStartedProspectStep1Description =>
+      'Crea una lista de amigos, familiares y contactos que puedan estar interesados en generar ingresos residuales. Tu objetivo es reclutar 3 patrocinadores directos y hacer crecer tu equipo total a 12 miembros.';
+
+  @override
+  String get gettingStartedProspectStep2Description =>
+      'Usa la función Compartir para invitar a tus contactos a unirse a tu equipo. Cada persona que se una a través de tu enlace te acerca a tu meta de 3 patrocinadores directos + 12 miembros totales del equipo.';
+
+  @override
   String get eligibilityHeroTitleQualified =>
       '¡FELICITACIONES!\n¡Estás calificado!';
 
@@ -1817,7 +1825,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get shareStrategiesTitle => 'Estrategias de crecimiento comprobadas';
 
   @override
-  String get shareProspectTitle => 'Nuevos prospectos de reclutamiento';
+  String get shareProspectTitle => 'Construyendo Tu Equipo';
+
+  @override
+  String get shareProspectHeaderTitle => 'Mensajes Personalizados';
 
   @override
   String get shareProspectSubtitle =>
@@ -1829,7 +1840,10 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get sharePartnerTitle => 'Socios comerciales actuales';
+  String get sharePartnerTitle => 'Socios de Tu Equipo';
+
+  @override
+  String get sharePartnerHeaderTitle => 'Mensajes Personalizados';
 
   @override
   String sharePartnerSubtitle(String business) {
@@ -3685,7 +3699,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String howItWorksStep3Description(Object business) {
-    return 'A medida que los prospectos construyen sus propios equipos dentro de la aplicación, automáticamente alcanzan hitos de calificación (4 patrocinadores directos + 20 equipo total), demostrando su compromiso antes de unirse.';
+    return 'A medida que los prospectos construyen sus propios equipos dentro de la aplicación, automáticamente alcanzan hitos de calificación (3 patrocinadores directos + 12 equipo total), demostrando su compromiso antes de unirse.';
   }
 
   @override
@@ -4002,7 +4016,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get faqA3 =>
-      '¡Absolutamente! Esta es nuestra innovación principal. Puedes invitar prospectos y miembros de equipo existentes a Team Build Pro, dejar que experimenten el éxito en la construcción de equipos, y cuando alcancen los hitos de calificación (4 patrocinadores directos + 20 miembros totales del equipo), automáticamente reciben una invitación para unirse a tu oportunidad de negocio. Elimina el problema del \"inicio en frío\" que mata a la mayoría de los nuevos distribuidores.';
+      '¡Absolutamente! Esta es nuestra innovación principal. Puedes invitar prospectos y miembros de equipo existentes a Team Build Pro, dejar que experimenten el éxito en la construcción de equipos, y cuando alcancen los hitos de calificación (3 patrocinadores directos + 12 miembros totales del equipo), automáticamente reciben una invitación para unirse a tu oportunidad de negocio. Elimina el problema del \"inicio en frío\" que mata a la mayoría de los nuevos distribuidores.';
 
   @override
   String get faqQ4 => '¿Necesito una tarjeta de crédito para probarlo?';
@@ -4039,7 +4053,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get faqA8 =>
-      'Cuando alguien se une a Team Build Pro a través de tu referencia, comienza a construir su propio equipo. Una vez que alcancen nuestros hitos de éxito (4 patrocinadores directos + 20 miembros totales del equipo), automáticamente reciben una invitación para unirse a tu oportunidad de negocio. Esto asegura que solo constructores de equipos motivados y probados avancen a tu negocio real.';
+      'Cuando alguien se une a Team Build Pro a través de tu referencia, comienza a construir su propio equipo. Una vez que alcancen nuestros hitos de éxito (3 patrocinadores directos + 12 miembros totales del equipo), automáticamente reciben una invitación para unirse a tu oportunidad de negocio. Esto asegura que solo constructores de equipos motivados y probados avancen a tu negocio real.';
 
   @override
   String get faqQ9 =>
@@ -4070,7 +4084,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get faqA12 =>
-      'Los patrocinadores directos son personas que invitas personalmente y que se unen a través de tu enlace de referencia. Los miembros totales del equipo incluyen tus patrocinadores directos más todos a quienes ellos patrocinan (tu línea descendente). Para la calificación, necesitas 4 patrocinadores directos y 20 miembros totales del equipo.';
+      'Los patrocinadores directos son personas que invitas personalmente y que se unen a través de tu enlace de referencia. Los miembros totales del equipo incluyen tus patrocinadores directos más todos a quienes ellos patrocinan (tu línea descendente). Para la calificación, necesitas 3 patrocinadores directos y 12 miembros totales del equipo.';
 
   @override
   String get faqQ13 =>
@@ -4231,7 +4245,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get faqA34 =>
-      'Esto varía mucho según el esfuerzo individual y el mercado, pero nuestros usuarios más exitosos logran la calificación (4 directos, 20 totales) dentro de unas semanas de actividad consistente. Recuerda, estás construyendo relaciones, no solo recolectando inscripciones.';
+      'Esto varía mucho según el esfuerzo individual y el mercado, pero nuestros usuarios más exitosos logran la calificación (3 directos, 12 totales) dentro de unas semanas de actividad consistente. Recuerda, estás construyendo relaciones, no solo recolectando inscripciones.';
 
   @override
   String get faqQ35 => '¿Garantizan resultados?';
@@ -4369,7 +4383,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get hiwStep3Desc =>
-      'Cuando los prospectos de reclutamiento alcanzan nuestros hitos de éxito (4 patrocinadores directos + 20 miembros totales del equipo), automáticamente reciben una invitación para unirse a tu oportunidad.';
+      'Cuando los prospectos de reclutamiento alcanzan nuestros hitos de éxito (3 patrocinadores directos + 12 miembros totales del equipo), automáticamente reciben una invitación para unirse a tu oportunidad.';
 
   @override
   String get hiwStep4Title => 'Crecimiento Rápido';

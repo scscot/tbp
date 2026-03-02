@@ -81,8 +81,8 @@ async function _checkUplineMilestone(userId, userData) {
       return;
     }
 
-    const directMin = 4;
-    const teamMin = 20;
+    const directMin = 3;
+    const teamMin = 12;
 
     console.log(`MILESTONE UPLINE: User ${userId} - Direct: ${directSponsors}, Total: ${totalTeam}`);
 
@@ -1345,8 +1345,8 @@ const notifyOnMilestoneReached = onDocumentUpdated("users/{userId}", async (even
     }
 
     // Use hardcoded thresholds (eliminates remote config timeout issues)
-    const directMin = 4;
-    const teamMin = 20;
+    const directMin = 3;
+    const teamMin = 12;
     console.log(`MILESTONE: Using hardcoded thresholds - directMin=${directMin}, teamMin=${teamMin}`);
 
     // Get business opportunity name
@@ -1401,6 +1401,36 @@ const notifyOnMilestoneReached = onDocumentUpdated("users/{userId}", async (even
         route: "/network",
         route_params: {},
       };
+    }
+    // --- USER TYPE: Check if prospect has reached both milestones (3+12) ---
+    else if (afterDirectSponsors >= directMin && afterTotalTeam >= teamMin) {
+      const userType = afterData.userType || 'professional';
+      const alreadyReachedMilestone = afterData.milestoneReached === true;
+
+      // For prospects who just reached milestone, set milestoneReached flag and notify
+      if (userType === 'prospect' && !alreadyReachedMilestone) {
+        console.log(`🎯 MILESTONE: Prospect ${userId} reached BOTH milestones (${directMin} direct, ${teamMin} total) - setting milestoneReached flag`);
+
+        // Update user document to mark milestone as reached
+        await db.collection('users').doc(userId).update({
+          milestoneReached: true,
+          milestoneReachedAt: FieldValue.serverTimestamp(),
+        });
+
+        const userLang = afterData.preferredLanguage || 'en';
+        notificationContent = {
+          title: getNotificationText('milestoneCompletedTitle', userLang) || "🎉 Congratulations! You Did It!",
+          message: getNotificationText('milestoneCompletedMessage', userLang, {
+            firstName: afterData.firstName,
+            directCount: directMin,
+            teamCount: teamMin,
+          }) || `Amazing, ${afterData.firstName}! You've built a team of ${directMin} direct sponsors and ${teamMin} total members. Your free trial is complete - subscribe now to continue building your team!`,
+          type: "milestone",
+          subtype: "completed",
+          route: "/subscription",
+          route_params: {},
+        };
+      }
     }
 
     // Send notification if a milestone was reached
@@ -1793,8 +1823,8 @@ async function checkMilestoneForUserManual(userId, traceId) {
     });
 
     // Hardcoded thresholds
-    const directMin = 4;
-    const teamMin = 20;
+    const directMin = 3;
+    const teamMin = 12;
 
     // Check milestone conditions
     const crossedDirect = aDir >= directMin && aTeam < teamMin;
@@ -1809,17 +1839,47 @@ async function checkMilestoneForUserManual(userId, traceId) {
       traceId
     });
 
-    // Skip if already qualified or no milestone reached
-    if (qualified || (!crossedDirect && !crossedTeam)) {
-      console.log(`MST CHECK: No milestone for ${userId} - qualified:${qualified}, crossedDirect:${crossedDirect}, crossedTeam:${crossedTeam}`);
-      return;
-    }
-
     // Determine milestone type and content
     let notificationContent = null;
     let subtype = null;
 
-    if (crossedDirect) {
+    // --- USER TYPE: Handle prospect milestone completion (both 3+12 reached) ---
+    if (qualified) {
+      const userType = userData.userType || 'professional';
+      const alreadyReachedMilestone = userData.milestoneReached === true;
+
+      // For prospects who just reached milestone, set milestoneReached flag and notify
+      if (userType === 'prospect' && !alreadyReachedMilestone) {
+        console.log(`🎯 MST CHECK: Prospect ${userId} reached BOTH milestones (${directMin} direct, ${teamMin} total) - setting milestoneReached flag`);
+
+        // Update user document to mark milestone as reached
+        await db.collection('users').doc(userId).update({
+          milestoneReached: true,
+          milestoneReachedAt: FieldValue.serverTimestamp(),
+        });
+
+        const userLang = userData.preferredLanguage || 'en';
+        subtype = 'completed';
+        notificationContent = {
+          title: getNotificationText('milestoneCompletedTitle', userLang) || "🎉 Congratulations! You Did It!",
+          message: getNotificationText('milestoneCompletedMessage', userLang, {
+            firstName: userData.firstName,
+            directCount: directMin,
+            teamCount: teamMin,
+          }) || `Amazing, ${userData.firstName}! You've built a team of ${directMin} direct sponsors and ${teamMin} total members. Subscribe now to continue building your team!`,
+          type: "milestone",
+          subtype: "completed",
+          route: "/subscription",
+          route_params: {},
+        };
+      } else {
+        console.log(`MST CHECK: No milestone for ${userId} - qualified:${qualified}, userType:${userType}, alreadyReached:${alreadyReachedMilestone}`);
+        return;
+      }
+    } else if (!crossedDirect && !crossedTeam) {
+      console.log(`MST CHECK: No milestone for ${userId} - qualified:${qualified}, crossedDirect:${crossedDirect}, crossedTeam:${crossedTeam}`);
+      return;
+    } else if (crossedDirect) {
       const remainingTeamNeeded = teamMin - aTeam;
       const bizName = await getBusinessOpportunityName(userData.upline_admin, 'your business');
 
@@ -2333,7 +2393,7 @@ const testPushNotifications = onCall(
             notificationContent = {
               type: 'milestone',
               title: '🎉 Amazing Progress!',
-              body: `[TEST] Congratulations, ${firstName}! You've reached 4 direct sponsors! Just 15 more team members needed to unlock your business invitation. Keep building!`,
+              body: `[TEST] Congratulations, ${firstName}! You've reached 3 direct sponsors! Just 9 more team members needed to unlock your business invitation. Keep building!`,
               docFields: {
                 subtype: 'direct',
                 route: '/network',
@@ -2346,7 +2406,7 @@ const testPushNotifications = onCall(
             notificationContent = {
               type: 'milestone',
               title: '🚀 Incredible Growth!',
-              body: `[TEST] Amazing progress, ${firstName}! You've built a team of 20! Just 3 more direct sponsors needed to qualify for your business. You're so close!`,
+              body: `[TEST] Amazing progress, ${firstName}! You've built a team of 12! Just 2 more direct sponsors needed to qualify for your business. You're so close!`,
               docFields: {
                 subtype: 'team',
                 route: '/network',

@@ -489,7 +489,7 @@ abstract class AppLocalizations {
   /// Dashboard screen title in app bar
   ///
   /// In en, this message translates to:
-  /// **'Control Center'**
+  /// **'Back Office'**
   String get dashTitle;
 
   /// Label for direct sponsors count KPI
@@ -2998,6 +2998,18 @@ abstract class AppLocalizations {
   /// **'Consistent follow-up and engagement are key to building a strong, active team.'**
   String get gettingStartedProTipMessage;
 
+  /// Getting started step 1 description for prospects
+  ///
+  /// In en, this message translates to:
+  /// **'Create a list of friends, family, and contacts who might be interested in creating residual income. Your goal is to recruit 3 direct sponsors and grow your total team to 12 members.'**
+  String get gettingStartedProspectStep1Description;
+
+  /// Getting started step 2 description for prospects
+  ///
+  /// In en, this message translates to:
+  /// **'Use the Share feature to invite your contacts to join your team. Each person who joins through your link brings you closer to your 3 direct sponsors + 12 total team member goal.'**
+  String get gettingStartedProspectStep2Description;
+
   /// Hero title when qualified
   ///
   /// In en, this message translates to:
@@ -3124,11 +3136,17 @@ abstract class AppLocalizations {
   /// **'Proven Growth Strategies'**
   String get shareStrategiesTitle;
 
-  /// Title for prospect strategy
+  /// Title for prospect share screen AppBar
   ///
   /// In en, this message translates to:
-  /// **'New Recruiting Prospects'**
+  /// **'Building Your Team'**
   String get shareProspectTitle;
+
+  /// Header title on prospect share screen
+  ///
+  /// In en, this message translates to:
+  /// **'Customized Messages'**
+  String get shareProspectHeaderTitle;
 
   /// Subtitle for prospect strategy
   ///
@@ -3142,11 +3160,17 @@ abstract class AppLocalizations {
   /// **'Invite recruiting prospects to pre-build their {business} team with this app. They can create powerful momentum before officially joining {business}, ensuring success from day one.'**
   String shareProspectDescription(String business);
 
-  /// Title for partner strategy
+  /// Title for partner share screen AppBar
   ///
   /// In en, this message translates to:
-  /// **'Current Business Partners'**
+  /// **'Your Team Partners'**
   String get sharePartnerTitle;
+
+  /// Header title on partner share screen
+  ///
+  /// In en, this message translates to:
+  /// **'Customized Messages'**
+  String get sharePartnerHeaderTitle;
 
   /// Subtitle for partner strategy
   ///
@@ -6172,7 +6196,7 @@ abstract class AppLocalizations {
   /// No description provided for @howItWorksStep3Description.
   ///
   /// In en, this message translates to:
-  /// **'As prospects build their own teams within the app, they automatically hit qualification milestones (4 direct sponsors + 20 total team) - proving their commitment before joining.'**
+  /// **'As prospects build their own teams within the app, they automatically hit qualification milestones (3 direct sponsors + 12 total team) - proving their commitment before joining.'**
   String howItWorksStep3Description(Object business);
 
   /// No description provided for @howItWorksStep4Title.
@@ -6712,7 +6736,7 @@ abstract class AppLocalizations {
   /// FAQ answer 3
   ///
   /// In en, this message translates to:
-  /// **'Absolutely! This is our core innovation. You can invite prospects and existing team members to Team Build Pro, let them experience team building success, and when they hit qualification milestones (4 direct sponsors + 20 total team members), they automatically get invited to join your business opportunity. It eliminates the \"cold start\" problem that kills most new distributors.'**
+  /// **'Absolutely! This is our core innovation. You can invite prospects and existing team members to Team Build Pro, let them experience team building success, and when they hit qualification milestones (3 direct sponsors + 12 total team members), they automatically get invited to join your business opportunity. It eliminates the \"cold start\" problem that kills most new distributors.'**
   String get faqA3;
 
   /// FAQ question 4
@@ -6772,7 +6796,7 @@ abstract class AppLocalizations {
   /// FAQ answer 8
   ///
   /// In en, this message translates to:
-  /// **'When someone joins Team Build Pro through your referral, they begin building their own team. Once they reach our success milestones (4 direct sponsors + 20 total team members), they automatically receive an invitation to join your business opportunity. This ensures only motivated, proven team builders advance to your actual business.'**
+  /// **'When someone joins Team Build Pro through your referral, they begin building their own team. Once they reach our success milestones (3 direct sponsors + 12 total team members), they automatically receive an invitation to join your business opportunity. This ensures only motivated, proven team builders advance to your actual business.'**
   String get faqA8;
 
   /// FAQ question 9
@@ -6820,7 +6844,7 @@ abstract class AppLocalizations {
   /// FAQ answer 12
   ///
   /// In en, this message translates to:
-  /// **'Direct sponsors are people you personally invite who join through your referral link. Total team members include your direct sponsors plus everyone they sponsor (your downline). For qualification, you need 4 direct sponsors and 20 total team members.'**
+  /// **'Direct sponsors are people you personally invite who join through your referral link. Total team members include your direct sponsors plus everyone they sponsor (your downline). For qualification, you need 3 direct sponsors and 12 total team members.'**
   String get faqA12;
 
   /// FAQ question 13
@@ -7084,7 +7108,7 @@ abstract class AppLocalizations {
   /// FAQ answer 34
   ///
   /// In en, this message translates to:
-  /// **'This varies greatly by individual effort and market, but our most successful users achieve qualification (4 direct, 20 total) within a few weeks of consistent activity. Remember, you\'re building relationships, not just collecting sign-ups.'**
+  /// **'This varies greatly by individual effort and market, but our most successful users achieve qualification (3 direct, 12 total) within a few weeks of consistent activity. Remember, you\'re building relationships, not just collecting sign-ups.'**
   String get faqA34;
 
   /// FAQ question 35
@@ -7324,7 +7348,7 @@ abstract class AppLocalizations {
   /// Description for pipeline step 3
   ///
   /// In en, this message translates to:
-  /// **'When recruiting prospects reach our success milestones (4 direct sponsors + 20 total team members), they automatically receive an invitation to join your opportunity.'**
+  /// **'When recruiting prospects reach our success milestones (3 direct sponsors + 12 total team members), they automatically receive an invitation to join your opportunity.'**
   String get hiwStep3Desc;
 
   /// Title for pipeline step 4

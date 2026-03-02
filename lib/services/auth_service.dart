@@ -145,10 +145,10 @@ class AuthService {
     DeepLinkService().clearReferralData();
     debugPrint('✅ AUTH_SERVICE: Referral data cleared to prevent registration routing');
 
-    // Set recent sign-out timestamp to prevent immediate biometric auto-login
+    // Set recent sign-out timestamp
     await SessionManager.instance.setRecentSignOut();
 
-    // Clear logout data but preserve user data and biometric settings for biometric login
+    // Clear logout data but preserve user data
     await SessionManager.instance.clearLogoutData();
     
     // Verify user data is preserved after clearLogoutData
@@ -180,7 +180,7 @@ class AuthService {
     
     debugPrint('🗑️ AUTH_SERVICE: Starting complete data clearing for account deletion');
     
-    // Clear ALL session data including user data and biometric settings
+    // Clear ALL session data including user data
     await SessionManager.instance.clearAllData();
     debugPrint('✅ AUTH_SERVICE: All session data cleared');
     
@@ -233,6 +233,11 @@ class AuthService {
     // Check subscription status from user model
     final subscriptionStatus = user.subscriptionStatus;
 
+    // Lifetime access users never need subscription screen
+    if (user.lifetimeAccess == true) {
+      return false;
+    }
+
     // If status is active, no need for subscription screen
     if (subscriptionStatus == 'active') {
       return false;
@@ -241,6 +246,12 @@ class AuthService {
     // If status is trial, check if trial is still valid
     if (subscriptionStatus == 'trial') {
       return !user.isTrialValid;
+    }
+
+    // --- PROSPECT FREE: Free until milestone is reached ---
+    if (subscriptionStatus == 'prospect_free') {
+      // Prospects don't need subscription screen until they hit milestone
+      return user.milestoneReached;
     }
 
     // For cancelled, expired, or any other status, show subscription screen

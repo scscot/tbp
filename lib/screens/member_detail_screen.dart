@@ -6,8 +6,9 @@ import 'package:flutter/foundation.dart' show kDebugMode;
 import 'dart:developer' as developer;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:provider/provider.dart';
+import 'package:provider/provider.dart';
 import '../widgets/header_widgets.dart';
+import '../services/subscription_navigation_guard.dart';
 import '../services/firestore_service.dart';
 import '../models/user_model.dart';
 import '../config/app_constants.dart';
@@ -163,23 +164,25 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
     ids.sort();
     final threadId = ids.join('_');
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => MessageThreadScreen(
-          threadId: threadId,
-          appId: widget.appId,
-          recipientId: _user!.uid,
-          recipientName: '${_user!.firstName ?? ''} ${_user!.lastName ?? ''}',
-        ),
+    SubscriptionNavigationGuard.pushGuarded(
+      context: context,
+      routeName: 'message_thread',
+      screen: MessageThreadScreen(
+        threadId: threadId,
+        appId: widget.appId,
+        recipientId: _user!.uid,
+        recipientName: '${_user!.firstName ?? ''} ${_user!.lastName ?? ''}',
       ),
+      appId: widget.appId,
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    // final authUser = Provider.of<UserModel?>(context);
-    // final bool isCurrentUserAnAdmin = authUser?.role == 'admin';
+    final authUser = Provider.of<UserModel?>(context);
+    // Check if current user can message this specific member
+    // Full access users can message anyone; free prospects can only message sponsor/admin
+    final bool canMessage = SubscriptionNavigationGuard.canMessageUser(authUser, widget.userId);
 
     return Scaffold(
       appBar: AppScreenBar(title: context.l10n?.memberDetailTitle ?? 'Member Details', appId: widget.appId),
@@ -293,7 +296,8 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
                         ),
                       ),
                       const SizedBox(height: 30),
-                      if (_currentUserId != widget.userId)
+                      // Send Message button - hidden for free prospects
+                      if (_currentUserId != widget.userId && canMessage)
                         Center(
                           child: ElevatedButton.icon(
                             onPressed: _handleSendMessage,

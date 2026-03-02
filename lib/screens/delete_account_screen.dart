@@ -122,7 +122,7 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
       await FirebaseAuth.instance.signOut();
       debugPrint('✅ DELETE_ACCOUNT: Firebase Auth sign out completed');
       
-      // Clear ALL cached data (including biometric data)
+      // Clear ALL cached data
       debugPrint('🗑️ DELETE_ACCOUNT: Clearing all session data...');
       await SessionManager.instance.clearAllData();
       debugPrint('✅ DELETE_ACCOUNT: All cached data cleared');

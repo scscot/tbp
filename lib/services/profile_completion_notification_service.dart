@@ -126,9 +126,9 @@ class ProfileCompletionNotificationService {
       final config = FirebaseRemoteConfig.instance;
       final directSponsorMin = config.getInt('projectWideDirectSponsorMin');
       final totalTeamMin = config.getInt('projectWideDataTeamMin');
-      
-      final actualDirectMin = directSponsorMin > 0 ? directSponsorMin : 4;
-      final actualTotalMin = totalTeamMin > 0 ? totalTeamMin : 20;
+
+      final actualDirectMin = directSponsorMin > 0 ? directSponsorMin : 3;
+      final actualTotalMin = totalTeamMin > 0 ? totalTeamMin : 12;
 
       final directCount = user.directSponsorCount;
       final totalCount = user.totalTeamCount;
@@ -179,8 +179,8 @@ class ProfileCompletionNotificationService {
       final directSponsorMin = config.getInt('projectWideDirectSponsorMin');
       final totalTeamMin = config.getInt('projectWideDataTeamMin');
       
-      final actualDirectMin = directSponsorMin > 0 ? directSponsorMin : 4;
-      final actualTotalMin = totalTeamMin > 0 ? totalTeamMin : 20;
+      final actualDirectMin = directSponsorMin > 0 ? directSponsorMin : 3;
+      final actualTotalMin = totalTeamMin > 0 ? totalTeamMin : 12;
 
       final directCount = user.directSponsorCount;
       final totalCount = user.totalTeamCount;

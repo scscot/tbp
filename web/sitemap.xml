@@ -72,6 +72,14 @@
 
   <!-- Blog Posts -->
   <url>
+    <loc>https://teambuildpro.com/blog/ai-recruiting-platforms-failing-direct-sales.html</loc>
+    <lastmod>2025-11-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Blog Posts -->
+  <url>
     <loc>https://teambuildpro.com/blog/qualify-new-recruits-30-days.html</loc>
     <lastmod>2025-12-01</lastmod>
     <changefreq>monthly</changefreq>
@@ -1060,14 +1068,6 @@
     <xhtml:link rel="alternate" hreflang="es" href="https://es.teambuildpro.com/terms_of_service.html" />
     <xhtml:link rel="alternate" hreflang="pt" href="https://pt.teambuildpro.com/terms_of_service.html" />
     <xhtml:link rel="alternate" hreflang="de" href="https://de.teambuildpro.com/terms_of_service.html" />
-  </url>
-
-  <!-- Delete Account -->
-  <url>
-    <loc>https://teambuildpro.com/delete-account.html</loc>
-    <lastmod>2025-12-01</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.4</priority>
   </url>
 
   <url>

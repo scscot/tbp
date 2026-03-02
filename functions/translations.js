@@ -4,6 +4,8 @@ const translations = {
     milestoneDirectMessage: "Congratulations, {firstName}! You've reached {directCount} direct sponsors! Just {remainingTeam} more team member{pluralTeam} needed to unlock your {bizName} invitation. Keep building!",
     milestoneTeamTitle: "🚀 Incredible Growth!",
     milestoneTeamMessage: "Amazing progress, {firstName}! You've built a team of {teamCount}! Just {remainingDirect} more direct sponsor{pluralDirect} needed to qualify for {bizName}. You're so close!",
+    milestoneCompletedTitle: "🎉 Congratulations! You Did It!",
+    milestoneCompletedMessage: "Amazing, {firstName}! You've built a team of {directCount} direct sponsors and {teamCount} total members. Subscribe now to continue building your team!",
 
     subscriptionActiveTitle: "✅ Subscription Active",
     subscriptionActiveMessage: "Your subscription is now active until {expiryDate}.",
@@ -44,6 +46,8 @@ const translations = {
     milestoneDirectMessage: "¡Felicidades, {firstName}! ¡Has alcanzado {directCount} patrocinadores directos! Solo {remainingTeam} miembro{pluralTeam} más del equipo necesario para desbloquear tu invitación a {bizName}. ¡Sigue construyendo!",
     milestoneTeamTitle: "🚀 ¡Crecimiento Increíble!",
     milestoneTeamMessage: "¡Progreso asombroso, {firstName}! ¡Has construido un equipo de {teamCount}! Solo {remainingDirect} patrocinador{pluralDirect} directo más necesario para calificar para {bizName}. ¡Estás muy cerca!",
+    milestoneCompletedTitle: "🎉 ¡Felicidades! ¡Lo Lograste!",
+    milestoneCompletedMessage: "¡Increíble, {firstName}! Has construido un equipo de {directCount} patrocinadores directos y {teamCount} miembros totales. ¡Suscríbete ahora para continuar construyendo tu equipo!",
 
     subscriptionActiveTitle: "✅ Suscripción Activa",
     subscriptionActiveMessage: "Tu suscripción está ahora activa hasta {expiryDate}.",
@@ -84,6 +88,8 @@ const translations = {
     milestoneDirectMessage: "Parabéns, {firstName}! Você alcançou {directCount} patrocinadores diretos! Apenas {remainingTeam} membro{pluralTeam} da equipe necessário para desbloquear seu convite para {bizName}. Continue construindo!",
     milestoneTeamTitle: "🚀 Crescimento Incrível!",
     milestoneTeamMessage: "Progresso incrível, {firstName}! Você construiu uma equipe de {teamCount}! Apenas {remainingDirect} patrocinador{pluralDirect} direto necessário para se qualificar para {bizName}. Você está muito perto!",
+    milestoneCompletedTitle: "🎉 Parabéns! Você Conseguiu!",
+    milestoneCompletedMessage: "Incrível, {firstName}! Você construiu uma equipe de {directCount} patrocinadores diretos e {teamCount} membros totais. Assine agora para continuar construindo sua equipe!",
 
     subscriptionActiveTitle: "✅ Assinatura Ativa",
     subscriptionActiveMessage: "Sua assinatura está ativa até {expiryDate}.",
@@ -124,6 +130,8 @@ const translations = {
     milestoneDirectMessage: "Herzlichen Glückwunsch, {firstName}! Sie haben {directCount} direkte Sponsoren erreicht! Nur noch {remainingTeam} Teammitglied{pluralTeam} benötigt, um Ihre {bizName}-Einladung freizuschalten. Machen Sie weiter!",
     milestoneTeamTitle: "🚀 Unglaubliches Wachstum!",
     milestoneTeamMessage: "Erstaunlicher Fortschritt, {firstName}! Sie haben ein Team von {teamCount} aufgebaut! Nur noch {remainingDirect} direkter Sponsor{pluralDirect} benötigt, um sich für {bizName} zu qualifizieren. Sie sind so nah dran!",
+    milestoneCompletedTitle: "🎉 Herzlichen Glückwunsch! Sie haben es geschafft!",
+    milestoneCompletedMessage: "Erstaunlich, {firstName}! Sie haben ein Team von {directCount} direkten Sponsoren und {teamCount} Mitgliedern insgesamt aufgebaut. Abonnieren Sie jetzt, um Ihr Team weiter aufzubauen!",
 
     subscriptionActiveTitle: "✅ Abonnement Aktiv",
     subscriptionActiveMessage: "Ihr Abonnement ist jetzt bis {expiryDate} aktiv.",

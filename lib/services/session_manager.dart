@@ -9,7 +9,6 @@ class SessionManager {
   static final SessionManager instance = SessionManager();
 
   static const String _userKey = 'user';
-  static const String _biometricKey = 'biometric_enabled';
   static const String _logoutTimeKey = 'last_logout_time';
   static const String _referralDataKey = 'referral_data';
   static const String _logoutStateKey = 'user_logged_out';
@@ -51,11 +50,10 @@ class SessionManager {
     }
   }
 
-  /// Clears all session, biometric, and referral data.
+  /// Clears all session and referral data.
   Future<void> clearAllData() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_userKey);
-    await prefs.remove(_biometricKey);
     await prefs.remove(_logoutTimeKey);
     await prefs.remove(_referralDataKey);
     await prefs.remove(_logoutStateKey);
@@ -65,17 +63,15 @@ class SessionManager {
     }
   }
 
-  /// Clears only logout time and referral data, preserving user data and biometric settings for biometric login
+  /// Clears only logout time and referral data, preserving user data
   Future<void> clearLogoutData() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_logoutTimeKey);
     await prefs.remove(_referralDataKey);
     if (kDebugMode) {
-      debugPrint('🧹 SessionManager — Logout and referral data cleared (preserving user and biometric data)');
+      debugPrint('🧹 SessionManager — Logout and referral data cleared (preserving user data)');
     }
   }
-
-  // --- Biometric and Logout time methods remain the same ---
 
   /// Caches data for a successfully validated referral code.
   Future<void> setReferralData(String referralCode, String sponsorName,
@@ -150,7 +146,7 @@ class SessionManager {
     }
   }
 
-  /// Sets timestamp when user manually signs out to prevent immediate biometric auto-login
+  /// Sets timestamp when user manually signs out
   Future<void> setRecentSignOut() async {
     final prefs = await SharedPreferences.getInstance();
     final timestamp = DateTime.now().millisecondsSinceEpoch;
@@ -160,7 +156,7 @@ class SessionManager {
     }
   }
 
-  /// Checks if user recently signed out (within the last 10 seconds) to prevent immediate biometric auto-login
+  /// Checks if user recently signed out (within the last 10 seconds)
   Future<bool> wasRecentSignOut({int delaySeconds = 10}) async {
     final prefs = await SharedPreferences.getInstance();
     final timestamp = prefs.getInt(_recentSignOutKey);

@@ -7,13 +7,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import '../providers/auth_provider.dart' as auth;
 import '../widgets/header_widgets.dart';
 import '../widgets/localized_text.dart';
 import '../config/app_colors.dart';
-import '../services/biometric_service.dart';
 import '../services/session_manager.dart';
 import '../i18n/analytics_events.dart';
 import '../main.dart';
@@ -32,14 +30,7 @@ class _LoginScreenEnhancedState extends State<LoginScreenEnhanced> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  // Local state for UI behavior
-  bool _biometricAvailable = false;
-  bool _biometricEnabled = false;
-  bool _hasStoredUser = false;
-  String? _storedEmail;
   bool _navigated = false;
-  bool _isAppleSignInAvailable = false;
-  bool _isGoogleSignInAvailable = false;
 
   // Firebase auth state subscription
   StreamSubscription<User?>? _authSub;
@@ -54,9 +45,6 @@ class _LoginScreenEnhancedState extends State<LoginScreenEnhanced> {
     );
 
     _setupAuthStateListener();
-    _initializeBiometric();
-    _checkAppleSignInAvailability();
-    _checkGoogleSignInAvailability();
   }
 
   @override
@@ -118,64 +106,6 @@ class _LoginScreenEnhancedState extends State<LoginScreenEnhanced> {
     });
   }
 
-  Future<void> _checkAppleSignInAvailability() async {
-    // TEMPORARILY DISABLED FOR APP STORE APPROVAL
-    debugPrint('🍎 LOGIN_ENHANCED: Apple Sign-In temporarily disabled for App Store approval');
-    if (mounted) {
-      setState(() {
-        _isAppleSignInAvailable = false;
-      });
-    }
-  }
-
-  Future<void> _checkGoogleSignInAvailability() async {
-    // TEMPORARILY DISABLED FOR APP STORE APPROVAL
-    debugPrint('🔵 LOGIN_ENHANCED: Google Sign-In temporarily disabled for App Store approval');
-    if (mounted) {
-      setState(() {
-        _isGoogleSignInAvailable = false;
-      });
-    }
-  }
-
-  Future<void> _initializeBiometric() async {
-    try {
-      final firebaseUser = FirebaseAuth.instance.currentUser;
-      if (firebaseUser != null) {
-        debugPrint('🔐 LOGIN_ENHANCED: User already authenticated, skipping biometric auto-prompt');
-        return;
-      }
-
-      final available = await BiometricService.isDeviceSupported();
-      final enabled = await BiometricService.isBiometricEnabled();
-      final hasStoredCredentials = await BiometricService.hasStoredCredentials();
-      final storedEmail = await BiometricService.getStoredEmail();
-      final storedUser = await SessionManager.instance.getCurrentUser();
-
-      debugPrint('🔐 LOGIN_ENHANCED: Biometric info - Available: $available, Enabled: $enabled, HasCredentials: $hasStoredCredentials');
-
-      if (mounted) {
-        setState(() {
-          _biometricAvailable = available;
-          _biometricEnabled = enabled;
-          _hasStoredUser = hasStoredCredentials;
-          _storedEmail = storedEmail ?? storedUser?.email;
-        });
-      }
-
-      final wasRecentSignOut = await SessionManager.instance.wasRecentSignOut();
-      final shouldAutoPrompt = available && enabled && hasStoredCredentials && !wasRecentSignOut;
-
-      debugPrint('🔐 LOGIN_ENHANCED: Should auto-prompt biometric: $shouldAutoPrompt');
-
-      if (shouldAutoPrompt) {
-        _showBiometricLogin();
-      }
-    } catch (e) {
-      debugPrint('❌ LOGIN_ENHANCED: Error initializing biometric: $e');
-    }
-  }
-
   void _showRegistrationRequiredModal() {
     showDialog(
       context: context,
@@ -205,12 +135,6 @@ class _LoginScreenEnhancedState extends State<LoginScreenEnhanced> {
       },
     );
   }
-
-  Future<void> _showBiometricLogin() async {
-    final authProvider = context.read<auth.AuthStateProvider>();
-    await authProvider.signInWithBiometric();
-  }
-
 
   void _navigateToRegistration() async {
     final navigator = Navigator.of(context);
@@ -295,42 +219,6 @@ class _LoginScreenEnhancedState extends State<LoginScreenEnhanced> {
 
                 // Email/Password Form
                 _EmailPasswordForm(),
-                const SizedBox(height: 24),
-
-                // Divider - only show if there are alternative login methods
-                if (_isAppleSignInAvailable || _isGoogleSignInAvailable || (_biometricAvailable && _biometricEnabled && _hasStoredUser)) ...[
-                  Row(
-                    children: [
-                      const Expanded(child: Divider()),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: LocalizedText(
-                          (l10n) => l10n.authLoginOrContinueWith,
-                          style: TextStyle(color: AppColors.textSecondary),
-                        ),
-                      ),
-                      const Expanded(child: Divider()),
-                    ],
-                  ),
-                  const SizedBox(height: 24),
-                ],
-
-                // Social Login Buttons
-                _SocialLoginButtons(
-                  isAppleSignInAvailable: _isAppleSignInAvailable,
-                  isGoogleSignInAvailable: _isGoogleSignInAvailable,
-                ),
-
-                // Add spacing only if social buttons are shown
-                if (_isAppleSignInAvailable || _isGoogleSignInAvailable)
-                  const SizedBox(height: 24),
-
-                // Biometric Login
-                if (_biometricAvailable && _biometricEnabled && _hasStoredUser)
-                  _BiometricLoginButton(
-                    storedEmail: _storedEmail,
-                    onTap: _showBiometricLogin,
-                  ),
 
                 const SizedBox(height: 40),
 
@@ -524,120 +412,6 @@ class _EmailPasswordFormState extends State<_EmailPasswordForm> {
       builder: (BuildContext dialogContext) {
         return _ForgotPasswordDialog(
           initialEmail: _emailController.text.trim(),
-        );
-      },
-    );
-  }
-}
-
-class _SocialLoginButtons extends StatelessWidget {
-  final bool isAppleSignInAvailable;
-  final bool isGoogleSignInAvailable;
-
-  const _SocialLoginButtons({
-    required this.isAppleSignInAvailable,
-    required this.isGoogleSignInAvailable,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Consumer<auth.AuthStateProvider>(
-      builder: (context, authProvider, child) {
-        return Column(
-          children: [
-            // Google Sign-In
-            if (isGoogleSignInAvailable) ...[
-              SizedBox(
-                width: double.infinity,
-                height: 50,
-                child: OutlinedButton.icon(
-                  onPressed: authProvider.isLoading ? null : () => _signInWithGoogle(context),
-                  icon: const FaIcon(FontAwesomeIcons.google, size: 20),
-                  label: LocalizedText((l10n) => l10n.authLoginContinueWithGoogle),
-                  style: OutlinedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 12),
-            ],
-
-            // Apple Sign-In
-            if (isAppleSignInAvailable) ...[
-              SizedBox(
-                width: double.infinity,
-                height: 50,
-                child: OutlinedButton.icon(
-                  onPressed: authProvider.isLoading ? null : () => _signInWithApple(context),
-                  icon: const FaIcon(FontAwesomeIcons.apple, size: 20),
-                  label: LocalizedText((l10n) => l10n.authLoginContinueWithApple),
-                  style: OutlinedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ],
-        );
-      },
-    );
-  }
-
-  Future<void> _signInWithGoogle(BuildContext context) async {
-    final authProvider = context.read<auth.AuthStateProvider>();
-    await authProvider.signInWithGoogle();
-  }
-
-  Future<void> _signInWithApple(BuildContext context) async {
-    final authProvider = context.read<auth.AuthStateProvider>();
-    await authProvider.signInWithApple();
-  }
-}
-
-class _BiometricLoginButton extends StatelessWidget {
-  final String? storedEmail;
-  final VoidCallback onTap;
-
-  const _BiometricLoginButton({
-    required this.storedEmail,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Consumer<auth.AuthStateProvider>(
-      builder: (context, authProvider, child) {
-        return Container(
-          margin: const EdgeInsets.only(bottom: 16),
-          child: SizedBox(
-            width: double.infinity,
-            height: 50,
-            child: OutlinedButton.icon(
-              onPressed: authProvider.isLoading ? null : onTap,
-              icon: const Icon(Icons.fingerprint, size: 24),
-              label: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  LocalizedText((l10n) => l10n.authLoginBiometricButton),
-                  if (storedEmail != null)
-                    Text(
-                      storedEmail!,
-                      style: const TextStyle(fontSize: 12, color: Colors.grey),
-                    ),
-                ],
-              ),
-              style: OutlinedButton.styleFrom(
-                foregroundColor: AppColors.primary,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-            ),
-          ),
         );
       },
     );

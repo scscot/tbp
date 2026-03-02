@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Team Build Pro | Network Marketing & Direct Sales App</title>
-    <meta name="description" content="MLM and network marketing app with AI-powered recruiting tools. Build your downline before joining. 24/7 AI coach, pre-written messages, team tracking. Free 30-day trial.">
+    <title>Team Build Pro | Free Recruiting Challenge for Direct Sales</title>
+    <meta name="description" content="Pre-build your team before you commit. Free recruiting challenge with 16 customized messages and 24/7 AI coach. Qualify with 3 direct sponsors + 12 total team members. Professionals $6.99/mo.">
     <meta name="keywords" content="network marketing, MLM, direct sales, downline builder, AI recruiting, network marketing app, MLM app, direct sales app, team building, recruiting messages">
     <meta name="author" content="Team Build Pro">
     <meta name="robots" content="index, follow">
@@ -16,15 +16,15 @@
     <link rel="alternate" hreflang="pt" href="https://pt.teambuildpro.com/" />
     <link rel="alternate" hreflang="de" href="https://de.teambuildpro.com/" />
     <link rel="alternate" hreflang="x-default" href="https://teambuildpro.com/" />
-    <meta property="og:title" content="Team Build Pro | Network Marketing & Direct Sales App">
-    <meta property="og:description" content="MLM and network marketing app with AI-powered recruiting tools. Build your downline before joining. 24/7 AI coach, pre-written messages, team tracking.">
+    <meta property="og:title" content="Team Build Pro | Free Recruiting Challenge for Direct Sales">
+    <meta property="og:description" content="Pre-build your team before you commit. Free recruiting challenge with 16 customized messages and 24/7 AI coach. Qualify with 3 direct + 12 total.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://teambuildpro.com">
     <meta property="og:image" content="https://teambuildpro.com/assets/icons/team-build-pro.png">
     <meta property="og:site_name" content="Team Build Pro">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Team Build Pro | Network Marketing & Direct Sales App">
-    <meta name="twitter:description" content="MLM and network marketing app with AI-powered recruiting tools. Build your downline before joining. 24/7 AI coach, pre-written messages, team tracking.">
+    <meta name="twitter:title" content="Team Build Pro | Free Recruiting Challenge for Direct Sales">
+    <meta name="twitter:description" content="Pre-build your team before you commit. Free recruiting challenge with 16 customized messages and 24/7 AI coach. Qualify with 3 direct + 12 total.">
     <meta name="twitter:image" content="https://teambuildpro.com/assets/icons/team-build-pro.png">
     <meta name="twitter:site" content="@teambuildpro">
     <!-- Google Fonts: Inter -->
@@ -63,7 +63,7 @@
           "name": "Worldwide"
         }
       },
-      "description": "AI-powered downline building system for direct sales professionals. Up to 17 pre-written recruiting messages address social anxiety, time constraints, and skepticism. 24/7 AI coaching supports your entire downline. Pre-build teams before Day 1. Eliminate the 75% first-year dropout rate. Works with any MLM, network marketing, or direct sales opportunity.",
+      "description": "AI-powered downline building system for direct sales professionals. Up to 16 pre-written recruiting messages address social anxiety, time constraints, and skepticism. 24/7 AI coaching supports your entire downline. Pre-build teams before Day 1. Eliminate the 75% first-year dropout rate. Works with any MLM, network marketing, or direct sales opportunity.",
       "url": "https://teambuildpro.com",
       "screenshot": "https://teambuildpro.com/assets/icons/team-build-pro.png",
       "softwareVersion": "1.0.70",
@@ -146,19 +146,48 @@
 </head>
 
 <body>
-    <!-- Top Invite Bar (populated by JavaScript when referral exists) -->
-    <div id="top-invite-bar" class="top-invite-bar"></div>
-
-    <!-- Header (rendered by components.js) -->
-    <div id="tbp-header"></div>
+    <!-- Header (rendered by components.js, static fallback for local preview) -->
+    <div id="tbp-header">
+        <!-- Top Invite Bar (populated by JavaScript when referral exists) -->
+        <div id="top-invite-bar" class="top-invite-bar"></div>
+        <header class="header">
+            <nav class="nav container">
+                <a href="/" class="logo" id="tbp-logo-link">
+                    <img src="/assets/icons/team-build-pro.png" alt="Team Build Pro" style="width: 32px; height: 32px; border-radius: 50%;">
+                    <span class="logo-text-group">
+                        <span class="logo-title">Team Build Pro</span>
+                        <span class="logo-subtitle">AI Downline Builder</span>
+                    </span>
+                </a>
+                <!-- Sandwich Menu Button -->
+                <button id="menu-btn" class="menu-btn" aria-label="Open menu" aria-haspopup="true" aria-expanded="false">
+                    <span aria-hidden="true" style="font-size:2rem;color:#ffffff">☰</span>
+                </button>
+                <!-- Dropdown Menu -->
+                <div id="mobile-menu" class="mobile-menu" role="menu">
+                    <a href="/" role="menuitem">Home</a>
+                    <a href="/faq.html" role="menuitem">FAQ</a>
+                    <a href="/scripts.html" role="menuitem">Free Scripts</a>
+                    <a href="/#pricing" role="menuitem">Pricing</a>
+                    <a href="/blog.html" role="menuitem">Blog</a>
+                    <a href="/books.html" role="menuitem">Books</a>
+                    <a href="/contact_us.html" role="menuitem">Contact Us</a>
+                </div>
+            </nav>
+            <!-- Language Switcher -->
+            <div class="language-switcher header-language-switcher">
+                <span class="lang-link active" lang="en">English</span><span class="lang-separator">|</span><a href="https://es.teambuildpro.com/index.html" hreflang="es" lang="es" class="lang-link">Español</a><span class="lang-separator">|</span><a href="https://pt.teambuildpro.com/index.html" hreflang="pt" lang="pt" class="lang-link">Português</a><span class="lang-separator">|</span><a href="https://de.teambuildpro.com/index.html" hreflang="de" lang="de" class="lang-link">Deutsch</a>
+            </div>
+        </header>
+    </div>
 
     <main>
         <!-- Hero Section -->
         <section class="hero-homepage">
             <div class="container">
                 <h1>A New AI Paradigm for<br class="desktop-only"> Network Marketing Success</h1>
-                <h2 class="subline" style="font-size: 1.2rem; font-weight: 500; color: #ffffff; max-width: 650px; margin: 0 auto 1.5rem; line-height: 1.6;">It's time to finally achieve the success you want and deserve.</h2>
-                <h3 style="font-size: 1.15rem; font-weight: 400; color: #ffffff; max-width: 650px; margin: 0 auto 2rem; line-height: 1.6;">Works with any direct sales or network marketing company.</h3>
+                <h2 class="subline" style="font-size: 1.2rem; font-weight: 500; color: #ffffff; max-width: 650px; margin: 0 auto 1.5rem; line-height: 1.6;">Your prospects don't believe they can recruit.</h2>
+                <h3 style="font-size: 1.15rem; font-weight: 400; color: #ffffff; max-width: 650px; margin: 0 auto 2rem; line-height: 1.6;">Give them Team Build Pro and let them prove it to themselves.</h3>
 
                 <div class="hero-download">
                     <p class="hero-download-text">Try the app FREE for 30 days</p>
@@ -170,7 +199,7 @@
                             <img src="assets/images/Google-Play.png" alt="Get it on Google Play">
                         </a>
                     </div>
-                    <p class="hero-no-cc"><span class="material-symbols-outlined">check_circle</span><strong>No Credit Card Required</strong></p>
+                    <p class="hero-no-cc"><span class="material-symbols-outlined">check_circle</span><strong>No Credit Card Required · Works with any company</strong></p>
                 </div>
 
             </div>
@@ -190,7 +219,7 @@
                             <img src="assets/screenshots/share-messages.png" alt="Share AI-Crafted Messages" onerror="this.style.display='none'">
                         </div>
                         <h3>Share AI-Crafted Messages</h3>
-                        <p>Up to 17 pre-written messages handle every objection—from skeptics to time-strapped prospects. Tap, personalize, send.</p>
+                        <p>Up to 16 pre-written messages handle every objection—from skeptics to time-strapped prospects. Tap, personalize, send.</p>
                     </div>
                     <div class="workflow-item">
                         <div class="phone-frame">
@@ -229,44 +258,35 @@
             <div class="container">
                 <div class="section-header">
                     <h2>How It Works</h2>
-                    <p>Four simple steps to build unstoppable momentum.</p>
+                    <p>Three simple steps to prove you can build a team.</p>
                 </div>
-                <div class="grid grid-4">
+                <div class="grid grid-3">
                     <div class="feature-card">
                         <div class="feature-card-header">
                             <div class="feature-icon blue">
-                                <span class="material-symbols-outlined">foundation</span>
+                                <span class="material-symbols-outlined">link</span>
                             </div>
-                            <h3>Set Your Foundation</h3>
+                            <h3>1. Get Your Unique Link</h3>
                         </div>
-                        <p>Customize the app with your opportunity details and referral link. This sets the stage for immediate and sustained growth.</p>
+                        <p>Download the app and get your personal recruiting link. Share it with friends, family, or anyone interested in building a team.</p>
                     </div>
                     <div class="feature-card">
                         <div class="feature-card-header">
                             <div class="feature-icon purple">
-                                <span class="material-symbols-outlined">auto_awesome</span>
+                                <span class="material-symbols-outlined">chat</span>
                             </div>
-                            <h3>AI Coach Guides You</h3>
+                            <h3>2. Share + Get AI Guidance</h3>
                         </div>
-                        <p>Get suggested messages, timing cues, and next steps. One tap to send targeted messages to recruiting prospects.</p>
+                        <p>Use 16 customized recruiting messages and get 24/7 AI Coach guidance. Never wonder what to say or when to follow up.</p>
                     </div>
                     <div class="feature-card">
                         <div class="feature-card-header">
                             <div class="feature-icon green">
-                                <span class="material-symbols-outlined">group_add</span>
+                                <span class="material-symbols-outlined">emoji_events</span>
                             </div>
-                            <h3>Build Smart, Not Hard</h3>
+                            <h3>3. Qualify at 3 + 12</h3>
                         </div>
-                        <p>Share with your recruiting prospects and current team members. Momentum quickly builds as messages and follow-ups stay on track.</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-card-header">
-                            <div class="feature-icon orange">
-                                <span class="material-symbols-outlined">verified</span>
-                            </div>
-                            <h3>Automatic Qualification</h3>
-                        </div>
-                        <p>When recruiting prospects hit achievable growth milestones, they're automatically invited to join your opportunity under you!</p>
+                        <p>When you hit 3 direct sponsors + 12 total team members, you've proven you can recruit. Join your opportunity with confidence and momentum.</p>
                     </div>
                 </div>
             </div>
@@ -314,77 +334,79 @@
         <!-- Benefits Section -->
         <section class="section section-white" id="benefits">
             <div class="container">
-                <h2 style="text-align: center; margin-bottom: 2.5rem;">Why Team Build Pro Works for Everyone</h2>
+                <h2 style="text-align: center; margin-bottom: 2.5rem;">Two Paths. One Powerful Tool.</h2>
                 <div style="max-width: 900px; margin: 0 auto;">
                     <!-- For Direct Sales Professionals -->
-                    <div data-audience="professionals" style="margin-bottom: 4rem;">
-                        <h3 style="text-align: center; margin-bottom: 1.5rem; font-size: 1.5rem;">For Direct Sales Professionals</h3>
-                        <p style="text-align: center; margin-bottom: 2.5rem; opacity: 0.75; font-size: 1rem;">Why Your Prospects Will Love This (And Join YOUR Business)</p>
+                    <div id="professionals" data-audience="professionals" style="margin-bottom: 4rem;">
+                        <h3 style="text-align: center; margin-bottom: 1rem; font-size: 1.5rem;">For Professionals</h3>
+                        <p style="text-align: center; margin-bottom: 2.5rem; font-size: 1.1rem; line-height: 1.6; max-width: 700px; margin-left: auto; margin-right: auto;">Your recruiting prospects don't believe they can recruit. Give them Team Build Pro and let them prove it to themselves.</p>
                         <div style="display: flex; flex-direction: column; gap: 1.5rem;">
                             <div class="feature-card" style="padding: 1.5rem;">
                                 <div class="feature-card-header">
-                                    <div class="feature-icon blue"><span class="material-symbols-outlined">autorenew</span></div>
-                                    <h4>Provide Them With a Perpetual Recruiting Engine</h4>
+                                    <div class="feature-icon blue"><span class="material-symbols-outlined">share</span></div>
+                                    <h4>Share the App with Potential Recruits</h4>
                                 </div>
-                                <p>Not just a pitch—actual AI tools they use before AND after joining. Feeds your organization's growth long after they sign up.</p>
+                                <p>Give prospects a free tool to prove themselves. They use it to build a team before committing to join yours.</p>
                             </div>
                             <div class="feature-card" style="padding: 1.5rem;">
                                 <div class="feature-card-header">
-                                    <div class="feature-icon purple"><span class="material-symbols-outlined">verified_user</span></div>
-                                    <h4>Recruit Potential Leaders and Help Them Build Momentum</h4>
+                                    <div class="feature-icon purple"><span class="material-symbols-outlined">emoji_events</span></div>
+                                    <h4>They Prove Themselves at 3 + 12</h4>
                                 </div>
-                                <p>Prospects hit recruiting milestones before joining your opportunity. They bring proven skills and momentum, not just hope.</p>
+                                <p>When they hit 3 direct sponsors + 12 total team members, they've proven they can recruit. They join your team with confidence.</p>
                             </div>
                             <div class="feature-card" style="padding: 1.5rem;">
                                 <div class="feature-card-header">
-                                    <div class="feature-icon green"><span class="material-symbols-outlined">groups</span></div>
-                                    <h4>True Duplication: 24/7 AI Coach for Their Entire Downline</h4>
+                                    <div class="feature-icon green"><span class="material-symbols-outlined">trending_down</span></div>
+                                    <h4>Reduce Churn in Your Downline</h4>
                                 </div>
-                                <p>True global expansion with instant guidance in 4 languages, even when they're offline. Scale their mentorship without scaling their time.</p>
+                                <p>Confident recruits = less churn. Instead of hopeful beginners, you're recruiting proven builders with momentum.</p>
                             </div>
                             <div class="feature-card" style="padding: 1.5rem;">
                                 <div class="feature-card-header">
-                                    <div class="feature-icon orange"><span class="material-symbols-outlined">workspace_premium</span></div>
-                                    <h4>Stand Out with Modern Tools, Not Empty Promises</h4>
+                                    <div class="feature-icon orange"><span class="material-symbols-outlined">groups</span></div>
+                                    <h4>True Duplication for Your Entire Team</h4>
                                 </div>
-                                <p>Offer something competitors can't: an AI system that works with any company. Turn skeptical prospects into confident builders.</p>
+                                <p>Give this tool to everyone you recruit. 24/7 AI Coach in 4 languages. Scale your mentorship without scaling your time.</p>
                             </div>
                         </div>
+                        <p style="text-align: center; margin-top: 2rem; font-weight: 600; color: #2563eb;">$6.99/month for Professionals</p>
                     </div>
-                    <!-- For Recruiting Prospects -->
-                    <div>
-                        <h3 style="text-align: center; margin-bottom: 1.5rem; font-size: 1.5rem;">For Recruiting Prospects</h3>
-                        <p style="text-align: center; margin-bottom: 2.5rem; opacity: 0.75; font-size: 1rem;">Build Confidence Before You Commit</p>
+                    <!-- For Prospects -->
+                    <div id="prospects">
+                        <h3 style="text-align: center; margin-bottom: 1rem; font-size: 1.5rem;">For Prospects</h3>
+                        <p style="text-align: center; margin-bottom: 2.5rem; font-size: 1.1rem; line-height: 1.6; max-width: 700px; margin-left: auto; margin-right: auto;">Pre-build your team before you commit. It's free — hit 3 direct sponsors + 12 total team members to qualify.</p>
                         <div style="display: flex; flex-direction: column; gap: 1.5rem;">
                             <div class="feature-card" style="padding: 1.5rem;">
                                 <div class="feature-card-header">
-                                    <div class="feature-icon blue"><span class="material-symbols-outlined">rocket_launch</span></div>
-                                    <h4>Pre-Build Your Team Before Investing a Dime</h4>
+                                    <div class="feature-icon blue"><span class="material-symbols-outlined">money_off</span></div>
+                                    <h4>100% Free Until You Qualify</h4>
                                 </div>
-                                <p>Start recruiting now, join the opportunity later with momentum already built. Test your recruiting ability risk-free.</p>
+                                <p>No credit card required. Use all the tools for free. Only pay when you've proven you can build a team.</p>
                             </div>
                             <div class="feature-card" style="padding: 1.5rem;">
                                 <div class="feature-card-header">
                                     <div class="feature-icon purple"><span class="material-symbols-outlined">chat_bubble</span></div>
-                                    <h4>16 Pre-Written Messages Eliminate "What Do I Say?"</h4>
+                                    <h4>16 Customized Recruiting Messages</h4>
                                 </div>
-                                <p>With one click you can send effective and targeted recruiting messages. Handle skepticism, social anxiety, time constraints—all covered.</p>
+                                <p>Never wonder what to say. Pre-written messages handle skepticism, social anxiety, time constraints — all covered.</p>
                             </div>
                             <div class="feature-card" style="padding: 1.5rem;">
                                 <div class="feature-card-header">
-                                    <div class="feature-icon green"><span class="material-symbols-outlined">trending_up</span></div>
-                                    <h4>Start Day 1 with Momentum, Not From Zero</h4>
+                                    <div class="feature-icon green"><span class="material-symbols-outlined">psychology</span></div>
+                                    <h4>24/7 AI Coach Guidance</h4>
                                 </div>
-                                <p>Avoid the 75% first-year dropout fate. Launch prepared and confident, not overwhelmed.</p>
+                                <p>Ask anything about recruiting, follow-ups, or strategy. Your private coach is available in English, Spanish, Portuguese, German.</p>
                             </div>
                             <div class="feature-card" style="padding: 1.5rem;">
                                 <div class="feature-card-header">
-                                    <div class="feature-icon orange"><span class="material-symbols-outlined">psychology</span></div>
-                                    <h4>24/7 AI Coach Guides Every Decision</h4>
+                                    <div class="feature-icon orange"><span class="material-symbols-outlined">verified</span></div>
+                                    <h4>Prove You Can Do It Before Committing</h4>
                                 </div>
-                                <p>Your private AI coach helps with who to contact, what to say, when to follow up. Available in English, Spanish, Portuguese, German.</p>
+                                <p>Build confidence, not doubt. When you hit your milestone, you'll know you have what it takes to succeed.</p>
                             </div>
                         </div>
+                        <p style="text-align: center; margin-top: 2rem; font-weight: 600; color: #16a34a; font-size: 1.2rem;">FREE for Prospects Until You Qualify</p>
                     </div>
                 </div>
             </div>
@@ -426,23 +448,45 @@
             <div class="container">
                 <div class="section-header">
                     <h2>Simple, Transparent Pricing</h2>
-                    <p>One plan. Everything included. No hidden fees.</p>
+                    <p>Two paths. Same powerful tools. Choose your journey.</p>
                 </div>
 
-                <div class="pricing-card">
-                    <h3>Team Build Pro</h3>
-                    <span class="trial">30-Day Free Trial</span>
-                    <div class="price">$6.99<span>/month</span></div>
-                    <ul>
-                        <li><span class="material-symbols-outlined">check_circle</span> Up to 17 Pre-Written Recruiting Messages</li>
-                        <li><span class="material-symbols-outlined">check_circle</span> 24/7 AI Recruiting Coach</li>
-                        <li><span class="material-symbols-outlined">check_circle</span> Unlimited Prospects & Follow-ups</li>
-                        <li><span class="material-symbols-outlined">check_circle</span> Team Progress Dashboard</li>
-                        <li><span class="material-symbols-outlined">check_circle</span> Works with Any Company</li>
-                    </ul>
-                    <a href="#download" class="cta-primary" style="width: 100%; justify-content: center;">
-                        Start Free Trial
-                    </a>
+                <div style="display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap; max-width: 900px; margin: 0 auto;">
+                    <!-- Prospects Card -->
+                    <div class="pricing-card" style="flex: 1; min-width: 280px; max-width: 400px; border: 2px solid #16a34a;">
+                        <h3>For Prospects</h3>
+                        <span class="trial" style="background: #16a34a; color: white;">Free Challenge</span>
+                        <div class="price">FREE<span style="font-size: 1rem;"> until you qualify</span></div>
+                        <ul>
+                            <li><span class="material-symbols-outlined">check_circle</span> 16 Customized Recruiting Messages</li>
+                            <li><span class="material-symbols-outlined">check_circle</span> 24/7 AI Recruiting Coach</li>
+                            <li><span class="material-symbols-outlined">check_circle</span> Team Progress Dashboard</li>
+                            <li><span class="material-symbols-outlined">check_circle</span> Available in 4 Languages</li>
+                            <li><span class="material-symbols-outlined">check_circle</span> No Credit Card Required</li>
+                        </ul>
+                        <p style="text-align: center; font-size: 0.9rem; opacity: 0.8; margin-bottom: 1rem;">Qualify at 3 direct + 12 total team members</p>
+                        <a href="#download" class="cta-primary" style="width: 100%; justify-content: center; background: #16a34a;">
+                            Start Free Challenge
+                        </a>
+                    </div>
+
+                    <!-- Professionals Card -->
+                    <div class="pricing-card" style="flex: 1; min-width: 280px; max-width: 400px;">
+                        <h3>For Professionals</h3>
+                        <span class="trial" style="background: #16a34a; color: white;">30-Day Free Trial</span>
+                        <div class="price">$6.99<span>/month</span></div>
+                        <ul>
+                            <li><span class="material-symbols-outlined">check_circle</span> All Prospect Features, Plus:</li>
+                            <li><span class="material-symbols-outlined">check_circle</span> Share Tool with Your Prospects</li>
+                            <li><span class="material-symbols-outlined">check_circle</span> Recruit Proven Builders</li>
+                            <li><span class="material-symbols-outlined">check_circle</span> True Duplication for Your Team</li>
+                            <li><span class="material-symbols-outlined">check_circle</span> Works with Any Company</li>
+                        </ul>
+                        <p style="text-align: center; font-size: 0.9rem; opacity: 0.8; margin-bottom: 1rem;">Already in a business? Start here.</p>
+                        <a href="#download" class="cta-primary" style="width: 100%; justify-content: center;">
+                            Start Free Trial
+                        </a>
+                    </div>
                 </div>
             </div>
         </section>
@@ -450,8 +494,8 @@
         <!-- Download Section -->
         <section class="section-download" id="download">
             <div class="container">
-                <h2>Ready to Build Faster?</h2>
-                <p>Download Team Build Pro and start today.</p>
+                <h2>Ready to Prove You Can Build a Team?</h2>
+                <p>Download Team Build Pro and start your recruiting challenge today.</p>
 
                 <div class="download-badges">
                     <a href="https://apps.apple.com/us/app/id6751211622"
@@ -466,7 +510,7 @@
                     </a>
                 </div>
 
-                <p class="trial-note">Free 30-day trial · $6.99/mo · Cancel anytime</p>
+                <p class="trial-note">FREE for Prospects · $6.99/mo for Professionals · Cancel anytime</p>
             </div>
         </section>
     </main>

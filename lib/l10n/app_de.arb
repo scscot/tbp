@@ -288,7 +288,7 @@
     "description": "Bottom navigation tab label for profile",
     "maxLength": 14
   },
-  "dashTitle": "Kontrollzentrum",
+  "dashTitle": "Back Office",
   "@dashTitle": {
     "description": "Dashboard screen title in app bar",
     "maxLength": 32
@@ -2889,6 +2889,14 @@
   "@gettingStartedProTipMessage": {
     "description": "Pro tip message"
   },
+  "gettingStartedProspectStep1Description": "Erstellen Sie eine Liste von Freunden, Familie und Kontakten, die an der Generierung von Residualeinkommen interessiert sein könnten. Ihr Ziel ist es, 3 direkte Sponsoren zu rekrutieren und Ihr Team auf insgesamt 12 Mitglieder zu erweitern.",
+  "@gettingStartedProspectStep1Description": {
+    "description": "Getting started step 1 description for prospects"
+  },
+  "gettingStartedProspectStep2Description": "Nutzen Sie die Teilen-Funktion, um Ihre Kontakte einzuladen, Ihrem Team beizutreten. Jede Person, die über Ihren Link beitritt, bringt Sie Ihrem Ziel von 3 direkten Sponsoren + 12 Gesamtteammitgliedern näher.",
+  "@gettingStartedProspectStep2Description": {
+    "description": "Getting started step 2 description for prospects"
+  },
   "eligibilityHeroTitleQualified": "HERZLICHEN GLÜCKWUNSCH!\nSie sind qualifiziert!",
   "@eligibilityHeroTitleQualified": {
     "description": "Hero title when qualified",
@@ -3012,9 +3020,14 @@
     "description": "Title for strategies section",
     "maxLength": 28
   },
-  "shareProspectTitle": "Neue Rekrutierungskandidaten",
+  "shareProspectTitle": "Team aufbauen",
   "@shareProspectTitle": {
-    "description": "Title for prospect strategy",
+    "description": "Title for prospect share screen AppBar",
+    "maxLength": 32
+  },
+  "shareProspectHeaderTitle": "Personalisierte Nachrichten",
+  "@shareProspectHeaderTitle": {
+    "description": "Header title on prospect share screen",
     "maxLength": 32
   },
   "shareProspectSubtitle": "Laden Sie Rekrutierungskandidaten ein, um einen Vorsprung zu erhalten.",
@@ -3031,9 +3044,14 @@
       }
     }
   },
-  "sharePartnerTitle": "Aktuelle Geschäftspartner",
+  "sharePartnerTitle": "Ihre Teampartner",
   "@sharePartnerTitle": {
-    "description": "Title for partner strategy",
+    "description": "Title for partner share screen AppBar",
+    "maxLength": 32
+  },
+  "sharePartnerHeaderTitle": "Personalisierte Nachrichten",
+  "@sharePartnerHeaderTitle": {
+    "description": "Header title on partner share screen",
     "maxLength": 32
   },
   "sharePartnerSubtitle": "Großartig für Ihr bestehendes {business}-Team",
@@ -4802,7 +4820,7 @@
   "hiwStep2Title": "Bauen Sie Klug, Nicht Hart",
   "hiwStep2Desc": "Teilen Sie Team Build Pro mit Interessenten und bestehenden Teammitgliedern. Aktuelle Teammitglieder schaffen sofortige Dynamik, und Rekrutierungsinteressenten erleben echten Teamerfolg, bevor sie Ihrer Gelegenheit beitreten, wodurch das \"Kaltstart\"-Problem eliminiert wird.",
   "hiwStep3Title": "Automatische Qualifikation",
-  "hiwStep3Desc": "Wenn Rekrutierungsinteressenten unsere Erfolgsmeilensteine erreichen (4 direkte Sponsoren + 20 Teammitglieder insgesamt), erhalten sie automatisch eine Einladung, Ihrer Gelegenheit beizutreten.",
+  "hiwStep3Desc": "Wenn Rekrutierungsinteressenten unsere Erfolgsmeilensteine erreichen (3 direkte Sponsoren + 12 Teammitglieder insgesamt), erhalten sie automatisch eine Einladung, Ihrer Gelegenheit beizutreten.",
   "hiwStep4Title": "Schnelles Wachstum",
   "hiwStep4Desc": "Während Ihre Team Build Pro-Organisation wächst, bringt jeder qualifizierte Leiter neue, vorgeschulte Interessenten in Ihre Gelegenheit - wodurch ein selbsttragender Wachstumsmotor entsteht.",
   "hiwKeyTargets": "SCHLÜSSEL-WACHSTUMSZIELE",

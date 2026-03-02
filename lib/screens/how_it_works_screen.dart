@@ -469,7 +469,7 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
                       step: 3,
                       title: context.l10n?.hiwStep3Title ?? 'Automatic Qualification',
                       description:
-                          context.l10n?.hiwStep3Desc ?? 'When recruiting prospects reach our success milestones (4 direct sponsors + 20 total team members), they automatically receive an invitation to join your opportunity.',
+                          context.l10n?.hiwStep3Desc ?? 'When recruiting prospects reach our success milestones (3 direct sponsors + 12 total team members), they automatically receive an invitation to join your opportunity.',
                       icon: Icons.verified,
                     ),
                     _buildProcessStep(
@@ -517,7 +517,7 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
                           icon: Icons.hub,
                           value:
                               AppConstants.projectWideTotalTeamMin.toString(),
-                          label: context.l10n?.hiwTotalTeam ?? 'Total Team Members',
+                          label: context.l10n?.hiwTotalTeam ?? 'Total Team',
                         ),
                       ],
                     ),

@@ -19,15 +19,15 @@ const faqData = [
     id: 'qualification_system',
     question: 'How does the qualification system work?',
     answer:
-      'You need 4 direct sponsors + 20 total team members to qualify. Direct sponsors are people you personally invite. Total team includes everyone in your network (directs + their teams). Once qualified, you receive business opportunity invitations.',
-    keywords: ['qualification', 'direct sponsors', '4 direct', '20 total', 'qualify'],
+      'You need 3 direct sponsors + 12 total team members to qualify. Direct sponsors are people you personally invite. Total team includes everyone in your network (directs + their teams). Once qualified, you receive business opportunity invitations.',
+    keywords: ['qualification', 'direct sponsors', '3 direct', '12 total', 'qualify'],
     category: 'getting_started',
   },
   {
     id: 'after_qualification',
     question: 'What happens after I qualify?',
     answer:
-      'After qualifying with 4 direct sponsors and 20 total team members, you receive invitations to legitimate business opportunities. Your Team Build Pro network becomes your foundation - ready to join opportunities with an established team. You can continue growing your Team Build Pro network, support your team members, and evaluate which business opportunities align with your goals. Your subscription continues at $6.99/month to maintain access to your network and team building tools.',
+      'After qualifying with 3 direct sponsors and 12 total team members, you receive invitations to legitimate business opportunities. Your Team Build Pro network becomes your foundation - ready to join opportunities with an established team. You can continue growing your Team Build Pro network, support your team members, and evaluate which business opportunities align with your goals. Your subscription continues at $6.99/month to maintain access to your network and team building tools.',
     keywords: ['after qualify', 'post qualification', 'once qualified', 'what happens', 'what next', 'qualified now what'],
     category: 'getting_started',
   },
@@ -83,7 +83,7 @@ const faqData = [
     id: 'qualification_timeline',
     question: 'How long does it take to qualify?',
     answer:
-      'Qualification requires 4 direct sponsors + 20 total team members. Timeline depends entirely on your effort and activity level. Very active users who dedicate consistent daily effort can qualify in less than 30 days. More casual users typically take 1-3 months. The built-in pre-qualification system lets you build at your own pace before joining any business opportunity.',
+      'Qualification requires 3 direct sponsors + 12 total team members. Timeline depends entirely on your effort and activity level. Very active users who dedicate consistent daily effort can qualify in less than 30 days. More casual users typically take 1-3 months. The built-in pre-qualification system lets you build at your own pace before joining any business opportunity.',
     keywords: ['how long', 'timeline', 'qualify', 'time frame', 'duration', '30 days', 'less than 30', 'fast qualification'],
     category: 'success_strategies',
   },

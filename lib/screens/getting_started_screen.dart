@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:provider/provider.dart';
 import '../config/app_colors.dart';
 import '../widgets/header_widgets.dart';
 import '../models/user_model.dart';
@@ -83,6 +84,10 @@ class _GettingStartedScreenState extends State<GettingStartedScreen>
 
   @override
   Widget build(BuildContext context) {
+    // Detect if user is a prospect vs professional
+    final user = Provider.of<UserModel?>(context, listen: false);
+    final bool isProspect = user?.userType == 'prospect';
+
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppScreenBar(
@@ -104,22 +109,17 @@ class _GettingStartedScreenState extends State<GettingStartedScreen>
                           color: AppColors.textPrimary,
                         ),
                       ),
-                      const SizedBox(height: 8),
-                      Text(
-                        context.l10n?.gettingStartedSubheading ?? 'Follow these simple steps to start building your team',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: AppColors.textSecondary,
-                        ),
-                      ),
                       const SizedBox(height: 32),
 
                       // Step 1
                       _buildStepCard(
                         stepNumber: 1,
                         title: context.l10n?.gettingStartedStep1Title ?? 'Make Your List',
-                        description:
-                            context.l10n?.gettingStartedStep1Description(_bizOppName) ?? 'Create a list of recruiting prospects and current $_bizOppName team members you want to share Team Build Pro with. Think about who could benefit from this tool to accelerate their team building.',
+                        description: isProspect
+                            ? (context.l10n?.gettingStartedProspectStep1Description ??
+                               'Create a list of friends, family, and contacts who might be interested in creating residual income. Your goal is to recruit 3 direct sponsors and grow your total team to 12 members.')
+                            : (context.l10n?.gettingStartedStep1Description(_bizOppName) ??
+                               'Create a list of recruiting prospects and current $_bizOppName team members you want to share Team Build Pro with. Think about who could benefit from this tool to accelerate their team building.'),
                         color: AppColors.primary,
                       ),
                       const SizedBox(height: 20),
@@ -128,8 +128,11 @@ class _GettingStartedScreenState extends State<GettingStartedScreen>
                       _buildStepCard(
                         stepNumber: 2,
                         title: context.l10n?.gettingStartedStep2Title ?? 'Share with Your Network',
-                        description:
-                            context.l10n?.gettingStartedStep2Description(_bizOppName) ?? 'Use the Share feature to quickly and easily send targeted text messages and emails to your recruiting prospects and $_bizOppName team members.',
+                        description: isProspect
+                            ? (context.l10n?.gettingStartedProspectStep2Description ??
+                               'Use the Share feature to invite your contacts to join your team. Each person who joins through your link brings you closer to your 3 direct sponsors + 12 total team member goal.')
+                            : (context.l10n?.gettingStartedStep2Description(_bizOppName) ??
+                               'Use the Share feature to quickly and easily send targeted text messages and emails to your recruiting prospects and $_bizOppName team members.'),
                         color: AppColors.secondary,
                         actionButton: ElevatedButton.icon(
                           onPressed: () {

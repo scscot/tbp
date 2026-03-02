@@ -890,7 +890,62 @@ class _DashboardScreenState extends State<DashboardScreen>
         if (!(_isDemoMode && _demoEmail != null) && shouldShowSubscriptionCard)
           _buildDynamicSubscriptionCard(user),
 
-        // Getting Started card - always shown first
+        // PRIMARY ACTIONS - Core team building features
+        _buildActionCard(
+          icon: Icons.trending_up,
+          title: context.l10n?.dashTileGrowTeam ?? 'Grow Your Team',
+          color: AppColors.growthPrimary,
+          onTap: () {
+            FirebaseAnalytics.instance.logEvent(
+              name: DashboardAnalytics.dashCtaTap,
+              parameters: {'cta': 'grow_team', 'locale': Localizations.localeOf(context).toLanguageTag()},
+            );
+            // Route based on user status:
+            // - Prospect users (no biz_opp_ref_url, role=user) go directly to ShareProspectScreen
+            // - Professional users (has biz_opp_ref_url) or Admins go to ShareNewScreen hub
+            final bool isProspect = (user.bizOppRefUrl == null || user.bizOppRefUrl!.isEmpty) && user.role == 'user';
+            SubscriptionNavigationGuard.pushGuarded(
+              context: context,
+              routeName: 'share',
+              screen: isProspect
+                  ? ShareProspectScreen(appId: widget.appId)
+                  : ShareNewScreen(appId: widget.appId),
+              appId: widget.appId,
+            );
+          },
+        ),
+        _buildActionCard(
+          icon: Icons.groups,
+          title: context.l10n?.dashTileViewTeam ?? 'View Your Team',
+          color: AppColors.teamPrimary,
+          onTap: () {
+            FirebaseAnalytics.instance.logEvent(
+              name: DashboardAnalytics.dashCtaTap,
+              parameters: {'cta': 'view_team', 'locale': Localizations.localeOf(context).toLanguageTag()},
+            );
+            SubscriptionNavigationGuard.pushGuarded(
+              context: context,
+              routeName: 'network',
+              screen: NetworkScreen(appId: widget.appId),
+              appId: widget.appId,
+            );
+          },
+        ),
+        _buildActionCard(
+          icon: Icons.smart_toy,
+          title: context.l10n?.dashTileAiCoach ?? 'Your AI Coach',
+          color: AppColors.chatPrimary,
+          onTap: () {
+            SubscriptionNavigationGuard.pushGuarded(
+              context: context,
+              routeName: 'chatbot',
+              screen: ChatBotScreen(onTabSelected: widget.onTabSelected),
+              appId: widget.appId,
+            );
+          },
+        ),
+
+        // LEARNING & ONBOARDING
         _buildActionCard(
           icon: Icons.rocket_launch,
           title: context.l10n?.dashTileGettingStarted ?? 'Getting Started',
@@ -903,7 +958,47 @@ class _DashboardScreenState extends State<DashboardScreen>
             widget.onTabSelected?.call(12);
           },
         ),
+        _buildActionCard(
+          icon: Icons.help_outline,
+          title: context.l10n?.dashTileHowItWorks ?? 'How It Works',
+          color: AppColors.teamAccent,
+          onTap: () => widget.onTabSelected?.call(5),
+        ),
 
+        // COMMUNICATION
+        _buildActionCard(
+          icon: Icons.message,
+          title: context.l10n?.dashTileMessageCenter ?? 'Message Center',
+          color: AppColors.messagePrimary,
+          hasBadge: _unreadMessageCount > 0,
+          badgeCount: _unreadMessageCount,
+          onTap: () {
+            FirebaseAnalytics.instance.logEvent(
+              name: DashboardAnalytics.dashCtaTap,
+              parameters: {'cta': 'message_center', 'locale': Localizations.localeOf(context).toLanguageTag()},
+            );
+            // Messages tab shows filtered content for free prospects
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => MessageCenterScreen(appId: widget.appId)),
+            );
+          },
+        ),
+        _buildActionCard(
+          icon: Icons.notifications,
+          title: context.l10n?.dashTileNotifications ?? 'Notifications',
+          color: AppColors.notificationPrimary,
+          hasBadge: _unreadNotificationCount > 0,
+          badgeCount: _unreadNotificationCount,
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => NotificationsScreen(appId: widget.appId)),
+            );
+          },
+        ),
+
+        // STATUS & BUSINESS - Conditional based on user role/status
         if (user.role == 'admin') ...[
           _buildActionCard(
             icon: Icons.list,
@@ -931,93 +1026,8 @@ class _DashboardScreenState extends State<DashboardScreen>
             onTap: () => widget.onTabSelected?.call(8),
           ),
         ],
-        _buildActionCard(
-          icon: Icons.trending_up,
-          title: context.l10n?.dashTileGrowTeam ?? 'Grow Your Team',
-          color: AppColors.growthPrimary,
-          onTap: () {
-            FirebaseAnalytics.instance.logEvent(
-              name: DashboardAnalytics.dashCtaTap,
-              parameters: {'cta': 'grow_team', 'locale': Localizations.localeOf(context).toLanguageTag()},
-            );
-            // Route based on user status:
-            // - Prospect users (no biz_opp_ref_url, role=user) go directly to ShareProspectScreen
-            // - Professional users (has biz_opp_ref_url) or Admins go to ShareNewScreen hub
-            final bool isProspect = (user.bizOppRefUrl == null || user.bizOppRefUrl!.isEmpty) && user.role == 'user';
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => isProspect
-                    ? ShareProspectScreen(appId: widget.appId)
-                    : ShareNewScreen(appId: widget.appId),
-              ),
-            );
-          },
-        ),
-        _buildActionCard(
-          icon: Icons.groups,
-          title: context.l10n?.dashTileViewTeam ?? 'View Your Team',
-          color: AppColors.teamPrimary,
-          onTap: () {
-            FirebaseAnalytics.instance.logEvent(
-              name: DashboardAnalytics.dashCtaTap,
-              parameters: {'cta': 'view_team', 'locale': Localizations.localeOf(context).toLanguageTag()},
-            );
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => NetworkScreen(appId: widget.appId)),
-            );
-          },
-        ),
-        _buildActionCard(
-          icon: Icons.smart_toy,
-          title: context.l10n?.dashTileAiCoach ?? 'Your AI Coach',
-          color: AppColors.chatPrimary,
-          onTap: () {
-            SubscriptionNavigationGuard.pushGuarded(
-              context: context,
-              routeName: 'chatbot',
-              screen: ChatBotScreen(onTabSelected: widget.onTabSelected),
-              appId: widget.appId,
-            );
-          },
-        ),
-        _buildActionCard(
-          icon: Icons.message,
-          title: context.l10n?.dashTileMessageCenter ?? 'Message Center',
-          color: AppColors.messagePrimary,
-          hasBadge: _unreadMessageCount > 0,
-          badgeCount: _unreadMessageCount,
-          onTap: () {
-            FirebaseAnalytics.instance.logEvent(
-              name: DashboardAnalytics.dashCtaTap,
-              parameters: {'cta': 'message_center', 'locale': Localizations.localeOf(context).toLanguageTag()},
-            );
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => MessageCenterScreen(appId: widget.appId)),
-            );
-          },
-        ),
-        _buildActionCard(
-          icon: Icons.notifications,
-          title: context.l10n?.dashTileNotifications ?? 'Notifications',
-          color: AppColors.notificationPrimary,
-          hasBadge: _unreadNotificationCount > 0,
-          badgeCount: _unreadNotificationCount,
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => NotificationsScreen(appId: widget.appId)),
-            );
-          },
-        ),
-        _buildActionCard(
-          icon: Icons.help_outline,
-          title: context.l10n?.dashTileHowItWorks ?? 'How It Works',
-          color: AppColors.teamAccent,
-          onTap: () => widget.onTabSelected?.call(5),
-        ),
+
+        // SUPPORT & SETTINGS
         _buildActionCard(
           icon: Icons.quiz,
           title: context.l10n?.dashTileFaqs ?? 'FAQ\'s',
@@ -1045,8 +1055,9 @@ class _DashboardScreenState extends State<DashboardScreen>
           },
         ),
 
-        // Subscription card is only shown at top for expired/cancelled or trial (final 6 days)
-
+        // Only show "Create New Account" for professionals (admins or users with bizOppRefUrl)
+        // Prospects don't need to create accounts for others
+        if (user.role == 'admin' || (user.bizOppRefUrl != null && user.bizOppRefUrl!.isNotEmpty))
           _buildActionCard(
             icon: Icons.manage_accounts,
             title: context.l10n?.dashTileCreateAccount ?? 'Create New Account',
@@ -1183,7 +1194,7 @@ class _DashboardScreenState extends State<DashboardScreen>
 
     return Scaffold(
       backgroundColor: AppColors.backgroundSecondary,
-      appBar: AppScreenBar(title: context.l10n?.dashTitle ?? 'Control Center', appId: widget.appId),
+      appBar: AppScreenBar(title: context.l10n?.dashTitle ?? 'Back Office', appId: widget.appId),
       body: FadeTransition(
         opacity: _fadeAnimation,
         child: RefreshIndicator(

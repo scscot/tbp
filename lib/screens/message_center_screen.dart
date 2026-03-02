@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import '../widgets/header_widgets.dart';
 import '../services/firestore_service.dart';
 import '../services/subscription_navigation_guard.dart';
@@ -142,16 +143,17 @@ class _MessageCenterScreenState extends State<MessageCenterScreen> {
     ids.sort();
     final threadId = ids.join('_');
 
-    SubscriptionNavigationGuard.pushGuarded(
-      context: context,
-      routeName: 'message_thread',
-      screen: MessageThreadScreen(
-        threadId: threadId,
-        appId: widget.appId,
-        recipientId: user.uid,
-        recipientName: displayName,
+    // Contacts section only shows sponsor/admin, so direct navigation is safe
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => MessageThreadScreen(
+          threadId: threadId,
+          appId: widget.appId,
+          recipientId: user.uid,
+          recipientName: displayName,
+        ),
       ),
-      appId: widget.appId,
     );
   }
 
@@ -304,8 +306,22 @@ class _MessageCenterScreenState extends State<MessageCenterScreen> {
     );
   }
 
+  // Helper to get the other user's ID from thread participants
+  String? _getOtherUserId(List<dynamic> participants, String currentUserId) {
+    for (final id in participants) {
+      if (id.toString() != currentUserId) {
+        return id.toString();
+      }
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
+    // Get current user for messaging access check
+    final authUser = Provider.of<UserModel?>(context);
+    final bool hasFullAccess = SubscriptionNavigationGuard.hasFullMessagingAccess(authUser);
+
     return Scaffold(
       appBar: AppScreenBar(title: context.l10n?.messageCenterTitle ?? 'Messages', appId: widget.appId),
       body: _currentUserId == null
@@ -327,7 +343,23 @@ class _MessageCenterScreenState extends State<MessageCenterScreen> {
                         return Center(
                             child: Text(context.l10n?.emptyMessageThreads ?? 'No message threads found.'));
                       }
-                      final threads = snapshot.data!.docs;
+
+                      // Filter threads for free prospects - only show threads with sponsor/admin
+                      var threads = snapshot.data!.docs;
+                      if (!hasFullAccess && authUser != null) {
+                        threads = threads.where((thread) {
+                          final data = thread.data() as Map<String, dynamic>;
+                          final participants = List<String>.from(data['participants'] ?? []);
+                          final otherUserId = _getOtherUserId(participants, _currentUserId!);
+                          // Only show threads where user can message the other participant
+                          return SubscriptionNavigationGuard.canMessageUser(authUser, otherUserId);
+                        }).toList();
+                      }
+
+                      if (threads.isEmpty) {
+                        return Center(
+                            child: Text(context.l10n?.emptyMessageThreads ?? 'No message threads found.'));
+                      }
                       return ListView.builder(
                         itemCount: threads.length,
                         itemBuilder: (context, index) {
@@ -398,16 +430,17 @@ class _MessageCenterScreenState extends State<MessageCenterScreen> {
                                     : null,
                                 onTap: () {
                                   if (otherUser != null) {
-                                    SubscriptionNavigationGuard.pushGuarded(
-                                      context: context,
-                                      routeName: 'message_thread',
-                                      screen: MessageThreadScreen(
-                                        threadId: thread.id,
-                                        appId: widget.appId,
-                                        recipientId: otherUser.uid,
-                                        recipientName: otherUserName,
+                                    // Threads list is already filtered to allowed contacts
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => MessageThreadScreen(
+                                          threadId: thread.id,
+                                          appId: widget.appId,
+                                          recipientId: otherUser.uid,
+                                          recipientName: otherUserName,
+                                        ),
                                       ),
-                                      appId: widget.appId,
                                     );
                                   }
                                 },
