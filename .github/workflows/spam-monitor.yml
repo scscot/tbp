@@ -15,7 +15,7 @@ env:
 jobs:
   spam-check:
     runs-on: ubuntu-latest
-    # Runtime ~3-4 min: send v14 test email + 3min wait + check Gmail placement
+    # Runtime ~3-4 min: send v16 test email + 3min wait + check Gmail placement
     timeout-minutes: 10
 
     steps:

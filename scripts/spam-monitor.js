@@ -1,12 +1,12 @@
 /**
  * Email Deliverability Monitoring Script
  *
- * Sends test email directly via Mailgun API using v14 template,
+ * Sends test email directly via Mailgun API using v16 template,
  * then uses Gmail API to verify inbox placement. If email lands
  * in junk folder, all campaigns are automatically disabled and an alert is sent.
  *
  * Key behaviors:
- * - Sends single v14 template with subject "Using AI to grow your team faster"
+ * - Sends single v16 template with subject "Your prospects don't believe they can recruit"
  * - No A/B testing - single template/subject for consistent monitoring
  * - Waits 3 minutes after send before checking Gmail placement
  * - Total runtime: ~3 minutes
@@ -51,10 +51,10 @@ const CHECK_DELAY_MS = 3 * 60 * 1000; // 3 minutes (Gmail typically delivers in 
 
 // Single template configuration (no A/B testing)
 const TEMPLATE_CONFIG = {
-  templateVersion: 'v14',
-  subject: "AI is changing how teams grow",
-  subjectTag: 'delivery_test_v14',
-  description: 'V14 template + AI curiosity subject'
+  templateVersion: 'v16',
+  subject: "Your prospects don't believe they can recruit",
+  subjectTag: 'delivery_test_v16',
+  description: 'V16 template - Professional focused'
 };
 
 // All campaigns to disable if junk detected
@@ -103,7 +103,7 @@ async function sendTestEmailViaMailgun() {
     throw new Error('MAILGUN_API_KEY not configured');
   }
 
-  console.log(`Sending test email via Mailgun: v14 (${TEMPLATE_CONFIG.templateVersion})`);
+  console.log(`Sending test email via Mailgun: ${TEMPLATE_CONFIG.templateVersion}`);
 
   const form = new FormData();
   form.append('from', FROM_ADDRESS);
@@ -134,8 +134,8 @@ async function sendTestEmailViaMailgun() {
   console.log(`Sent: "${TEMPLATE_CONFIG.subject}" (${response.data.id})`);
 
   return {
-    campaign: 'Template V14',
-    variant: 'v14',
+    campaign: 'Template V16',
+    variant: 'v16',
     subject: TEMPLATE_CONFIG.subject,
     messageId: response.data.id,
     success: true
@@ -316,14 +316,14 @@ async function main() {
   console.log('=== Email Monitor ===');
   console.log(`Time: ${new Date().toISOString()}`);
   console.log(`Target: ${TEST_EMAIL}`);
-  console.log(`Template: V14`);
+  console.log(`Template: V16`);
   console.log(`Subject: ${TEMPLATE_CONFIG.subject}`);
   console.log(`Method: Direct Mailgun API\n`);
 
   const results = [];
   const gmail = await getGmailClient();
 
-  console.log(`\n--- Testing V14 Template ---\n`);
+  console.log(`\n--- Testing V16 Template ---\n`);
 
   // Step 1: Send test email
   console.log(`Step 1: Sending test email...`);
@@ -333,13 +333,13 @@ async function main() {
   } catch (error) {
     console.error(`Failed to send test email: ${error.message}`);
     results.push({
-      campaign: 'Template V14',
-      variant: 'v14',
+      campaign: 'Template V16',
+      variant: 'v16',
       placement: 'send_failed',
       error: error.message
     });
     console.log('\n=== Summary ===');
-    console.log('Template V14: ERROR (send failed)');
+    console.log('Template V16: ERROR (send failed)');
     process.exit(1);
   }
 
@@ -402,7 +402,7 @@ async function main() {
     console.log(`\nJunk folder detected. ALL campaigns disabled.`);
     process.exit(1); // Non-zero exit for GitHub Actions visibility
   } else {
-    console.log('\nV14 template passed deliverability check.');
+    console.log('\nV16 template passed deliverability check.');
   }
 }
 
