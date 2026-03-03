@@ -16,6 +16,7 @@ Zwei Wege. Ein leistungsstarkes Tool. Ob Sie sich vor dem Beitritt beweisen ODER
 ZWEI WEGE ZUM ERFOLG
 
 FÜR INTERESSENTEN — Kostenlos bis zur Qualifikation
+
 Bauen Sie Ihr Team auf, bevor Sie sich für ein Geschäft entscheiden:
 1. Laden Sie die App herunter und erhalten Sie Ihren einzigartigen Empfehlungslink
 2. Nutzen Sie 16 KI-erstellte Nachrichten, um Freunde und Kontakte einzuladen
@@ -23,7 +24,8 @@ Bauen Sie Ihr Team auf, bevor Sie sich für ein Geschäft entscheiden:
 4. Qualifizieren Sie sich mit 3 direkten Sponsoren + 12 Teammitgliedern insgesamt
 5. Treten Sie Ihrer Gelegenheit mit bewährten Fähigkeiten und Schwung bei
 
-FÜR PROFIS — 6,99 $/Monat
+FÜR PROFIS — 6,99 $/Monat (Nach 30-tägiger kostenloser Testversion)
+
 Statten Sie Ihre Rekruten mit KI-Tools aus, bevor sie beitreten:
 1. Teilen Sie Team Build Pro mit potenziellen Rekruten
 2. Sie bauen Teams auf und beweisen sich mit KI-Coaching
@@ -108,6 +110,8 @@ Qualitätsverbesserungen
 
 ----------
 
-Version 1.0.69 - Release-Hinweise für Prüfer
+Version 1.0.82 - Release-Hinweise für Prüfer
 
-App Store Lokalisierungen für PT, ES und DE wurden erstellt.
+Dieses Update enthält Beschreibungsaktualisierungen mit klargestellter zweistufiger Preisgestaltung (Interessenten: Kostenlos bis zur Qualifikation, Profis: 6,99 $/Monat nach Testversion). Keine neuen Funktionen oder UI-Änderungen.
+
+Keine neuen Berechtigungen erforderlich. Keine Änderungen bei In-App-Kaufpreisen oder Abonnementfunktionen. Alle vorhandenen Funktionen funktionieren wie zuvor.

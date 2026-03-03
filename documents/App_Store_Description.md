@@ -3,6 +3,7 @@ App Name: Team Build Pro: AI Recruiting
 Subtitle: Direct Sales Downline Builder
 Google Subtitle: AI recruiting tools: 16 messages, 24/7 coaching & downline tracking
 Keywords: downline,prospecting,recruiting,mlm,network,marketing,direct,sales,teambuilder,coach,ai
+Promotional Text: For professionals growing their teams, and prospects who pre-build before joining. 24/7 AI Coach, real-time tracking. 30-day free trial.
 
 -----------
 
@@ -15,15 +16,19 @@ Two paths. One powerful tool. Whether you're proving yourself before joining OR 
 TWO PATHS TO SUCCESS
 
 FOR PROSPECTS — Free Until You Qualify
+
 Pre-build your team before committing to any business:
+
 1. Download the app and get your unique referral link
 2. Use 16 AI-crafted messages to invite friends and contacts
 3. Get 24/7 AI Coach guidance on strategy and follow-ups
 4. Qualify at 3 direct sponsors + 12 total team members
 5. Join your opportunity with proven skills and momentum
 
-FOR PROFESSIONALS — $6.99/month
+FOR PROFESSIONALS — $6.99/month (After 30-day free trial)
+
 Equip your recruits with AI tools before they join:
+
 1. Share Team Build Pro with potential recruits
 2. They build teams and prove themselves with AI coaching
 3. Qualified recruits join YOUR business—already skilled
@@ -107,5 +112,8 @@ Quality Improvements
 
 ----------
 
-Version 1.0.69 - Release Notes for Reviewer
-Created App Store Localizations for PT, ES, and DE.
+Version 1.0.82 - Release Notes for Reviewer
+
+This update contains Description updates with clarified two-tier pricing (Prospects: Free until qualified, Professionals: $6.99/month after trial). No new features or UI changes.
+
+No new permissions required. No changes to in-app purchase pricing or subscription functionality. All existing features work as before.

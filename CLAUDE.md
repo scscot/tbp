@@ -1732,6 +1732,25 @@ Corporate email domains are excluded from all contact collections using a **blac
   - `testing-database` Firestore database: No indexes, no code references
   - Composite indexes for deleted collections: `contacts_yahoo`, `beta_testers`
 
+**App Store Description Revisions (Mar 2, 2026)**
+- ✅ **Milestone Corrections**: Fixed qualification milestones from "4 direct + 20 total" to "3 direct + 12 total team members"
+- ✅ **Two-Tier Pricing Structure Added**: Clear distinction between Prospects (FREE until qualified) and Professionals ($6.99/month after 30-day trial)
+- ✅ **"Two Paths to Success" Messaging**: Restructured descriptions to address both audiences with separate sections
+- ✅ **Promotional Text Added**: All 4 languages now have promotional text field
+  - EN: "For professionals growing their teams, and prospects who pre-build before joining. 24/7 AI Coach, real-time tracking. 30-day free trial."
+  - ES/PT/DE: Localized versions
+- ✅ **Reviewer Notes Updated**: Changed from v1.0.69 to v1.0.82 with two-tier pricing description
+- ✅ **Google Play Description Updated**: `Google_Play_Store_Description.md` aligned with iOS descriptions
+  - App Name: "Team Build Pro: MLM Recruiting"
+  - Short Description: "Two paths: Grow your team OR pre-build first. AI coach, 16 messages, tracking"
+  - Full description restructured with TWO PATHS TO SUCCESS format
+- ✅ **Localized Short Descriptions Created**:
+  - ES: "Dos vías: Crece tu equipo O pre-construye. Coach IA, 16 mensajes, seguimiento"
+  - PT: "Dois caminhos: Cresça seu time OU pré-construa. Coach IA, 16 mensagens, rastreio"
+  - DE: "Zwei Wege: Team aufbauen ODER vorbauen. KI-Coach, 16 Nachrichten, Tracking"
+- ✅ **Domain-Specific URLs**: ES description updated to use es.teambuildpro.com for terms/privacy links
+- ✅ **v1.0.82 Submitted**: Both iOS and Android builds submitted for review
+
 **FSR Campaign & Subscription Updates (Feb 19, 2026)**
 - ✅ **FSR Email Campaign Created**: New campaign for FindSalesRep contacts
   - File: `functions/email-campaign-fsr.js`

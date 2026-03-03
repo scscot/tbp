@@ -16,6 +16,7 @@ Dos caminos. Una herramienta poderosa. Ya sea que estés demostrando tu capacida
 DOS CAMINOS HACIA EL ÉXITO
 
 PARA PROSPECTOS — Gratis Hasta Que Califiques
+
 Pre-construye tu equipo antes de comprometerte con cualquier negocio:
 1. Descarga la app y obtén tu enlace de referido único
 2. Usa 16 mensajes creados con IA para invitar amigos y contactos
@@ -23,7 +24,8 @@ Pre-construye tu equipo antes de comprometerte con cualquier negocio:
 4. Califica con 3 patrocinadores directos + 12 miembros totales del equipo
 5. Únete a tu oportunidad con habilidades probadas e impulso
 
-PARA PROFESIONALES — $6.99/mes
+PARA PROFESIONALES — $6.99/mes (Después de prueba gratuita de 30 días)
+
 Equipa a tus reclutas con herramientas de IA antes de que se unan:
 1. Comparte Team Build Pro con reclutas potenciales
 2. Ellos construyen equipos y se prueban a sí mismos con coaching de IA
@@ -91,8 +93,8 @@ PROSPECTOS: GRATIS hasta que califiques (3 directos + 12 total)
 PROFESIONALES: $6.99/mes después de prueba gratuita de 30 días
 Cancela en cualquier momento. Sin tarjeta de crédito requerida para prospectos.
 
-Términos: https://teambuildpro.com/terms_of_service.html
-Privacidad: https://teambuildpro.com/privacy_policy.html
+Términos: https://es.teambuildpro.com/terms_of_service.html
+Privacidad: https://es.teambuildpro.com/privacy_policy.html
 
 -------
 
@@ -108,6 +110,8 @@ Mejoras de Calidad
 
 ----------
 
-Versión 1.0.69 - Notas de Lanzamiento para Revisor
+Versión 1.0.82 - Notas de Lanzamiento para Revisor
 
-Se crearon Localizaciones de App Store para PT, ES y DE.
+Esta actualización contiene actualizaciones de Descripción con precios de dos niveles clarificados (Prospectos: Gratis hasta calificar, Profesionales: $6.99/mes después de prueba). Sin nuevas funciones ni cambios de interfaz.
+
+No se requieren nuevos permisos. Sin cambios en precios de compras en la app ni funcionalidad de suscripción. Todas las funciones existentes funcionan como antes.
