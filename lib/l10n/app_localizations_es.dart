@@ -1886,6 +1886,13 @@ class AppLocalizationsEs extends AppLocalizations {
   String get shareLinkCopiedMessage => '¡Enlace copiado al portapapeles!';
 
   @override
+  String get shareLanguagePreviewHint =>
+      'Selecciona el idioma para previsualizar el mensaje:';
+
+  @override
+  String get shareSubjectLabel => 'Asunto:';
+
+  @override
   String get shareProTipsTitle => 'Consejos profesionales para el éxito';
 
   @override

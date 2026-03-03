@@ -1877,6 +1877,13 @@ class AppLocalizationsPt extends AppLocalizations {
       'Link copiado para a área de transferência!';
 
   @override
+  String get shareLanguagePreviewHint =>
+      'Selecione o idioma para visualizar a mensagem:';
+
+  @override
+  String get shareSubjectLabel => 'Assunto:';
+
+  @override
   String get shareProTipsTitle => 'Dicas profissionais para o sucesso';
 
   @override

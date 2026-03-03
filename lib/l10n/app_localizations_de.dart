@@ -1896,6 +1896,13 @@ class AppLocalizationsDe extends AppLocalizations {
   String get shareLinkCopiedMessage => 'Link in die Zwischenablage kopiert!';
 
   @override
+  String get shareLanguagePreviewHint =>
+      'Sprache auswählen, um die Nachricht anzuzeigen:';
+
+  @override
+  String get shareSubjectLabel => 'Betreff:';
+
+  @override
   String get shareProTipsTitle => 'Profi-Tipps für den Erfolg';
 
   @override

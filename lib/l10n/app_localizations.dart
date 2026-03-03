@@ -3232,6 +3232,18 @@ abstract class AppLocalizations {
   /// **'Link copied to clipboard!'**
   String get shareLinkCopiedMessage;
 
+  /// Hint text for language selector on share screens
+  ///
+  /// In en, this message translates to:
+  /// **'Select language to preview message:'**
+  String get shareLanguagePreviewHint;
+
+  /// Label for email subject field on share screens
+  ///
+  /// In en, this message translates to:
+  /// **'Subject:'**
+  String get shareSubjectLabel;
+
   /// Title for pro tips section
   ///
   /// In en, this message translates to:

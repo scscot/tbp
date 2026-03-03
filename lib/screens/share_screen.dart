@@ -645,7 +645,7 @@ class _ShareScreenState extends State<ShareScreen>
             children: [
               const Icon(Icons.check_circle, color: Colors.white),
               const SizedBox(width: 8),
-              Text(context.l10n?.shareLinkCopiedMessage ?? 'Referral link copied! 🎉'),
+              Text(context.l10n?.shareLinkCopiedMessage ?? 'Link copied to clipboard!'),
             ],
           ),
           backgroundColor: AppColors.success,
@@ -759,7 +759,7 @@ class _ShareScreenState extends State<ShareScreen>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      context.l10n?.shareProspectTitle ?? 'New Recruiting Prospects',
+                      context.l10n?.shareProspectTitle ?? 'Building Your Team',
                       style: const TextStyle(
                           fontSize: 16, fontWeight: FontWeight.bold),
                     ),
@@ -893,7 +893,7 @@ class _ShareScreenState extends State<ShareScreen>
             Padding(
               padding: const EdgeInsets.only(bottom: 8),
               child: Text(
-                'Select language to preview message:',
+                context.l10n?.shareLanguagePreviewHint ?? 'Select language to preview message:',
                 style: TextStyle(
                   fontSize: 11,
                   color: AppColors.textSecondary,
@@ -972,7 +972,7 @@ class _ShareScreenState extends State<ShareScreen>
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Subject:',
+                        context.l10n?.shareSubjectLabel ?? 'Subject:',
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
@@ -1145,7 +1145,7 @@ class _ShareScreenState extends State<ShareScreen>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      context.l10n?.sharePartnerTitle ?? 'Current Business Partners',
+                      context.l10n?.sharePartnerTitle ?? 'Your Team Partners',
                       style: const TextStyle(
                           fontSize: 16, fontWeight: FontWeight.bold),
                     ),

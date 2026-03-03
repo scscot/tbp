@@ -490,7 +490,7 @@ class _SharePartnerScreenState extends State<SharePartnerScreen>
             children: [
               const Icon(Icons.check_circle, color: Colors.white),
               const SizedBox(width: 8),
-              Text(context.l10n?.shareLinkCopiedMessage ?? 'Referral link copied!'),
+              Text(context.l10n?.shareLinkCopiedMessage ?? 'Link copied to clipboard!'),
             ],
           ),
           backgroundColor: AppColors.success,
@@ -746,7 +746,7 @@ class _SharePartnerScreenState extends State<SharePartnerScreen>
             Padding(
               padding: const EdgeInsets.only(bottom: 8),
               child: Text(
-                'Select language to preview message:',
+                context.l10n?.shareLanguagePreviewHint ?? 'Select language to preview message:',
                 style: TextStyle(
                   fontSize: 11,
                   color: AppColors.textSecondary,
@@ -825,7 +825,7 @@ class _SharePartnerScreenState extends State<SharePartnerScreen>
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Subject:',
+                        context.l10n?.shareSubjectLabel ?? 'Subject:',
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w600,

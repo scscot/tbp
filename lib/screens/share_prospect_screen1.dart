@@ -442,7 +442,7 @@ class _ShareProspectScreen1State extends State<ShareProspectScreen1>
             children: [
               const Icon(Icons.check_circle, color: Colors.white),
               const SizedBox(width: 8),
-              Text(context.l10n?.shareLinkCopiedMessage ?? 'Referral link copied!'),
+              Text(context.l10n?.shareLinkCopiedMessage ?? 'Link copied to clipboard!'),
             ],
           ),
           backgroundColor: AppColors.success,
@@ -458,7 +458,7 @@ class _ShareProspectScreen1State extends State<ShareProspectScreen1>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppScreenBar(title: context.l10n?.shareProspectTitle ?? 'New Recruiting Prospects', appId: widget.appId),
+      appBar: AppScreenBar(title: context.l10n?.shareProspectTitle ?? 'Building Your Team', appId: widget.appId),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : FadeTransition(
@@ -565,7 +565,7 @@ class _ShareProspectScreen1State extends State<ShareProspectScreen1>
     return _buildInfoCard(
       icon: Icons.connect_without_contact,
       iconColor: AppColors.growthPrimary,
-      title: context.l10n?.shareProspectTitle ?? 'New Recruiting Prospects',
+      title: context.l10n?.shareProspectTitle ?? 'Building Your Team',
       subtitle: context.l10n?.shareProspectSubtitle ??
           'Invite recruiting prospects to get a head start.',
       description: context.l10n?.shareProspectDescription(_bizOppName) ??
@@ -644,7 +644,7 @@ class _ShareProspectScreen1State extends State<ShareProspectScreen1>
             Padding(
               padding: const EdgeInsets.only(bottom: 8),
               child: Text(
-                'Select language to preview message:',
+                context.l10n?.shareLanguagePreviewHint ?? 'Select language to preview message:',
                 style: TextStyle(
                   fontSize: 11,
                   color: AppColors.textSecondary,
@@ -723,7 +723,7 @@ class _ShareProspectScreen1State extends State<ShareProspectScreen1>
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Subject:',
+                        context.l10n?.shareSubjectLabel ?? 'Subject:',
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w600,

@@ -3128,6 +3128,14 @@
   "@shareLinkCopiedMessage": {
     "description": "Success message after copying link"
   },
+  "shareLanguagePreviewHint": "Sprache auswählen, um die Nachricht anzuzeigen:",
+  "@shareLanguagePreviewHint": {
+    "description": "Hint text for language selector on share screens"
+  },
+  "shareSubjectLabel": "Betreff:",
+  "@shareSubjectLabel": {
+    "description": "Label for email subject field on share screens"
+  },
   "shareProTipsTitle": "Profi-Tipps für den Erfolg",
   "@shareProTipsTitle": {
     "description": "Title for pro tips section",

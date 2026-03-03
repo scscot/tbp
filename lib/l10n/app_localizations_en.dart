@@ -1859,6 +1859,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get shareLinkCopiedMessage => 'Link copied to clipboard!';
 
   @override
+  String get shareLanguagePreviewHint => 'Select language to preview message:';
+
+  @override
+  String get shareSubjectLabel => 'Subject:';
+
+  @override
   String get shareProTipsTitle => 'Pro Tips for Success';
 
   @override

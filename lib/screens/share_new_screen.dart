@@ -148,7 +148,7 @@ class _ShareNewScreenState extends State<ShareNewScreen>
           const Icon(Icons.share_rounded, size: 40, color: Colors.white),
           const SizedBox(height: 16),
           Text(
-            context.l10n?.shareHeading ?? 'Grow Your Team',
+            context.l10n?.shareHeading ?? 'Powerful Referral System',
             style: const TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
@@ -157,7 +157,7 @@ class _ShareNewScreenState extends State<ShareNewScreen>
           ),
           const SizedBox(height: 8),
           Text(
-            context.l10n?.shareSubheading ?? 'Choose how you want to grow your network',
+            context.l10n?.shareSubheading ?? 'Share your referral links to pre-build a new team with recruiting prospects or expand your existing team.',
             style: TextStyle(
               fontSize: 15,
               color: Colors.white.withValues(alpha: 0.9),
@@ -207,7 +207,7 @@ class _ShareNewScreenState extends State<ShareNewScreen>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    context.l10n?.shareProspectTitle ?? 'New Recruiting Prospects',
+                    context.l10n?.shareProspectTitle ?? 'Building Your Team',
                     style: const TextStyle(
                       fontSize: 17,
                       fontWeight: FontWeight.bold,

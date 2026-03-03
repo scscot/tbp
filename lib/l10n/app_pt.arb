@@ -2540,6 +2540,8 @@
   "shareSelectMessageLabel": "Selecionar mensagem para enviar",
   "shareButtonShare": "Compartilhar",
   "shareLinkCopiedMessage": "Link copiado para a área de transferência!",
+  "shareLanguagePreviewHint": "Selecione o idioma para visualizar a mensagem:",
+  "shareSubjectLabel": "Assunto:",
   "shareProTipsTitle": "Dicas profissionais para o sucesso",
   "shareProTip1": "💬 Personalize sua mensagem ao compartilhar",
   "shareProTip2": "📱 Compartilhe consistentemente em todas as plataformas sociais",
