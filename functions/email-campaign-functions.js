@@ -160,7 +160,7 @@ async function sendEmailViaMailgun(contact, docId, config) {
   };
   form.append('h:X-Mailgun-Variables', JSON.stringify(templateVars));
 
-  console.log(`   Template: V14 | Subject: "${TEMPLATE_CONFIG.subject}"`);
+  console.log(`   Template: V16 | Subject: "${TEMPLATE_CONFIG.subject}"`);
 
   // Send via Mailgun API
   const mailgunBaseUrl = `https://api.mailgun.net/v3/${domain}`;

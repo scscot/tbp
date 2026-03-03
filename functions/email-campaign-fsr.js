@@ -133,7 +133,7 @@ async function sendEmailViaMailgun(contact, docId) {
   };
   form.append('h:X-Mailgun-Variables', JSON.stringify(templateVars));
 
-  console.log(`   Company: ${contact.company || 'Unknown'} | Template: V14`);
+  console.log(`   Company: ${contact.company || 'Unknown'} | Template: V16`);
 
   // Send via Mailgun API
   const response = await axios.post(

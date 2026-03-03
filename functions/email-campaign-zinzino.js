@@ -239,7 +239,7 @@ async function sendEmailViaMailgun(contact, docId, config) {
   form.append('h:List-Unsubscribe', `<mailto:${unsubscribeEmail}?subject=Unsubscribe>, <${unsubscribeUrl}>`);
   form.append('h:List-Unsubscribe-Post', 'List-Unsubscribe=One-Click');
 
-  console.log(`   Lang: ${language.toUpperCase()} | Template: V14 | CTA: ${ctaDomain}`);
+  console.log(`   Lang: ${language.toUpperCase()} | Template: V16 | CTA: ${ctaDomain}`);
 
   // Send via Mailgun API
   const mailgunBaseUrl = `https://api.mailgun.net/v3/${domain}`;

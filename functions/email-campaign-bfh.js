@@ -194,7 +194,7 @@ async function sendEmailViaMailgun(contact, docId, config) {
   };
   form.append('h:X-Mailgun-Variables', JSON.stringify(templateVars));
 
-  console.log(`   Lang: ${language.toUpperCase()} | Template: V14 | CTA: ${ctaDomain}`);
+  console.log(`   Lang: ${language.toUpperCase()} | Template: V16 | CTA: ${ctaDomain}`);
 
   // Mailgun tracking disabled — clicks tracked via GA4 using UTM parameters in direct landing page URLs
   form.append('o:tracking', 'no');
