@@ -8,20 +8,27 @@ Keywords: downline,prospecting,recruiting,mlm,network,marketing,direct,sales,tea
 
 Description:
 
-AI Recruiting System for Direct Sales Professionals
+AI Recruiting System for Direct Sales
 
-Empower your business partners and recruiting prospects with AI-powered coaching and tools that drive downline growth—before and after they join your opportunity.
+Two paths. One powerful tool. Whether you're proving yourself before joining OR helping recruits prove themselves, Team Build Pro gives everyone AI-powered coaching and 16 pre-written messages.
 
-THE SYSTEM
+TWO PATHS TO SUCCESS
 
-Your recruiting prospects build their teams risk-free:
+FOR PROSPECTS — Free Until You Qualify
+Pre-build your team before committing to any business:
+1. Download the app and get your unique referral link
+2. Use 16 AI-crafted messages to invite friends and contacts
+3. Get 24/7 AI Coach guidance on strategy and follow-ups
+4. Qualify at 3 direct sponsors + 12 total team members
+5. Join your opportunity with proven skills and momentum
 
-1. Share your referral link
-2. They invite contacts and pre-build their network
-3. Hit qualification milestones (4 direct + 20 total team)
-4. They receive invitation to join YOUR business—with their team ready
-
-When they join your opportunity? They bring pre-built teams, proven skills, and real momentum.
+FOR PROFESSIONALS — $6.99/month
+Equip your recruits with AI tools before they join:
+1. Share Team Build Pro with potential recruits
+2. They build teams and prove themselves with AI coaching
+3. Qualified recruits join YOUR business—already skilled
+4. Achieve true duplication across your organization
+5. Reduce the 75% first-year dropout rate
 
 16 PRE-WRITTEN RECRUITING MESSAGES
 
@@ -48,7 +55,7 @@ Available in 4 languages. Your entire downline gets the same AI support—true d
 REAL-TIME TEAM TRACKING
 
 - Live network visualization showing your entire organization
-- Automatic milestone tracking (4 direct + 20 total)
+- Automatic milestone tracking (3 direct + 12 total)
 - Team growth analytics and engagement metrics
 - Secure team messaging
 
@@ -60,26 +67,28 @@ Prospects who qualify are invited to join YOUR specific business—loyalty and t
 
 KEY BENEFITS
 
-- Offer prospects a proven system, not just a pitch
+- Prospects try 100% free—no credit card required until qualified
+- Two paths: Prove yourself first OR help recruits prove themselves
 - Stand out from competitors with modern AI tools
-- Let prospects try risk-free—30-day free trial
 - Achieve true duplication across your organization
 - Eliminate the 75% first-year dropout rate
 - Full international support: English, Spanish (Español), Portuguese (Português), German (Deutsch)
 
 WHO THIS IS FOR
 
-Direct sales professionals, network marketing leaders, MLM distributors—anyone who wants to give their prospects a real system and empower their team with AI-powered tools.
+PROSPECTS: Anyone curious about direct sales who wants to prove they can recruit before investing in a business opportunity.
+
+PROFESSIONALS: Direct sales veterans, network marketing leaders, MLM distributors—anyone who wants to give prospects a risk-free way to prove themselves before joining.
 
 NOT A BUSINESS OPPORTUNITY
 
 Team Build Pro is a recruiting tool for the opportunity you already have—not a business itself. We charge $6.99/month. We don't pay commissions or offer income opportunities.
 
-SUBSCRIPTION
+PRICING
 
-- 30-day free trial (full access)
-- $6.99/month, auto-renewing
-- Cancel anytime
+PROSPECTS: FREE until you qualify (3 direct + 12 total)
+PROFESSIONALS: $6.99/month after 30-day free trial
+Cancel anytime. No credit card required for prospects.
 
 Terms: https://teambuildpro.com/terms_of_service.html
 Privacy: https://teambuildpro.com/privacy_policy.html

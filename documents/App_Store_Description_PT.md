@@ -9,20 +9,27 @@ Texto Promocional: Para profissionais crescendo suas equipes, e prospectos que p
 
 Descrição:
 
-Sistema de Recrutamento com IA para Profissionais de Vendas Diretas
+Sistema de Recrutamento com IA para Vendas Diretas
 
-Capacite seus parceiros de negócio e prospectos de recrutamento com coaching impulsionado por IA e ferramentas que impulsionam o crescimento da sua linha descendente—antes e depois de se juntarem à sua oportunidade.
+Dois caminhos. Uma ferramenta poderosa. Seja você provando sua capacidade antes de entrar OU ajudando recrutas a provar a deles, Team Build Pro oferece coaching de IA e 16 mensagens pré-escritas para todos.
 
-O SISTEMA
+DOIS CAMINHOS PARA O SUCESSO
 
-Seus prospectos de recrutamento constroem suas equipes sem risco:
+PARA PROSPECTOS — Grátis Até Você Qualificar
+Pré-construa sua equipe antes de se comprometer com qualquer negócio:
+1. Baixe o app e obtenha seu link de indicação único
+2. Use 16 mensagens criadas com IA para convidar amigos e contatos
+3. Obtenha orientação do Coach IA 24/7 sobre estratégia e acompanhamentos
+4. Qualifique com 3 patrocinadores diretos + 12 membros totais da equipe
+5. Junte-se à sua oportunidade com habilidades comprovadas e impulso
 
-1. Compartilhe seu link de indicação
-2. Eles convidam contatos e pré-constroem sua rede
-3. Atingem marcos de qualificação (4 diretos + 20 equipe total)
-4. Recebem convite para se juntar ao SEU negócio—com sua equipe pronta
-
-Quando se juntam à sua oportunidade? Trazem equipes pré-construídas, habilidades comprovadas e impulso real.
+PARA PROFISSIONAIS — $6.99/mês
+Equipe seus recrutas com ferramentas de IA antes de se juntarem:
+1. Compartilhe Team Build Pro com recrutas potenciais
+2. Eles constroem equipes e se provam com coaching de IA
+3. Recrutas qualificados se juntam ao SEU negócio—já capacitados
+4. Alcance duplicação verdadeira em toda sua organização
+5. Reduza a taxa de desistência de 75% no primeiro ano
 
 16 MENSAGENS DE RECRUTAMENTO PRÉ-ESCRITAS
 
@@ -49,7 +56,7 @@ Disponível em 4 idiomas. Toda a sua linha descendente recebe o mesmo suporte de
 RASTREAMENTO DE EQUIPE EM TEMPO REAL
 
 - Visualização de rede ao vivo mostrando toda a sua organização
-- Rastreamento automático de marcos (4 diretos + 20 total)
+- Rastreamento automático de marcos (3 diretos + 12 total)
 - Análise de crescimento de equipe e métricas de engajamento
 - Mensagens seguras de equipe
 
@@ -61,26 +68,28 @@ Os prospectos que se qualificam são convidados a se juntar ao SEU negócio espe
 
 BENEFÍCIOS PRINCIPAIS
 
-- Ofereça aos prospectos um sistema comprovado, não apenas uma apresentação
+- Prospectos experimentam 100% grátis—sem cartão de crédito até qualificar
+- Dois caminhos: Prove sua capacidade primeiro OU ajude recrutas a provar a deles
 - Destaque-se da concorrência com ferramentas modernas de IA
-- Deixe os prospectos experimentarem sem risco—teste gratuito de 30 dias
 - Alcance duplicação verdadeira em toda a sua organização
 - Elimine a taxa de desistência de 75% no primeiro ano
 - Suporte internacional completo: inglês, espanhol, português, alemão
 
 PARA QUEM É ISSO
 
-Profissionais de vendas diretas, líderes de marketing de rede, distribuidores de MMN—qualquer um que queira dar aos seus prospectos um sistema real e capacitar sua equipe com ferramentas de IA.
+PROSPECTOS: Qualquer pessoa interessada em vendas diretas que queira provar que pode recrutar antes de investir em uma oportunidade de negócio.
+
+PROFISSIONAIS: Veteranos de vendas diretas, líderes de marketing de rede, distribuidores de MMN—qualquer um que queira dar aos prospectos uma forma sem risco de provar sua capacidade antes de se juntar.
 
 NÃO É UMA OPORTUNIDADE DE NEGÓCIO
 
 Team Build Pro é uma ferramenta de recrutamento para a oportunidade que você já tem—não é um negócio em si. Cobramos $6.99/mês. Não pagamos comissões nem oferecemos oportunidades de renda.
 
-ASSINATURA
+PREÇOS
 
-- Teste gratuito de 30 dias (acesso completo)
-- $6.99/mês, renovação automática
-- Cancele a qualquer momento
+PROSPECTOS: GRÁTIS até você qualificar (3 diretos + 12 total)
+PROFISSIONAIS: $6.99/mês após teste gratuito de 30 dias
+Cancele a qualquer momento. Sem cartão de crédito necessário para prospectos.
 
 Termos: https://pt.teambuildpro.com/terms_of_service.html
 Privacidade: https://pt.teambuildpro.com/privacy_policy.html
