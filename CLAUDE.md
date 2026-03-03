@@ -1751,6 +1751,31 @@ Corporate email domains are excluded from all contact collections using a **blac
 - ✅ **Domain-Specific URLs**: ES description updated to use es.teambuildpro.com for terms/privacy links
 - ✅ **v1.0.82 Submitted**: Both iOS and Android builds submitted for review
 
+**Website Prospect Experience Enhancements (Mar 2, 2026)**
+- ✅ **Dynamic Prospect Hero Section**: All 4 language sites (EN, ES, PT, DE) now show customized hero when `?new=` query parameter is present
+  - Default hero (`id="hero-default"`) hidden when prospect detected
+  - Prospect hero (`id="hero-prospects"`) displayed with dynamic company name
+  - `bizOppName` populated from `userData.bizOppName` via `getUserByReferralCode` Cloud Function
+  - Localized headlines: "Considering Joining [bizOppName]?" (EN), "¿Pensando en Unirte a [bizOppName]?" (ES), "Pensando em Entrar na [bizOppName]?" (PT), "Erwägen Sie, [bizOppName] beizutreten?" (DE)
+- ✅ **Hide "No Credit Card Required" for Prospects**: `.hero-no-cc` element hidden in prospect hero section
+  - Prospects already know it's free; reduces visual clutter
+- ✅ **Hide Professionals Pricing Card for Prospects**: When `?new=` is present:
+  - Professionals pricing card hidden (`pricingCards[1].style.display = 'none'`)
+  - Prospects pricing card centered (`pricingCards[0].style.margin = '0 auto'`)
+- ✅ **Alternating Section Backgrounds**: Improved visual contrast between sections
+  - White sections: How It Works, Benefits, Testimonial, Download
+  - Grey sections (#f1f5f9): Video, Screenshots, Pricing
+  - Applied consistently across all 4 language sites
+- ✅ **Updated `customizeForProspects(userData)` Function**: Now accepts userData parameter and handles:
+  1. Hero section swap with bizOppName population
+  2. Hide .hero-no-cc in prospect hero
+  3. Hide "For Professionals" benefits subsection
+  4. Swap video source to prospect version
+  5. Swap video headline text
+  6. Swap benefits section headline
+  7. Hide prospects header
+  8. Hide Professionals pricing card and center Prospects card
+
 **FSR Campaign & Subscription Updates (Feb 19, 2026)**
 - ✅ **FSR Email Campaign Created**: New campaign for FindSalesRep contacts
   - File: `functions/email-campaign-fsr.js`

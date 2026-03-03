@@ -154,8 +154,8 @@
     <div id="tbp-header"></div>
 
     <main>
-        <!-- Hero Section -->
-        <section class="hero-homepage">
+        <!-- Hero Section (Default - for professionals and direct visitors) -->
+        <section class="hero-homepage" id="hero-default">
             <div class="container">
                 <h1>Ein Neues KI-Paradigma für<br class="desktop-only"> Network Marketing Erfolg</h1>
                 <h2 class="subline" style="font-size: 1.2rem; font-weight: 500; color: #ffffff; max-width: 650px; margin: 0 auto 1.5rem; line-height: 1.6;">Ihre Interessenten glauben nicht, dass sie rekrutieren können.</h2>
@@ -177,51 +177,26 @@
             </div>
         </section>
 
-        <!-- Section 1: AI Recruiting Toolkit -->
-        <section class="section-workflow" id="screenshots">
+        <!-- Hero Section (Prospects - shown when ?new= parameter is present) -->
+        <section class="hero-homepage" id="hero-prospects" style="display: none;">
             <div class="container">
-                <div class="section-header">
-                    <h2>Gebaut für Momentum. Designt zum Skalieren.</h2>
-                    <p>Alles, was Sie brauchen, um intelligenter zu rekrutieren, Ihr Team zu verfolgen und 24/7 Coaching zu erhalten.</p>
+                <h1>Erwägen Sie, <span id="bizOppName" style="color: #ffff00;"></span> beizutreten?</h1>
+                <h2 class="subline" style="font-size: 1.2rem; font-weight: 500; color: #ffffff; max-width: 650px; margin: 0 auto 1.5rem; line-height: 1.6;">Sehen Sie, ob Sie ein Team aufbauen können — bevor Sie einsteigen.</h2>
+                <h3 style="font-size: 1.15rem; font-weight: 400; color: #ffffff; max-width: 650px; margin: 0 auto 2rem; line-height: 1.6;">Die meisten treten erst bei und hoffen, dass es funktioniert.<br>Team Build Pro zeigt Ihnen zuerst Fortschritte — dann entscheiden Sie</h3>
+
+                <div class="hero-download">
+                    <p class="hero-download-text">Jetzt Kostenlos Starten!</p>
+                    <div class="download-badges">
+                        <a href="https://apps.apple.com/us/app/id6751211622" onclick="openAppOrStore('ios'); return false;" rel="noopener">
+                            <img src="assets/images/app_store_badges/black.svg" alt="Im App Store laden">
+                        </a>
+                        <a href="https://play.google.com/store/apps/details?id=com.scott.ultimatefix" onclick="openAppOrStore('android'); return false;" rel="noopener">
+                            <img src="assets/images/Google-Play.png" alt="Bei Google Play">
+                        </a>
+                    </div>
+                    <p class="hero-no-cc"><span class="material-symbols-outlined">check_circle</span><strong>Keine Kreditkarte erforderlich · Funktioniert mit jedem Unternehmen</strong></p>
                 </div>
 
-                <div class="workflow-grid">
-                    <div class="workflow-item">
-                        <div class="phone-frame">
-                            <img src="assets/images/screenshots/prospect-de-1242x2688.jpg" alt="KI-Nachrichten Teilen" onerror="this.style.display='none'">
-                        </div>
-                        <h3>KI-Nachrichten Teilen</h3>
-                        <p>Bis zu 16 vorgeschriebene Nachrichten für jeden Einwand—von Skeptikern bis zu zeitarmen Interessenten. Tippen, personalisieren, senden.</p>
-                    </div>
-                    <div class="workflow-item">
-                        <div class="phone-frame">
-                            <img src="assets/images/screenshots/control-center-de-1242x2688.jpg" alt="Team Verfolgen" onerror="this.style.display='none'">
-                        </div>
-                        <h3>Ihr Wachsendes Team Verfolgen</h3>
-                        <p>Sehen Sie, wer über Ihre Empfehlungslinks beigetreten ist. Filtern Sie nach direkten Sponsoren, neuen Mitgliedern oder qualifizierten Leads.</p>
-                    </div>
-                    <div class="workflow-item">
-                        <div class="phone-frame">
-                            <img src="assets/images/screenshots/ai-coach-de-1242x2688.jpg" alt="KI-Coach" onerror="this.style.display='none'">
-                        </div>
-                        <h3>Fragen Sie Ihren KI-Coach Alles</h3>
-                        <p>24/7 Recruiting-Beratung. Erhalten Sie sofortige Antworten auf alle Fragen zum Aufbau Ihres Geschäfts.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Video Section -->
-        <section id="video" class="section-video">
-            <div class="container">
-                <h2 class="video-headline">Was haben die 25%, die nicht aufgeben, gemeinsam?</h2>
-                <div class="video-container">
-                    <video controls preload="metadata" poster="/assets/videos/Thumbnail.png">
-                        <source src="/assets/videos/TBP_Professionals.mp4" type="video/mp4">
-                        Ihr Browser unterstützt das Video-Element nicht.
-                    </video>
-                </div>
-                <p class="video-subtext">Sehen Sie die 60-Sekunden-Antwort</p>
             </div>
         </section>
 
@@ -264,49 +239,24 @@
             </div>
         </section>
 
-        <!-- AI Coach Section -->
-        <section id="ai-coach" class="section section-gray">
+        <!-- Video Section -->
+        <section id="video" class="section-video" style="background: #f1f5f9;">
             <div class="container">
-                <div class="section-header">
-                    <h2>Lernen Sie den KI-Coach kennen</h2>
-                    <p>Ihr privater Coaching-Begleiter, der Ihr Team kennt, Ihre Ziele versteht und Ihren nächsten Schritt leitet.</p>
+                <h2 class="video-headline">Was haben die 25%, die nicht aufgeben, gemeinsam?</h2>
+                <div class="video-container">
+                    <video controls preload="metadata" poster="/assets/videos/Thumbnail.png">
+                        <source src="/assets/videos/TBP_Professionals.mp4" type="video/mp4">
+                        Ihr Browser unterstützt das Video-Tag nicht.
+                    </video>
                 </div>
-                <div class="grid grid-3">
-                    <div class="feature-card">
-                        <div class="feature-card-header">
-                            <div class="feature-icon blue">
-                                <span class="material-symbols-outlined">psychology</span>
-                            </div>
-                            <h3>Personalisierte Anleitung</h3>
-                        </div>
-                        <p>Fragen Sie alles zu Ihrem Team, Ihrer Strategie oder Ihren Herausforderungen. Erhalten Sie Ratschläge, die auf Ihre spezifische Situation und Ihren aktuellen Fortschritt zugeschnitten sind.</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-card-header">
-                            <div class="feature-icon green">
-                                <span class="material-symbols-outlined">route</span>
-                            </div>
-                            <h3>Reise-Coaching</h3>
-                        </div>
-                        <p>Versteht genau, wo Sie auf Ihrer Reise stehen und gibt Ihnen Schritt-für-Schritt-Anleitung für Ihren nächsten Meilenstein.</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-card-header">
-                            <div class="feature-icon purple">
-                                <span class="material-symbols-outlined">group</span>
-                            </div>
-                            <h3>Team-spezifische Einblicke</h3>
-                        </div>
-                        <p>Kennt Ihre Teammitglieder, deren Fortschritt und deren Bedürfnisse. Erhalten Sie Coaching zu spezifischen Personen und Situationen in Echtzeit.</p>
-                    </div>
-                </div>
+                <p class="video-subtext">Sehen Sie die 60-Sekunden-Antwort</p>
             </div>
         </section>
 
         <!-- Benefits Section -->
         <section class="section section-white" id="benefits">
             <div class="container">
-                <h2 style="text-align: center; margin-bottom: 2.5rem;">Zwei Wege. Ein mächtiges Werkzeug.</h2>
+                <h2 id="benefits-headline" style="text-align: center; margin-bottom: 2.5rem;">Zwei Wege. Ein mächtiges Werkzeug.</h2>
                 <div style="max-width: 900px; margin: 0 auto;">
                     <!-- For Direct Sales Professionals -->
                     <div id="professionals" data-audience="professionals" style="margin-bottom: 4rem;">
@@ -345,8 +295,10 @@
                     </div>
                     <!-- For Recruiting Prospects -->
                     <div id="prospects">
-                        <h3 style="text-align: center; margin-bottom: 1rem; font-size: 1.5rem;">Für Interessenten</h3>
-                        <p style="text-align: center; margin-bottom: 2.5rem; font-size: 1.1rem; line-height: 1.6; max-width: 700px; margin-left: auto; margin-right: auto;">Bauen Sie Ihr Team auf, bevor Sie sich verpflichten. Es ist kostenlos — erreichen Sie 3 direkte Sponsoren + 12 Gesamtmitglieder, um sich zu qualifizieren.</p>
+                        <div id="prospects-header">
+                            <h3 style="text-align: center; margin-bottom: 1rem; font-size: 1.5rem;">Für Interessenten</h3>
+                            <p style="text-align: center; margin-bottom: 2.5rem; font-size: 1.1rem; line-height: 1.6; max-width: 700px; margin-left: auto; margin-right: auto;">Bauen Sie Ihr Team auf, bevor Sie sich verpflichten. Es ist kostenlos — erreichen Sie 3 direkte Sponsoren + 12 Gesamtmitglieder, um sich zu qualifizieren.</p>
+                        </div>
                         <div style="display: flex; flex-direction: column; gap: 1.5rem;">
                             <div class="feature-card" style="padding: 1.5rem;">
                                 <div class="feature-card-header">
@@ -377,6 +329,40 @@
                                 <p>Erreichen Sie 3 direkte Sponsoren + 12 Gesamtmitglieder, um zu qualifizieren. Treten Sie dann mit Selbstvertrauen und Schwung bei.</p>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Screenshots Section -->
+        <section class="section-workflow" id="screenshots" style="background: #f1f5f9;">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Für Schwung gebaut. Für Skalierung konzipiert.</h2>
+                    <p>Alles, was Sie brauchen, um intelligenter zu rekrutieren, Ihr Team zu verfolgen und 24/7 Coaching zu erhalten.</p>
+                </div>
+
+                <div class="workflow-grid">
+                    <div class="workflow-item">
+                        <div class="phone-frame">
+                            <img src="assets/screenshots/share-messages.png" alt="KI-geschriebene Nachrichten teilen" onerror="this.style.display='none'">
+                        </div>
+                        <h3>KI-geschriebene Nachrichten teilen</h3>
+                        <p>Bis zu 16 vorgeschriebene Nachrichten behandeln jeden Einwand — von Skeptikern bis zu zeitbeschränkten Interessenten. Tippen, personalisieren, senden.</p>
+                    </div>
+                    <div class="workflow-item">
+                        <div class="phone-frame">
+                            <img src="assets/screenshots/network-view.png" alt="Verfolgen Sie Ihr Team" onerror="this.style.display='none'">
+                        </div>
+                        <h3>Verfolgen Sie Ihr wachsendes Team</h3>
+                        <p>Sehen Sie, wer über Ihre Empfehlungslinks beigetreten ist. Filtern Sie nach direkten Sponsoren, neuen Mitgliedern oder qualifizierten Leads.</p>
+                    </div>
+                    <div class="workflow-item">
+                        <div class="phone-frame">
+                            <img src="assets/screenshots/ai-coach.png" alt="KI-Coach" onerror="this.style.display='none'">
+                        </div>
+                        <h3>Fragen Sie Ihren KI-Coach alles</h3>
+                        <p>24/7 Recruiting-Anleitung. Erhalten Sie sofortige Antworten auf jede Frage zum Aufbau Ihres Geschäfts.</p>
                     </div>
                 </div>
             </div>
@@ -414,7 +400,7 @@
         </section>
 
         <!-- Section 4: Pricing -->
-        <section class="section-pricing" id="pricing">
+        <section class="section-pricing" id="pricing" style="background: #f1f5f9;">
             <div class="container">
                 <div class="section-header">
                     <h2>Einfache, Transparente Preise</h2>
@@ -582,24 +568,66 @@
         }
 
         // Customize page for prospect users (?new= parameter)
-        function customizeForProspects() {
-            // 1. Hide "For Direct Sales Professionals" subsection
+        function customizeForProspects(userData) {
+            // 1. Swap hero sections and populate bizOppName
+            const heroDefault = document.getElementById('hero-default');
+            const heroProspects = document.getElementById('hero-prospects');
+            if (heroDefault && heroProspects) {
+                heroDefault.style.display = 'none';
+                heroProspects.style.display = 'block';
+
+                // Populate bizOppName from userData
+                const bizOppNameSpan = document.getElementById('bizOppName');
+                if (bizOppNameSpan && userData && userData.bizOppName) {
+                    bizOppNameSpan.textContent = userData.bizOppName;
+                }
+
+                // Hide "No Credit Card Required" text in prospects hero
+                const heroNoCC = heroProspects.querySelector('.hero-no-cc');
+                if (heroNoCC) {
+                    heroNoCC.style.display = 'none';
+                }
+            }
+
+            // 2. Hide "For Direct Sales Professionals" subsection
             const professionalsSection = document.querySelector('[data-audience="professionals"]');
             if (professionalsSection) {
                 professionalsSection.style.display = 'none';
             }
 
-            // 2. Swap video source to prospect version
+            // 3. Swap video source to prospect version
             const videoSource = document.querySelector('#video video source');
             if (videoSource) {
                 videoSource.src = '/assets/videos/TBP_Prospects.mp4';
                 videoSource.parentElement.load(); // Reload video with new source
             }
 
-            // 3. Swap video headline
+            // 4. Swap video headline
             const videoHeadline = document.querySelector('.video-headline');
             if (videoHeadline) {
                 videoHeadline.textContent = 'Erfolg testen — bevor du dich verpflichtest';
+            }
+
+            // 5. Swap benefits section headline
+            const benefitsHeadline = document.getElementById('benefits-headline');
+            if (benefitsHeadline) {
+                benefitsHeadline.textContent = 'Bauen Sie Ihr Team auf, bevor Sie sich verpflichten.';
+            }
+
+            // 6. Hide prospects header (they already know they're prospects)
+            const prospectsHeader = document.getElementById('prospects-header');
+            if (prospectsHeader) {
+                prospectsHeader.style.display = 'none';
+            }
+
+            // 7. Hide Professionals pricing card and center Prospects card
+            const pricingSection = document.getElementById('pricing');
+            if (pricingSection) {
+                const pricingCards = pricingSection.querySelectorAll('.pricing-card');
+                if (pricingCards.length >= 2) {
+                    pricingCards[1].style.display = 'none'; // Hide Professionals card (second card)
+                    pricingCards[0].style.margin = '0 auto'; // Center Prospects card
+                }
             }
         }
 
@@ -617,7 +645,7 @@
 
             // Customize page for prospect users
             if (referralInfo.type === "new") {
-                customizeForProspects();
+                customizeForProspects(userData);
             }
         }
 
