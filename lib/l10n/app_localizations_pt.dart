@@ -1818,6 +1818,14 @@ class AppLocalizationsPt extends AppLocalizations {
   String get shareProspectTitle => 'Construindo Sua Equipe';
 
   @override
+  String get shareRefLinkTitle => 'Seu Link de Referência';
+
+  @override
+  String shareRefLinkDescription(String business) {
+    return 'Compartilhe seu link de referência com amigos, familiares e contatos que possam estar interessados em criar renda residual com $business.';
+  }
+
+  @override
   String get shareProspectHeaderTitle => 'Mensagens Personalizadas';
 
   @override
@@ -1831,6 +1839,19 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get sharePartnerTitle => 'Parceiros da Sua Equipe';
+
+  @override
+  String sharePartnerCardTitle(String business) {
+    return 'Parceiros Atuais de $business';
+  }
+
+  @override
+  String get sharePartnerRefLinkTitle => 'Seu Link de Referência';
+
+  @override
+  String sharePartnerRefLinkDescription(String business) {
+    return 'Compartilhe seu link de referência com os membros da sua equipe $business para dar a eles as mesmas ferramentas de recrutamento com IA que você usa.';
+  }
 
   @override
   String get sharePartnerHeaderTitle => 'Mensagens Personalizadas';
@@ -2312,12 +2333,12 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String shareProspectPastStrugglesSubject(Object business) {
-    return 'Pensando em $business de Novo? Encontrei uma Abordagem Diferente';
+    return 'Abordagem diferente para $business desta vez';
   }
 
   @override
-  String shareProspectPastStrugglesMessage(Object business, Object link) {
-    return 'Sei que nós dois tivemos experiências difíceis com vendas diretas antes. $business continua surgindo, e eu também tenho hesitado.\n\nMas encontrei algo diferente - um app chamado Team Build Pro que te permite construir uma equipe ANTES de entrar em qualquer coisa. A ideia é que você pode ver se realmente consegue recrutar pessoas antes de investir.\n\nTem coaching de IA e mensagens pré-escritas para você não ter que descobrir tudo sozinho.\n\nEstou testando eu mesmo. Se você ainda tem curiosidade sobre $business, pode valer a pena dar uma olhada:\n\n$link\n\nPensei que poderíamos explorar isso juntos e ver se é diferente desta vez.';
+  String shareProspectPastStrugglesMessage(Object link) {
+    return 'Sei que nós dois tivemos dificuldades com vendas diretas antes. Encontrei algo diferente - Team Build Pro te permite construir uma equipe ANTES de entrar em qualquer coisa.\n\nÉ GRÁTIS até você se qualificar (3 diretos + 12 total). Coaching de IA e mensagens pré-escritas para não descobrir tudo sozinho.\n\nEstou testando eu mesmo: $link';
   }
 
   @override
@@ -2329,11 +2350,11 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get shareProspectNotSalespersonSubject =>
-      'Encontrei Algo para Não-Vendedores Como Nós';
+      'Para não-vendedores como nós';
 
   @override
   String shareProspectNotSalespersonMessage(Object business, Object link) {
-    return 'Você sabe que não sou um vendedor natural. Por isso sempre hesitei com coisas como $business.\n\nEncontrei este app chamado Team Build Pro que é projetado para pessoas como nós. Tem 16 mensagens pré-escritas e um Coach de IA, então você não precisa criar discursos de venda por conta própria.\n\nA parte legal? Você pode construir uma equipe ANTES de entrar em qualquer oportunidade. Assim você pode ver se está realmente confortável com a parte de recrutamento sem se comprometer primeiro.\n\nEstou testando eu mesmo. Achei que você se identificaria:\n\n$link\n\nTalvez não sejamos tão \"não-vendedores\" quanto pensamos - só precisávamos das ferramentas certas.';
+    return 'Você sabe que não sou um vendedor natural. Encontrei Team Build Pro - tem mensagens pré-escritas e um Coach de IA para não criar discursos de venda.\n\nVocê pode construir uma equipe ANTES de entrar em $business. GRÁTIS até você se qualificar (3 diretos + 12 total).\n\nEstou testando eu mesmo: $link';
   }
 
   @override
@@ -2345,14 +2366,13 @@ class AppLocalizationsPt extends AppLocalizations {
       'Ideal para prospectos queimados por oportunidades anteriores';
 
   @override
-  String shareProspectHopeAfterDisappointmentSubject(Object business) {
-    return 'Outra Olhada em $business? Desta Vez Com uma Rede de Segurança';
-  }
+  String get shareProspectHopeAfterDisappointmentSubject =>
+      'Desta vez com uma rede de segurança';
 
   @override
   String shareProspectHopeAfterDisappointmentMessage(
       Object business, Object link) {
-    return 'Sei que você já foi queimado antes. Eu também. As promessas de $business e outras oportunidades que nunca se concretizaram.\n\nEncontrei algo que parece diferente - não outra oportunidade, mas uma ferramenta. Team Build Pro te permite construir uma equipe ANTES de entrar em qualquer coisa. Você pode ver resultados reais antes de investir.\n\nSem exageros. Só um Coach de IA, mensagens pré-escritas, e uma forma de rastrear progresso real.\n\nEstou explorando eu mesmo porque estou cansado de começar do zero toda vez:\n\n$link\n\nSe não funcionar, pelo menos saberemos antes de colocar dinheiro. Achei que você gostaria de tentar junto comigo.';
+    return 'Sei que você já foi queimado antes. Eu também. Encontrei Team Build Pro - não outra oportunidade, só uma ferramenta que te permite construir uma equipe ANTES de entrar em $business.\n\nGRÁTIS até você se qualificar (3 diretos + 12 total). Veja resultados reais antes de investir.\n\nEstou explorando eu mesmo: $link';
   }
 
   @override
@@ -2364,12 +2384,12 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String shareProspectGeneralInvitationSubject(Object business) {
-    return 'Explorando $business? Encontrei Algo Interessante';
+    return 'Explorando $business? Encontrei algo interessante';
   }
 
   @override
   String shareProspectGeneralInvitationMessage(Object business, Object link) {
-    return 'Oi! Tenho pesquisado sobre $business e encontrei algo que chamou minha atenção.\n\nTem um app chamado Team Build Pro que te permite construir uma equipe ANTES de entrar oficialmente em qualquer oportunidade. A ideia é que você pode testar as águas e ganhar impulso sem se comprometer primeiro.\n\nTem:\n- 16 mensagens de recrutamento pré-escritas\n- Um Coach de IA para orientação\n- Uma forma de rastrear quem está interessado\n\nEstou explorando eu mesmo. Achei que você gostaria de ver também já que sei que tem curiosidade sobre $business.\n\nDá uma olhada: $link\n\nSem pressão - só compartilhando o que encontrei.';
+    return 'Oi! Tenho pesquisado sobre $business e encontrei Team Build Pro - te permite construir uma equipe ANTES de entrar em qualquer oportunidade.\n\nÉ GRÁTIS até você se qualificar (3 diretos + 12 total). A IA escreve suas mensagens de recrutamento, você só compartilha.\n\nEstou explorando eu mesmo. Dá uma olhada: $link';
   }
 
   @override
@@ -2382,11 +2402,11 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get shareProspectSocialAnxietySubject =>
-      'Construindo uma Rede Sem as Conversas Constrangedoras';
+      'Construir uma rede sem conversas constrangedoras';
 
   @override
   String shareProspectSocialAnxietyMessage(Object business, Object link) {
-    return 'O motivo pelo qual nunca me joguei de cabeça em $business ou similar? O pensamento de conversas de venda constrangedoras me faz tremer.\n\nEncontrei Team Build Pro - te permite construir uma equipe online, no seu próprio ritmo, com mensagens pré-escritas. Sem ligações frias, sem pitches cara a cara.\n\nE aqui está a coisa: você pode fazer tudo isso ANTES de entrar em qualquer oportunidade. Assim você pode ganhar confiança e ver se funciona para você sem a pressão.\n\nEstou testando eu mesmo. Achei que você apreciaria a abordagem sem pressão também:\n\n$link\n\nPodemos construir redes sem ser \"aquela pessoa\" nas festas.';
+    return 'Conversas de venda constrangedoras me fazem tremer também. Encontrei Team Build Pro - construa uma equipe online com mensagens pré-escritas. Sem ligações frias, sem pitches cara a cara.\n\nGRÁTIS até você se qualificar (3 diretos + 12 total). Faça isso ANTES de entrar em $business.\n\nEstou testando eu mesmo: $link';
   }
 
   @override
@@ -2397,13 +2417,12 @@ class AppLocalizationsPt extends AppLocalizations {
       'Ideal para prospectos fazendo malabarismos com trabalho, família e outros compromissos';
 
   @override
-  String shareProspectTimeConstrainedSubject(Object business) {
-    return 'Explorando $business nos Momentos Livres';
-  }
+  String get shareProspectTimeConstrainedSubject =>
+      'Construir nos momentos livres';
 
   @override
   String shareProspectTimeConstrainedMessage(Object business, Object link) {
-    return 'Sei que você está tão ocupado quanto eu. Essa sempre foi a desculpa para não explorar coisas como $business.\n\nEncontrei Team Build Pro - você pode construir uma equipe em pequenos pedaços de tempo. 15 minutos aqui, 20 minutos ali. O Coach de IA e mensagens pré-escritas tornam eficiente.\n\nA melhor parte? Você faz isso ANTES de entrar em qualquer oportunidade. Assim pode testar em torno da sua agenda sem compromisso.\n\nEstou testando durante pausas de almoço e hora do café:\n\n$link\n\nSe funciona para alguém tão apertado de tempo como nós, pode valer a pena explorar juntos.';
+    return 'Sei que você está tão ocupado quanto eu. Encontrei Team Build Pro - construa uma equipe em pequenos pedaços de tempo. O Coach de IA e mensagens pré-escritas tornam eficiente.\n\nGRÁTIS até você se qualificar (3 diretos + 12 total). Faça isso ANTES de entrar em $business.\n\nEstou testando nas pausas de almoço: $link';
   }
 
   @override
@@ -2415,12 +2434,12 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String shareProspectFinancialRiskAverseSubject(Object business) {
-    return 'Testando $business Sem Risco Financeiro Primeiro';
+    return 'Zero risco para testar $business';
   }
 
   @override
   String shareProspectFinancialRiskAverseMessage(Object business, Object link) {
-    return 'O que sempre me impediu de $business? Odeio perder dinheiro em coisas que não funcionam.\n\nEncontrei Team Build Pro - te permite construir uma equipe ANTES de entrar em qualquer oportunidade. Você pode ver resultados reais antes de investir em qualquer coisa.\n\nO app custa apenas \$4,99/mês após um período grátis. Muito menos do que comprar uma oportunidade às cegas.\n\nEstou testando para ver se realmente consigo recrutar pessoas primeiro:\n\n$link\n\nAchei que você apreciaria a abordagem de baixo risco também. Ver prova antes de gastar dinheiro real.';
+    return 'Odeio perder dinheiro em coisas que não funcionam. Encontrei Team Build Pro - é GRÁTIS até você se qualificar (3 diretos + 12 total).\n\nConstrua uma equipe ANTES de entrar em $business. Veja se você realmente consegue recrutar pessoas antes de gastar nada.\n\nEstou testando eu mesmo: $link';
   }
 
   @override
@@ -2431,13 +2450,11 @@ class AppLocalizationsPt extends AppLocalizations {
       'Perfeito para prospectos queimados por falsas promessas';
 
   @override
-  String shareProspectSkepticalRealistSubject(Object business) {
-    return 'Sem Exageros - Só Testando $business do Jeito Inteligente';
-  }
+  String get shareProspectSkepticalRealistSubject => 'Sem exageros - só dados';
 
   @override
   String shareProspectSkepticalRealistMessage(Object business, Object link) {
-    return 'Sou tão cético quanto você. Cada apresentação de $business soa igual - \"renda que muda a vida!\" Tá bom.\n\nEncontrei Team Build Pro - não outra oportunidade, só uma ferramenta. Te mostra métricas reais: quem você contatou, quem está interessado, seu progresso real. Sem enrolação.\n\nE você pode fazer tudo isso ANTES de entrar em qualquer coisa. Dados antes de decisões.\n\nEstou testando para ver se os números realmente funcionam:\n\n$link\n\nSem promessas. Sem exageros. Só me avisa se os dados parecem interessantes para você.';
+    return 'Sou tão cético quanto você. Encontrei Team Build Pro - não outra oportunidade, só uma ferramenta. Métricas reais: quem você contatou, quem está interessado, progresso real.\n\nGRÁTIS até você se qualificar (3 diretos + 12 total). Dados antes de entrar em $business.\n\nEstou testando eu mesmo: $link';
   }
 
   @override
@@ -2449,12 +2466,12 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String shareProspect2GeneralInvitationSubject(Object business) {
-    return 'Construa Sua Equipe $business Antes do Dia 1';
+    return 'Construa sua equipe $business antes do Dia 1';
   }
 
   @override
   String shareProspect2GeneralInvitationMessage(Object business, Object link) {
-    return 'Pensando em entrar na $business? Quero compartilhar algo que pode te dar uma vantagem real.\n\nTeam Build Pro te permite construir sua equipe ANTES de entrar oficialmente. Então quando você começar comigo, não está começando do zero - você lança com pessoas já esperando.\n\nO app inclui:\n- 16 mensagens de recrutamento pré-escritas prontas para compartilhar\n- Coach de IA 24/7 para perguntas de recrutamento\n- Rastreamento em tempo real de quem está interessado\n\nJá vi o que acontece quando novos membros da equipe começam no frio. Isso muda tudo.\n\nConfira: $link\n\nQuando estiver pronto para entrar na minha equipe $business, você vai começar com tudo.';
+    return 'Pensando em $business? Quero você na minha equipe - e tenho algo que te dá uma vantagem real.\n\nTeam Build Pro te permite construir sua equipe ANTES de entrar. GRÁTIS até você se qualificar (3 diretos + 12 total).\n\nA IA escreve suas mensagens de recrutamento. Você só compartilha com pessoas que conhece.\n\nQuando estiver pronto para entrar na minha equipe, vai começar acelerado: $link';
   }
 
   @override
@@ -2466,11 +2483,11 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get shareProspect2PastStrugglesSubject =>
-      'Desta Vez Será Diferente - Eis o Porquê';
+      'Desta vez é diferente - Veja porquê';
 
   @override
   String shareProspect2PastStrugglesMessage(Object business, Object link) {
-    return 'Sei que você teve dificuldades antes com vendas diretas. Tentativas passadas com $business ou oportunidades similares te deixaram começando do zero.\n\nÉ exatamente por isso que te quero na minha equipe - e por isso estou compartilhando Team Build Pro com você.\n\nTe permite construir sua equipe $business ANTES de entrar oficialmente. Com 16 mensagens pré-escritas e um Coach de IA te guiando em cada passo, você não estará sozinho desta vez.\n\nSerei seu patrocinador E você terá suporte de IA 24/7.\n\nVeja como funciona: $link\n\nVocê merece uma chance real. Deixa eu te ajudar a acertar desta vez.';
+    return 'Sei que você já lutou antes. É exatamente por isso que estou compartilhando isso com você.\n\nTeam Build Pro te permite construir sua equipe $business ANTES de entrar. GRÁTIS até você se qualificar (3 diretos + 12 total).\n\nCom coaching de IA e mensagens pré-escritas, você não estará sozinho desta vez. Vou te patrocinar E você terá suporte de IA.\n\nVeja como funciona: $link';
   }
 
   @override
@@ -2481,13 +2498,12 @@ class AppLocalizationsPt extends AppLocalizations {
       'Ótimo para pessoas que não se veem como \"vendedores\"';
 
   @override
-  String shareProspect2NotSalespersonSubject(Object business) {
-    return 'Entre na Minha Equipe $business - Sem Necessidade de Personalidade de Vendedor';
-  }
+  String get shareProspect2NotSalespersonSubject =>
+      'Sem personalidade de vendedor necessária';
 
   @override
   String shareProspect2NotSalespersonMessage(Object business, Object link) {
-    return 'Não é um vendedor natural? Tudo bem - você não precisa ser para ter sucesso na minha equipe.\n\nTeam Build Pro te dá 16 mensagens de recrutamento pré-escritas e um Coach de IA. Você foca em relacionamentos genuínos. A IA cuida das \"coisas de vendas\".\n\nE aqui está a melhor parte: você pode construir sua equipe ANTES de entrar na $business. Ganhe confiança com as ferramentas primeiro.\n\nVou te guiar como seu patrocinador, e a IA te orienta 24/7.\n\nComece a construir: $link\n\nÉ como ter um assistente de recrutamento que nunca dorme. Entre na minha equipe e deixe as ferramentas trabalharem por você.';
+    return 'Não é um vendedor nato? Você não precisa ser. Team Build Pro te dá mensagens pré-escritas e um Coach de IA que cuidam da parte de \"vendas\".\n\nConstrua sua equipe $business ANTES de entrar. GRÁTIS até você se qualificar (3 diretos + 12 total).\n\nVou te patrocinar e a IA te orienta 24/7. Foque nos relacionamentos, deixe as ferramentas trabalharem.\n\nComece a construir: $link';
   }
 
   @override
@@ -2499,14 +2515,13 @@ class AppLocalizationsPt extends AppLocalizations {
       'Ideal para prospectos queimados por oportunidades anteriores';
 
   @override
-  String shareProspect2HopeAfterDisappointmentSubject(Object business) {
-    return 'Entre na Minha Equipe $business Com Suporte Real Desta Vez';
-  }
+  String get shareProspect2HopeAfterDisappointmentSubject =>
+      'Suporte real desta vez';
 
   @override
   String shareProspect2HopeAfterDisappointmentMessage(
       Object business, Object link) {
-    return 'Sei que você já foi queimado antes. Promessas vazias, zero suporte, começando do zero.\n\nNão é assim que eu lidero minha equipe.\n\nTeam Build Pro te permite construir sua equipe $business ANTES de entrar oficialmente. Impulso real antes do Dia 1. Sem exageros - só ferramentas com IA que realmente funcionam.\n\nSerei seu patrocinador, o Coach de IA te guia 24/7, e você terá mensagens pré-escritas prontas para usar.\n\nVeja como: $link\n\nVocê merece um sistema que te prepara para vencer. Te quero na minha equipe.';
+    return 'Sei que você já foi queimado antes. Promessas vazias, zero suporte. Não é assim que eu lidero.\n\nTeam Build Pro te permite construir sua equipe $business ANTES de entrar. GRÁTIS até você se qualificar (3 diretos + 12 total).\n\nSerei seu patrocinador, o Coach de IA te orienta 24/7, e você terá mensagens pré-escritas prontas.\n\nVeja como funciona: $link';
   }
 
   @override
@@ -2518,13 +2533,12 @@ class AppLocalizationsPt extends AppLocalizations {
       'Perfeito para introvertidos ou aqueles desconfortáveis com recrutamento cara a cara';
 
   @override
-  String shareProspect2SocialAnxietySubject(Object business) {
-    return 'Construa Sua Equipe $business Sem Conversas Constrangedoras';
-  }
+  String get shareProspect2SocialAnxietySubject =>
+      'Sem conversas constrangedoras';
 
   @override
   String shareProspect2SocialAnxietyMessage(Object business, Object link) {
-    return 'Desconfortável com conversas de vendas constrangedoras? Entendo. Por isso uso Team Build Pro com minha equipe.\n\nTe permite construir sua rede $business online, no seu próprio ritmo:\n- 16 mensagens pré-escritas - sem \"o que eu digo?\"\n- Construa prospectos no seu próprio ritmo\n- Orientação de IA 24/7 quando precisar\n\nSem ligações frias. Sem pitches cara a cara necessários. E você pode começar a construir ANTES de entrar.\n\nComece nos seus termos: $link\n\nQuando você entrar na minha equipe, terá impulso real de pessoas que recrutou confortavelmente online.';
+    return 'Desconfortável com conversas de vendas? Entendo. Team Build Pro te permite construir sua equipe $business online, no seu ritmo.\n\nGRÁTIS até você se qualificar (3 diretos + 12 total). Mensagens pré-escritas eliminam o \"o que eu digo?\"\n\nSem ligações frias. Sem pitches cara a cara. Comece a construir ANTES de entrar.\n\nComece nos seus termos: $link';
   }
 
   @override
@@ -2536,13 +2550,12 @@ class AppLocalizationsPt extends AppLocalizations {
       'Ideal para prospectos fazendo malabarismos com trabalho, família e outros compromissos';
 
   @override
-  String shareProspect2TimeConstrainedSubject(Object business) {
-    return 'Construa Sua Equipe $business nas Brechas da Sua Vida';
-  }
+  String get shareProspect2TimeConstrainedSubject =>
+      'Construa nas brechas da sua vida';
 
   @override
   String shareProspect2TimeConstrainedMessage(Object business, Object link) {
-    return 'Sei que você está ocupado. Na verdade por isso $business pode funcionar para você - e por isso te quero na minha equipe.\n\nTeam Build Pro te permite construir sua equipe ANTES de entrar oficialmente - em pequenos momentos de tempo. Café da manhã. Pausa do almoço. Tempo livre à noite.\n\nO Coach de IA e 16 mensagens pré-escritas fazem cada minuto contar:\n- Rastreie todos os prospectos em um só lugar\n- Obtenha orientação de IA quando tiver alguns minutos\n- Veja seu impulso crescer\n\nVeja como se encaixa na sua vida: $link\n\nQuando estiver pronto para entrar na minha equipe, não vai começar do zero. Você vai lançar com pessoas já esperando.';
+    return 'Sei que você está ocupado. Team Build Pro te permite construir sua equipe $business em pequenos momentos - café da manhã, pausa do almoço, tempo livre à noite.\n\nGRÁTIS até você se qualificar (3 diretos + 12 total). O Coach de IA e mensagens pré-escritas fazem cada minuto contar.\n\nQuando entrar na minha equipe, você vai lançar com pessoas já esperando.\n\nVeja como se encaixa: $link';
   }
 
   @override
@@ -2554,14 +2567,13 @@ class AppLocalizationsPt extends AppLocalizations {
       'Ótimo para prospectos preocupados com risco financeiro';
 
   @override
-  String shareProspect2FinancialRiskAverseSubject(Object business) {
-    return 'Veja Resultados Antes de Investir em $business';
-  }
+  String get shareProspect2FinancialRiskAverseSubject =>
+      'Zero risco - GRÁTIS até você se qualificar';
 
   @override
   String shareProspect2FinancialRiskAverseMessage(
       Object business, Object link) {
-    return 'Preocupado em perder dinheiro? Inteligente. Por isso recomendo Team Build Pro para todos que entram na minha equipe.\n\nTe permite construir sua equipe $business ANTES de investir oficialmente - assim você vê resultados reais primeiro.\n\nRastreie seu progresso real:\n- Quem está interessado em entrar\n- Seu impulso crescendo\n- Prova de que o sistema funciona para você\n\nApenas \$4,99/mês após um período grátis. Muito menos risco do que pular às cegas.\n\nVeja a prova primeiro: $link\n\nQuando finalmente entrar na minha equipe $business, você vai lançar com pessoas já esperando - não arriscando tudo na esperança.';
+    return 'Preocupado em perder dinheiro com $business? Inteligente. Por isso recomendo Team Build Pro para todos que entram na minha equipe.\n\nÉ GRÁTIS até você se qualificar (3 diretos + 12 total). Veja se você consegue realmente construir uma equipe antes de gastar um centavo.\n\nZero risco financeiro para experimentar: $link';
   }
 
   @override
@@ -2572,13 +2584,12 @@ class AppLocalizationsPt extends AppLocalizations {
       'Perfeito para prospectos queimados por falsas promessas';
 
   @override
-  String shareProspect2SkepticalRealistSubject(Object business) {
-    return 'Sem Exageros. Métricas Reais. Entre na Minha Equipe $business.';
-  }
+  String get shareProspect2SkepticalRealistSubject =>
+      'Sem exageros. Métricas reais.';
 
   @override
   String shareProspect2SkepticalRealistMessage(Object business, Object link) {
-    return 'Cansado de promessas vazias? Eu também. Por isso lidero minha equipe $business de forma diferente.\n\nTeam Build Pro te mostra métricas reais em cada passo:\n- Quantas pessoas você contatou\n- Quem respondeu e está interessado\n- Seu progresso real em direção à qualificação\n- Próximos passos que a IA recomenda\n\nSem enrolação. Sem exagero. Só dados. E você pode fazer tudo isso ANTES de entrar.\n\nVeja a transparência: $link\n\nQuando você entrar na minha equipe, vai lançar com prova - não com fé cega. É a única forma que eu faço negócios.';
+    return 'Cansado de promessas vazias? Eu também. Team Build Pro te mostra métricas reais - quem você contatou, quem respondeu, seu progresso real.\n\nGRÁTIS até você se qualificar (3 diretos + 12 total). Veja a prova antes de comprometer com $business.\n\nSem enrolação. Só dados. Veja por si mesmo: $link';
   }
 
   @override

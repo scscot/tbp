@@ -239,8 +239,9 @@ class _ShareNewScreenState extends State<ShareNewScreen>
     final buttonColor = AppColors.opportunityPrimary;
     final icon = Icons.handshake;
 
-    // Dynamic label based on bizOppName
-    final partnerTitle = 'Current $_bizOppName Partners';
+    // Dynamic label based on bizOppName (localized)
+    final partnerTitle = context.l10n?.sharePartnerCardTitle(_bizOppName) ??
+        'Current $_bizOppName Partners';
 
     return GestureDetector(
       onTap: () {

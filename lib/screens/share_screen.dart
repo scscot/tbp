@@ -257,7 +257,7 @@ class _ShareScreenState extends State<ShareScreen>
         'title': context.l10n?.shareProspectPastStrugglesTitle ?? 'Addressing Past Struggles',
         'description': context.l10n?.shareProspectPastStrugglesDescription ?? 'Perfect for prospects who have tried before and struggled',
         'subject': context.l10n?.shareProspectPastStrugglesSubject(_bizOppName) ?? 'This time, see results BEFORE you commit',
-        'message': (context.l10n?.shareProspectPastStrugglesMessage(_bizOppName, _prospectReferralLink ?? '') ??
+        'message': (context.l10n?.shareProspectPastStrugglesMessage(_prospectReferralLink ?? '') ??
             'Been burned before? Started from zero and stayed there?\n\nTeam Build Pro lets you build a team BEFORE joining $_bizOppName - completely FREE until you hit the 3+12 milestone.\n\nYou\'ll see real people interested before you invest anything.\n\nDifferent approach this time: $_prospectReferralLink'),
       },
       'not_salesperson': {
@@ -270,7 +270,7 @@ class _ShareScreenState extends State<ShareScreen>
       'hope_after_disappointment': {
         'title': context.l10n?.shareProspectHopeAfterDisappointmentTitle ?? 'Hope After Disappointment',
         'description': context.l10n?.shareProspectHopeAfterDisappointmentDescription ?? 'Ideal for prospects burned by previous opportunities',
-        'subject': context.l10n?.shareProspectHopeAfterDisappointmentSubject(_bizOppName) ?? 'See it working before you believe it',
+        'subject': context.l10n?.shareProspectHopeAfterDisappointmentSubject ?? 'See it working before you believe it',
         'message': (context.l10n?.shareProspectHopeAfterDisappointmentMessage(_bizOppName, _prospectReferralLink ?? '') ??
             'I know you\'ve heard promises before. This isn\'t one.\n\nTeam Build Pro lets you build a team BEFORE joining $_bizOppName. You see real interest from real people - before you invest anything.\n\nCompletely FREE until you qualify.\n\nNo promises. Just proof: $_prospectReferralLink'),
       },
@@ -284,7 +284,7 @@ class _ShareScreenState extends State<ShareScreen>
       'time_constrained': {
         'title': context.l10n?.shareProspectTimeConstrainedTitle ?? 'For Busy Professionals',
         'description': context.l10n?.shareProspectTimeConstrainedDescription ?? 'Ideal for prospects juggling job, family, and other commitments',
-        'subject': context.l10n?.shareProspectTimeConstrainedSubject(_bizOppName) ?? '10 minutes here and there adds up',
+        'subject': context.l10n?.shareProspectTimeConstrainedSubject ?? '10 minutes here and there adds up',
         'message': (context.l10n?.shareProspectTimeConstrainedMessage(_bizOppName, _prospectReferralLink ?? '') ??
             'No time for a side business? I get it.\n\nTeam Build Pro fits in the gaps. Coffee break? Send a message. Waiting for kids? View your team growth.\n\nFREE until you qualify. Build before you commit to $_bizOppName.\n\nStart small: $_prospectReferralLink'),
       },
@@ -298,7 +298,7 @@ class _ShareScreenState extends State<ShareScreen>
       'skeptical_realist': {
         'title': context.l10n?.shareProspectSkepticalRealistTitle ?? 'Show Me Proof',
         'description': context.l10n?.shareProspectSkepticalRealistDescription ?? 'Perfect for prospects burned by false promises',
-        'subject': context.l10n?.shareProspectSkepticalRealistSubject(_bizOppName) ?? 'Track your actual progress - no hype',
+        'subject': context.l10n?.shareProspectSkepticalRealistSubject ?? 'Track your actual progress - no hype',
         'message': (context.l10n?.shareProspectSkepticalRealistMessage(_bizOppName, _prospectReferralLink ?? '') ??
             'Tired of hype? Me too.\n\nTeam Build Pro shows you real data: who\'s interested, your team size, your progress toward qualifying (3 direct + 12 total).\n\nFREE until you hit that milestone. See exactly where you stand before joining $_bizOppName.\n\nJust the numbers: $_prospectReferralLink'),
       },
@@ -317,7 +317,7 @@ class _ShareScreenState extends State<ShareScreen>
         'title': l10n.shareProspectPastStrugglesTitle,
         'description': l10n.shareProspectPastStrugglesDescription,
         'subject': l10n.shareProspectPastStrugglesSubject(_bizOppName),
-        'message': l10n.shareProspectPastStrugglesMessage(_bizOppName, _prospectReferralLink ?? ''),
+        'message': l10n.shareProspectPastStrugglesMessage(_prospectReferralLink ?? ''),
       },
       'not_salesperson': {
         'title': l10n.shareProspectNotSalespersonTitle,
@@ -328,7 +328,7 @@ class _ShareScreenState extends State<ShareScreen>
       'hope_after_disappointment': {
         'title': l10n.shareProspectHopeAfterDisappointmentTitle,
         'description': l10n.shareProspectHopeAfterDisappointmentDescription,
-        'subject': l10n.shareProspectHopeAfterDisappointmentSubject(_bizOppName),
+        'subject': l10n.shareProspectHopeAfterDisappointmentSubject,
         'message': l10n.shareProspectHopeAfterDisappointmentMessage(_bizOppName, _prospectReferralLink ?? ''),
       },
       'social_anxiety': {
@@ -340,7 +340,7 @@ class _ShareScreenState extends State<ShareScreen>
       'time_constrained': {
         'title': l10n.shareProspectTimeConstrainedTitle,
         'description': l10n.shareProspectTimeConstrainedDescription,
-        'subject': l10n.shareProspectTimeConstrainedSubject(_bizOppName),
+        'subject': l10n.shareProspectTimeConstrainedSubject,
         'message': l10n.shareProspectTimeConstrainedMessage(_bizOppName, _prospectReferralLink ?? ''),
       },
       'financial_risk_averse': {
@@ -352,7 +352,7 @@ class _ShareScreenState extends State<ShareScreen>
       'skeptical_realist': {
         'title': l10n.shareProspectSkepticalRealistTitle,
         'description': l10n.shareProspectSkepticalRealistDescription,
-        'subject': l10n.shareProspectSkepticalRealistSubject(_bizOppName),
+        'subject': l10n.shareProspectSkepticalRealistSubject,
         'message': l10n.shareProspectSkepticalRealistMessage(_bizOppName, _prospectReferralLink ?? ''),
       },
     };

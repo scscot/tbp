@@ -1,6 +1,6 @@
 # Team Build Pro - Comprehensive Knowledge Base
 
-**Last Updated**: 2026-03-02
+**Last Updated**: 2026-03-03
 **Purpose**: Persistent knowledge base for AI assistants across sessions
 
 ---
@@ -42,7 +42,7 @@ The Team Build Pro ecosystem is a comprehensive, interconnected network of digit
 │    114 Company            Localized              Localized             │
 │    Landing Pages       Content (ES/PT/DE)     Content (ES/PT/DE)      │
 │         │                      │                        │               │
-│    Blog (28 posts)        Blog (28 each)        Blog (28 each)        │
+│    Blog (29 posts)        Blog (29 each)        Blog (29 each)        │
 │         │                      │                        │               │
 │    FAQ/Books              FAQ/Books              FAQ/Books             │
 └─────────────────────────────────────────────────────────────────────────┘
@@ -117,7 +117,7 @@ The Team Build Pro ecosystem is a comprehensive, interconnected network of digit
 | Email Click Rate | Tracked via GA4 UTM parameters | 3%+ |
 | Email Open Rate | N/A (disabled for deliverability) | - |
 | Website Languages | 4 (EN, ES, PT, DE) | 4 |
-| Blog Posts (per language) | 23-24 | 25+ |
+| Blog Posts (per language) | 29 | 30+ |
 | Company Landing Pages | 114 (EN/ES) | 150+ |
 | App Languages | 4 (EN, ES, PT, DE) | 4 |
 
@@ -202,26 +202,26 @@ The world's first AI-powered platform that lets **prospects pre-build their team
 │   ├── faq.html          # FAQ with dynamic filtering
 │   ├── books.html        # Books landing page
 │   ├── companies/        # Company-specific recruiting guides (114 pages)
-│   └── blog/             # Blog posts (24 articles)
+│   └── blog/             # Blog posts (29 articles)
 ├── web-es/                # Spanish website (es.teambuildpro.com)
 │   ├── index.html        # Spanish homepage
 │   ├── faq.html          # Spanish FAQ
 │   ├── books.html        # Spanish books page
-│   ├── blog/             # Spanish blog (24 translated posts)
+│   ├── blog/             # Spanish blog (29 translated posts)
 │   ├── sitemap.xml       # Spanish sitemap
 │   └── robots.txt        # Spanish search engine directives
 ├── web-pt/                # Portuguese website (pt.teambuildpro.com)
 │   ├── index.html        # Portuguese homepage
 │   ├── faq.html          # Portuguese FAQ
 │   ├── books.html        # Portuguese books page
-│   ├── blog/             # Portuguese blog (24 translated posts)
+│   ├── blog/             # Portuguese blog (29 translated posts)
 │   ├── sitemap.xml       # Portuguese sitemap
 │   └── robots.txt        # Portuguese search engine directives
 ├── web-de/                # German website (de.teambuildpro.com)
 │   ├── index.html        # German homepage (3x2 screenshot grid)
 │   ├── faq.html          # German FAQ
 │   ├── books.html        # German books page
-│   ├── blog/             # German blog (23 translated posts)
+│   ├── blog/             # German blog (29 translated posts)
 │   ├── sitemap.xml       # German sitemap
 │   └── robots.txt        # German search engine directives
 ├── sscott/                # Stephen Scott author website (stephenscott.us)
@@ -330,7 +330,7 @@ All four main sites have identical structure:
 - Homepage with hero animation
 - FAQ page (8 questions)
 - Books landing page with localized covers
-- Blog index with 23-24 translated posts
+- Blog index with 29 translated posts
 - Privacy policy
 - Terms of service
 - Contact form
@@ -355,7 +355,7 @@ All four main sites have identical structure:
 - `/faq.html` - Dynamic FAQ (audience-aware, 8 questions)
 - `/books.html` - Books landing page with AI/MLM book covers
 - `/blog.html` - Blog index
-- `/blog/` - 24 blog posts (auto-generated twice weekly via GitHub Actions)
+- `/blog/` - 29 blog posts (auto-generated twice weekly via GitHub Actions)
 - `/companies.html` - 114 company-specific recruiting guides
 - `/companies/ai-recruiting-[company].html` - Individual company pages
 - `/contact_us.html` - Contact form
@@ -370,7 +370,7 @@ All four main sites have identical structure:
 - `/faq.html` - Spanish FAQ (8 questions with accordion)
 - `/books.html` - Spanish books page (MLM-Cover-ES.jpg)
 - `/blog.html` - Spanish blog index
-- `/blog/` - 24 translated blog posts (same titles as EN)
+- `/blog/` - 29 translated blog posts (same titles as EN)
 - `/companies.html` - Company recruiting guides index (114 companies with pagination)
 - `/companies/` - 114 company-specific recruiting guides in Spanish
 - `/contact_us.html` - Spanish contact form
@@ -384,7 +384,7 @@ All four main sites have identical structure:
 - `/faq.html` - Portuguese FAQ (8 questions with accordion)
 - `/books.html` - Portuguese books page (MLM-Cover-BR.jpg)
 - `/blog.html` - Portuguese blog index
-- `/blog/` - 24 translated blog posts (same titles as EN)
+- `/blog/` - 29 translated blog posts (same titles as EN)
 - `/companies.html` - Company recruiting guides index (39 companies with pagination)
 - `/companies/` - 39 company-specific recruiting guides in Portuguese
 - `/contact_us.html` - Portuguese contact form
@@ -398,7 +398,7 @@ All four main sites have identical structure:
 - `/faq.html` - German FAQ (8 questions with accordion)
 - `/books.html` - German books page (MLM-Cover-DE.jpg)
 - `/blog.html` - German blog index
-- `/blog/` - 23 translated blog posts (same titles as EN)
+- `/blog/` - 29 translated blog posts (same titles as EN)
 - `/companies.html` - Company recruiting guides index (20 companies with pagination)
 - `/companies/` - 20 company-specific recruiting guides in German
 - `/contact_us.html` - German contact form
@@ -1792,7 +1792,7 @@ Corporate email domains are excluded from all contact collections using a **blac
   - Reminders unnecessary and potentially confusing for auto-renewing subscriptions
   - Users don't need to take action - billing happens automatically
 
-### Current System Status (Mar 2, 2026)
+### Current System Status (Mar 3, 2026)
 
 **PROJECT STATUS: DYNAMIC BATCH SIZING LIVE**
 Main Campaign disabled. All scraper-fed campaigns use V14 template with unified subject "AI is changing how teams grow". Dynamic batch sizing auto-adjusts based on queue sizes with 4-week warming schedule (40%→60%→80%→100%).
@@ -1817,7 +1817,7 @@ Main Campaign disabled. All scraper-fed campaigns use V14 template with unified 
 | Email Tracking | GA4 | Clicks via UTM parameters; opens disabled |
 | Analytics Dashboard | Enhanced | 6 campaign cards, GA4 click tracking, A/B testing removed (Feb 25) |
 | Push Notifications | Working | profile_reminder, trial_expired verified |
-| Blog Automation | Running | Mon/Thu schedule, 4 languages (28/28/28/28 posts) |
+| Blog Automation | Running | Mon/Thu schedule, 4 languages (29/29/29/29 posts) |
 | Sitemap Pings | Active | Google + Bing pinged after each blog deploy |
 | URL Discovery | Active | Every 2h, 120 companies/batch (processing 1,082 companies) |
 | Contacts Seeder | Active | Every 4h, 3 sources (Common Crawl + Wayback + crt.sh) |

@@ -520,6 +520,8 @@ class _SharePartnerScreenState extends State<SharePartnerScreen>
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      _buildRefLinkHeader(),
+                      const SizedBox(height: 20),
                       _buildPartnerHeader(),
                       const SizedBox(height: 20),
                       _buildPartnerMessages(),
@@ -533,10 +535,15 @@ class _SharePartnerScreenState extends State<SharePartnerScreen>
     );
   }
 
-  Widget _buildPartnerHeader() {
-    final buttonColor = AppColors.opportunityPrimary;
-    final icon = Icons.handshake;
-
+  Widget _buildInfoCard({
+    required IconData icon,
+    required Color iconColor,
+    required String title,
+    required String subtitle,
+    Color? subtitleColor,
+    required String description,
+    Widget? footer,
+  }) {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -553,9 +560,9 @@ class _SharePartnerScreenState extends State<SharePartnerScreen>
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                    color: buttonColor.withValues(alpha: 0.1),
+                    color: iconColor.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(8)),
-                child: Icon(icon, color: buttonColor, size: 20),
+                child: Icon(icon, color: iconColor, size: 20),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -563,14 +570,15 @@ class _SharePartnerScreenState extends State<SharePartnerScreen>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      context.l10n?.sharePartnerHeaderTitle ?? 'Customized Messages',
+                      title,
                       style: const TextStyle(
                           fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                     Text(
-                      context.l10n?.sharePartnerSubtitle(_bizOppName) ?? 'Great for your existing $_bizOppName team',
+                      subtitle,
                       style: TextStyle(
-                          fontSize: 12, color: AppColors.textSecondary),
+                          fontSize: 12,
+                          color: subtitleColor ?? AppColors.textSecondary),
                     ),
                   ],
                 ),
@@ -579,55 +587,87 @@ class _SharePartnerScreenState extends State<SharePartnerScreen>
           ),
           const SizedBox(height: 12),
           Text(
-            context.l10n?.sharePartnerDescription(_bizOppName) ?? 'Empower your existing $_bizOppName partners with the same tool you use. This promotes duplication and helps accelerate growth throughout your entire $_bizOppName organization.',
+            description,
             style: TextStyle(
                 fontSize: 14, color: AppColors.textSecondary, height: 1.4),
           ),
-          const SizedBox(height: 16),
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: Colors.amber.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(
-                color: Colors.amber.withValues(alpha: 0.3),
-                width: 1,
-              ),
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Icon(
-                  Icons.info_outline,
-                  color: Colors.amber[700],
-                  size: 20,
+          if (footer != null) ...[
+            const SizedBox(height: 16),
+            footer,
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildRefLinkHeader() {
+    return _buildInfoCard(
+      icon: Icons.link,
+      iconColor: AppColors.opportunityPrimary,
+      title: context.l10n?.sharePartnerRefLinkTitle ?? 'Your Referral Link',
+      subtitle: _partnerReferralLink ?? '',
+      subtitleColor: AppColors.primary,
+      description: context.l10n?.sharePartnerRefLinkDescription(_bizOppName) ??
+          'Share your referral link with your $_bizOppName team members to give them the same AI recruiting tools you use.',
+    );
+  }
+
+  Widget _buildPartnerHeader() {
+    return _buildInfoCard(
+      icon: Icons.handshake,
+      iconColor: AppColors.opportunityPrimary,
+      title: context.l10n?.sharePartnerHeaderTitle ?? 'Customized Messages',
+      subtitle: context.l10n?.sharePartnerSubtitle(_bizOppName) ??
+          'Great for your existing $_bizOppName team',
+      description: context.l10n?.sharePartnerDescription(_bizOppName) ??
+          'Empower your existing $_bizOppName partners with the same tool you use. This promotes duplication and helps accelerate growth throughout your entire $_bizOppName organization.',
+      footer: _buildImportantNote(),
+    );
+  }
+
+  Widget _buildImportantNote() {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.amber.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: Colors.amber.withValues(alpha: 0.3),
+          width: 1,
+        ),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(
+            Icons.info_outline,
+            color: Colors.amber[700],
+            size: 20,
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: RichText(
+              overflow: TextOverflow.visible,
+              text: TextSpan(
+                style: TextStyle(
+                  fontSize: 12,
+                  color: AppColors.textSecondary,
+                  height: 1.4,
                 ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: RichText(
-                    overflow: TextOverflow.visible,
-                    text: TextSpan(
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: AppColors.textSecondary,
-                        height: 1.4,
-                      ),
-                      children: [
-                        TextSpan(
-                          text: context.l10n?.sharePartnerImportantLabel ?? 'Important: ',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.amber[900],
-                          ),
-                        ),
-                        TextSpan(
-                          text: context.l10n?.sharePartnerImportantText(_bizOppName) ?? 'We highly recommend you share the Team Build Pro app with your front-line $_bizOppName team members (individuals you have personally sponsored) before sharing it with $_bizOppName team members you did not personally sponsor. This will provide an opportunity to respect the established sponsoring relationships in your $_bizOppName downline.',
-                        ),
-                      ],
+                children: [
+                  TextSpan(
+                    text: context.l10n?.sharePartnerImportantLabel ?? 'Important: ',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.amber[900],
                     ),
                   ),
-                ),
-              ],
+                  TextSpan(
+                    text: context.l10n?.sharePartnerImportantText(_bizOppName) ??
+                        'We highly recommend you share the Team Build Pro app with your front-line $_bizOppName team members (individuals you have personally sponsored) before sharing it with $_bizOppName team members you did not personally sponsor. This will provide an opportunity to respect the established sponsoring relationships in your $_bizOppName downline.',
+                  ),
+                ],
+              ),
             ),
           ),
         ],
