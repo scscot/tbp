@@ -2,12 +2,12 @@
  * Team Build Pro Email Campaign for Pruvit Contacts
  *
  * Sends emails to scraped pruvit_contacts (distributors from Pruvit referral pages).
- * Uses Mailgun API with v14 template and single subject line (no A/B testing).
+ * Uses Mailgun API with v16 template and single subject line (no A/B testing).
  *
  * Templates stored in Mailgun under 'mailer' template:
- * - v14: English (gradient header, white card design)
+ * - v16: English (Professional-focused messaging)
  *
- * Subject: "AI is changing how teams grow"
+ * Subject: "Your prospects don't believe they can recruit"
  *
  * Collection: pruvit_contacts
  * Query: status == 'pending', sent == false, email != null
@@ -44,9 +44,9 @@ const CTA_DOMAIN = 'teambuildpro.com';
 
 // Single template and subject line for all sends
 const TEMPLATE_CONFIG = {
-  templateVersion: 'v14',
-  subject: 'AI is changing how teams grow',
-  subjectTag: 'pruvit_v14'
+  templateVersion: 'v16',
+  subject: "Your prospects don't believe they can recruit",
+  subjectTag: 'pruvit_v16'
 };
 
 // =============================================================================
@@ -120,7 +120,7 @@ function buildLandingPageUrl(utmCampaign, utmContent) {
 // =============================================================================
 
 /**
- * Send email via Mailgun API using v14 template (no A/B testing)
+ * Send email via Mailgun API using v16 template (no A/B testing)
  *
  * @param {object} contact - Contact data { firstName, lastName, email, ... }
  * @param {string} docId - Firestore document ID (used as tracking ID)
@@ -192,7 +192,7 @@ async function sendEmailViaMailgun(contact, docId, config) {
     messageId: response.data.id,
     response: response.data.message,
     subjectTag: TEMPLATE_CONFIG.subjectTag,
-    templateVariant: 'v14',
+    templateVariant: 'v16',
     templateVersion: TEMPLATE_CONFIG.templateVersion,
     usedSubject: TEMPLATE_CONFIG.subject
   };

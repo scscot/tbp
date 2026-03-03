@@ -2,15 +2,15 @@
  * Team Build Pro Email Campaign for BFH (Business For Home) Contacts
  *
  * Sends emails to scraped bfh_contacts (distributors from Business For Home website).
- * Uses Mailgun API with v14 template and single subject line (no A/B testing).
+ * Uses Mailgun API with v16 template and single subject line (no A/B testing).
  *
  * Templates stored in Mailgun under 'mailer' template:
- * - v14: English (gradient header, white card design)
- * - v14-es: Spanish
- * - v14-pt: Portuguese (Brazil)
- * - v14-de: German
+ * - v16: English (Professional-focused messaging)
+ * - v16-es: Spanish
+ * - v16-pt: Portuguese (Brazil)
+ * - v16-de: German
  *
- * Subject: "AI is changing how teams grow" (localized per language)
+ * Subject: "Your prospects don't believe they can recruit" (localized per language)
  *
  * Collection: bfh_contacts
  * Query: bfhScraped == true, email != null, sent == false
@@ -48,24 +48,24 @@ const LANDING_PAGE_URL = 'https://teambuildpro.com';
 // Language-specific template and subject configuration
 const TEMPLATE_CONFIG = {
   en: {
-    templateVersion: 'v14',
-    subject: 'AI is changing how teams grow',
-    subjectTag: 'bfh_v14_en'
+    templateVersion: 'v16',
+    subject: "Your prospects don't believe they can recruit",
+    subjectTag: 'bfh_v16_en'
   },
   es: {
-    templateVersion: 'v14-es',
-    subject: 'Usando IA para hacer crecer tu equipo mas rapido',
-    subjectTag: 'bfh_v14_es'
+    templateVersion: 'v16-es',
+    subject: 'Tus prospectos de reclutamiento no creen que pueden reclutar',
+    subjectTag: 'bfh_v16_es'
   },
   pt: {
-    templateVersion: 'v14-pt',
-    subject: 'Usando IA para crescer sua equipe mais rapido',
-    subjectTag: 'bfh_v14_pt'
+    templateVersion: 'v16-pt',
+    subject: 'Seus prospectos de recrutamento não acreditam que podem recrutar',
+    subjectTag: 'bfh_v16_pt'
   },
   de: {
-    templateVersion: 'v14-de',
-    subject: 'Mit KI Ihr Team schneller aufbauen',
-    subjectTag: 'bfh_v14_de'
+    templateVersion: 'v16-de',
+    subject: 'Ihre Rekrutierungsinteressenten glauben nicht, dass sie rekrutieren können',
+    subjectTag: 'bfh_v16_de'
   }
 };
 

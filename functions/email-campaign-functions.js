@@ -2,12 +2,12 @@
  * Team Build Pro Email Campaign Functions (Mailgun Templates Version)
  *
  * Scheduled email campaigns using Mailgun API with template versioning.
- * Uses v14 template with single subject line (no A/B testing).
+ * Uses v16 template with single subject line (no A/B testing).
  *
  * Templates stored in Mailgun under 'mailer' template:
- * - v14: Current production template (gradient header, white card design)
+ * - v16: Current production template (Professional-focused messaging)
  *
- * Subject: "AI is changing how teams grow"
+ * Subject: "Your prospects don't believe they can recruit"
  */
 
 const { onSchedule } = require("firebase-functions/v2/scheduler");
@@ -41,9 +41,9 @@ const LANDING_PAGE_URL = 'https://teambuildpro.com';
 
 // Single template and subject line for all sends
 const TEMPLATE_CONFIG = {
-  templateVersion: 'v14',
-  subject: 'AI is changing how teams grow',
-  subjectTag: 'main_v14'
+  templateVersion: 'v16',
+  subject: "Your prospects don't believe they can recruit",
+  subjectTag: 'main_v16'
 };
 
 // =============================================================================

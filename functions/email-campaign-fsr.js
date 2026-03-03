@@ -2,12 +2,12 @@
  * FSR (FindSalesRep) Contacts Email Campaign Functions
  *
  * Sends email campaigns to contacts scraped from findsalesrep.com
- * Uses Mailgun API with v14 template and single subject line (no A/B testing).
+ * Uses Mailgun API with v16 template and single subject line (no A/B testing).
  *
  * Templates stored in Mailgun under 'mailer' template:
- * - v14: English (gradient header, white card design)
+ * - v16: English (Professional-focused messaging)
  *
- * Subject: "AI is changing how teams grow"
+ * Subject: "Your prospects don't believe they can recruit"
  *
  * Collection: fsr_contacts
  * Schedule: 10am, 1pm, 4pm, 7pm PT
@@ -38,9 +38,9 @@ const LANDING_PAGE_URL = 'https://teambuildpro.com';
 
 // Single template and subject line for all sends (no A/B testing)
 const TEMPLATE_CONFIG = {
-  templateVersion: 'v14',
-  subject: 'AI is changing how teams grow',
-  subjectTag: 'fsr_v14'
+  templateVersion: 'v16',
+  subject: "Your prospects don't believe they can recruit",
+  subjectTag: 'fsr_v16'
 };
 
 // =============================================================================

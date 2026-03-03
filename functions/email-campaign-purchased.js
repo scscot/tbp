@@ -2,7 +2,7 @@
  * Purchased Leads Email Campaign Functions
  *
  * Sends email campaigns to leads purchased from external sources (Apollo, Apache, Exact Data)
- * Uses v14 template with single subject line (no A/B testing).
+ * Uses v16 template with single subject line (no A/B testing).
  * Tracks performance by source for ROI analysis.
  */
 
@@ -32,9 +32,9 @@ const LANDING_PAGE_URL = 'https://teambuildpro.com';
 
 // Single template and subject line for all sends (no A/B testing)
 const TEMPLATE_CONFIG = {
-  templateVersion: 'v14',
-  subject: 'AI is changing how teams grow',
-  subjectTag: 'purchased_v14'
+  templateVersion: 'v16',
+  subject: "Your prospects don't believe they can recruit",
+  subjectTag: 'purchased_v16'
 };
 
 // =============================================================================

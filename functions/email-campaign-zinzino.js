@@ -2,14 +2,14 @@
  * Team Build Pro Email Campaign for Zinzino Contacts
  *
  * Sends emails to scraped zinzino_contacts (distributors from Zinzino partner finder).
- * Uses Mailgun API with v14 template and single subject line (no A/B testing).
+ * Uses Mailgun API with v16 template and single subject line (no A/B testing).
  *
  * Templates stored in Mailgun under 'mailer' template:
- * - v14: English (gradient header, white card design)
- * - v14-es: Spanish
- * - v14-de: German
+ * - v16: English (Professional-focused messaging)
+ * - v16-es: Spanish
+ * - v16-de: German
  *
- * Subject: "AI is changing how teams grow" (localized per language)
+ * Subject: "Your prospects don't believe they can recruit" (localized per language)
  *
  * Language Selection:
  * - Spanish (es): Spain, Mexico, Colombia, Peru
@@ -81,19 +81,19 @@ const CTA_DOMAINS = {
 // Language-specific template and subject configuration
 const TEMPLATE_CONFIG = {
   en: {
-    templateVersion: 'v14',
-    subject: 'AI is changing how teams grow',
-    subjectTag: 'zinzino_v14_en'
+    templateVersion: 'v16',
+    subject: "Your prospects don't believe they can recruit",
+    subjectTag: 'zinzino_v16_en'
   },
   es: {
-    templateVersion: 'v14-es',
-    subject: 'Usando IA para hacer crecer tu equipo mas rapido',
-    subjectTag: 'zinzino_v14_es'
+    templateVersion: 'v16-es',
+    subject: 'Tus prospectos de reclutamiento no creen que pueden reclutar',
+    subjectTag: 'zinzino_v16_es'
   },
   de: {
-    templateVersion: 'v14-de',
-    subject: 'Mit KI Ihr Team schneller aufbauen',
-    subjectTag: 'zinzino_v14_de'
+    templateVersion: 'v16-de',
+    subject: 'Ihre Rekrutierungsinteressenten glauben nicht, dass sie rekrutieren können',
+    subjectTag: 'zinzino_v16_de'
   }
 };
 
@@ -177,7 +177,7 @@ function buildLandingPageUrl(utmCampaign, utmContent, language = 'en') {
 // =============================================================================
 
 /**
- * Send email via Mailgun API using v14 templates (no A/B testing)
+ * Send email via Mailgun API using v16 templates (no A/B testing)
  *
  * @param {object} contact - Contact data { firstName, lastName, email, country, ... }
  * @param {string} docId - Firestore document ID (used as tracking ID)
@@ -255,7 +255,7 @@ async function sendEmailViaMailgun(contact, docId, config) {
     messageId: response.data.id,
     response: response.data.message,
     subjectTag: templateConfig.subjectTag,
-    templateVariant: 'v14',
+    templateVariant: 'v16',
     templateVersion: templateConfig.templateVersion,
     language: language,
     usedSubject: templateConfig.subject
