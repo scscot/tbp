@@ -99,7 +99,7 @@ jobs:
         env:
           BATCH_SIZE: ${{ github.event.inputs.batch_size || steps.warming.outputs.batch_size }}
           MAILGUN_DOMAIN: legal.preintake.ai
-          EXCLUDE_GMAIL: 'true'
+          EXCLUDE_GMAIL: 'false'
         run: |
           echo "Starting PreIntake email campaign..."
           echo "Batch size: $BATCH_SIZE"
