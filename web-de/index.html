@@ -205,7 +205,7 @@
             <div class="container">
                 <div class="section-header">
                     <h2>So funktioniert es</h2>
-                    <p>Drei einfache Schritte, um zu beweisen, dass Sie ein Team aufbauen können.</p>
+                    <p id="how-it-works-subtitle">Drei einfache Schritte zum Aufbau Ihres Teams.</p>
                 </div>
                 <div class="grid grid-3">
                     <div class="feature-card">
@@ -215,25 +215,25 @@
                             </div>
                             <h3>1. Erhalten Sie Ihren einzigartigen Recruiting-Link</h3>
                         </div>
-                        <p>Laden Sie die App herunter und erhalten Sie Ihren persönlichen Empfehlungslink. Keine Kreditkarte erforderlich für Interessenten.</p>
+                        <p id="how-it-works-step1">Laden Sie die App herunter und erhalten Sie Ihren persönlichen Recruiting-Link. Teilen Sie ihn mit Recruiting-Interessenten und Teammitgliedern.</p>
                     </div>
                     <div class="feature-card">
                         <div class="feature-card-header">
                             <div class="feature-icon purple">
-                                <span class="material-symbols-outlined">share</span>
+                                <span class="material-symbols-outlined">chat</span>
                             </div>
                             <h3>2. Teilen + KI-Anleitung nutzen</h3>
                         </div>
-                        <p>Nutzen Sie KI-geschriebene Nachrichten und 24/7 Coaching, um Ihr Team aufzubauen. Behandelt Skepsis, Zeitbeschränkungen und soziale Ängste.</p>
+                        <p id="how-it-works-step2">Nutzen Sie 16 personalisierte Recruiting-Nachrichten und erhalten Sie Anleitung vom KI-Coach rund um die Uhr. Fragen Sie sich nie wieder, was Sie sagen oder wann Sie nachfassen sollen.</p>
                     </div>
                     <div class="feature-card">
                         <div class="feature-card-header">
                             <div class="feature-icon green">
                                 <span class="material-symbols-outlined">emoji_events</span>
                             </div>
-                            <h3>3. Qualifizieren Sie sich mit 3 + 12</h3>
+                            <h3 id="how-it-works-step3-title">3. Bauen Sie Ihr Geschäft aus</h3>
                         </div>
-                        <p>Erreichen Sie Ihren Meilenstein, um zu beweisen, dass Sie ein Team aufbauen können. Treten Sie dann mit Schwung und Selbstvertrauen einem Unternehmen bei.</p>
+                        <p id="how-it-works-step3">Wenn Teammitglieder 3 direkte Sponsoren + 12 Gesamtmitglieder erreichen, erhalten sie eine Einladung, IHRER Geschäftsmöglichkeit beizutreten.</p>
                     </div>
                 </div>
             </div>
@@ -628,6 +628,28 @@
                     pricingCards[1].style.display = 'none'; // Hide Professionals card (second card)
                     pricingCards[0].style.margin = '0 auto'; // Center Prospects card
                 }
+            }
+
+            // 8. Swap How It Works content for prospects
+            const howItWorksSubtitle = document.getElementById('how-it-works-subtitle');
+            if (howItWorksSubtitle) {
+                howItWorksSubtitle.textContent = 'Drei einfache Schritte, um zu beweisen, dass Sie ein Team aufbauen können.';
+            }
+            const howItWorksStep1 = document.getElementById('how-it-works-step1');
+            if (howItWorksStep1) {
+                howItWorksStep1.textContent = 'Laden Sie die App herunter und erhalten Sie Ihren persönlichen Recruiting-Link. Teilen Sie ihn mit Freunden, Familie oder allen, die am Teamaufbau interessiert sind.';
+            }
+            const howItWorksStep2 = document.getElementById('how-it-works-step2');
+            if (howItWorksStep2) {
+                howItWorksStep2.textContent = 'Nutzen Sie 8 personalisierte Recruiting-Nachrichten und erhalten Sie Anleitung vom KI-Coach rund um die Uhr. Fragen Sie sich nie wieder, was Sie sagen oder wann Sie nachfassen sollen.';
+            }
+            const howItWorksStep3Title = document.getElementById('how-it-works-step3-title');
+            if (howItWorksStep3Title) {
+                howItWorksStep3Title.textContent = '3. Qualifizieren Sie sich mit 3 + 12';
+            }
+            const howItWorksStep3 = document.getElementById('how-it-works-step3');
+            if (howItWorksStep3) {
+                howItWorksStep3.textContent = 'Wenn Sie 3 direkte Sponsoren + 12 Teammitglieder insgesamt erreichen, haben Sie bewiesen, dass Sie rekrutieren können. Treten Sie Ihrer Chance mit Selbstvertrauen und Schwung bei.';
             }
         }
 

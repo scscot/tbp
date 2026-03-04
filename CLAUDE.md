@@ -1775,6 +1775,12 @@ Corporate email domains are excluded from all contact collections using a **blac
   6. Swap benefits section headline
   7. Hide prospects header
   8. Hide Professionals pricing card and center Prospects card
+  9. **Swap "How It Works" content** (Mar 3, 2026):
+     - Subtitle: "building your team" → "prove you can build a team"
+     - Step 1: "prospects and team members" → "friends, family..."
+     - Step 2: "16 messages" → "8 messages"
+     - Step 3 title: "Grow Your Business" → "Qualify at 3 + 12"
+     - Step 3: Team members qualify for YOUR business → YOU qualify and join
 
 **FSR Campaign & Subscription Updates (Feb 19, 2026)**
 - ✅ **FSR Email Campaign Created**: New campaign for FindSalesRep contacts

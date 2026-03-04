@@ -199,12 +199,12 @@
             </div>
         </section>
 
-        <!-- How It Works Section -->
+        <!-- How It Works Section (Dynamic: changes based on ?new= query param) -->
         <section id="how-it-works" class="section section-white">
             <div class="container">
                 <div class="section-header">
                     <h2>Cómo Funciona</h2>
-                    <p>Tres pasos simples para demostrar que puedes construir un equipo.</p>
+                    <p id="how-it-works-subtitle">Tres pasos simples para construir tu equipo.</p>
                 </div>
                 <div class="grid grid-3">
                     <div class="feature-card">
@@ -214,7 +214,7 @@
                             </div>
                             <h3>1. Obtén Tu Enlace Único</h3>
                         </div>
-                        <p>Descarga la app y obtén tu enlace personal de reclutamiento. Compártelo con amigos, familia o cualquier persona interesada en construir un equipo.</p>
+                        <p id="how-it-works-step1">Descarga la app y obtén tu enlace personal de reclutamiento. Compártelo con prospectos de reclutamiento y miembros de tu equipo.</p>
                     </div>
                     <div class="feature-card">
                         <div class="feature-card-header">
@@ -223,16 +223,16 @@
                             </div>
                             <h3>2. Comparte + Obtén Guía IA</h3>
                         </div>
-                        <p>Usa 16 mensajes de reclutamiento personalizados y obtén orientación del Coach IA 24/7. Nunca te preguntes qué decir o cuándo hacer seguimiento.</p>
+                        <p id="how-it-works-step2">Usa 16 mensajes de reclutamiento personalizados y obtén orientación del Coach IA 24/7. Nunca te preguntes qué decir o cuándo hacer seguimiento.</p>
                     </div>
                     <div class="feature-card">
                         <div class="feature-card-header">
                             <div class="feature-icon green">
                                 <span class="material-symbols-outlined">emoji_events</span>
                             </div>
-                            <h3>3. Califica con 3 + 12</h3>
+                            <h3 id="how-it-works-step3-title">3. Haz Crecer Tu Negocio</h3>
                         </div>
-                        <p>Cuando alcances 3 patrocinadores directos + 12 miembros totales de equipo, has demostrado que puedes reclutar. Únete a tu oportunidad con confianza e impulso.</p>
+                        <p id="how-it-works-step3">Cuando los miembros del equipo alcancen 3 patrocinadores directos + 12 miembros totales, reciben una invitación para unirse a TU oportunidad de negocio.</p>
                     </div>
                 </div>
             </div>
@@ -628,6 +628,28 @@
                     pricingCards[1].style.display = 'none'; // Hide Professionals card (second card)
                     pricingCards[0].style.margin = '0 auto'; // Center Prospects card
                 }
+            }
+
+            // 8. Swap How It Works content for prospects
+            const howItWorksSubtitle = document.getElementById('how-it-works-subtitle');
+            if (howItWorksSubtitle) {
+                howItWorksSubtitle.textContent = 'Tres pasos simples para demostrar que puedes construir un equipo.';
+            }
+            const howItWorksStep1 = document.getElementById('how-it-works-step1');
+            if (howItWorksStep1) {
+                howItWorksStep1.textContent = 'Descarga la app y obtén tu enlace personal de reclutamiento. Compártelo con amigos, familia o cualquier persona interesada en construir un equipo.';
+            }
+            const howItWorksStep2 = document.getElementById('how-it-works-step2');
+            if (howItWorksStep2) {
+                howItWorksStep2.textContent = 'Usa 8 mensajes de reclutamiento personalizados y obtén orientación del Coach IA 24/7. Nunca te preguntes qué decir o cuándo hacer seguimiento.';
+            }
+            const howItWorksStep3Title = document.getElementById('how-it-works-step3-title');
+            if (howItWorksStep3Title) {
+                howItWorksStep3Title.textContent = '3. Califica con 3 + 12';
+            }
+            const howItWorksStep3 = document.getElementById('how-it-works-step3');
+            if (howItWorksStep3) {
+                howItWorksStep3.textContent = 'Cuando alcances 3 patrocinadores directos + 12 miembros totales de equipo, has demostrado que puedes reclutar. Únete a tu oportunidad con confianza e impulso.';
             }
         }
 
