@@ -6,14 +6,14 @@ admin.initializeApp({
     credential: admin.credential.cert(serviceAccount)
 });
 
-const uid = "KJ8uFnlhKhWgBa4NVcwT";
-const newEmail = "scscot@gmail.com";
-const newPassword = "11111111";
+const uid = "qzvHp5bIjvTEniYuds544aHLNE93";
+const newEmail = null; // Don't change email
+const newPassword = "DemoPWD999!";
 
-admin.auth().updateUser(uid, {
-    email: newEmail,
-    password: newPassword
-})
+const updateData = { password: newPassword };
+if (newEmail) updateData.email = newEmail;
+
+admin.auth().updateUser(uid, updateData)
     .then(userRecord => {
         console.log("Successfully updated user:", userRecord.uid);
     })
