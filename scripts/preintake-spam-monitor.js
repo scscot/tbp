@@ -147,7 +147,7 @@ function generateTestEmailHtml() {
 
 /**
  * Generate test email plain text content
- * IDENTICAL to generateEmailPlainText() in send-preintake-campaign.js
+ * MUST match generateEmailPlainText() in send-preintake-campaign.js exactly
  */
 function generateTestEmailText() {
   const ctaUrl = 'https://preintake.ai/?lead=delivery_test&utm_source=email&utm_medium=outreach&utm_campaign=law_firms&utm_content=cta_button';

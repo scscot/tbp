@@ -442,6 +442,7 @@ function generateEmailHTML(firmName, email, leadId, firstName) {
 
 /**
  * Generate plain-text version of personalized demo email
+ * IMPORTANT: Must match generateEmailHTML() content to avoid spam filters
  */
 function generateEmailPlainText(firmName, email, leadId, firstName) {
     const unsubscribeUrl = `https://preintake.ai/unsubscribe.html?email=${encodeURIComponent(email)}`;
@@ -453,11 +454,11 @@ function generateEmailPlainText(firmName, email, leadId, firstName) {
     return `PreIntake.ai
 Pre-Screen Every Inquiry — Tailored to Your Practice Area
 
-${greeting}Every law firm has the same intake problem: too many inquiries, not enough signal. Strong cases wait alongside weak or misdirected submissions, and staff time gets burned sorting it out.
+${greeting}Most law firms treat intake as data collection. It's not. It's triage. And without structured screening, your strongest matters are competing for attention with submissions that should never reach your desk.
 
-PreIntake.ai ensures your most important matters surface immediately—screened, summarized, and prioritized before your team ever reviews them.
+PreIntake.ai puts practice-specific screening in front of your intake workflow, so the best matters rise to the top immediately—before your team spends time reading raw narratives and chasing missing details.
 
-Instead of reviewing raw submissions in the order they arrive, your team sees what matters most first. Strong inquiries are clear, weak ones are obvious, and misdirected matters don't steal attention they don't deserve.
+Instead of reviewing submissions in the order they arrive, you receive a clear case summary, a simple qualification rating (qualified / needs review / not a fit), and a plain-English rationale—so staff can move fast, and attorneys see what matters first.
 
 Every inquiry is reviewed and delivered with:
 
