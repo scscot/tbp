@@ -49,11 +49,12 @@ jobs:
 
       - name: Sync Mailgun events to Firestore
         env:
-          MAILGUN_API_KEY: ${{ secrets.MAILGUN_API_KEY }}
-          MAILGUN_DOMAIN: ${{ secrets.MAILGUN_DOMAIN }}
+          MAILGUN_API_KEY: ${{ secrets.PREINTAKE_LEGAL_MAILGUN_API_KEY }}
+          MAILGUN_DOMAIN: legal.preintake.ai
           LOOKBACK_HOURS: ${{ github.event.inputs.lookback_hours || '2' }}
         run: |
           echo "Starting Mailgun event sync..."
+          echo "Domain: legal.preintake.ai"
           echo "Lookback: $LOOKBACK_HOURS hours"
           node scripts/sync-preintake-mailgun-events.js
 

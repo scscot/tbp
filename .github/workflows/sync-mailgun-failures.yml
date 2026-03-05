@@ -45,8 +45,8 @@ jobs:
           {
             "tbp_api_key": "${{ secrets.TBP_MAILGUN_API_KEY }}",
             "tbp_domain": "news.teambuildpro.com",
-            "preintake_api_key": "${{ secrets.MAILGUN_API_KEY }}",
-            "preintake_domain": "law.preintake.ai"
+            "preintake_api_key": "${{ secrets.PREINTAKE_LEGAL_MAILGUN_API_KEY }}",
+            "preintake_domain": "legal.preintake.ai"
           }
           EOF
 
