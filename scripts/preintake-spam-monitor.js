@@ -61,7 +61,7 @@ const TEST_FIRM_NAME = 'Scott Law Group';
  * to ensure testing reflects actual campaign emails
  */
 function generateTestEmailHtml() {
-  const ctaUrl = 'https://preintake.ai/?lead=delivery_test&utm_source=email&utm_medium=outreach&utm_campaign=law_firms&utm_content=cta_button';
+  const ctaUrl = 'https://preintake.ai/?lead=delivery_test&utm_source=email&utm_medium=outreach&utm_campaign=legal_firms&utm_content=cta_button';
   const unsubscribeUrl = `https://preintake.ai/unsubscribe.html?email=${encodeURIComponent(TEST_EMAIL)}`;
   const firstName = TEST_RECIPIENT_NAME.split(' ')[0];
 
