@@ -1391,6 +1391,29 @@ Corporate email domains are excluded from all contact collections using a **blac
   - Affects: iOS/Android app store metrics, email campaign sent counts
   - Stored in Firestore `config/analytics.benchmarkDate`
 
+**App Update Emails (Manual):**
+- `send-app-update-email-all.js` - Send app update emails to ALL users
+  - Original v1.0.83 update email script
+  - `--stats` - Show user counts by role/language/country
+  - `--test` - Send test email to scscot@gmail.com
+  - `--dry-run` - Preview without sending
+  - `--send` - Send to all users
+- `send-app-update-email-professionals.js` - Send to PROFESSIONALS only (role=admin)
+  - Filters by `role == 'admin'` AND `isProfileComplete === true`
+  - Fetches `biz_opp` from user's own `admin_settings` document
+  - Fallback: `'business'` if no biz_opp (avoids "your your team" grammar issue)
+  - Tracking collection: `app_update_emails_qualification`
+  - `--test --company="Amway"` - Test with specific company name
+  - `--test --lang=es` - Test in Spanish
+- `send-app-update-email-prospects.js` - Send to PROSPECTS only (role=user)
+  - Filters by `role == 'user'` AND `isProfileComplete === true`
+  - Fetches `biz_opp` from `admin_settings` where doc ID == user's `upline_admin`
+  - Fallback: `'business'` if no biz_opp
+  - Tracking collection: `app_update_emails_qualification_prospects`
+  - `--test --company="Herbalife"` - Test with specific company name
+- `resend-corrected-professionals.js` - One-time correction script (Mar 5, 2026)
+  - Sent "Corrected:" subject to 21 users who received bad fallback text
+
 **Spam Monitoring:**
 - `gmail-oauth-setup.js` - One-time OAuth setup for Gmail API access
   - Run interactively to authorize Gmail API
