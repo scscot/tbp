@@ -2216,6 +2216,51 @@ Email CTA → Homepage (?lead=) → create-account.html → Payment
 | `functions/widget-functions.js` | Removed Strategic Insights, fixed totalContacts calculation |
 | `preintake/preintake-analytics.html` | Dashboard simplification, template mapping fix |
 
+### Phase 86: Dual-Domain Email Strategy - Gmail via law.preintake.ai (2026-03-05)
+- [x] **Gmail Deliverability Fix** - law.preintake.ai delivers to Gmail inbox, legal.preintake.ai goes to spam
+  - Tested spam monitor with both domains; law.preintake.ai consistently lands in inbox
+  - Created separate Gmail-specific campaign using law.preintake.ai
+- [x] **Gmail Campaign Script** - `scripts/send-preintake-campaign-gmail.js`
+  - Uses `law.preintake.ai` domain and FROM address
+  - `GMAIL_ONLY = true` - filters to ONLY send to gmail.com/googlemail.com contacts
+  - Batch size from Firestore `config/emailCampaign.preintakeGmailBatchSize`
+  - Inverts the EXCLUDE_GMAIL logic to INCLUDE_ONLY_GMAIL
+- [x] **Gmail Campaign Workflow** - `.github/workflows/preintake-email-campaign-gmail.yml`
+  - Uses `PREINTAKE_LAW_MAILGUN_API_KEY` secret
+  - Same 4x daily Mon-Fri schedule as main campaign
+  - Batch size controlled via Firestore (no warming calculation)
+- [x] **Spam Monitor Domain Update** - Now uses law.preintake.ai
+  - Script already updated to use law.preintake.ai domain
+  - Tests Gmail inbox placement for the domain that actually sends to Gmail
+- [x] **GitHub Secrets Standardization** - Clearer naming convention
+  - `PREINTAKE_LEGAL_MAILGUN_API_KEY` - for legal.preintake.ai (main campaign, non-Gmail)
+  - `PREINTAKE_LAW_MAILGUN_API_KEY` - for law.preintake.ai (Gmail campaign + spam monitor)
+
+**Dual-Domain Strategy:**
+| Domain | Purpose | Contacts | Secret |
+|--------|---------|----------|--------|
+| `legal.preintake.ai` | Main campaign | Non-Gmail (Yahoo, Outlook, etc.) | `PREINTAKE_LEGAL_MAILGUN_API_KEY` |
+| `law.preintake.ai` | Gmail campaign | Gmail only | `PREINTAKE_LAW_MAILGUN_API_KEY` |
+
+**Firestore Batch Size Config:**
+| Field | Campaign | Default |
+|-------|----------|---------|
+| `preintakeBatchSize` | Main (legal.preintake.ai) | From warming schedule |
+| `preintakeGmailBatchSize` | Gmail (law.preintake.ai) | 2 |
+
+**Files Created:**
+| File | Purpose |
+|------|---------|
+| `scripts/send-preintake-campaign-gmail.js` | Gmail-only campaign using law.preintake.ai |
+| `.github/workflows/preintake-email-campaign-gmail.yml` | Gmail campaign workflow |
+
+**Files Modified:**
+| File | Changes |
+|------|---------|
+| `scripts/preintake-spam-monitor.js` | Domain changed to law.preintake.ai |
+| `.github/workflows/preintake-spam-monitor.yml` | Uses `PREINTAKE_LAW_MAILGUN_API_KEY` |
+| `.github/workflows/preintake-email-campaign.yml` | Uses `PREINTAKE_LEGAL_MAILGUN_API_KEY` |
+
 ---
 
 ## Architecture

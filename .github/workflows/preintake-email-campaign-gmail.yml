@@ -1,11 +1,18 @@
-name: PreIntake Email Spam Monitor
+name: PreIntake Email Campaign - Gmail
 
 on:
   schedule:
-    # Mon-Fri at 7:00 AM PT (15:00 UTC)
-    # PST: 7:00 AM, PDT: 6:00 AM (shifts 1 hour earlier in summer)
+    # 4 sends/day between 7:30am-11:30am PT (UTC-8). During PDT (Mar-Nov) sends
+    # shift 1 hour earlier (6:30am, 8:00am, 9:00am, 10:30am) — still morning.
+    #
+    #   PST: 7:30am, 9:00am, 10:00am, 11:30am PT
+    #   PDT: 6:30am, 8:00am,  9:00am, 10:30am PT
+    #
     # Day-of-week: 1-5 = Mon-Fri
-    - cron: '0 15 * * 1-5'
+    - cron: '30 15 * * 1-5'
+    - cron: '0 17 * * 1-5'
+    - cron: '0 18 * * 1-5'
+    - cron: '30 19 * * 1-5'
 
   # Allow manual trigger for testing
   workflow_dispatch:
@@ -14,9 +21,12 @@ env:
   NODE_VERSION: '20'
 
 jobs:
-  spam-check:
+  send-campaign:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    env:
+      # Use law.preintake.ai API key
+      MAILGUN_API_KEY: ${{ secrets.PREINTAKE_LAW_MAILGUN_API_KEY }}
 
     steps:
       - name: Checkout repository
@@ -27,12 +37,12 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
-          cache-dependency-path: 'functions/package.json'
+          cache-dependency-path: 'scripts/package.json'
 
       - name: Install dependencies
         run: |
+          cd scripts && npm install firebase-admin axios form-data && cd ..
           cd functions && npm install && cd ..
-          npm install --prefix scripts googleapis
           echo "Dependencies installed"
 
       - name: Setup Firebase credentials
@@ -43,26 +53,24 @@ jobs:
           echo "$FIREBASE_SERVICE_ACCOUNT" > secrets/serviceAccountKey.json
           echo "Firebase credentials configured"
 
-      - name: Run PreIntake spam monitor
+      - name: Send email batch (Gmail only)
         env:
-          GOOGLE_APPLICATION_CREDENTIALS: secrets/serviceAccountKey.json
-          MAILGUN_API_KEY: ${{ secrets.PREINTAKE_LAW_MAILGUN_API_KEY }}
-          GMAIL_OAUTH_CREDENTIALS: ${{ secrets.GMAIL_OAUTH_CREDENTIALS }}
-          GMAIL_OAUTH_TOKEN: ${{ secrets.GMAIL_OAUTH_TOKEN }}
+          # Batch size is read from Firestore config/emailCampaign.preintakeGmailBatchSize
+          MAILGUN_DOMAIN: law.preintake.ai
         run: |
-          echo "Starting PreIntake email spam monitor..."
-          node scripts/preintake-spam-monitor.js
+          echo "Starting PreIntake email campaign (Gmail only via law.preintake.ai)..."
+          echo "Batch size: read from Firestore config/emailCampaign.preintakeGmailBatchSize"
+          echo "Mailgun domain: $MAILGUN_DOMAIN"
+          node scripts/send-preintake-campaign-gmail.js
 
       - name: Notify on failure
         if: failure()
-        env:
-          MAILGUN_API_KEY: ${{ secrets.PREINTAKE_LAW_MAILGUN_API_KEY }}
         run: |
           curl -s --user "api:$MAILGUN_API_KEY" \
-            "https://api.mailgun.net/v3/legal.preintake.ai/messages" \
-            -F from="Stephen Scott <stephen@legal.preintake.ai>" \
+            "https://api.mailgun.net/v3/law.preintake.ai/messages" \
+            -F from="Stephen Scott <stephen@law.preintake.ai>" \
             -F to="scscot@gmail.com" \
-            -F subject="GitHub Actions: PreIntake Spam Monitor FAILED" \
+            -F subject="GitHub Actions: PreIntake Gmail Campaign FAILED" \
             -F text="Workflow failed: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
             && echo "Failure notification sent" || echo "Failed to send notification"
 
