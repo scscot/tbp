@@ -26,6 +26,43 @@ const Anthropic = require('@anthropic-ai/sdk');
 // GA4 Configuration
 const GA4_PROPERTY_ID = '485651473';
 
+// Countries to exclude from GA4 analytics (suspected bot/VPN traffic)
+const EXCLUDED_COUNTRIES = ['China', 'Singapore'];
+
+/**
+ * Build GA4 dimension filter to exclude specified countries
+ * Uses notExpression wrapping inListFilter (GA4 API doesn't have notInListFilter)
+ * @returns {Object} GA4 dimension filter expression
+ */
+function getCountryExclusionFilter() {
+  return {
+    notExpression: {
+      filter: {
+        fieldName: 'country',
+        inListFilter: {
+          values: EXCLUDED_COUNTRIES
+        }
+      }
+    }
+  };
+}
+
+/**
+ * Combine country exclusion filter with another filter using AND logic
+ * @param {Object} existingFilter - The existing dimension filter
+ * @returns {Object} Combined filter expression
+ */
+function combineWithCountryFilter(existingFilter) {
+  return {
+    andGroup: {
+      expressions: [
+        getCountryExclusionFilter(),
+        existingFilter
+      ]
+    }
+  };
+}
+
 // Google Play Configuration
 const PLAY_STORE_PACKAGE_NAME = 'com.scott.ultimatefix';
 const PLAY_STORE_GCS_BUCKET = 'pubsite_prod_8651719546203306974';
@@ -89,7 +126,7 @@ async function fetchGA4Analytics(dateRange = '30daysAgo', serviceAccountJson = n
       domainBreakdownResponse,
       topCountriesResponse
     ] = await Promise.all([
-      // Overview metrics
+      // Overview metrics (excluding China/Singapore)
       client.runReport({
         property: `properties/${propertyId}`,
         dateRanges: [{ startDate, endDate }],
@@ -101,9 +138,10 @@ async function fetchGA4Analytics(dateRange = '30daysAgo', serviceAccountJson = n
           { name: 'averageSessionDuration' },
           { name: 'bounceRate' },
           { name: 'screenPageViews' }
-        ]
+        ],
+        dimensionFilter: getCountryExclusionFilter()
       }),
-      // Traffic sources
+      // Traffic sources (excluding China/Singapore)
       client.runReport({
         property: `properties/${propertyId}`,
         dateRanges: [{ startDate, endDate }],
@@ -117,10 +155,11 @@ async function fetchGA4Analytics(dateRange = '30daysAgo', serviceAccountJson = n
           { name: 'activeUsers' },
           { name: 'engagementRate' }
         ],
+        dimensionFilter: getCountryExclusionFilter(),
         orderBys: [{ metric: { metricName: 'sessions' }, desc: true }],
         limit: 20
       }),
-      // Email campaign (filtered by SMTP medium)
+      // Email campaign (filtered by SMTP medium + excluding China/Singapore)
       client.runReport({
         property: `properties/${propertyId}`,
         dateRanges: [{ startDate, endDate }],
@@ -134,16 +173,16 @@ async function fetchGA4Analytics(dateRange = '30daysAgo', serviceAccountJson = n
           { name: 'activeUsers' },
           { name: 'engagementRate' }
         ],
-        dimensionFilter: {
+        dimensionFilter: combineWithCountryFilter({
           filter: {
             fieldName: 'sessionMedium',
             stringFilter: { value: 'email', matchType: 'EXACT' }
           }
-        },
+        }),
         orderBys: [{ metric: { metricName: 'sessions' }, desc: true }],
         limit: 20
       }),
-      // Top pages
+      // Top pages (excluding China/Singapore)
       client.runReport({
         property: `properties/${propertyId}`,
         dateRanges: [{ startDate, endDate }],
@@ -153,10 +192,11 @@ async function fetchGA4Analytics(dateRange = '30daysAgo', serviceAccountJson = n
           { name: 'engagementRate' },
           { name: 'averageSessionDuration' }
         ],
+        dimensionFilter: getCountryExclusionFilter(),
         orderBys: [{ metric: { metricName: 'screenPageViews' }, desc: true }],
         limit: 15
       }),
-      // Device breakdown
+      // Device breakdown (excluding China/Singapore)
       client.runReport({
         property: `properties/${propertyId}`,
         dateRanges: [{ startDate, endDate }],
@@ -169,10 +209,11 @@ async function fetchGA4Analytics(dateRange = '30daysAgo', serviceAccountJson = n
           { name: 'sessions' },
           { name: 'engagementRate' }
         ],
+        dimensionFilter: getCountryExclusionFilter(),
         orderBys: [{ metric: { metricName: 'activeUsers' }, desc: true }],
         limit: 15
       }),
-      // Top events
+      // Top events (excluding China/Singapore)
       client.runReport({
         property: `properties/${propertyId}`,
         dateRanges: [{ startDate, endDate }],
@@ -181,10 +222,11 @@ async function fetchGA4Analytics(dateRange = '30daysAgo', serviceAccountJson = n
           { name: 'eventCount' },
           { name: 'eventCountPerUser' }
         ],
+        dimensionFilter: getCountryExclusionFilter(),
         orderBys: [{ metric: { metricName: 'eventCount' }, desc: true }],
         limit: 20
       }),
-      // Domain/hostname breakdown
+      // Domain/hostname breakdown (excluding China/Singapore)
       client.runReport({
         property: `properties/${propertyId}`,
         dateRanges: [{ startDate, endDate }],
@@ -196,10 +238,11 @@ async function fetchGA4Analytics(dateRange = '30daysAgo', serviceAccountJson = n
           { name: 'engagementRate' },
           { name: 'averageSessionDuration' }
         ],
+        dimensionFilter: getCountryExclusionFilter(),
         orderBys: [{ metric: { metricName: 'activeUsers' }, desc: true }],
         limit: 10
       }),
-      // Top countries
+      // Top countries (excluding China/Singapore)
       client.runReport({
         property: `properties/${propertyId}`,
         dateRanges: [{ startDate, endDate }],
@@ -209,6 +252,7 @@ async function fetchGA4Analytics(dateRange = '30daysAgo', serviceAccountJson = n
           { name: 'sessions' },
           { name: 'engagementRate' }
         ],
+        dimensionFilter: getCountryExclusionFilter(),
         orderBys: [{ metric: { metricName: 'activeUsers' }, desc: true }],
         limit: 15
       })
