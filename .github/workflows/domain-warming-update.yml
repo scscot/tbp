@@ -257,7 +257,7 @@ jobs:
             echo "| Campaign | Unsent | Base | Final | Daily | Status |" >> $GITHUB_STEP_SUMMARY
             echo "|----------|--------|------|-------|-------|--------|" >> $GITHUB_STEP_SUMMARY
 
-            for campaign in main purchased bfh zinzino fsr paparazzi pruvit scentsy; do
+            for campaign in main purchased bfh zinzino fsr paparazzi pruvit scentsy mpg; do
               UNSENT=$(echo $RESULTS | jq -r ".campaigns.${campaign}.unsent // 0")
               BASE=$(echo $RESULTS | jq -r ".campaigns.${campaign}.base // 0")
               FINAL=$(echo $RESULTS | jq -r ".campaigns.${campaign}.final // 0")
