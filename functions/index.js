@@ -190,6 +190,13 @@ const {
 } = require('./email-campaign-scentsy');
 
 // ==============================
+// Import Email Campaign for MPG Contacts
+// ==============================
+const {
+  sendHourlyMpgCampaign,
+} = require('./email-campaign-mpg');
+
+// ==============================
 // Import Email Tracking Functions (SMTP Migration)
 // ==============================
 const {
@@ -465,6 +472,9 @@ module.exports = {
 
   // Email campaign for Scentsy contacts (scheduled)
   sendHourlyScentsyCampaign,
+
+  // Email campaign for MPG contacts (scheduled)
+  sendHourlyMpgCampaign,
 
   // Email tracking endpoints (SMTP migration)
   trackEmailOpen,
