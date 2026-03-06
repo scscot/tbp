@@ -55,7 +55,7 @@ const CONFIG = {
   DELAY_BETWEEN_PAGES: 3000,     // 3 seconds between page loads
   DELAY_JITTER: 1500,            // Random jitter up to 1.5 seconds
   PAGE_LOAD_TIMEOUT: 30000,      // 30 second page load timeout
-  MAX_CONTACTS_PER_RUN: 50,      // Default max contacts per run
+  MAX_CONTACTS_PER_RUN: 200,     // Default max contacts per run
 
   // Browser config
   HEADLESS: process.env.HEADLESS !== 'false',

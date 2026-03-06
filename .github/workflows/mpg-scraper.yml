@@ -12,7 +12,7 @@ on:
       max_contacts:
         description: 'Maximum contacts to scrape per run'
         required: false
-        default: '50'
+        default: '200'
         type: string
       dry_run:
         description: 'Dry run (preview only, no Firestore writes)'
@@ -79,7 +79,7 @@ jobs:
 
       - name: Run MPG Contact Scraper
         env:
-          MAX_CONTACTS: ${{ github.event.inputs.max_contacts || '50' }}
+          MAX_CONTACTS: ${{ github.event.inputs.max_contacts || '200' }}
           DRY_RUN: ${{ github.event.inputs.dry_run }}
         run: |
           echo "Starting MPG Contact Scraper..."
