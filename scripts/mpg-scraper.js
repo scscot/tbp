@@ -60,6 +60,14 @@ const CONFIG = {
   // Browser config
   HEADLESS: process.env.HEADLESS !== 'false',
   USER_AGENT: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+
+  // Default sponsor detection - MPG shows this contact for invalid usernames
+  // Skip contacts matching these values (case-insensitive)
+  DEFAULT_SPONSOR: {
+    email: 'johnmpgx@gmail.com',
+    phone: '919-605-8994',
+    name: 'John Hughes'
+  }
 };
 
 // ============================================================================
@@ -132,6 +140,46 @@ function normalizePhone(phone) {
     return cleaned;
   }
   return null;
+}
+
+/**
+ * Check if contact matches the default sponsor (John Hughes)
+ * MPG shows the default sponsor when a username is invalid/not found
+ *
+ * @param {object} contactInfo - Contact info with fullName, email, phone
+ * @returns {boolean} - True if contact matches the default sponsor
+ */
+function isDefaultSponsor(contactInfo) {
+  if (!contactInfo) return false;
+
+  const defaultSponsor = CONFIG.DEFAULT_SPONSOR;
+
+  // Check email match (case-insensitive)
+  if (contactInfo.email && defaultSponsor.email) {
+    if (contactInfo.email.toLowerCase() === defaultSponsor.email.toLowerCase()) {
+      return true;
+    }
+  }
+
+  // Check phone match (normalize to digits only)
+  if (contactInfo.phone && defaultSponsor.phone) {
+    const contactPhone = contactInfo.phone.replace(/\D/g, '');
+    const defaultPhone = defaultSponsor.phone.replace(/\D/g, '');
+    if (contactPhone === defaultPhone) {
+      return true;
+    }
+  }
+
+  // Check name match (case-insensitive, normalized)
+  if (contactInfo.fullName && defaultSponsor.name) {
+    const contactName = contactInfo.fullName.toLowerCase().trim();
+    const defaultName = defaultSponsor.name.toLowerCase().trim();
+    if (contactName === defaultName) {
+      return true;
+    }
+  }
+
+  return false;
 }
 
 function inferCountryFromPhone(phone) {
@@ -576,10 +624,11 @@ async function showStats() {
 
   if (state.usernamesProcessed !== undefined) {
     console.log(`\nLast Run Stats:`);
-    console.log(`  Usernames Processed: ${state.usernamesProcessed}`);
-    console.log(`  Contacts Saved:      ${state.contactsSaved}`);
-    console.log(`  With Email:          ${state.withEmail}`);
-    console.log(`  Errors:              ${state.errors}`);
+    console.log(`  Usernames Processed:   ${state.usernamesProcessed}`);
+    console.log(`  Contacts Saved:        ${state.contactsSaved}`);
+    console.log(`  With Email:            ${state.withEmail}`);
+    console.log(`  Default Sponsor (skip): ${state.defaultSponsorSkipped || 0}`);
+    console.log(`  Errors:                ${state.errors}`);
   }
 
   // Sample contacts
@@ -608,11 +657,22 @@ async function testSingleUsername(username) {
     const contactInfo = await scrapeContactFromPage(page, username);
 
     if (contactInfo) {
+      // Check if this is the default sponsor
+      const isDefault = isDefaultSponsor(contactInfo);
+
       console.log('\n Contact found:');
       console.log(`  Name:    ${contactInfo.fullName || 'not found'}`);
       console.log(`  Email:   ${contactInfo.email || 'not found'}`);
       console.log(`  Phone:   ${contactInfo.phone || 'not found'}`);
       console.log(`  Country: ${contactInfo.country || 'not found'}`);
+
+      if (isDefault) {
+        console.log('\n  ⚠️  WARNING: This is the DEFAULT SPONSOR (John Hughes)');
+        console.log('  This usually means the username is invalid.');
+        console.log('  This contact would be SKIPPED during scraping.');
+      } else {
+        console.log('\n  ✅ This is a VALID contact (not default sponsor)');
+      }
 
       if (process.env.DEBUG && contactInfo.rawText) {
         console.log('\n  Raw text:');
@@ -661,6 +721,7 @@ async function runScraping(options) {
     errors: 0,
     duplicates: 0,
     invalidUsernames: 0,
+    defaultSponsorSkipped: 0,
   };
 
   try {
@@ -683,7 +744,14 @@ async function runScraping(options) {
       // Check for invalid username (no endorser info found)
       const isInvalidUsername = !contactInfo || !contactInfo.fullName;
 
-      if (isInvalidUsername) {
+      // Check if this is the default sponsor (invalid username shows John Hughes)
+      const isDefault = isDefaultSponsor(contactInfo);
+
+      if (isDefault) {
+        console.log(`  ⚠️  Default sponsor detected (invalid username) - skipping`);
+        await markUsernameAsScraped(docId, false, options.dryRun);
+        stats.defaultSponsorSkipped++;
+      } else if (isInvalidUsername) {
         console.log(`  Invalid username (no representative found)`);
         await markUsernameAsScraped(docId, false, options.dryRun);
         stats.invalidUsernames++;
@@ -725,13 +793,14 @@ async function runScraping(options) {
   console.log('\n' + '='.repeat(60));
   console.log('SCRAPING COMPLETE');
   console.log('='.repeat(60));
-  console.log(`Usernames processed: ${stats.usernamesProcessed}`);
-  console.log(`Contacts saved:      ${stats.contactsSaved}`);
-  console.log(`  With email:        ${stats.withEmail}`);
-  console.log(`  No email:          ${stats.noEmail}`);
-  console.log(`Invalid usernames:   ${stats.invalidUsernames}`);
-  console.log(`Duplicates:          ${stats.duplicates}`);
-  console.log(`Errors:              ${stats.errors}`);
+  console.log(`Usernames processed:   ${stats.usernamesProcessed}`);
+  console.log(`Contacts saved:        ${stats.contactsSaved}`);
+  console.log(`  With email:          ${stats.withEmail}`);
+  console.log(`  No email:            ${stats.noEmail}`);
+  console.log(`Default sponsor (skip): ${stats.defaultSponsorSkipped}`);
+  console.log(`Invalid usernames:     ${stats.invalidUsernames}`);
+  console.log(`Duplicates:            ${stats.duplicates}`);
+  console.log(`Errors:                ${stats.errors}`);
   console.log(`Time elapsed:        ${elapsed}s`);
   console.log('='.repeat(60));
 }

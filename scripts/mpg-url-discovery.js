@@ -51,15 +51,44 @@ const SERPAPI_KEY = fs.existsSync(SERPAPI_KEY_PATH)
   : null;
 
 // Excluded paths (non-user pages on marketplaceglobal.com)
+// NOTE: We also have default sponsor detection in the scraper for any that slip through
 const EXCLUDED_PATHS = [
+  // Core site pages
   'about', 'contact', 'products', 'login', 'signup', 'cart', 'checkout',
   'privacy', 'terms', 'faq', 'blog', 'news', 'support', 'help', 'api',
-  'admin', 'shop', 'store', 'order', 'account', 'register', 'category',
-  'categories', 'collections', 'pages', 'assets', 'cdn', 'static',
-  'images', 'css', 'js', 'fonts', 'media', 'uploads', 'downloads',
+  'admin', 'shop', 'store', 'order', 'account', 'register', 'home',
+
+  // Product/catalog pages
+  'category', 'categories', 'collections', 'pages', 'product', 'product-listing',
+  'product-details', 'catalog', 'item', 'items', 'listing', 'listings',
+
+  // Policy pages (often found in web archives)
+  'refund-policy', 'refund-policy-old', 'return-policy', 'shipping-policy',
+  'privacy-policy', 'terms-of-service', 'terms-and-conditions', 'legal',
+  'disclaimer', 'compliance', 'policies',
+
+  // Static assets
+  'assets', 'cdn', 'static', 'images', 'css', 'js', 'fonts', 'media',
+  'uploads', 'downloads', 'files', 'resources',
+
+  // Auth/system pages
   'search', 'reset', 'forgot', 'password', 'verify', 'confirm',
   'unsubscribe', 'subscribe', 'newsletter', 'sitemap', 'robots',
   'favicon', 'manifest', 'service-worker', 'sw', 'workbox',
+  'logout', 'signout', 'signin', 'auth', 'oauth', 'callback',
+
+  // E-commerce pages
+  'wishlist', 'favorites', 'compare', 'reviews', 'ratings',
+  'payment', 'billing', 'invoice', 'receipt', 'transaction',
+
+  // Common site paths
+  'careers', 'jobs', 'press', 'partners', 'affiliates', 'investors',
+  'team', 'company', 'corporate', 'business', 'wholesale',
+  'opportunity', 'join', 'become', 'enroll', 'enrollment',
+
+  // Content pages
+  'how-it-works', 'features', 'benefits', 'why', 'pricing', 'plans',
+  'testimonials', 'success-stories', 'events', 'webinar', 'training',
 ];
 
 const CONFIG = {
@@ -150,11 +179,17 @@ function sleep(ms) {
 
 /**
  * Extract username from Marketplace Global URL
- * Handles various URL formats:
- *   - https://marketplaceglobal.com/john
- *   - https://marketplaceglobal.com/jcocean
- *   - https://www.marketplaceglobal.com/david
- *   - https://marketplaceglobal.com/john/
+ *
+ * ONLY accepts single-path URLs (representative pages):
+ *   ✓ https://marketplaceglobal.com/john
+ *   ✓ https://marketplaceglobal.com/jcocean
+ *   ✓ https://www.marketplaceglobal.com/david
+ *   ✓ https://marketplaceglobal.com/john/  (trailing slash OK)
+ *
+ * REJECTS multi-path URLs (site pages):
+ *   ✗ https://marketplaceglobal.com/products/health
+ *   ✗ https://marketplaceglobal.com/john/orders
+ *   ✗ https://marketplaceglobal.com/category/wellness/items
  */
 function extractUsername(url) {
   try {
@@ -165,12 +200,15 @@ function extractUsername(url) {
       return null;
     }
 
-    // Get the first path segment (username)
-    const pathParts = parsed.pathname.replace(/^\//, '').split('/');
-    const path = pathParts[0];
+    // Get path segments (filter out empty strings from leading/trailing slashes)
+    const pathParts = parsed.pathname.split('/').filter(p => p.length > 0);
 
-    // Skip empty paths
-    if (!path) return null;
+    // ONLY accept single-path URLs (e.g., /john, not /john/orders)
+    if (pathParts.length !== 1) {
+      return null;
+    }
+
+    const path = pathParts[0];
 
     // Skip known non-user paths
     if (EXCLUDED_PATHS.includes(path.toLowerCase())) {
