@@ -63,10 +63,12 @@ const CONFIG = {
 
   // Default sponsor detection - MPG shows this contact for invalid usernames
   // Skip contacts matching these values (case-insensitive)
+  // NOTE: MPG's default sponsor may change over time - update if needed
   DEFAULT_SPONSOR: {
-    email: 'johnmpgx@gmail.com',
-    phone: '919-605-8994',
-    name: 'John Hughes'
+    email: 'hailey@haileykelly.com',
+    phone: '4586006738',
+    name: 'Hailey Kelly',
+    username: 'haileykelly'  // The actual username - don't skip if URL matches this
   }
 };
 
@@ -143,16 +145,27 @@ function normalizePhone(phone) {
 }
 
 /**
- * Check if contact matches the default sponsor (John Hughes)
+ * Check if contact matches the default sponsor (shown for invalid usernames)
  * MPG shows the default sponsor when a username is invalid/not found
  *
+ * IMPORTANT: If the username matches the default sponsor's actual username,
+ * it's their real page and should NOT be skipped.
+ *
  * @param {object} contactInfo - Contact info with fullName, email, phone
- * @returns {boolean} - True if contact matches the default sponsor
+ * @param {string} username - The username being scraped
+ * @returns {boolean} - True if contact is default sponsor on wrong page (should skip)
  */
-function isDefaultSponsor(contactInfo) {
+function isDefaultSponsor(contactInfo, username) {
   if (!contactInfo) return false;
 
   const defaultSponsor = CONFIG.DEFAULT_SPONSOR;
+
+  // If this IS the default sponsor's actual page, don't skip it
+  if (username && defaultSponsor.username) {
+    if (username.toLowerCase() === defaultSponsor.username.toLowerCase()) {
+      return false;  // This is their real page, not a fallback
+    }
+  }
 
   // Check email match (case-insensitive)
   if (contactInfo.email && defaultSponsor.email) {
@@ -657,8 +670,8 @@ async function testSingleUsername(username) {
     const contactInfo = await scrapeContactFromPage(page, username);
 
     if (contactInfo) {
-      // Check if this is the default sponsor
-      const isDefault = isDefaultSponsor(contactInfo);
+      // Check if this is the default sponsor (but not their real page)
+      const isDefault = isDefaultSponsor(contactInfo, username);
 
       console.log('\n Contact found:');
       console.log(`  Name:    ${contactInfo.fullName || 'not found'}`);
@@ -667,11 +680,11 @@ async function testSingleUsername(username) {
       console.log(`  Country: ${contactInfo.country || 'not found'}`);
 
       if (isDefault) {
-        console.log('\n  ⚠️  WARNING: This is the DEFAULT SPONSOR (John Hughes)');
+        console.log('\n  ⚠️  WARNING: This is the DEFAULT SPONSOR (Hailey Kelly)');
         console.log('  This usually means the username is invalid.');
         console.log('  This contact would be SKIPPED during scraping.');
       } else {
-        console.log('\n  ✅ This is a VALID contact (not default sponsor)');
+        console.log('\n  ✅ This is a VALID contact (not default sponsor, or is their real page)');
       }
 
       if (process.env.DEBUG && contactInfo.rawText) {
@@ -744,8 +757,8 @@ async function runScraping(options) {
       // Check for invalid username (no endorser info found)
       const isInvalidUsername = !contactInfo || !contactInfo.fullName;
 
-      // Check if this is the default sponsor (invalid username shows John Hughes)
-      const isDefault = isDefaultSponsor(contactInfo);
+      // Check if this is the default sponsor (invalid username shows default contact)
+      const isDefault = isDefaultSponsor(contactInfo, username);
 
       if (isDefault) {
         console.log(`  ⚠️  Default sponsor detected (invalid username) - skipping`);
