@@ -494,7 +494,7 @@ async function saveContact(username, contactInfo, dryRun) {
     // Email campaign fields
     sent: false,
     sentTimestamp: null,
-    status: email ? 'pending' : 'no_email',
+    status: 'pending',
     subjectTag: null,
     randomIndex: Math.random(),
     clickedAt: null,
@@ -606,10 +606,10 @@ async function showStats() {
   const contactsSnapshot = await db.collection(CONFIG.CONTACTS_COLLECTION).get();
   const totalContacts = contactsSnapshot.size;
 
-  const withEmailSnapshot = await db.collection(CONFIG.CONTACTS_COLLECTION)
+  const pendingSnapshot = await db.collection(CONFIG.CONTACTS_COLLECTION)
     .where('status', '==', 'pending')
     .get();
-  const withEmailCount = withEmailSnapshot.size;
+  const pendingCount = pendingSnapshot.size;
 
   const sentSnapshot = await db.collection(CONFIG.CONTACTS_COLLECTION)
     .where('sent', '==', true)
@@ -627,9 +627,8 @@ async function showStats() {
 
   console.log('\nContacts:');
   console.log(`  Total:     ${totalContacts}`);
-  console.log(`  With Email: ${withEmailCount}`);
-  console.log(`  No Email:   ${totalContacts - withEmailCount}`);
-  console.log(`  Sent:       ${sentCount}`);
+  console.log(`  Pending:   ${pendingCount}`);
+  console.log(`  Sent:      ${sentCount}`);
 
   if (state.lastRunAt) {
     console.log(`\nLast Run: ${state.lastRunAt.toDate().toISOString()}`);
@@ -639,7 +638,7 @@ async function showStats() {
     console.log(`\nLast Run Stats:`);
     console.log(`  Usernames Processed:   ${state.usernamesProcessed}`);
     console.log(`  Contacts Saved:        ${state.contactsSaved}`);
-    console.log(`  With Email:            ${state.withEmail}`);
+    console.log(`  No Email (skipped):    ${state.noEmailSkipped || 0}`);
     console.log(`  Default Sponsor (skip): ${state.defaultSponsorSkipped || 0}`);
     console.log(`  Errors:                ${state.errors}`);
   }
@@ -729,8 +728,7 @@ async function runScraping(options) {
   const stats = {
     usernamesProcessed: 0,
     contactsSaved: 0,
-    withEmail: 0,
-    noEmail: 0,
+    noEmailSkipped: 0,
     errors: 0,
     duplicates: 0,
     invalidUsernames: 0,
@@ -768,15 +766,15 @@ async function runScraping(options) {
         console.log(`  Invalid username (no representative found)`);
         await markUsernameAsScraped(docId, false, options.dryRun);
         stats.invalidUsernames++;
-      } else if (contactInfo && (contactInfo.fullName || contactInfo.email)) {
+      } else if (contactInfo && contactInfo.email) {
+        // Only save contacts WITH email (no email = not useful for campaigns)
         await saveContact(username, contactInfo, options.dryRun);
         stats.contactsSaved++;
-
-        if (contactInfo.email) {
-          stats.withEmail++;
-        } else {
-          stats.noEmail++;
-        }
+      } else if (contactInfo && contactInfo.fullName && !contactInfo.email) {
+        // Valid contact but no email - skip
+        console.log(`  Skipping: No email found for ${contactInfo.fullName}`);
+        await markUsernameAsScraped(docId, true, options.dryRun);
+        stats.noEmailSkipped++;
 
         await markUsernameAsScraped(docId, true, options.dryRun);
       } else {
@@ -808,8 +806,7 @@ async function runScraping(options) {
   console.log('='.repeat(60));
   console.log(`Usernames processed:   ${stats.usernamesProcessed}`);
   console.log(`Contacts saved:        ${stats.contactsSaved}`);
-  console.log(`  With email:          ${stats.withEmail}`);
-  console.log(`  No email:            ${stats.noEmail}`);
+  console.log(`No email (skipped):    ${stats.noEmailSkipped}`);
   console.log(`Default sponsor (skip): ${stats.defaultSponsorSkipped}`);
   console.log(`Invalid usernames:     ${stats.invalidUsernames}`);
   console.log(`Duplicates:            ${stats.duplicates}`);
