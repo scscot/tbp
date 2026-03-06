@@ -1,12 +1,13 @@
 name: MPG URL Discovery
 
 on:
+  # DISABLED: Discovery pool exhausted at ~514 usernames (Mar 6, 2026)
   # Scheduled runs every 6 hours
-  schedule:
-    # Run every 6 hours: 6am, 12pm, 6pm, 12am PT
-    - cron: '0 14,20,2,8 * * *'
+  # schedule:
+  #   # Run every 6 hours: 6am, 12pm, 6pm, 12am PT
+  #   - cron: '0 14,20,2,8 * * *'
 
-  # Manual trigger
+  # Manual trigger (kept for potential future use)
   workflow_dispatch:
     inputs:
       max_searches:

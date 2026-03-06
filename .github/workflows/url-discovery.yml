@@ -1,11 +1,12 @@
 name: URL Pattern Discovery
 
 on:
-  schedule:
-    # Run every 2 hours to process 1,082 companies faster
-    - cron: '0 */2 * * *'
+  # DISABLED: All 841 companies processed, discovery pool exhausted (Mar 6, 2026)
+  # schedule:
+  #   # Run every 2 hours to process 1,082 companies faster
+  #   - cron: '0 */2 * * *'
 
-  # Allow manual trigger for testing
+  # Manual trigger (kept for future use if base_urls.txt is expanded)
   workflow_dispatch:
     inputs:
       limit:
