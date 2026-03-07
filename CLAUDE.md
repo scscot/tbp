@@ -1,6 +1,6 @@
 # Team Build Pro - Comprehensive Knowledge Base
 
-**Last Updated**: 2026-03-03
+**Last Updated**: 2026-03-07
 **Purpose**: Persistent knowledge base for AI assistants across sessions
 
 ---
@@ -1568,6 +1568,15 @@ Corporate email domains are excluded from all contact collections using a **blac
 - ✅ **PreIntake.ai Workflows**: Bar scrapers + email campaign + analytics (see `preintake/CLAUDE.md`)
 
 **Website Enhancements**
+- ✅ **Platform-Aware Pricing Buttons** (Mar 7, 2026): Pricing section buttons detect user platform
+  - iOS/Android users: Direct link to appropriate app store
+  - Desktop users: Smooth scroll to Download section to choose platform
+  - `goToStore()` function added to all 4 language sites (EN, ES, PT, DE)
+  - Preserves `href="#download"` as fallback if JavaScript disabled
+- ✅ **Success Section Added** (Mar 7, 2026): New section on homepage showing app metrics
+  - 3,500+ Users, 22+ Countries, 40+ Opportunities
+  - Added after Screenshots section, before Testimonials
+  - Responsive 3-column grid (stacks on mobile)
 - ✅ **Prospect/Professional Pages Restored** (Feb 12, 2026): Critical landing pages restored after GSC 404 errors
   - `prospects.html` and `professionals.html` restored in all 4 languages (EN, ES, PT, DE)
   - These pages are blocked from indexing via robots.txt (intentional - not for SEO)
