@@ -449,7 +449,7 @@
                             <li><span class="material-symbols-outlined">check_circle</span> No Se Requiere Tarjeta de Crédito</li>
                         </ul>
                         <p style="text-align: center; font-size: 0.9rem; opacity: 0.8; margin-bottom: 1rem;">Califica con 3 directos + 12 miembros totales</p>
-                        <a href="#download" class="cta-primary" style="width: 100%; justify-content: center; background: #16a34a;">
+                        <a href="#download" onclick="goToStore(); return false;" class="cta-primary" style="width: 100%; justify-content: center; background: #16a34a;">
                             Comenzar Reto Gratis
                         </a>
                     </div>
@@ -467,7 +467,7 @@
                             <li><span class="material-symbols-outlined">check_circle</span> Funciona con Cualquier Empresa</li>
                         </ul>
                         <p style="text-align: center; font-size: 0.9rem; opacity: 0.8; margin-bottom: 1rem;">¿Ya estás en un negocio? Comienza aquí.</p>
-                        <a href="#download" class="cta-primary" style="width: 100%; justify-content: center;">
+                        <a href="#download" onclick="goToStore(); return false;" class="cta-primary" style="width: 100%; justify-content: center;">
                             Comenzar Prueba Gratis
                         </a>
                     </div>
@@ -532,6 +532,24 @@
 
                 console.log('Navigating to UL:', UNIVERSAL_LINK);
                 window.location.href = UNIVERSAL_LINK;
+            }
+        }
+
+        // ============================================================================
+        // PLATFORM-AWARE STORE REDIRECT
+        // Detects iOS/Android and links directly; falls back to download section
+        // ============================================================================
+        function goToStore() {
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+                          (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+            const isAndroid = /Android/.test(navigator.userAgent);
+
+            if (isIOS) {
+                openAppOrStore('ios');
+            } else if (isAndroid) {
+                openAppOrStore('android');
+            } else {
+                document.getElementById('download').scrollIntoView({ behavior: 'smooth' });
             }
         }
 
