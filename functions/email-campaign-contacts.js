@@ -73,15 +73,15 @@ const AB_TEST_VARIANTS = {
   },
   v7: {
     templateVersion: 'v7',
-    subject: 'The future of direct sales is here',
+    subject: 'Getting prospects to YES with AI',
     subjectTag: 'mobile_first_v7',
-    description: 'Pattern interrupt - future-focused positioning'
+    description: 'AI-focused value proposition'
   },
   v8: {
     templateVersion: 'v8',
-    subject: 'Your AI-powered recruiting assistant',
+    subject: 'Getting prospects to YES with AI',
     subjectTag: 'mobile_first_v8',
-    description: 'AI assistant value proposition'
+    description: 'AI-focused value proposition'
   }
 };
 

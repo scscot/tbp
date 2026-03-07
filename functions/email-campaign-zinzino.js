@@ -9,7 +9,7 @@
  * - v16-es: Spanish
  * - v16-de: German
  *
- * Subject: "Your prospects don't believe they can recruit" (localized per language)
+ * Subject: "Getting prospects to YES with AI" (localized per language)
  *
  * Language Selection:
  * - Spanish (es): Spain, Mexico, Colombia, Peru
@@ -82,17 +82,17 @@ const CTA_DOMAINS = {
 const TEMPLATE_CONFIG = {
   en: {
     templateVersion: 'v16',
-    subject: "Your prospects don't believe they can recruit",
+    subject: "Getting prospects to YES with AI",
     subjectTag: 'zinzino_v16_en'
   },
   es: {
     templateVersion: 'v16-es',
-    subject: 'Tus prospectos de reclutamiento no creen que pueden reclutar',
+    subject: 'Consiguiendo que los prospectos digan SÍ con IA',
     subjectTag: 'zinzino_v16_es'
   },
   de: {
     templateVersion: 'v16-de',
-    subject: 'Ihre Rekrutierungsinteressenten glauben nicht, dass sie rekrutieren können',
+    subject: 'Mit KI Interessenten zum JA bringen',
     subjectTag: 'zinzino_v16_de'
   }
 };

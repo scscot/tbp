@@ -39,7 +39,7 @@ const LANDING_PAGE_URL = 'https://teambuildpro.com';
 // Single template and subject line for all sends (no A/B testing)
 const TEMPLATE_CONFIG = {
   templateVersion: 'v16',
-  subject: "Your prospects don't believe they can recruit",
+  subject: "Getting prospects to YES with AI",
   subjectTag: 'fsr_v16'
 };
 

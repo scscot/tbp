@@ -10,7 +10,7 @@
  * - v16-pt: Portuguese (Brazil)
  * - v16-de: German
  *
- * Subject: "Your prospects don't believe they can recruit" (localized per language)
+ * Subject: "Getting prospects to YES with AI" (localized per language)
  *
  * Collection: bfh_contacts
  * Query: bfhScraped == true, email != null, sent == false
@@ -49,22 +49,22 @@ const LANDING_PAGE_URL = 'https://teambuildpro.com';
 const TEMPLATE_CONFIG = {
   en: {
     templateVersion: 'v16',
-    subject: "Your prospects don't believe they can recruit",
+    subject: "Getting prospects to YES with AI",
     subjectTag: 'bfh_v16_en'
   },
   es: {
     templateVersion: 'v16-es',
-    subject: 'Tus prospectos de reclutamiento no creen que pueden reclutar',
+    subject: 'Consiguiendo que los prospectos digan SÍ con IA',
     subjectTag: 'bfh_v16_es'
   },
   pt: {
     templateVersion: 'v16-pt',
-    subject: 'Seus prospectos de recrutamento não acreditam que podem recrutar',
+    subject: 'Conseguindo que os prospectos digam SIM com IA',
     subjectTag: 'bfh_v16_pt'
   },
   de: {
     templateVersion: 'v16-de',
-    subject: 'Ihre Rekrutierungsinteressenten glauben nicht, dass sie rekrutieren können',
+    subject: 'Mit KI Interessenten zum JA bringen',
     subjectTag: 'bfh_v16_de'
   }
 };
