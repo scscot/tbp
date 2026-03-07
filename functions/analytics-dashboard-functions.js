@@ -1809,26 +1809,29 @@ function buildConversionFunnel(emailStats, ga4Data, iosData, androidData) {
         status: 'neutral'
       },
       {
-        name: 'Website Visit',
+        name: 'Email Click',
         count: websiteFromEmail,
         percentage: emailToWebsite + '%',
         target: targets.emailToWebsite + '%',
-        status: parseFloat(emailToWebsite) >= targets.emailToWebsite ? 'good' : 'warning'
+        status: parseFloat(emailToWebsite) >= targets.emailToWebsite ? 'good' : 'warning',
+        note: 'Website visits from email'
       },
       {
-        name: 'iOS App Store',
+        name: 'iOS Store View',
         count: iosPageViews,
         percentage: websiteToAppStore + '%',
         target: targets.websiteToAppStore + '%',
-        status: parseFloat(websiteToAppStore) >= targets.websiteToAppStore ? 'good' : 'warning'
+        status: parseFloat(websiteToAppStore) >= targets.websiteToAppStore ? 'good' : 'warning',
+        note: 'Google Play views not available via API'
       },
       {
-        name: 'iOS Download',
-        count: iosDownloads,
+        name: 'App Downloads',
+        count: iosDownloads + androidDownloads,
+        iosCount: iosDownloads,
+        androidCount: androidDownloads,
         percentage: appStoreToDownload + '%',
         target: targets.appStoreToDownload + '%',
-        status: parseFloat(appStoreToDownload) >= targets.appStoreToDownload ? 'good' : 'warning',
-        note: androidDownloads > 0 ? `+${androidDownloads} Android` : null
+        status: parseFloat(appStoreToDownload) >= targets.appStoreToDownload ? 'good' : 'warning'
       }
     ],
     rates: {
@@ -2054,9 +2057,14 @@ const getTBPAnalytics = onRequest({
       logger.warn('GA4 service account credentials not available');
     }
 
+    // Calculate 7-day timestamp for funnel (separate from benchmark date)
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    sevenDaysAgo.setHours(0, 0, 0, 0);
+
     // Fetch GA4 data sequentially to avoid rate limiting (8 concurrent requests per call)
     // while fetching other data sources in parallel
-    const [iosData, androidData, allCampaignStats, purchasedROI] = await Promise.all([
+    const [iosData, androidData, allCampaignStats, emailStats7Day, purchasedROI] = await Promise.all([
       fetchAppStoreMetrics(
         ascKeyId.value(),
         ascIssuerId.value(),
@@ -2065,7 +2073,8 @@ const getTBPAnalytics = onRequest({
         benchmarkDate  // Pass benchmark date
       ),
       fetchGooglePlayMetrics(benchmarkDate, ga4Credentials),  // Pass benchmark date and credentials
-      fetchAllEmailCampaignStats(benchmarkTimestamp),  // Pass benchmark timestamp
+      fetchAllEmailCampaignStats(benchmarkTimestamp),  // Pass benchmark timestamp for dashboard
+      fetchAllEmailCampaignStats(sevenDaysAgo),  // 7-day stats for conversion funnel
       fetchPurchasedLeadsROI()
     ]);
 
@@ -2075,9 +2084,9 @@ const getTBPAnalytics = onRequest({
     const ga4DataYesterday = await fetchGA4Analytics('yesterday', ga4Credentials);
     const ga4DataToday = await fetchGA4Analytics('today', ga4Credentials);
 
-    // Build executive summary and conversion funnel using 7-day data
+    // Build executive summary using benchmark-filtered data, conversion funnel using 7-day data
     const executiveSummary = buildExecutiveSummary(ga4Data7, iosData, androidData, allCampaignStats);
-    const conversionFunnel = buildConversionFunnel(allCampaignStats, ga4Data7, iosData, androidData);
+    const conversionFunnel = buildConversionFunnel(emailStats7Day, ga4Data7, iosData, androidData);
 
     // Generate AI observations for GA4 data (use 30-day data for more comprehensive analysis)
     let ga4Observations = null;

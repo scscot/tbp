@@ -1082,6 +1082,14 @@
             gap: 10px;
         }
 
+        .funnel-header .period {
+            font-size: 0.85rem;
+            color: #6b7280;
+            background: #f3f4f6;
+            padding: 5px 12px;
+            border-radius: 20px;
+        }
+
         .funnel-stages {
             display: flex;
             align-items: center;
@@ -1396,6 +1404,7 @@
             <div id="conversionFunnel" class="conversion-funnel" style="display: none;">
                 <div class="funnel-header">
                     <h3>&#128200; Conversion Funnel</h3>
+                    <span class="period">7-Day Performance</span>
                 </div>
                 <div class="funnel-stages" id="funnelStages">
                     <div class="funnel-stage">
@@ -1405,24 +1414,27 @@
                     </div>
                     <span class="funnel-arrow">&#8594;</span>
                     <div class="funnel-stage" id="funnelWebsiteStage">
-                        <div class="funnel-stage-name">Website Visit</div>
+                        <div class="funnel-stage-name">Email Click</div>
                         <div class="funnel-stage-count" id="funnelWebsite">--</div>
                         <div class="funnel-stage-rate" id="funnelWebsiteRate">--%</div>
                         <div class="funnel-stage-target">Target: 15%</div>
+                        <div class="funnel-stage-note" style="font-size: 10px; color: #6b7280;">(website visits from email)</div>
                     </div>
                     <span class="funnel-arrow">&#8594;</span>
                     <div class="funnel-stage" id="funnelAppStoreStage">
-                        <div class="funnel-stage-name">App Store View</div>
+                        <div class="funnel-stage-name">iOS Store View</div>
                         <div class="funnel-stage-count" id="funnelAppStore">--</div>
                         <div class="funnel-stage-rate" id="funnelAppStoreRate">--%</div>
                         <div class="funnel-stage-target">Target: 20%</div>
+                        <div class="funnel-stage-note" style="font-size: 10px; color: #6b7280;">(Play views N/A)</div>
                     </div>
                     <span class="funnel-arrow">&#8594;</span>
                     <div class="funnel-stage" id="funnelDownloadStage">
-                        <div class="funnel-stage-name">Download</div>
+                        <div class="funnel-stage-name">App Downloads</div>
                         <div class="funnel-stage-count" id="funnelDownload">--</div>
                         <div class="funnel-stage-rate" id="funnelDownloadRate">--%</div>
                         <div class="funnel-stage-target">Target: 40%</div>
+                        <div class="funnel-stage-note" style="font-size: 10px; color: #6b7280;" id="funnelDownloadBreakdown"></div>
                     </div>
                 </div>
             </div>
@@ -3124,6 +3136,11 @@
                 const scentsy = campaigns.scentsy || {};
                 document.getElementById('execScentsySent').textContent = formatNumber(scentsy.sent || 0);
                 document.getElementById('execScentsyRemaining').textContent = formatNumber(scentsy.remaining || 0);
+
+                // MPG Campaign
+                const mpg = campaigns.mpg || {};
+                document.getElementById('execMpgSent').textContent = formatNumber(mpg.sent || 0);
+                document.getElementById('execMpgRemaining').textContent = formatNumber(mpg.remaining || 0);
             }
 
             // GA4 Campaign Traffic (from date-range website data)
@@ -3633,6 +3650,58 @@
                 // Update executive summary card (clicks tracked via GA4)
                 document.getElementById('execScentsySent').textContent = formatNumber(sctSent);
                 document.getElementById('execScentsyRemaining').textContent = formatNumber(sct.campaign?.remaining || 0);
+            }
+
+            // ==================== MPG CAMPAIGN ====================
+            if (emailStatsData.mpgCampaign) {
+                const mpg = emailStatsData.mpgCampaign;
+
+                // Progress bar
+                const mpgTotal = mpg.campaign?.total || 1;
+                const mpgSent = mpg.campaign?.sent || 0;
+                const mpgProgress = (mpgSent / mpgTotal * 100);
+
+                document.getElementById('emailMpgProgressBar').style.width = mpgProgress + '%';
+                document.getElementById('emailMpgProgressBar').textContent = mpgProgress.toFixed(1) + '%';
+                document.getElementById('emailMpgTotalSent').textContent = formatNumber(mpgSent);
+                document.getElementById('emailMpgTotalRemaining').textContent = formatNumber(mpg.campaign?.remaining || 0);
+                document.getElementById('emailMpgTotalContacts').textContent = formatNumber(mpg.campaign?.total || 0);
+
+                // Stats cards
+                document.getElementById('emailMpgTotal').textContent = formatNumber(mpg.campaign?.total || 0);
+                document.getElementById('emailMpgSent').textContent = formatNumber(mpgSent);
+                document.getElementById('emailMpgRemaining').textContent = formatNumber(mpg.campaign?.remaining || 0);
+                document.getElementById('emailMpgSent24h').textContent = formatNumber(mpg.last24h?.sent || 0);
+
+                // Failed count (clicks tracked via GA4)
+                if (mpg.tracking) {
+                    document.getElementById('emailMpgFailed').textContent = formatNumber(mpg.tracking.failed || 0);
+                }
+
+                // Recent sends
+                const mpgTbody = document.getElementById('emailMpgRecentSendsBody');
+                if (mpg.recentSends && mpg.recentSends.length > 0) {
+                    mpgTbody.innerHTML = mpg.recentSends.map(send => {
+                        const variantBadge = getVariantBadge(send.subjectTag);
+                        const statusBadge = send.clicked
+                            ? '<span class="badge badge-clicked">Clicked</span>'
+                            : '<span class="badge badge-sent">Sent</span>';
+                        return `
+                            <tr>
+                                <td>${escapeHtml(send.time || '')}</td>
+                                <td>${escapeHtml(send.email || '')}</td>
+                                <td>${escapeHtml(send.name || '')}</td>
+                                <td>${variantBadge}</td>
+                                <td>${statusBadge}</td>
+                            </tr>
+                        `;
+                    }).join('');
+                } else {
+                    mpgTbody.innerHTML = '<tr><td colspan="5" class="no-data-message">No recent sends</td></tr>';
+                }
+
+                // Update tab badge
+                document.getElementById('emailMpgTabBadge').textContent = formatNumber(mpgSent) + ' sent';
             }
 
             // ==================== GA4 EMAIL TRAFFIC ====================
@@ -4578,23 +4647,36 @@
             // Email Sent
             document.getElementById('funnelEmailSent').textContent = formatNumber(stages[0]?.count || 0);
 
-            // Website Visit
+            // Email Click (website visits from email campaigns)
             const websiteStage = document.getElementById('funnelWebsiteStage');
             document.getElementById('funnelWebsite').textContent = formatNumber(stages[1]?.count || 0);
             document.getElementById('funnelWebsiteRate').textContent = stages[1]?.percentage || '--%';
             websiteStage.className = 'funnel-stage ' + (stages[1]?.status || 'neutral');
 
-            // App Store View
+            // iOS Store View (Google Play doesn't provide view data)
             const appStoreStage = document.getElementById('funnelAppStoreStage');
             document.getElementById('funnelAppStore').textContent = formatNumber(stages[2]?.count || 0);
             document.getElementById('funnelAppStoreRate').textContent = stages[2]?.percentage || '--%';
             appStoreStage.className = 'funnel-stage ' + (stages[2]?.status || 'neutral');
 
-            // Download
+            // App Downloads (iOS + Android combined)
             const downloadStage = document.getElementById('funnelDownloadStage');
-            document.getElementById('funnelDownload').textContent = formatNumber(stages[3]?.count || 0);
+            const iosDownloads = stages[3]?.iosCount || stages[3]?.count || 0;
+            const androidDownloads = stages[3]?.androidCount || 0;
+            const totalDownloads = iosDownloads + androidDownloads;
+
+            document.getElementById('funnelDownload').textContent = formatNumber(totalDownloads);
             document.getElementById('funnelDownloadRate').textContent = stages[3]?.percentage || '--%';
             downloadStage.className = 'funnel-stage ' + (stages[3]?.status || 'neutral');
+
+            // Show iOS/Android breakdown
+            const breakdownEl = document.getElementById('funnelDownloadBreakdown');
+            if (breakdownEl) {
+                const parts = [];
+                if (iosDownloads > 0) parts.push(`iOS: ${iosDownloads}`);
+                if (androidDownloads > 0) parts.push(`Android: ${androidDownloads}`);
+                breakdownEl.textContent = parts.join(' · ') || '';
+            }
         }
 
         function displayStrategicInsights() {
