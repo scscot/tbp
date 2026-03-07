@@ -47,7 +47,7 @@ const TEST_EMAIL = 'Stephen Scott <scscot@gmail.com>';
 const ALERT_EMAIL = 'scscot@gmail.com';
 const MAILGUN_DOMAIN = 'news.teambuildpro.com';
 const FROM_ADDRESS = 'Stephen Scott <stephen@news.teambuildpro.com>';
-const CHECK_DELAY_MS = 1 * 60 * 1000; // 3 minutes (Gmail typically delivers in 1-2 min)
+const CHECK_DELAY_MS = 2 * 60 * 1000; // 2 minutes (Gmail typically delivers in 1-2 min)
 
 // Single template configuration (no A/B testing)
 const TEMPLATE_CONFIG = {
