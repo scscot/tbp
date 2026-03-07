@@ -493,7 +493,7 @@ All four main sites have identical structure:
 - **Data sources**: Firestore (send tracking) + GA4 (click tracking via `sessionMedium: 'email'`)
 - **Tracking**: Sends tracked via Firestore; clicks tracked via GA4 UTM parameters; open tracking disabled
 - **Metrics**: Campaign progress (sent/remaining/failed), subject tag breakdown
-- **Subject tags**: All campaigns use V14 template tags (e.g., `main_v14`, `bfh_v14_en`); legacy v9/v10 tags retained for historical data
+- **Subject tags**: All campaigns use V16 template tags (e.g., `main_v16`, `bfh_v16_en`); legacy v9/v10/v14 tags retained for historical data
 - Backend: `getEmailCampaignStats` Cloud Function
 
 ### Core Analytics Scripts
@@ -581,16 +581,16 @@ The email campaign system consists of multiple parallel campaigns targeting diff
 **Email Configuration:**
 - **Sending Domain**: `news.teambuildpro.com`
 - **From**: `Stephen Scott <stephen@news.teambuildpro.com>`
-- **Template**: Mailgun-hosted 'mailer' template v14 (gradient header, white card design)
-  - All campaigns use v14 with single subject line "AI is changing how teams grow"
-  - Language variants: v14 (EN), v14-es (ES), v14-de (DE), v14-pt (PT) - all fully localized
-  - Legacy templates (v9/v10/v11/v12) deprecated - tags retained for historical analytics
-- **Subject Line**: "AI is changing how teams grow" (localized per language)
-  - ES: "Usando IA para hacer crecer tu equipo mas rapido"
-  - DE: "Mit KI Ihr Team schneller aufbauen"
-  - PT: "Usando IA para crescer sua equipe mais rapido"
-  - Tags: `{campaign}_v14` for English, `{campaign}_v14_{lang}` for multilingual campaigns
-  - **Note**: A/B testing discontinued Feb 25, 2026 - all campaigns standardized on v14
+- **Template**: Mailgun-hosted 'mailer' template v16 (gradient header, white card design)
+  - All campaigns use v16 with single subject line "Getting recruiting prospects to YES with AI"
+  - Language variants: v16 (EN), v16-es (ES), v16-de (DE), v16-pt (PT) - all fully localized
+  - Legacy templates (v9/v10/v11/v12/v14) deprecated - tags retained for historical analytics
+- **Subject Line**: "Getting recruiting prospects to YES with AI" (localized per language)
+  - ES: "Consiguiendo que los prospectos de reclutamiento digan SÍ con IA"
+  - DE: "Mit KI Rekrutierungs-Interessenten zum JA bringen"
+  - PT: "Conseguindo que os prospectos de recrutamento digam SIM com IA"
+  - Tags: `{campaign}_v16` for English, `{campaign}_v16_{lang}` for multilingual campaigns
+  - **Note**: A/B testing discontinued Feb 25, 2026 - all campaigns standardized on v16
 - **Tracking**: Click tracking via GA4 UTM parameters in direct landing page URLs; open tracking disabled (pixel removed for deliverability)
 - **DNS**: SPF + DKIM + DMARC configured for 10/10 mail-tester.com score
 - **Mailgun Credentials**: `functions/.env.teambuilder-plus-fe74d` (TBP_MAILGUN_* variables)
@@ -628,7 +628,7 @@ The email campaign system consists of multiple parallel campaigns targeting diff
 - **Data Source**: Firestore `bfh_contacts` collection
 - **Control Variable**: BFH_CAMPAIGN_ENABLED
 - **Batch Size**: Dynamic via Firestore `config/emailCampaign.batchSizeBfh` (or falls back to shared `batchSize`)
-- **Subject**: V14 template per language (`bfh_v14_en`, `bfh_v14_es`, `bfh_v14_pt`, `bfh_v14_de`)
+- **Subject**: V16 template per language (`bfh_v16_en`, `bfh_v16_es`, `bfh_v16_pt`, `bfh_v16_de`)
 - **Query**: `bfhScraped == true && emailSearched == true && email != null && sent == false`
 - **Template Variables**: `first_name`, `tracked_cta_url`, `unsubscribe_url`
 - **Scripts**:
@@ -642,7 +642,7 @@ The email campaign system consists of multiple parallel campaigns targeting diff
 - **Data Source**: Firestore `fsr_contacts` collection (scraped from findsalesrep.com)
 - **Control Variable**: FSR_CAMPAIGN_ENABLED
 - **Batch Size**: Dynamic via Firestore `config/emailCampaign.batchSizeFsr`
-- **Subject**: V14 template (`fsr_v14`) - "AI is changing how teams grow"
+- **Subject**: V16 template (`fsr_v16`) - "Getting recruiting prospects to YES with AI"
 - **Query**: `sent == false && email != null`, ordered by randomIndex
 - **Template Variables**: `first_name`, `tracked_cta_url`, `unsubscribe_url`
 
@@ -653,7 +653,7 @@ The email campaign system consists of multiple parallel campaigns targeting diff
 - **Data Source**: Firestore `paparazzi_contacts` collection (scraped from Paparazzi distributor pages)
 - **Control Variable**: PAPARAZZI_CAMPAIGN_ENABLED
 - **Batch Size**: Dynamic via Firestore `config/emailCampaign.batchSizePaparazzi`
-- **Subject**: V14 template (`paparazzi_v14`) - "AI is changing how teams grow"
+- **Subject**: V16 template (`paparazzi_v16`) - "Getting recruiting prospects to YES with AI"
 - **Query**: `sent == false && email != null`, ordered by randomIndex
 - **Template Variables**: `first_name`, `tracked_cta_url`, `unsubscribe_url`
 - **Test Endpoint**: `testPaparazziEmail` - HTTP endpoint for spam monitoring workflow
@@ -665,7 +665,7 @@ The email campaign system consists of multiple parallel campaigns targeting diff
 - **Data Source**: Firestore `pruvit_contacts` collection (scraped from Pruvit referral pages)
 - **Control Variable**: PRUVIT_CAMPAIGN_ENABLED
 - **Batch Size**: Dynamic via Firestore `config/emailCampaign.batchSizePruvit`
-- **Subject**: V14 template with language variants (`pruvit_v14_en`, `pruvit_v14_es`, `pruvit_v14_de`) - "AI is changing how teams grow"
+- **Subject**: V16 template with language variants (`pruvit_v16_en`, `pruvit_v16_es`, `pruvit_v16_de`) - "Getting recruiting prospects to YES with AI"
 - **Query**: `sent == false && email != null`, ordered by randomIndex
 - **Template Variables**: `first_name`, `tracked_cta_url`, `unsubscribe_url`
 - **Language Selection**: Based on country field (EN default, ES for Spain/Mexico/etc., DE for Germany/Austria/etc.)
@@ -677,7 +677,7 @@ The email campaign system consists of multiple parallel campaigns targeting diff
 - **Data Source**: Firestore `scentsy_contacts` collection (scraped from Scentsy consultant finder)
 - **Control Variable**: SCENTSY_CAMPAIGN_ENABLED
 - **Batch Size**: Dynamic via Firestore `config/emailCampaign.scentsyBatchSize`
-- **Subject**: V14 template with language variants (`scentsy_v14_en`, `scentsy_v14_es`, `scentsy_v14_de`) - "AI is changing how teams grow"
+- **Subject**: V16 template with language variants (`scentsy_v16_en`, `scentsy_v16_es`, `scentsy_v16_de`) - "Getting recruiting prospects to YES with AI"
 - **Query**: `status == 'pending' && sent == false`, ordered by randomIndex
 - **Template Variables**: `first_name`, `tracked_cta_url`, `unsubscribe_url`
 - **Language Selection**: Based on countryCode field mapping:
@@ -697,7 +697,7 @@ The email campaign system consists of multiple parallel campaigns targeting diff
 - **Data Source**: Firestore `zinzino_contacts` collection (scraped from Zinzino partner finder)
 - **Control Variable**: ZINZINO_CAMPAIGN_ENABLED
 - **Batch Size**: Dynamic via Firestore `config/emailCampaign.batchSizeZinzino`
-- **Subject**: V14 template with language variants (`zinzino_v14_en`, `zinzino_v14_es`, `zinzino_v14_de`) - "AI is changing how teams grow"
+- **Subject**: V16 template with language variants (`zinzino_v16_en`, `zinzino_v16_es`, `zinzino_v16_de`) - "Getting recruiting prospects to YES with AI"
 - **Query**: `status == 'pending' && sent == false`, ordered by randomIndex
 - **Template Variables**: `first_name`, `tracked_cta_url`, `unsubscribe_url`
 - **Language Selection**: Based on country field (EN default, ES for Spain/Mexico/etc., DE for Germany/Austria/etc.)
@@ -757,7 +757,7 @@ The email campaign system consists of multiple parallel campaigns targeting diff
 - **Click Tracking**: GA4 via UTM parameters in direct landing page URLs (utm_source=mailgun, utm_medium=email, utm_campaign, utm_content)
 - **Open Tracking**: Disabled (tracking pixel removed for deliverability)
 - **GA4 Campaign Traffic**: Filtered by `sessionMedium: 'email'`
-- **Subject Tag Tracking**: By `subjectTag` field - All campaigns use V14 tags (e.g., `main_v14`, `bfh_v14_en`, `scentsy_v14_de`); legacy tags retained for historical data
+- **Subject Tag Tracking**: By `subjectTag` field - All campaigns use V16 tags (e.g., `main_v16`, `bfh_v16_en`, `scentsy_v16_de`); legacy v9/v10/v14 tags retained for historical data
 - **Dashboards**: `email-stats.html` (email-focused) and `TBP-analytics.html` (unified analytics with GA4 click tracking)
 
 ### Android Launch Campaign (REMOVED - Jan 2026)
@@ -952,7 +952,7 @@ Automated 4-stage pipeline that discovers direct sales distributor URLs, scrapes
   sent: boolean,
   sentTimestamp: timestamp,
   status: string,              // 'sent', 'failed'
-  subjectTag: string,          // 'bfh_v14_en', 'bfh_v14_es', 'bfh_v14_de', etc.
+  subjectTag: string,          // 'bfh_v16_en', 'bfh_v16_es', 'bfh_v16_de', etc.
   templateVariant: string,
   sendStrategy: string,        // 'standard_template', 'personalized_template', 'raw_html'
   sentLanguage: string,        // Language used for send (en/es/pt/de)
@@ -1235,7 +1235,7 @@ The `purchased_leads` collection consolidates contacts from multiple sources for
   sent: boolean,
   sentTimestamp: timestamp,
   status: string,              // 'pending', 'sent', 'failed'
-  subjectTag: string,          // 'purchased_v14', etc.
+  subjectTag: string,          // 'purchased_v16', etc.
   randomIndex: number,         // For variant distribution
   clickedAt: timestamp,
 
@@ -1420,18 +1420,14 @@ Corporate email domains are excluded from all contact collections using a **blac
   - Outputs refresh token for GMAIL_OAUTH_TOKEN secret
   - Requires GMAIL_OAUTH_CREDENTIALS secret (OAuth client JSON)
 - `spam-monitor.js` - Email spam detection and auto-disable system
-  - **Calls `testPaparazziEmail` Cloud Function endpoint** to test actual campaign code (prevents drift)
-  - Tests V14 template (single subject line: "AI is changing how teams grow")
-  - Checks Gmail API for inbox vs spam placement
+  - Sends test email directly via Mailgun API using V16 template
+  - Tests single subject line: "Getting recruiting prospects to YES with AI"
+  - Waits 2 minutes for Gmail delivery, then checks inbox vs spam placement
   - Auto-disables **ALL 8 campaigns** if spam detected:
     - `batchSize`, `batchSizePurchased`, `batchSizeBfh`, `batchSizePaparazzi`, `batchSizeFsr`, `batchSizeZinzino`, `batchSizePruvit`, `scentsyBatchSize`
   - Sends alert email via Mailgun on spam detection
   - Stores previous batch size values for recovery
   - Schedule: Daily 6am PT via `.github/workflows/spam-monitor.yml`
-- `testPaparazziEmail` - HTTP endpoint for spam monitoring (in `email-campaign-paparazzi.js`)
-  - POST body: `{ email, subjectSuffix: "(date)" }`
-  - Uses same `sendEmailViaMailgun` function as production campaign (V14 template)
-  - Accepts `subjectSuffix` parameter for accurate Gmail search identification
 
 **Email Bounce Handling:**
 - `sync-tbp-mailgun-failures.js` - Daily sync of permanent bounces from Mailgun
@@ -1510,27 +1506,20 @@ Corporate email domains are excluded from all contact collections using a **blac
   - ES: "Team Build Pro: IA Equipo", PT: "Team Build Pro: IA Equipe", DE: "Team Build Pro: KI Team"
 
 **Email Campaign Infrastructure**
-- ✅ **V14 Template Standardization** (Feb 25, 2026): All campaigns migrated to V14 template
-  - Single subject line: "AI is changing how teams grow" (localized per language)
-  - A/B testing discontinued - standardized on V14 for consistency
-  - Language variants: v14 (EN), v14-es (ES), v14-de (DE), v14-pt (PT) - all fully localized
-  - Subject tags: `{campaign}_v14` for English, `{campaign}_v14_{lang}` for multilingual
-  - Legacy v9/v10/v11/v12 tags retained in dashboard for historical data
-- ✅ **Template Simplification** (Feb 19, 2026): Consolidated to v9/v10 as primary templates
-  - V9: Statistical hook ("75% quit in first year") + systems problem framing + 3-feature list
-  - V10: Credentials hook ("After 20+ years in tech and direct sales") + pattern observation
-  - V11/V12 deprecated: Were personalized_intro variants, now unused (personalization not utilized)
-  - Purchased campaign switched from v11a/v12a to v9a/v10a
-  - Updated v9-es, v9-de, v10-es, v10-de translations to match new English templates
-- ✅ **Email Campaigns via Mailgun API**: Both Main and Contacts campaigns use Mailgun API with template versioning
+- ✅ **V16 Subject Line Update** (Mar 7, 2026): Updated subject from "Getting prospects to YES with AI" to "Getting recruiting prospects to YES with AI"
+  - All 10 email campaign functions updated and redeployed
+  - Localized subjects updated: ES, PT, DE
+  - Spam monitor script updated to match new subject line
+- ✅ **V16 Template Standardization** (Feb 25, 2026): All campaigns migrated to V16 template
+  - Single subject line: "Getting recruiting prospects to YES with AI" (localized per language)
+  - A/B testing discontinued - standardized on V16 for consistency
+  - Language variants: v16 (EN), v16-es (ES), v16-de (DE), v16-pt (PT) - all fully localized
+  - Subject tags: `{campaign}_v16` for English, `{campaign}_v16_{lang}` for multilingual
+  - Legacy v9/v10/v11/v12/v14 tags retained in dashboard for historical data
+- ✅ **Email Campaigns via Mailgun API**: All campaigns use Mailgun API with template versioning
   - Sending domain: `news.teambuildpro.com` with 10/10 mail-tester.com score (SPF/DKIM/DMARC configured)
   - Open tracking disabled for deliverability; click tracking via GA4 UTM parameters
   - SMTP sender utility (`email-smtp-sender.js`) exists but is used only for blog notifications, not campaigns
-- ✅ **A/B Testing Discontinued** (Feb 25, 2026): All campaigns standardized on V14 template
-  - Single subject line: "AI is changing how teams grow" (localized per language)
-  - A/B test UI removed from TBP-analytics.html dashboard
-  - Analytics benchmark set to Feb 25, 2026 for clean data starting point
-  - Historical A/B test data (v9/v10 tags) retained in Firestore for reference
 - ✅ **Yahoo Campaign Removed** (Jan 31, 2026): File and function deleted
 - ✅ **Android Launch Campaign Removed** (Jan 31, 2026): Function deleted from `email-campaign-functions.js`
 - ✅ **Contacts Campaign Added** (Jan 31, 2026): New campaign targeting `direct_sales_contacts` collection with company-specific subject lines
@@ -1824,7 +1813,7 @@ Corporate email domains are excluded from all contact collections using a **blac
 ### Current System Status (Mar 3, 2026)
 
 **PROJECT STATUS: DYNAMIC BATCH SIZING LIVE**
-Main Campaign disabled. All scraper-fed campaigns use V14 template with unified subject "AI is changing how teams grow". Dynamic batch sizing auto-adjusts based on queue sizes with 4-week warming schedule (40%→60%→80%→100%).
+Main Campaign disabled. All scraper-fed campaigns use V16 template with unified subject "Getting recruiting prospects to YES with AI". Dynamic batch sizing auto-adjusts based on queue sizes with 4-week warming schedule (40%→60%→80%→100%).
 
 | Component | Status | Notes |
 |-----------|--------|-------|
@@ -1839,7 +1828,7 @@ Main Campaign disabled. All scraper-fed campaigns use V14 template with unified 
 | Domain Warming | **Daily** | 6am PT · 4-week schedule (40%→60%→80%→100%) |
 | Contacts Campaign | Complete | 826 contacts (cleaned Feb 15) |
 | Email Sending | Mailgun API | Via Mailgun, news.teambuildpro.com |
-| Email Templates | V14 Standard | "AI is changing how teams grow" - unified subject Mar 1 |
+| Email Templates | V16 Standard | "Getting recruiting prospects to YES with AI" - updated Mar 7 |
 | Yahoo Campaign | Removed | File and function deleted (Jan 31) |
 | Android Campaign | Removed | Function and all references deleted |
 | Subscription Reminders | Disabled | Auto-renewal handled by app stores (Feb 19) |
