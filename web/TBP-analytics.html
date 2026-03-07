@@ -756,6 +756,11 @@
             color: #2e7d32;
         }
 
+        .campaign-label.mpg {
+            background: #e0e7ff;
+            color: #3730a3;
+        }
+
         .source-label {
             display: inline-block;
             font-size: 0.7rem;
@@ -1864,6 +1869,9 @@
                     <div class="campaign-tab" onclick="switchEmailTab('scentsy')">
                         Scentsy <span class="tab-badge" id="emailScentsyTabBadge">-</span>
                     </div>
+                    <div class="campaign-tab" onclick="switchEmailTab('mpg')">
+                        MPG <span class="tab-badge" id="emailMpgTabBadge">-</span>
+                    </div>
                     <div class="campaign-tab comparison" onclick="switchEmailTab('comparison')">
                         &#128202; Comparison
                     </div>
@@ -2408,6 +2416,74 @@
                     </div>
                 </div>
 
+                <!-- MPG Campaign Sub-Tab Content -->
+                <div id="emailMpgTab" class="campaign-content">
+                    <!-- Campaign Progress -->
+                    <h2 class="section-title">Campaign Progress <span class="campaign-label mpg">MPG</span></h2>
+                    <div class="section-card" style="margin-bottom: 30px;">
+                        <h3>Overall Send Progress</h3>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar" id="emailMpgProgressBar" style="width: 0%;">0%</div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+                            <span><strong id="emailMpgTotalSent">0</strong> sent</span>
+                            <span><strong id="emailMpgTotalRemaining">0</strong> remaining</span>
+                            <span><strong id="emailMpgTotalContacts">0</strong> total</span>
+                        </div>
+                    </div>
+
+                    <div class="section-card">
+                        <h3>Send Statistics</h3>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-value" id="emailMpgTotal">-</div>
+                                <div class="stat-label">Total Contacts</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value green" id="emailMpgSent">-</div>
+                                <div class="stat-label">Sent</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value blue" id="emailMpgRemaining">-</div>
+                                <div class="stat-label">Remaining</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="emailMpgSent24h">-</div>
+                                <div class="stat-label">Last 24 Hours</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value red" id="emailMpgFailed">-</div>
+                                <div class="stat-label">Failed</div>
+                            </div>
+                        </div>
+                        <!-- Click Performance - Now tracked via GA4 -->
+                        <div style="margin-top: 15px; padding: 12px; background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 8px; border-left: 4px solid #0ea5e9;">
+                            <div style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem;">
+                                <span>&#128202;</span>
+                                <span><strong>Click Tracking via GA4</strong> - See Website tab, filter by medium = email</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-card" style="margin-top: 30px;">
+                        <h3>Recent Sends</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Time (PT)</th>
+                                    <th>Email</th>
+                                    <th>Name</th>
+                                    <th>Variant</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="emailMpgRecentSendsBody">
+                                <tr><td colspan="5" class="no-data-message">Loading...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
                 <!-- Campaign Comparison Tab Content -->
                 <div id="emailComparisonTab" class="campaign-content">
                     <h2 class="section-title">&#128202; Campaign Performance Comparison</h2>
@@ -2520,6 +2596,8 @@
             'scentsy_v14_en': 'V14 EN: "AI is changing how teams grow"',
             'scentsy_v14_es': 'V14 ES: "La IA está cambiando..."',
             'scentsy_v14_de': 'V14 DE: "KI verändert..."',
+            // MPG campaign (current: v14)
+            'mpg_v14': 'V14: "AI is changing how teams grow"',
             // Scentsy campaign (legacy)
             'scentsy_v9a_en': 'V9a EN: "AI is changing how teams grow"',
             'scentsy_v9b_en': 'V9b EN: "Your AI-powered recruiting assistant"',
@@ -2594,7 +2672,8 @@
             { id: 'fsr', name: 'FSR CAMPAIGN', color: '#0d9488' },
             { id: 'paparazzi', name: 'PAPARAZZI CAMPAIGN', color: '#a16207' },
             { id: 'pruvit', name: 'PRUVIT CAMPAIGN', color: '#7c3aed' },
-            { id: 'scentsy', name: 'SCENTSY CAMPAIGN', color: '#2e7d32' }
+            { id: 'scentsy', name: 'SCENTSY CAMPAIGN', color: '#2e7d32' },
+            { id: 'mpg', name: 'MPG CAMPAIGN', color: '#3730a3' }
         ];
 
         // Generate campaign cards dynamically
@@ -3725,7 +3804,8 @@
                     { key: 'fsr', name: 'FSR', data: campaigns.fsr },
                     { key: 'paparazzi', name: 'Paparazzi', data: campaigns.paparazzi },
                     { key: 'pruvit', name: 'Pruvit', data: campaigns.pruvit },
-                    { key: 'scentsy', name: 'Scentsy', data: campaigns.scentsy }
+                    { key: 'scentsy', name: 'Scentsy', data: campaigns.scentsy },
+                    { key: 'mpg', name: 'MPG', data: campaigns.mpg }
                 ];
 
                 campaignList.forEach(c => {

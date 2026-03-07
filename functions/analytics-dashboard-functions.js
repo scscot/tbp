@@ -1366,6 +1366,7 @@ const FSR_CAMPAIGN_COLLECTION = 'fsr_contacts';
 const PAPARAZZI_CAMPAIGN_COLLECTION = 'paparazzi_contacts';
 const PRUVIT_CAMPAIGN_COLLECTION = 'pruvit_contacts';
 const SCENTSY_CAMPAIGN_COLLECTION = 'scentsy_contacts';
+const MPG_CAMPAIGN_COLLECTION = 'mpg_contacts';
 
 /**
  * Fetch email campaign stats from Firestore
@@ -1543,7 +1544,7 @@ async function fetchSingleCampaignStats(collectionPath, campaignName, benchmarkT
  */
 async function fetchAllEmailCampaignStats(benchmarkTimestamp = null) {
   try {
-    const [mainStats, contactsStats, purchasedStats, bfhStats, zinzinoStats, fsrStats, paparazziStats, pruvitStats, scentsyStats] = await Promise.all([
+    const [mainStats, contactsStats, purchasedStats, bfhStats, zinzinoStats, fsrStats, paparazziStats, pruvitStats, scentsyStats, mpgStats] = await Promise.all([
       fetchSingleCampaignStats(CONTACTS_COLLECTION, 'Main', benchmarkTimestamp),
       fetchSingleCampaignStats(CONTACTS_CAMPAIGN_COLLECTION, 'Contacts', benchmarkTimestamp),
       fetchSingleCampaignStats(PURCHASED_CAMPAIGN_COLLECTION, 'Purchased', benchmarkTimestamp),
@@ -1552,11 +1553,12 @@ async function fetchAllEmailCampaignStats(benchmarkTimestamp = null) {
       fetchSingleCampaignStats(FSR_CAMPAIGN_COLLECTION, 'FSR', benchmarkTimestamp),
       fetchSingleCampaignStats(PAPARAZZI_CAMPAIGN_COLLECTION, 'Paparazzi', benchmarkTimestamp),
       fetchSingleCampaignStats(PRUVIT_CAMPAIGN_COLLECTION, 'Pruvit', benchmarkTimestamp),
-      fetchSingleCampaignStats(SCENTSY_CAMPAIGN_COLLECTION, 'Scentsy', benchmarkTimestamp)
+      fetchSingleCampaignStats(SCENTSY_CAMPAIGN_COLLECTION, 'Scentsy', benchmarkTimestamp),
+      fetchSingleCampaignStats(MPG_CAMPAIGN_COLLECTION, 'MPG', benchmarkTimestamp)
     ]);
 
     // Calculate totals across all campaigns
-    const campaigns = [mainStats, contactsStats, purchasedStats, bfhStats, zinzinoStats, fsrStats, paparazziStats, pruvitStats, scentsyStats];
+    const campaigns = [mainStats, contactsStats, purchasedStats, bfhStats, zinzinoStats, fsrStats, paparazziStats, pruvitStats, scentsyStats, mpgStats];
     const totals = {
       totalSent: campaigns.reduce((sum, c) => sum + c.sent, 0),
       totalRemaining: campaigns.reduce((sum, c) => sum + c.remaining, 0),
@@ -1580,7 +1582,8 @@ async function fetchAllEmailCampaignStats(benchmarkTimestamp = null) {
         fsr: fsrStats,
         paparazzi: paparazziStats,
         pruvit: pruvitStats,
-        scentsy: scentsyStats
+        scentsy: scentsyStats,
+        mpg: mpgStats
       },
       totals,
       mostActiveCampaign: {
