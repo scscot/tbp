@@ -52,7 +52,8 @@ const CHECK_DELAY_MS = 3 * 60 * 1000; // 3 minutes (Gmail typically delivers in 
 // Single template configuration (no A/B testing)
 const TEMPLATE_CONFIG = {
   templateVersion: 'v16',
-  subject: "Your prospects don't believe they can recruit",
+  // subject: "Your prospects don't believe they can recruit",
+  subject: "Getting prospects to YES with AI",
   subjectTag: 'delivery_test_v16',
   description: 'V16 template - Professional focused'
 };
@@ -181,6 +182,10 @@ async function checkEmailPlacement(gmail, subject) {
 // =============================================================================
 
 async function disableAllCampaigns(triggeringVariant) {
+  // TEMPORARILY DISABLED - uncomment to re-enable auto-disable on junk detection
+  console.log(`[DISABLED] Would disable all campaigns due to junk detection via ${triggeringVariant}`);
+  return;
+
   const configRef = db.collection('config').doc('emailCampaign');
 
   await db.runTransaction(async (transaction) => {
