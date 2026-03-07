@@ -2,9 +2,10 @@ name: Email Spam Monitor
 
 on:
   schedule:
-    # Daily at 6:00 AM PT (14:00 UTC)
-    # PST: 6:00 AM, PDT: 5:00 AM (shifts 1 hour earlier in summer)
-    - cron: '0 14 * * *'
+    # 5x daily: 6am, 9am, 12pm, 3pm, 6pm PST
+    # UTC: 14:00, 17:00, 20:00, 23:00, 02:00 (next day)
+    # PDT: Times shift 1 hour earlier in summer
+    - cron: '0 2,14,17,20,23 * * *'
 
   # Allow manual trigger for testing
   workflow_dispatch:
