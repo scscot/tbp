@@ -1427,7 +1427,7 @@ Corporate email domains are excluded from all contact collections using a **blac
     - `batchSize`, `batchSizePurchased`, `batchSizeBfh`, `batchSizePaparazzi`, `batchSizeFsr`, `batchSizeZinzino`, `batchSizePruvit`, `scentsyBatchSize`
   - Sends alert email via Mailgun on spam detection
   - Stores previous batch size values for recovery
-  - Schedule: Daily 6am PT via `.github/workflows/spam-monitor.yml`
+  - Schedule: 5x daily (6am, 9am, 12pm, 3pm, 6pm PT) via `.github/workflows/spam-monitor.yml`
 
 **Email Bounce Handling:**
 - `sync-tbp-mailgun-failures.js` - Daily sync of permanent bounces from Mailgun
@@ -1847,7 +1847,7 @@ Main Campaign disabled. All scraper-fed campaigns use V16 template with unified 
 | Pruvit Discovery | Active | Every 6h, Common Crawl + Wayback + SerpAPI + seed file |
 | Pruvit Scraper | Active | Every 4h, 50/run, Puppeteer modal extraction |
 | Pruvit Collection | 5 contacts | 5 with emails (new Feb 24) |
-| Spam Monitor | Active | Daily 6am PT, Gmail API check, auto-disable on spam |
+| Spam Monitor | Active | 5x daily (6am/9am/12pm/3pm/6pm PT), Gmail API check, auto-disable on spam |
 | PreIntake.ai | Autonomous | See `preintake/CLAUDE.md` for details |
 
 **Monitoring Checklist (Weekly):**
