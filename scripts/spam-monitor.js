@@ -181,10 +181,6 @@ async function checkEmailPlacement(gmail, subject) {
 // =============================================================================
 
 async function disableAllCampaigns(triggeringVariant) {
-  // TEMPORARILY DISABLED - uncomment to re-enable auto-disable on junk detection
-  console.log(`[DISABLED] Would disable all campaigns due to junk detection via ${triggeringVariant}`);
-  return;
-
   const configRef = db.collection('config').doc('emailCampaign');
 
   await db.runTransaction(async (transaction) => {
