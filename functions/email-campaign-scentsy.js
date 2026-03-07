@@ -84,17 +84,17 @@ const CTA_DOMAINS = {
 const TEMPLATE_CONFIG = {
   en: {
     templateVersion: 'v16',
-    subject: "Getting prospects to YES with AI",
+    subject: "Getting recruiting prospects to YES with AI",
     subjectTag: 'scentsy_v16_en'
   },
   es: {
     templateVersion: 'v16-es',
-    subject: 'Consiguiendo que los prospectos digan SÍ con IA',
+    subject: 'Consiguiendo que los prospectos de reclutamiento digan SÍ con IA',
     subjectTag: 'scentsy_v16_es'
   },
   de: {
     templateVersion: 'v16-de',
-    subject: 'Mit KI Interessenten zum JA bringen',
+    subject: 'Mit KI Rekrutierungs-Interessenten zum JA bringen',
     subjectTag: 'scentsy_v16_de'
   }
 };

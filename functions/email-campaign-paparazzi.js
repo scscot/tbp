@@ -46,7 +46,7 @@ const CTA_DOMAIN = 'teambuildpro.com';
 // Single template and subject line for all sends
 const TEMPLATE_CONFIG = {
   templateVersion: 'v16',
-  subject: "Getting prospects to YES with AI",
+  subject: "Getting recruiting prospects to YES with AI",
   subjectTag: 'paparazzi_v16'
 };
 

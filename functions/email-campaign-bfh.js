@@ -49,22 +49,22 @@ const LANDING_PAGE_URL = 'https://teambuildpro.com';
 const TEMPLATE_CONFIG = {
   en: {
     templateVersion: 'v16',
-    subject: "Getting prospects to YES with AI",
+    subject: "Getting recruiting prospects to YES with AI",
     subjectTag: 'bfh_v16_en'
   },
   es: {
     templateVersion: 'v16-es',
-    subject: 'Consiguiendo que los prospectos digan SÍ con IA',
+    subject: 'Consiguiendo que los prospectos de reclutamiento digan SÍ con IA',
     subjectTag: 'bfh_v16_es'
   },
   pt: {
     templateVersion: 'v16-pt',
-    subject: 'Conseguindo que os prospectos digam SIM com IA',
+    subject: 'Conseguindo que os prospectos de recrutamento digam SIM com IA',
     subjectTag: 'bfh_v16_pt'
   },
   de: {
     templateVersion: 'v16-de',
-    subject: 'Mit KI Interessenten zum JA bringen',
+    subject: 'Mit KI Rekrutierungs-Interessenten zum JA bringen',
     subjectTag: 'bfh_v16_de'
   }
 };

@@ -42,7 +42,7 @@ const LANDING_PAGE_URL = 'https://teambuildpro.com';
 // Single template and subject line for all sends
 const TEMPLATE_CONFIG = {
   templateVersion: 'v16',
-  subject: "Getting prospects to YES with AI",
+  subject: "Getting recruiting prospects to YES with AI",
   subjectTag: 'main_v16'
 };
 

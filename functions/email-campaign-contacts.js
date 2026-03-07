@@ -73,13 +73,13 @@ const AB_TEST_VARIANTS = {
   },
   v7: {
     templateVersion: 'v7',
-    subject: 'Getting prospects to YES with AI',
+    subject: 'Getting recruiting prospects to YES with AI',
     subjectTag: 'mobile_first_v7',
     description: 'AI-focused value proposition'
   },
   v8: {
     templateVersion: 'v8',
-    subject: 'Getting prospects to YES with AI',
+    subject: 'Getting recruiting prospects to YES with AI',
     subjectTag: 'mobile_first_v8',
     description: 'AI-focused value proposition'
   }
