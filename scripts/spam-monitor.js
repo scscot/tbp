@@ -6,10 +6,10 @@
  * in junk folder, all campaigns are automatically disabled and an alert is sent.
  *
  * Key behaviors:
- * - Sends single v16 template with subject "Your prospects don't believe they can recruit"
+ * - Sends single v16 template with subject "Getting recruiting prospects to YES with AI"
  * - No A/B testing - single template/subject for consistent monitoring
- * - Waits 3 minutes after send before checking Gmail placement
- * - Total runtime: ~3 minutes
+ * - Waits 2 minutes after send before checking Gmail placement
+ * - Total runtime: ~2-3 minutes
  *
  * Usage:
  *   node scripts/spam-monitor.js
@@ -20,7 +20,7 @@
  *   GMAIL_OAUTH_CREDENTIALS - OAuth client credentials JSON
  *   GMAIL_OAUTH_TOKEN - OAuth refresh token JSON
  *
- * GitHub Actions Schedule: Daily at 6:00 AM PT (14:00 UTC)
+ * GitHub Actions Schedule: 5x daily at 6am, 9am, 12pm, 3pm, 6pm PT
  */
 
 const admin = require('firebase-admin');
