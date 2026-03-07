@@ -58,7 +58,7 @@ const TEMPLATE_CONFIG = {
 };
 
 // All campaigns to disable if junk detected
-const ALL_BATCH_SIZE_FIELDS = ['batchSize', 'batchSizePurchased', 'batchSizeBfh', 'batchSizePaparazzi', 'batchSizeFsr', 'batchSizeZinzino'];
+const ALL_BATCH_SIZE_FIELDS = ['batchSize', 'batchSizePurchased', 'batchSizeBfh', 'batchSizePaparazzi', 'batchSizeFsr', 'batchSizeZinzino', 'batchSizePruvit', 'scentsyBatchSize', 'batchSizeMpg'];
 
 // =============================================================================
 // GMAIL API CLIENT
