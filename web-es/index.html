@@ -432,14 +432,13 @@
             <div class="container">
                 <div class="section-header">
                     <h2>Precios Simples y Transparentes</h2>
-                    <p>Dos caminos. Las mismas herramientas poderosas. Elige tu camino.</p>
                 </div>
 
                 <div style="display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap; max-width: 900px; margin: 0 auto;">
-                    <!-- Prospects Card -->
-                    <div class="pricing-card" style="flex: 1; min-width: 280px; max-width: 400px; border: 2px solid #16a34a;">
+                    <!-- Prospects Card (hidden by default, shown when ?new= query param) -->
+                    <div id="prospects-pricing-card" class="pricing-card" style="flex: 1; min-width: 280px; max-width: 400px; border: 2px solid #16a34a; display: none;">
                         <h3>Para Prospectos</h3>
-                        <span class="trial" style="background: #16a34a; color: white;">Reto Gratis</span>
+                        <span class="trial" style="background: #16a34a; color: white; font-size: 1.1rem; padding: 0.5rem 1.2rem;">Reto Gratis</span>
                         <div class="price">GRATIS<span style="font-size: 1rem;"> hasta que califiques</span></div>
                         <ul>
                             <li><span class="material-symbols-outlined">check_circle</span> 16 Mensajes de Reclutamiento Personalizados</li>
@@ -454,16 +453,15 @@
                         </a>
                     </div>
 
-                    <!-- Professionals Card -->
-                    <div class="pricing-card" style="flex: 1; min-width: 280px; max-width: 400px;">
-                        <h3>Para Profesionales</h3>
-                        <span class="trial" style="background: #16a34a; color: white;">Prueba Gratis 30 Días</span>
+                    <!-- Professionals Card (shown by default, centered) -->
+                    <div id="professionals-pricing-card" class="pricing-card" style="flex: 1; min-width: 280px; max-width: 400px; margin: 0 auto;">
+                        <span class="trial" style="background: #16a34a; color: white; font-size: 1.25rem; padding: 0.6rem 1.5rem; font-weight: 600;">Prueba Gratis 30 Días</span>
                         <div class="price">$6.99<span>/mes</span></div>
                         <ul>
-                            <li><span class="material-symbols-outlined">check_circle</span> Todas las Funciones de Prospecto, Más:</li>
+                            <li><span class="material-symbols-outlined">check_circle</span> 16 Mensajes de Reclutamiento Personalizados</li>
+                            <li><span class="material-symbols-outlined">check_circle</span> Coach de Reclutamiento IA 24/7</li>
                             <li><span class="material-symbols-outlined">check_circle</span> Comparte la Herramienta con Tus Prospectos</li>
                             <li><span class="material-symbols-outlined">check_circle</span> Recluta Constructores Probados</li>
-                            <li><span class="material-symbols-outlined">check_circle</span> Verdadera Duplicación para Tu Equipo</li>
                             <li><span class="material-symbols-outlined">check_circle</span> Funciona con Cualquier Empresa</li>
                         </ul>
                         <p style="text-align: center; font-size: 0.9rem; opacity: 0.8; margin-bottom: 1rem;">¿Ya estás en un negocio? Comienza aquí.</p>
@@ -472,6 +470,7 @@
                         </a>
                     </div>
                 </div>
+                <p id="pricing-prospect-note" style="text-align: center; margin-top: 1.5rem; font-size: 1rem; color: #666; font-weight: bold;">Gratis para tus prospectos de reclutamiento hasta que califiquen</p>
             </div>
         </section>
 
@@ -666,14 +665,17 @@
                 prospectsHeader.style.display = 'none';
             }
 
-            // 7. Hide Professionals pricing card and center Prospects card
-            const pricingSection = document.getElementById('pricing');
-            if (pricingSection) {
-                const pricingCards = pricingSection.querySelectorAll('.pricing-card');
-                if (pricingCards.length >= 2) {
-                    pricingCards[1].style.display = 'none'; // Hide Professionals card (second card)
-                    pricingCards[0].style.margin = '0 auto'; // Center Prospects card
-                }
+            // 7. Show Prospects pricing card and hide Professionals card for ?new= users
+            const prospectsPricingCard = document.getElementById('prospects-pricing-card');
+            const professionalsPricingCard = document.getElementById('professionals-pricing-card');
+            const pricingProspectNote = document.getElementById('pricing-prospect-note');
+            if (prospectsPricingCard && professionalsPricingCard) {
+                prospectsPricingCard.style.display = 'block'; // Show Prospects card
+                prospectsPricingCard.style.margin = '0 auto'; // Center it
+                professionalsPricingCard.style.display = 'none'; // Hide Professionals card
+            }
+            if (pricingProspectNote) {
+                pricingProspectNote.style.display = 'none'; // Hide redundant note for prospects
             }
 
             // 8. Swap How It Works content for prospects

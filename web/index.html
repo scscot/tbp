@@ -461,14 +461,13 @@
             <div class="container">
                 <div class="section-header">
                     <h2>Simple, Transparent Pricing</h2>
-                    <p>Two paths. Same powerful tools. Choose your journey.</p>
                 </div>
 
                 <div style="display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap; max-width: 900px; margin: 0 auto;">
-                    <!-- Prospects Card -->
-                    <div class="pricing-card" style="flex: 1; min-width: 280px; max-width: 400px; border: 2px solid #16a34a;">
+                    <!-- Prospects Card (hidden by default, shown when ?new= query param) -->
+                    <div id="prospects-pricing-card" class="pricing-card" style="flex: 1; min-width: 280px; max-width: 400px; border: 2px solid #16a34a; display: none;">
                         <h3>For Prospects</h3>
-                        <span class="trial" style="background: #16a34a; color: white;">Free Challenge</span>
+                        <span class="trial" style="background: #16a34a; color: white; font-size: 1.1rem; padding: 0.5rem 1.2rem;">Free Challenge</span>
                         <div class="price">FREE<span style="font-size: 1rem;"> until you qualify</span></div>
                         <ul>
                             <li><span class="material-symbols-outlined">check_circle</span> 16 Customized Recruiting Messages</li>
@@ -483,16 +482,15 @@
                         </a>
                     </div>
 
-                    <!-- Professionals Card -->
-                    <div class="pricing-card" style="flex: 1; min-width: 280px; max-width: 400px;">
-                        <h3>For Professionals</h3>
-                        <span class="trial" style="background: #16a34a; color: white;">30-Day Free Trial</span>
+                    <!-- Professionals Card (shown by default, centered) -->
+                    <div id="professionals-pricing-card" class="pricing-card" style="flex: 1; min-width: 280px; max-width: 400px; margin: 0 auto;">
+                        <span class="trial" style="background: #16a34a; color: white; font-size: 1.25rem; padding: 0.6rem 1.5rem; font-weight: 600;">30-Day Free Trial</span>
                         <div class="price">$6.99<span>/month</span></div>
                         <ul>
-                            <li><span class="material-symbols-outlined">check_circle</span> All Prospect Features, Plus:</li>
+                            <li><span class="material-symbols-outlined">check_circle</span> 16 Customized Recruiting Messages</li>
+                            <li><span class="material-symbols-outlined">check_circle</span> 24/7 AI Recruiting Coach</li>
                             <li><span class="material-symbols-outlined">check_circle</span> Share Tool with Your Prospects</li>
                             <li><span class="material-symbols-outlined">check_circle</span> Recruit Proven Builders</li>
-                            <li><span class="material-symbols-outlined">check_circle</span> True Duplication for Your Team</li>
                             <li><span class="material-symbols-outlined">check_circle</span> Works with Any Company</li>
                         </ul>
                         <p style="text-align: center; font-size: 0.9rem; opacity: 0.8; margin-bottom: 1rem;">Already in a business? Start here.</p>
@@ -501,6 +499,7 @@
                         </a>
                     </div>
                 </div>
+                <p id="pricing-prospect-note" style="text-align: center; margin-top: 1.5rem; font-size: 1rem; color: #666; font-weight: bold;">Free for your recruiting prospects until they qualify</p>
             </div>
         </section>
 
@@ -695,14 +694,17 @@
                 prospectsHeader.style.display = 'none';
             }
 
-            // 7. Hide Professionals pricing card and center Prospects card
-            const pricingSection = document.getElementById('pricing');
-            if (pricingSection) {
-                const pricingCards = pricingSection.querySelectorAll('.pricing-card');
-                if (pricingCards.length >= 2) {
-                    pricingCards[1].style.display = 'none'; // Hide Professionals card (second card)
-                    pricingCards[0].style.margin = '0 auto'; // Center Prospects card
-                }
+            // 7. Show Prospects pricing card and hide Professionals card for ?new= users
+            const prospectsPricingCard = document.getElementById('prospects-pricing-card');
+            const professionalsPricingCard = document.getElementById('professionals-pricing-card');
+            const pricingProspectNote = document.getElementById('pricing-prospect-note');
+            if (prospectsPricingCard && professionalsPricingCard) {
+                prospectsPricingCard.style.display = 'block'; // Show Prospects card
+                prospectsPricingCard.style.margin = '0 auto'; // Center it
+                professionalsPricingCard.style.display = 'none'; // Hide Professionals card
+            }
+            if (pricingProspectNote) {
+                pricingProspectNote.style.display = 'none'; // Hide redundant note for prospects
             }
 
             // 8. Swap How It Works content for prospects
