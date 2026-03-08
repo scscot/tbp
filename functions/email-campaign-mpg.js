@@ -11,7 +11,7 @@
  *
  * Collection: mpg_contacts
  * Query: status == 'pending', sent == false, email != null
- * Schedule: 10:30am, 1:30pm, 4:30pm, 7:30pm PT (staggered from other campaigns)
+ * Schedule: 12:55 AM, 6:55 AM, 12:55 PM, 6:55 PM PT (4x daily)
  */
 
 const { onSchedule } = require("firebase-functions/v2/scheduler");
@@ -337,7 +337,7 @@ async function processMpgCampaignBatch(batchSize) {
 
 /**
  * MPG Email Campaign
- * Schedule: 10:30am, 1:30pm, 4:30pm, 7:30pm PT (staggered from other campaigns)
+ * Schedule: 12:55 AM, 6:55 AM, 12:55 PM, 6:55 PM PT (4x daily)
  */
 const sendHourlyMpgCampaign = onSchedule({
   schedule: "55 0,6,12,18 * * *",  // 4x daily (every 6 hours) - 55 minutes past
