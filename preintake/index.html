@@ -2443,6 +2443,16 @@
                 if (heroDemoLink) {
                     heroDemoLink.href = `https://preintake.ai/demo?demo=${leadId}`;
                     heroDemoLink.style.display = 'block';
+
+                    // Track demo link click before navigation
+                    heroDemoLink.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        fetch(`${TRACK_ENDPOINT}?firmId=${leadId}&type=demo_link_click`).catch(() => {});
+                        // Navigate after a short delay to ensure tracking fires
+                        setTimeout(() => {
+                            window.location.href = heroDemoLink.href;
+                        }, 100);
+                    });
                 }
 
                 // Fetch firm data and show welcome banner

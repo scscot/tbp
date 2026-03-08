@@ -593,10 +593,11 @@
             // ═══════════════════════════════════════════════
             // SECTION 1: ENGAGEMENT FUNNEL
             // ═══════════════════════════════════════════════
-            // Conversion path: Email → Landing Page Visit → Demo Started → Paid Subscriber
+            // Conversion path: Email → Landing Page Visit → Demo Link Clicked → Demo Started → Paid Subscriber
             const funnelSteps = [
                 { label: 'Emails Sent', count: data.totalSent || 0, color: '#3b82f6' },
                 { label: 'Landing Page Visited', count: data.visitedCount || 0, color: '#c9a962' },
+                { label: 'Demo Link Clicked', count: data.demoLinkClickedCount || 0, color: '#f59e0b' },
                 { label: 'Demo Started', count: data.viewedCount || 0, color: '#8b5cf6' },
                 { label: 'Paid Subscribers', count: data.activeSubscribers || 0, color: '#10b981' }
             ];

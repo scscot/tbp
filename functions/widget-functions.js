@@ -666,7 +666,7 @@ const trackDemoView = onRequest(
             }
 
             // Validate type
-            const validTypes = ['visit', 'view', 'explore', 'conversation_started', 'contact_collected', 'screening_started'];
+            const validTypes = ['visit', 'view', 'explore', 'demo_link_click', 'conversation_started', 'contact_collected', 'screening_started'];
             if (!validTypes.includes(trackType)) {
                 return res.status(400).json({ error: `Invalid type parameter (must be one of: ${validTypes.join(', ')})` });
             }
@@ -701,6 +701,14 @@ const trackDemoView = onRequest(
                     updateData.firstExploreAt = now;
                 }
                 console.log(`Explore tracked for lead ${firmId}`);
+            } else if (trackType === 'demo_link_click') {
+                // Track demo link click from landing page (before demo page visit)
+                updateData.lastDemoLinkClickAt = now;
+                updateData.demoLinkClickCount = admin.firestore.FieldValue.increment(1);
+                if (!data.firstDemoLinkClickAt) {
+                    updateData.firstDemoLinkClickAt = now;
+                }
+                console.log(`Demo link click tracked for lead ${firmId}`);
             } else if (trackType === 'conversation_started') {
                 // Track first user message sent
                 if (!data.conversationStartedAt) {
@@ -1286,6 +1294,9 @@ const getEmailAnalytics = onRequest(
             // Explore tracking (aggregate)
             let exploredCount = 0;
 
+            // Demo link click tracking (landing page → demo link clicks)
+            let demoLinkClickedCount = 0;
+
             // In-demo milestone tracking
             let conversationStartedCount = 0;
             let contactCollectedCount = 0;
@@ -1333,6 +1344,10 @@ const getEmailAnalytics = onRequest(
                 // Explore tracking
                 const exploreCount = data.exploreCount || 0;
                 if (exploreCount > 0) exploredCount++;
+
+                // Demo link click tracking
+                const demoLinkClicks = data.demoLinkClickCount || 0;
+                if (demoLinkClicks > 0) demoLinkClickedCount++;
 
                 // In-demo milestone tracking
                 if (data.conversationStartedAt) conversationStartedCount++;
@@ -1473,6 +1488,8 @@ const getEmailAnalytics = onRequest(
                 yesterdayCompleted,
                 // Explore aggregate
                 exploredCount,
+                // Demo link clicks (landing page)
+                demoLinkClickedCount,
                 // In-demo milestones
                 conversationStartedCount,
                 contactCollectedCount,
