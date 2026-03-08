@@ -593,10 +593,11 @@
             // ═══════════════════════════════════════════════
             // SECTION 1: ENGAGEMENT FUNNEL
             // ═══════════════════════════════════════════════
-            // Conversion path: Email → Landing Page Visit → Paid Subscriber
+            // Conversion path: Email → Landing Page Visit → Demo Started → Paid Subscriber
             const funnelSteps = [
                 { label: 'Emails Sent', count: data.totalSent || 0, color: '#3b82f6' },
                 { label: 'Landing Page Visited', count: data.visitedCount || 0, color: '#c9a962' },
+                { label: 'Demo Started', count: data.viewedCount || 0, color: '#8b5cf6' },
                 { label: 'Paid Subscribers', count: data.activeSubscribers || 0, color: '#10b981' }
             ];
             const maxCount = funnelSteps[0].count || 1;
@@ -639,22 +640,26 @@
                 {
                     label: 'All Time',
                     sent: data.totalSent,
-                    visited: data.visitedCount || 0
+                    visited: data.visitedCount || 0,
+                    viewed: data.viewedCount || 0
                 },
                 {
                     label: 'Last 7 Days',
                     sent: data.last7DaysSent,
-                    visited: data.last7DaysVisited || 0
+                    visited: data.last7DaysVisited || 0,
+                    viewed: data.last7DaysViewed || 0
                 },
                 {
                     label: 'Yesterday',
                     sent: data.yesterdaySent,
-                    visited: data.yesterdayVisited || 0
+                    visited: data.yesterdayVisited || 0,
+                    viewed: data.yesterdayViewed || 0
                 },
                 {
                     label: 'Today',
                     sent: data.todaySent,
-                    visited: data.todayVisited || 0
+                    visited: data.todayVisited || 0,
+                    viewed: data.todayViewed || 0
                 }
             ];
 
@@ -662,17 +667,24 @@
             <div class="dashboard-section">
                 <div class="section-header">
                     <span class="section-icon">&#9670;</span>
-                    <h2>Email Click Rate</h2>
+                    <h2>Conversion Rates</h2>
                 </div>
                 <div class="rate-grid">
                     ${periods.map(p => `
                         <div class="rate-card">
                             <h4>${p.label}</h4>
                             <div class="rate-row">
-                                <span class="rate-label">Click Rate</span>
+                                <span class="rate-label">Email → Page Visit</span>
                                 <span>
                                     <span class="rate-value">${pct(p.visited, p.sent)}%</span>
                                     <span class="rate-detail">${p.visited}/${p.sent}</span>
+                                </span>
+                            </div>
+                            <div class="rate-row">
+                                <span class="rate-label">Page Visit → Demo Start</span>
+                                <span>
+                                    <span class="rate-value">${pct(p.viewed, p.visited)}%</span>
+                                    <span class="rate-detail">${p.viewed}/${p.visited}</span>
                                 </span>
                             </div>
                         </div>
