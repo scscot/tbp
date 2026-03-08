@@ -82,17 +82,17 @@ const CTA_DOMAINS = {
 const TEMPLATE_CONFIG = {
   en: {
     templateVersion: 'v16',
-    subject: "Getting recruiting prospects to YES with AI",
+    subject: "Building your team with AI",
     subjectTag: 'zinzino_v16_en'
   },
   es: {
     templateVersion: 'v16-es',
-    subject: 'Consiguiendo que los prospectos de reclutamiento digan SÍ con IA',
+    subject: 'Construyendo tu equipo con IA',
     subjectTag: 'zinzino_v16_es'
   },
   de: {
     templateVersion: 'v16-de',
-    subject: 'Mit KI Rekrutierungs-Interessenten zum JA bringen',
+    subject: 'Dein Team mit KI aufbauen',
     subjectTag: 'zinzino_v16_de'
   }
 };
