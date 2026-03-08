@@ -1,7 +1,7 @@
 # PreIntake.ai: Comprehensive Project Documentation
 
-**Last Updated**: 2026-02-28
-**Version**: 7.5 (Get Started flow for organic visitors)
+**Last Updated**: 2026-03-08
+**Version**: 7.6 (Re-enabled demo link for campaign visitors)
 
 ---
 
@@ -207,7 +207,9 @@ Homepage → "Get Started" → new-account.html → create-account.html → Stri
 
 **Flow B: Email Campaign Visitors** (from bar scraper campaigns)
 ```
-Email CTA → Homepage (?lead=) → create-account.html → Stripe → payment-success.html
+Email CTA → Homepage (?lead=) → "Get Started" → create-account.html → Stripe → payment-success.html
+                              ↓
+                              → "See How It Works – Live Demo" → /demo/?demo={leadId} (optional)
 ```
 
 ### Flow A: Organic Visitor Journey
@@ -278,16 +280,14 @@ Email recipients from bar scraper campaigns receive personalized emails with dir
 
 When visitors arrive with `?lead=` parameter:
 - Personalized welcome banner displayed
+- Hero CTA "Get Started" links to `/create-account.html?lead={leadId}`
+- **Demo link displayed**: "See How It Works – Live Demo →" links to `/demo/?demo={leadId}`
 - Direct path to create-account.html (skips new-account.html)
 
-**Phase 3: Payment**
+**Phase 3: Payment (or Demo)**
 
-Same as Flow A Phase 3 - Stripe checkout and activation.
-
-### Legacy Demo Flow (deprecated)
-
-The previous demo-first flow (Discovery → Demo Generation → Demo Testing → Payment) is still functional but de-emphasized. Email campaigns now link directly to landing page for conversion.
-- Stephen receives notification
+- **Direct conversion path**: "Get Started" → Stripe checkout and activation (same as Flow A Phase 3)
+- **Optional demo path**: "See How It Works – Live Demo" → Demo page with sample report and live intake conversation
 
 ### Phase 4: Onboarding
 

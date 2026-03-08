@@ -121,6 +121,21 @@ body {
     height: 20px;
 }
 
+.hero-demo-link {
+    display: block;
+    text-align: center;
+    margin-top: 1rem;
+    color: var(--accent-gold);
+    font-size: 1rem;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.hero-demo-link:hover {
+    color: var(--accent-gold-light);
+    text-decoration: underline;
+}
+
 .hero-note {
     margin-top: 1.5rem;
     font-size: 0.875rem;

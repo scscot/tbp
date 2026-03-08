@@ -117,6 +117,11 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
             </a>
+
+            <!-- Demo Link (shown for ?lead= campaign visitors) -->
+            <a href="#" class="hero-demo-link" id="hero-demo-link" style="display: none;">
+                See How It Works – Live Demo →
+            </a>
         </div>
     </section>
 
@@ -2431,6 +2436,13 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                         </svg>
                     `;
+                }
+
+                // Show and configure demo link for campaign visitors
+                const heroDemoLink = document.getElementById('hero-demo-link');
+                if (heroDemoLink) {
+                    heroDemoLink.href = `https://preintake.ai/demo?demo=${leadId}`;
+                    heroDemoLink.style.display = 'block';
                 }
 
                 // Fetch firm data and show welcome banner
