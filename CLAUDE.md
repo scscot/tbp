@@ -649,7 +649,7 @@ The email campaign system consists of multiple parallel campaigns targeting diff
 ### Paparazzi Campaign (Mailgun API - Automated)
 - **Function**: `sendHourlyPaparazziCampaign` in `functions/email-campaign-paparazzi.js`
 - **Tags**: `paparazzi_campaign`, `tracked`
-- **Schedule**: 10:30am, 1:30pm, 4:30pm, 7:30pm PT (4 runs/day)
+- **Schedule**: Every 2 hours (12x daily) - 40 minutes past the hour
 - **Data Source**: Firestore `paparazzi_contacts` collection (scraped from Paparazzi distributor pages)
 - **Control Variable**: PAPARAZZI_CAMPAIGN_ENABLED
 - **Batch Size**: Dynamic via Firestore `config/emailCampaign.batchSizePaparazzi`
@@ -673,7 +673,7 @@ The email campaign system consists of multiple parallel campaigns targeting diff
 ### Scentsy Campaign (Mailgun API - Automated)
 - **Function**: `sendHourlyScentsyCampaign` in `functions/email-campaign-scentsy.js`
 - **Tags**: `scentsy_campaign`, `tracked`
-- **Schedule**: 11:30am, 2:30pm, 5:30pm, 8:30pm PT (4 runs/day)
+- **Schedule**: Every 2 hours (12x daily) - on the hour
 - **Data Source**: Firestore `scentsy_contacts` collection (scraped from Scentsy consultant finder)
 - **Control Variable**: SCENTSY_CAMPAIGN_ENABLED
 - **Batch Size**: Dynamic via Firestore `config/emailCampaign.scentsyBatchSize`
@@ -693,7 +693,7 @@ The email campaign system consists of multiple parallel campaigns targeting diff
 ### Zinzino Campaign (Mailgun API - Automated)
 - **Function**: `sendHourlyZinzinoCampaign` in `functions/email-campaign-zinzino.js`
 - **Tags**: `zinzino_campaign`, `tracked`
-- **Schedule**: 11am, 2pm, 5pm, 8pm PT (4 runs/day)
+- **Schedule**: Every 2 hours (12x daily) - 20 minutes past the hour
 - **Data Source**: Firestore `zinzino_contacts` collection (scraped from Zinzino partner finder)
 - **Control Variable**: ZINZINO_CAMPAIGN_ENABLED
 - **Batch Size**: Dynamic via Firestore `config/emailCampaign.batchSizeZinzino`
@@ -892,7 +892,7 @@ Automated 4-stage pipeline that discovers direct sales distributor URLs, scrapes
                               ▼
               BFH Campaign (email-campaign-bfh.js)
               Schedule: 10am, 1pm, 4pm, 7pm PT
-              V14 template with language variants (EN/ES/PT/DE)
+              V16 template with language variants (EN/ES/PT/DE)
 ```
 
 ### BFH Collection Schema: `bfh_contacts`
@@ -1038,7 +1038,7 @@ Automated 4-stage pipeline that discovers direct sales distributor URLs, scrapes
                               ▼
               FSR Campaign (email-campaign-fsr.js)
               Schedule: 10am, 1pm, 4pm, 7pm PT
-              V14 template (English only)
+              V16 template (English only)
 ```
 
 ### FSR Priority States (Top 25 by Population)
@@ -1121,7 +1121,7 @@ Discovers Pruvit referral codes from the web and scrapes contact information fro
                               ▼
               Pruvit Campaign (email-campaign-pruvit.js)
               Schedule: 11:30am, 2:30pm, 5:30pm, 8:30pm PT
-              V14 template with language variants (EN/ES/DE)
+              V16 template with language variants (EN/ES/DE)
 ```
 
 **SerpAPI Search Strategy**: Google doesn't index query parameters (`?ref=xyz`), so the discovery script searches for referral links shared on *external* sites using queries like:
@@ -1209,7 +1209,7 @@ The `purchased_leads` collection consolidates contacts from multiple sources for
                               ▼
               Purchased Leads Campaign (email-campaign-purchased.js)
               Schedule: 9:30am, 12:30pm, 3:30pm, 6:30pm PT
-              V14 template (English only)
+              V16 template (English only)
 ```
 
 ### Purchased Leads Collection Schema: `purchased_leads`
