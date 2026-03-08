@@ -361,9 +361,10 @@ async function main() {
     });
 
     // Disable ALL campaigns immediately if junk detected
+    // TEMPORARILY DISABLED - uncomment to re-enable auto-disable
     if (placement === 'junk') {
-      console.log(`\nJUNK FOLDER DETECTED: Disabling ALL campaigns...`);
-      await disableAllCampaigns(sent.variant);
+      console.log(`\nJUNK FOLDER DETECTED: Auto-disable is TEMPORARILY DISABLED`);
+      // await disableAllCampaigns(sent.variant);
     }
   } catch (error) {
     console.error(`Failed to check placement: ${error.message}`);
