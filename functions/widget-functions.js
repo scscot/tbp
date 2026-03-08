@@ -29,7 +29,7 @@ const anthropicApiKey = defineSecret('ANTHROPIC_API_KEY');
 
 // Analytics benchmark date - all data before this date is excluded from analytics
 // Reset to Feb 24, 2026 - fresh start for analytics dashboard
-const ANALYTICS_BENCHMARK_DATE = new Date('2026-02-25T00:00:00-08:00'); // PST - Reset after significant demo flow changes
+const ANALYTICS_BENCHMARK_DATE = new Date('2026-03-08T00:00:00-08:00'); // PST - Reset to track demo link click funnel
 
 // Import prompt/tools generators from demo-generator
 const {
@@ -1149,52 +1149,30 @@ const getEmailAnalytics = onRequest(
                 db.collection('preintake_emails').where('sent', '==', false).get()
             ]);
 
-            // Filter emails to only include those sent on/after benchmark date
-            // This allows us to "reset" analytics without deleting data
-            const emailsDocs = emailsSnapRaw.docs.filter(doc => {
-                const data = doc.data();
-                const sentTimestamp = data.sentTimestamp?.toDate();
-                return sentTimestamp && sentTimestamp >= ANALYTICS_BENCHMARK_DATE;
-            });
-
-            // Create a filtered "snapshot-like" object for compatibility
-            const emailsSnap = {
-                docs: emailsDocs,
-                size: emailsDocs.length,
-                forEach: (fn) => emailsDocs.forEach(fn)
-            };
-
-            // Filter unsubscribed and failed by benchmark date (based on sentTimestamp)
-            const unsubDocs = unsubSnapRaw.docs.filter(doc => {
-                const data = doc.data();
-                const sentTimestamp = data.sentTimestamp?.toDate();
-                return sentTimestamp && sentTimestamp >= ANALYTICS_BENCHMARK_DATE;
-            });
-            const unsubSnap = {
-                docs: unsubDocs,
-                size: unsubDocs.length,
-                forEach: (fn) => unsubDocs.forEach(fn)
-            };
-
-            const failedDocs = failedSnapRaw.docs.filter(doc => {
-                const data = doc.data();
-                const sentTimestamp = data.sentTimestamp?.toDate();
-                return sentTimestamp && sentTimestamp >= ANALYTICS_BENCHMARK_DATE;
-            });
-            const failedSnap = {
-                docs: failedDocs,
-                size: failedDocs.length,
-                forEach: (fn) => failedDocs.forEach(fn)
-            };
-
-            // Total sent = only those sent since benchmark
-            const totalSent = emailsSnap.size;
-            const totalUnsubscribed = unsubSnap.size;
-            const totalFailed = failedSnap.size;
-            // Pending = still waiting to be sent (remaining pool)
+            // Email Database counts (unfiltered - shows all data)
+            const totalSentAllTime = emailsSnapRaw.size;
+            const totalUnsubscribed = unsubSnapRaw.size;
+            const totalFailed = failedSnapRaw.size;
             const totalPending = pendingSnap.size;
-            // Total contacts = all contacts in the database
-            const totalContacts = totalSent + totalPending + totalUnsubscribed + totalFailed;
+            const totalContacts = totalSentAllTime + totalPending + totalUnsubscribed + totalFailed;
+
+            // Funnel counts (filtered by benchmark date for Engagement Funnel only)
+            const funnelEmailsDocs = emailsSnapRaw.docs.filter(doc => {
+                const data = doc.data();
+                const sentTimestamp = data.sentTimestamp?.toDate();
+                return sentTimestamp && sentTimestamp >= ANALYTICS_BENCHMARK_DATE;
+            });
+            const funnelEmailsSent = funnelEmailsDocs.length;
+
+            // Create filtered snapshot for template/time analysis (uses benchmark)
+            const emailsSnap = {
+                docs: funnelEmailsDocs,
+                size: funnelEmailsDocs.length,
+                forEach: (fn) => funnelEmailsDocs.forEach(fn)
+            };
+
+            // For backward compatibility, totalSent = funnel filtered count
+            const totalSent = funnelEmailsSent;
 
             let withDemo = 0;
             let withoutDemo = 0;
@@ -1461,7 +1439,8 @@ const getEmailAnalytics = onRequest(
             return res.json({
                 benchmarkDate: ANALYTICS_BENCHMARK_DATE.toISOString().split('T')[0],
                 dateRange: `${startDate.toISOString().split('T')[0]} to ${now.toISOString().split('T')[0]}`,
-                totalSent,
+                totalSent,  // Filtered by benchmark (for funnel)
+                totalSentAllTime,  // Unfiltered (for Email Database section)
                 withDemo,
                 withoutDemo,
                 last7DaysSent,

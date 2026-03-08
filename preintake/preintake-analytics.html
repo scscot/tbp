@@ -181,6 +181,13 @@
             font-size: 1.25rem;
         }
 
+        .section-header .benchmark-date {
+            margin-left: auto;
+            color: #94a3b8;
+            font-size: 0.85rem;
+            font-weight: normal;
+        }
+
         /* Error State Card */
         .stat-card {
             background: #1e293b;
@@ -608,6 +615,7 @@
                 <div class="section-header">
                     <span class="section-icon">&#9670;</span>
                     <h2>Engagement Funnel</h2>
+                    <span class="benchmark-date">Data from ${data.benchmarkDate || 'all time'}</span>
                 </div>
                 <div class="funnel-steps">
                     ${funnelSteps.map((step, i) => {
@@ -792,18 +800,18 @@
                 </div>
                 <div class="big-number-card">
                     <h4>Emails Sent</h4>
-                    <div class="big-number green">${data.totalSent.toLocaleString()}</div>
-                    <div class="big-number-sub">${pct(data.totalSent, data.totalContacts)}% complete</div>
+                    <div class="big-number green">${(data.totalSentAllTime || 0).toLocaleString()}</div>
+                    <div class="big-number-sub">${pct(data.totalSentAllTime, data.totalContacts)}% complete</div>
                 </div>
                 <div class="big-number-card">
                     <h4>Unsubscribed</h4>
                     <div class="big-number ${(data.totalUnsubscribed || 0) > 0 ? 'amber' : 'green'}">${(data.totalUnsubscribed || 0).toLocaleString()}</div>
-                    <div class="big-number-sub">${pct(data.totalUnsubscribed, data.totalSent)}% of sent</div>
+                    <div class="big-number-sub">${pct(data.totalUnsubscribed, data.totalSentAllTime)}% of sent</div>
                 </div>
                 <div class="big-number-card">
                     <h4>Failed</h4>
                     <div class="big-number ${(data.totalFailed || 0) > 0 ? 'red' : 'green'}">${(data.totalFailed || 0).toLocaleString()}</div>
-                    <div class="big-number-sub">${pct(data.totalFailed, data.totalSent)}% failure rate</div>
+                    <div class="big-number-sub">${pct(data.totalFailed, data.totalSentAllTime)}% failure rate</div>
                 </div>
             </div>
             `;
