@@ -299,6 +299,14 @@
       ]
     },
     {
+      "collectionGroup": "mpg_discovered_users",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "scraped", "order": "ASCENDING" },
+        { "fieldPath": "discoveredAt", "order": "ASCENDING" }
+      ]
+    },
+    {
       "collectionGroup": "mpg_contacts",
       "queryScope": "COLLECTION",
       "fields": [
