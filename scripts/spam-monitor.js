@@ -52,7 +52,7 @@ const CHECK_DELAY_MS = 2 * 60 * 1000; // 2 minutes (Gmail typically delivers in 
 // Single template configuration (no A/B testing)
 const TEMPLATE_CONFIG = {
   templateVersion: 'v16',
-  subject: "How AI turns prospects into YES",
+  subject: "Building your team with AI",
   subjectTag: 'delivery_test_v16',
   description: 'V16 template - Professional focused'
 };
