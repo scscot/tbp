@@ -218,7 +218,7 @@ async function updateSourceStats(source, updates) {
 // =============================================================================
 
 const sendPurchasedLeadsCampaign = onSchedule({
-  schedule: "30 9,12,15,18 * * *", // 9:30am, 12:30pm, 3:30pm, 6:30pm PT
+  schedule: "40 0,6,12,18 * * *",  // 4x daily (every 6 hours) - 40 minutes past
   timeZone: "America/Los_Angeles",
   region: "us-central1",
   memory: "512MiB",

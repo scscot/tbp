@@ -340,7 +340,7 @@ async function processMpgCampaignBatch(batchSize) {
  * Schedule: 10:30am, 1:30pm, 4:30pm, 7:30pm PT (staggered from other campaigns)
  */
 const sendHourlyMpgCampaign = onSchedule({
-  schedule: "30 10,13,16,19 * * *",
+  schedule: "55 0,6,12,18 * * *",  // 4x daily (every 6 hours) - 55 minutes past
   timeZone: "America/Los_Angeles",
   region: "us-central1",
   memory: "512MiB",

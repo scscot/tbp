@@ -340,10 +340,10 @@ async function processPaparazziCampaignBatch(batchSize) {
 
 /**
  * Paparazzi Email Campaign
- * Schedule: Every 2 hours (12x daily) - 40 minutes past the hour
+ * Schedule: 4x daily (every 6 hours) - 20 minutes past the hour
  */
 const sendHourlyPaparazziCampaign = onSchedule({
-  schedule: "40 */2 * * *",
+  schedule: "20 0,6,12,18 * * *",
   timeZone: "America/Los_Angeles",
   region: "us-central1",
   memory: "512MiB",

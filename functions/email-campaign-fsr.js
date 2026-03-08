@@ -161,7 +161,7 @@ async function sendEmailViaMailgun(contact, docId) {
 // =============================================================================
 
 const sendFsrContactsCampaign = onSchedule({
-  schedule: "0 10,13,16,19 * * *", // 10am, 1pm, 4pm, 7pm PT
+  schedule: "50 0,6,12,18 * * *",  // 4x daily (every 6 hours) - 50 minutes past
   timeZone: "America/Los_Angeles",
   region: "us-central1",
   memory: "512MiB",

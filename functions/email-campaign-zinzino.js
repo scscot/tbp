@@ -414,10 +414,10 @@ async function processZinzinoCampaignBatch(batchSize) {
 
 /**
  * Zinzino Email Campaign
- * Schedule: Every 2 hours (12x daily) - 20 minutes past the hour
+ * Schedule: 4x daily (every 6 hours) - 10 minutes past the hour
  */
 const sendHourlyZinzinoCampaign = onSchedule({
-  schedule: "20 */2 * * *",
+  schedule: "10 0,6,12,18 * * *",
   timeZone: "America/Los_Angeles",
   region: "us-central1",
   memory: "512MiB",

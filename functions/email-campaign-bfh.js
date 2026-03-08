@@ -418,7 +418,7 @@ async function processBfhCampaignBatch(batchSize) {
  * Schedule: 10am, 1pm, 4pm, 7pm PT (staggered from Main 8/11/2/5 and Contacts 9/12/3/6)
  */
 const sendHourlyBfhCampaign = onSchedule({
-  schedule: "0 10,13,16,19 * * *",
+  schedule: "30 0,6,12,18 * * *",  // 4x daily (every 6 hours) - 30 minutes past
   timeZone: "America/Los_Angeles",
   region: "us-central1",
   memory: "512MiB",

@@ -416,10 +416,10 @@ async function processScentsyCampaignBatch(batchSize) {
 
 /**
  * Scentsy Email Campaign
- * Schedule: Every 2 hours (12x daily) - on the hour
+ * Schedule: 4x daily (every 6 hours) - on the hour
  */
 const sendHourlyScentsyCampaign = onSchedule({
-  schedule: "0 */2 * * *",
+  schedule: "0 0,6,12,18 * * *",
   timeZone: "America/Los_Angeles",
   region: "us-central1",
   memory: "512MiB",
