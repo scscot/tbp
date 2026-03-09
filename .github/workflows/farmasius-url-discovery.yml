@@ -53,8 +53,12 @@ jobs:
         run: npm install
 
       - name: Setup Firebase credentials
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
         run: |
-          echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT_KEY }}' > scripts/serviceAccountKey.json
+          mkdir -p secrets
+          echo "$FIREBASE_SERVICE_ACCOUNT" > secrets/serviceAccountKey.json
+          echo "Firebase credentials configured"
 
       - name: Run URL Discovery
         working-directory: scripts
@@ -90,4 +94,4 @@ jobs:
 
       - name: Cleanup credentials
         if: always()
-        run: rm -f scripts/serviceAccountKey.json
+        run: rm -f secrets/serviceAccountKey.json
