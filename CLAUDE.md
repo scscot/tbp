@@ -1857,8 +1857,8 @@ Main Campaign disabled. All scraper-fed campaigns use V16 template with unified 
 | Pruvit Scraper | Active | Every 4h, 50/run, Puppeteer modal extraction |
 | Pruvit Collection | 5 contacts | 5 with emails (new Feb 24) |
 | Farmasius Discovery | Disabled | Complete: 2,594 usernames across 26 countries (Mar 9) |
-| Farmasius Scraper | **Active** | Every 4h, 200/run, 27 international domains |
-| Farmasius Campaign | Pending | `farmasius_contacts` collection, V16 template |
+| Farmasius Scraper | Disabled | 403 bot protection on all domains (Mar 9) |
+| Farmasius Campaign | Blocked | Cannot scrape contacts due to bot protection |
 | Spam Monitor | Active | 5x daily (6am/9am/12pm/3pm/6pm PT), Gmail API check, auto-disable on spam |
 | PreIntake.ai | Autonomous | See `preintake/CLAUDE.md` for details |
 
