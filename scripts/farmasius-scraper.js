@@ -109,9 +109,32 @@ function parseName(fullName) {
   };
 }
 
+// Placeholder values that Farmasius uses for unconfigured profiles
+const PLACEHOLDER_VALUES = {
+  emails: ['name@example.com'],
+  names: ['name'],
+  phones: ['1379242409'],
+};
+
+function isPlaceholderEmail(email) {
+  if (!email) return false;
+  return PLACEHOLDER_VALUES.emails.includes(email.toLowerCase().trim());
+}
+
+function isPlaceholderName(name) {
+  if (!name) return false;
+  return PLACEHOLDER_VALUES.names.includes(name.toLowerCase().trim());
+}
+
 function normalizeEmail(email) {
   if (!email) return null;
   const cleaned = email.toLowerCase().trim();
+
+  // Filter out placeholder emails
+  if (isPlaceholderEmail(cleaned)) {
+    return null;
+  }
+
   // Basic email validation
   if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleaned)) {
     return cleaned;
@@ -641,6 +664,7 @@ async function showStats() {
     console.log(`  Usernames Processed: ${state.usernamesProcessed}`);
     console.log(`  Contacts Saved:      ${state.contactsSaved}`);
     console.log(`  No Email:            ${state.noEmail || 0}`);
+    console.log(`  Placeholder:         ${state.placeholder || 0}`);
     console.log(`  Not Found (404):     ${state.notFound || 0}`);
     console.log(`  Errors:              ${state.errors}`);
   }
@@ -675,8 +699,16 @@ async function testSingleUsername(username) {
     console.log(`  Country: ${contactInfo.country || 'not found'}`);
     console.log(`  Sponsor: ${contactInfo.sponsorNumber || 'not found'}`);
 
-    if (contactInfo.email) {
-      console.log('\n  This contact HAS email - would be saved for campaigns');
+    // Check for placeholder data
+    const hasPlaceholderEmail = isPlaceholderEmail(contactInfo.email);
+    const hasPlaceholderName = isPlaceholderName(contactInfo.fullName);
+
+    if (hasPlaceholderEmail && hasPlaceholderName) {
+      console.log('\n  ⚠️  PLACEHOLDER DATA - would be SKIPPED (unconfigured profile)');
+    } else if (hasPlaceholderEmail) {
+      console.log('\n  This contact has placeholder email - would be saved with status "no_email"');
+    } else if (contactInfo.email) {
+      console.log('\n  ✓ This contact HAS email - would be saved for campaigns');
     } else {
       console.log('\n  This contact has NO email - would be saved with status "no_email"');
     }
@@ -716,6 +748,7 @@ async function runScraping(options) {
     errors: 0,
     duplicates: 0,
     notFound: 0,
+    placeholder: 0,
   };
 
   for (const { docId, username } of usernames) {
@@ -738,13 +771,23 @@ async function runScraping(options) {
       await markUsernameAsScraped(docId, false, options.dryRun);
       stats.notFound++;
     } else if (contactInfo && (contactInfo.fullName || contactInfo.email)) {
-      // Save contact (with or without email)
-      await saveContact(username, contactInfo, options.dryRun);
-      await markUsernameAsScraped(docId, true, options.dryRun);
-      stats.contactsSaved++;
+      // Check for placeholder data (unconfigured Farmasius profiles)
+      const hasPlaceholderEmail = isPlaceholderEmail(contactInfo.email);
+      const hasPlaceholderName = isPlaceholderName(contactInfo.fullName);
 
-      if (!contactInfo.email) {
-        stats.noEmail++;
+      if (hasPlaceholderEmail && hasPlaceholderName) {
+        console.log(`  Skipping: Placeholder data (unconfigured profile)`);
+        await markUsernameAsScraped(docId, false, options.dryRun);
+        stats.placeholder++;
+      } else {
+        // Save contact (with or without email)
+        await saveContact(username, contactInfo, options.dryRun);
+        await markUsernameAsScraped(docId, true, options.dryRun);
+        stats.contactsSaved++;
+
+        if (!normalizeEmail(contactInfo.email)) {
+          stats.noEmail++;
+        }
       }
     } else {
       console.log(`  No contact info found`);
@@ -772,6 +815,7 @@ async function runScraping(options) {
   console.log(`Usernames processed: ${stats.usernamesProcessed}`);
   console.log(`Contacts saved:      ${stats.contactsSaved}`);
   console.log(`No email:            ${stats.noEmail}`);
+  console.log(`Placeholder:         ${stats.placeholder}`);
   console.log(`Not found (404):     ${stats.notFound}`);
   console.log(`Duplicates:          ${stats.duplicates}`);
   console.log(`Errors:              ${stats.errors}`);

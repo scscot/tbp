@@ -197,6 +197,13 @@ const {
 } = require('./email-campaign-mpg');
 
 // ==============================
+// Import Email Campaign for Farmasius Contacts
+// ==============================
+const {
+  sendHourlyFarmasiusCampaign,
+} = require('./email-campaign-farmasius');
+
+// ==============================
 // Import Email Tracking Functions (SMTP Migration)
 // ==============================
 const {
@@ -475,6 +482,9 @@ module.exports = {
 
   // Email campaign for MPG contacts (scheduled)
   sendHourlyMpgCampaign,
+
+  // Email campaign for Farmasius contacts (scheduled)
+  sendHourlyFarmasiusCampaign,
 
   // Email tracking endpoints (SMTP migration)
   trackEmailOpen,

@@ -62,6 +62,11 @@
         "collection": "mpg_contacts",
         "firestoreField": "batchSizeMpg",
         "enabled": true
+      },
+      "farmasius": {
+        "collection": "farmasius_contacts",
+        "firestoreField": "batchSizeFarmasius",
+        "enabled": true
       }
     }
   }
