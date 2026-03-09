@@ -1,13 +1,24 @@
 /**
- * Team Build Pro Email Campaign for Farmasius Contacts
+ * Team Build Pro Email Campaign for Farmasius Contacts (Multi-Language)
  *
- * Sends emails to scraped farmasius_contacts (representatives from Farmasius pages).
+ * Sends emails to scraped farmasius_contacts (representatives from Farmasi pages).
  * Uses Mailgun API with v16 template and single subject line (no A/B testing).
+ * Supports contacts from 27+ Farmasi country domains with language routing.
  *
  * Templates stored in Mailgun under 'mailer' template:
  * - v16: English (Professional-focused messaging)
+ * - v16-es: Spanish (Spain, Mexico, Argentina, etc.)
+ * - v16-pt: Portuguese (Portugal, Brazil)
+ * - v16-de: German (Germany, Austria, Switzerland)
  *
- * Subject: "AI is changing how teams grow"
+ * Language Selection (from contact.language field):
+ * - en: United States, United Kingdom, Ireland
+ * - es: Spain
+ * - pt: Portugal
+ * - de: Germany
+ * - Other languages (pl, ro, hr, etc.) fallback to English template
+ *
+ * Subject: "Building your team with AI" (localized per language)
  *
  * Collection: farmasius_contacts
  * Query: status == 'pending', sent == false, email != null
@@ -36,17 +47,56 @@ const mailgunDomain = defineString("TBP_MAILGUN_DOMAIN", { default: "news.teambu
 const TEMPLATE_NAME = 'mailer';
 const FROM_ADDRESS = 'Stephen Scott <stephen@news.teambuildpro.com>';
 const SEND_DELAY_MS = 1000;
-const CTA_DOMAIN = 'teambuildpro.com';
 
 // =============================================================================
-// TEMPLATE CONFIGURATION (No A/B Testing)
+// LANGUAGE CONFIGURATION
 // =============================================================================
 
-// Single template and subject line for all sends
+/**
+ * CTA domains by language (language-specific landing pages)
+ */
+const CTA_DOMAINS = {
+  en: 'teambuildpro.com',
+  es: 'es.teambuildpro.com',
+  pt: 'pt.teambuildpro.com',
+  de: 'de.teambuildpro.com'
+};
+
+/**
+ * Supported languages for email templates
+ * Languages not in this list fallback to English
+ */
+const SUPPORTED_LANGUAGES = ['en', 'es', 'pt', 'de'];
+
+// =============================================================================
+// TEMPLATE CONFIGURATION BY LANGUAGE (no A/B testing - single v16 template)
+// =============================================================================
+
+/**
+ * Language-specific template and subject configuration
+ * All languages use v16 template with localized subjects
+ */
 const TEMPLATE_CONFIG = {
-  templateVersion: 'v16',
-  subject: "Building your team with AI",
-  subjectTag: 'farmasius_v16'
+  en: {
+    templateVersion: 'v16',
+    subject: "Building your team with AI",
+    subjectTag: 'farmasius_v16_en'
+  },
+  es: {
+    templateVersion: 'v16-es',
+    subject: 'Construyendo tu equipo con IA',
+    subjectTag: 'farmasius_v16_es'
+  },
+  pt: {
+    templateVersion: 'v16-pt',
+    subject: 'Construindo sua equipe com IA',
+    subjectTag: 'farmasius_v16_pt'
+  },
+  de: {
+    templateVersion: 'v16-de',
+    subject: 'Dein Team mit KI aufbauen',
+    subjectTag: 'farmasius_v16_de'
+  }
 };
 
 // =============================================================================
@@ -102,10 +152,21 @@ async function getDynamicBatchSize(envFallback) {
 // =============================================================================
 
 /**
- * Build destination URL with UTM parameters
+ * Determine language for a contact
+ * Uses the language field from scraper, falls back to English if unsupported
  */
-function buildLandingPageUrl(utmCampaign, utmContent) {
-  const baseUrl = `https://${CTA_DOMAIN}`;
+function getContactLanguage(contact) {
+  const language = contact.language || 'en';
+  // Return the language if we have a template for it, otherwise English
+  return SUPPORTED_LANGUAGES.includes(language) ? language : 'en';
+}
+
+/**
+ * Build destination URL with UTM parameters and language-specific domain
+ */
+function buildLandingPageUrl(utmCampaign, utmContent, language = 'en') {
+  const domain = CTA_DOMAINS[language] || CTA_DOMAINS.en;
+  const baseUrl = `https://${domain}`;
   const params = new URLSearchParams({
     utm_source: 'mailgun',
     utm_medium: 'email',
@@ -120,9 +181,9 @@ function buildLandingPageUrl(utmCampaign, utmContent) {
 // =============================================================================
 
 /**
- * Send email via Mailgun API using v16 template (no A/B testing)
+ * Send email via Mailgun API using v16 templates (multi-language)
  *
- * @param {object} contact - Contact data { firstName, lastName, email, ... }
+ * @param {object} contact - Contact data { firstName, lastName, email, language, ... }
  * @param {string} docId - Firestore document ID (used as tracking ID)
  * @param {object} config - Campaign configuration
  * @returns {Promise<object>} Send result
@@ -135,9 +196,14 @@ async function sendEmailViaMailgun(contact, docId, config) {
     throw new Error('TBP_MAILGUN_API_KEY not configured');
   }
 
+  // Determine language and get appropriate template config
+  const language = getContactLanguage(contact);
+  const templateConfig = TEMPLATE_CONFIG[language] || TEMPLATE_CONFIG.en;
+
   // Build URLs (direct links for better deliverability)
-  const unsubscribeUrl = `https://${CTA_DOMAIN}/unsubscribe.html?email=${encodeURIComponent(contact.email)}`;
-  const landingPageUrl = buildLandingPageUrl(config.utmCampaign, TEMPLATE_CONFIG.subjectTag);
+  const ctaDomain = CTA_DOMAINS[language] || CTA_DOMAINS.en;
+  const unsubscribeUrl = `https://${ctaDomain}/unsubscribe.html?email=${encodeURIComponent(contact.email)}`;
+  const landingPageUrl = buildLandingPageUrl(config.utmCampaign, templateConfig.subjectTag, language);
 
   // Build form data for Mailgun API
   const form = new FormData();
@@ -149,9 +215,9 @@ async function sendEmailViaMailgun(contact, docId, config) {
     : contact.firstName;
   form.append('to', `${recipientName} <${contact.email}>`);
 
-  form.append('subject', TEMPLATE_CONFIG.subject);
+  form.append('subject', templateConfig.subject);
   form.append('template', TEMPLATE_NAME);
-  form.append('t:version', TEMPLATE_CONFIG.templateVersion);
+  form.append('t:version', templateConfig.templateVersion);
 
   // Template variables (using direct landing page URL for deliverability)
   const templateVars = {
@@ -168,7 +234,8 @@ async function sendEmailViaMailgun(contact, docId, config) {
 
   // Tags for analytics
   form.append('o:tag', config.campaignTag);
-  form.append('o:tag', TEMPLATE_CONFIG.subjectTag);
+  form.append('o:tag', templateConfig.subjectTag);
+  form.append('o:tag', `lang_${language}`);
   form.append('o:tag', 'tracked');
 
   // List-Unsubscribe headers (required by Gmail for bulk senders)
@@ -176,7 +243,7 @@ async function sendEmailViaMailgun(contact, docId, config) {
   form.append('h:List-Unsubscribe', `<mailto:${unsubscribeEmail}?subject=Unsubscribe>, <${unsubscribeUrl}>`);
   form.append('h:List-Unsubscribe-Post', 'List-Unsubscribe=One-Click');
 
-  console.log(`   Template: V16`);
+  console.log(`   Template: ${templateConfig.templateVersion} (${language})`);
 
   // Send via Mailgun API
   const mailgunBaseUrl = `https://api.mailgun.net/v3/${domain}`;
@@ -191,10 +258,11 @@ async function sendEmailViaMailgun(contact, docId, config) {
     success: true,
     messageId: response.data.id,
     response: response.data.message,
-    subjectTag: TEMPLATE_CONFIG.subjectTag,
-    templateVariant: 'v16',
-    templateVersion: TEMPLATE_CONFIG.templateVersion,
-    usedSubject: TEMPLATE_CONFIG.subject
+    subjectTag: templateConfig.subjectTag,
+    templateVariant: templateConfig.templateVersion,
+    templateVersion: templateConfig.templateVersion,
+    usedSubject: templateConfig.subject,
+    language: language
   };
 }
 
@@ -278,12 +346,14 @@ async function processFarmasiusCampaignBatch(batchSize) {
             templateVariant: result.templateVariant,
             templateVersion: result.templateVersion,
             sentSubject: result.usedSubject,
+            sentLanguage: result.language || 'en',
             mailgunResponse: result.response || ''
           };
 
           await doc.ref.update(updateData);
 
-          console.log(`💄 Sent to ${contact.email} (${result.templateVariant}): ${result.messageId}`);
+          const countryCode = contact.countryCode || 'us';
+          console.log(`💄 Sent to ${contact.email} [${countryCode.toUpperCase()}/${result.language}] (${result.templateVariant}): ${result.messageId}`);
           sent++;
         } else {
           throw new Error(result.error || 'Unknown Mailgun error');

@@ -1,31 +1,37 @@
 #!/usr/bin/env node
 /**
- * Farmasius Contact Scraper
+ * Farmasi Contact Scraper (Multi-Domain)
  *
- * HTTP-based scraper that extracts contact information from Farmasius
- * representative pages. Contact info is embedded in server-rendered JSON
- * (Next.js SSR), so no browser automation is required.
+ * HTTP-based scraper that extracts contact information from Farmasi
+ * representative pages across ALL Farmasi country domains.
+ * Contact info is embedded in server-rendered JSON (Next.js SSR),
+ * so no browser automation is required.
  *
- * URL format: https://www.farmasius.com/{username}
+ * Supported domains:
+ *   - USA: https://www.farmasius.com/{username}
+ *   - International: https://farmasi.de/{username}, https://farmasi.co.uk/{username}, etc.
  *
- * Data extraction:
- *   - Email: Found in page JSON/HTML (e.g., shoptheredbird@gmail.com)
- *   - Name: Found in page JSON/HTML (e.g., Danielle Baker)
- *   - Phone: Found in page JSON/HTML (e.g., 1864303-8748)
+ * Data extraction (same structure across all domains):
+ *   - Email: Found in page JSON (sponsorAliasData.userMail)
+ *   - Name: Found in page JSON (sponsorAliasData.recognitionName)
+ *   - Phone: Found in page JSON (sponsorAliasData.userPhone)
  *
  * Flow:
- *   1. Load discovered usernames from farmasius_discovered_users collection
- *   2. Fetch https://www.farmasius.com/{username} via HTTP
+ *   1. Load discovered usernames from farmasius_discovered_users collection (includes domain info)
+ *   2. Fetch https://{domain}/{username} via HTTP
  *   3. Extract name, email, phone from server-rendered content
- *   4. Save to farmasius_contacts collection
+ *   4. Save to farmasius_contacts collection (with country/language fields)
  *
  * Usage:
- *   node scripts/farmasius-scraper.js --scrape                     # Scrape next batch
+ *   node scripts/farmasius-scraper.js --scrape                     # Scrape next batch (all domains)
+ *   node scripts/farmasius-scraper.js --scrape --domain=us         # USA only
+ *   node scripts/farmasius-scraper.js --scrape --domain=de         # Germany only
  *   node scripts/farmasius-scraper.js --scrape --max=50            # Limit to 50 contacts
  *   node scripts/farmasius-scraper.js --dry-run                    # Preview only
  *   node scripts/farmasius-scraper.js --stats                      # Show stats
  *   node scripts/farmasius-scraper.js --reset                      # Reset scraper state
- *   node scripts/farmasius-scraper.js --test --username=boss1      # Test single username
+ *   node scripts/farmasius-scraper.js --test --username=boss1      # Test single username (USA)
+ *   node scripts/farmasius-scraper.js --test --username=boss1 --domain=de  # Test with domain
  */
 
 const admin = require('firebase-admin');
@@ -37,15 +43,55 @@ const cheerio = require('cheerio');
 // CONFIGURATION
 // ============================================================================
 
+/**
+ * All Farmasi country domains with their configurations
+ * Must match the discovery script's domain list
+ */
+const FARMASI_DOMAINS = {
+  // USA (primary - farmasius.com)
+  us: {
+    domain: 'farmasius.com',
+    country: 'United States',
+    language: 'en',
+  },
+  // Western Europe (high priority - have email templates)
+  uk: { domain: 'farmasi.co.uk', country: 'United Kingdom', language: 'en' },
+  de: { domain: 'farmasi.de', country: 'Germany', language: 'de' },
+  es: { domain: 'farmasi.es', country: 'Spain', language: 'es' },
+  pt: { domain: 'farmasi.pt', country: 'Portugal', language: 'pt' },
+  ie: { domain: 'farmasi.ie', country: 'Ireland', language: 'en' },
+  fr: { domain: 'fr.farmasi.com', country: 'France', language: 'fr' },
+  it: { domain: 'it.farmasi.com', country: 'Italy', language: 'it' },
+  // Eastern Europe
+  pl: { domain: 'farmasi.pl', country: 'Poland', language: 'pl' },
+  ro: { domain: 'farmasi.ro', country: 'Romania', language: 'ro' },
+  ua: { domain: 'farmasi.ua', country: 'Ukraine', language: 'uk' },
+  hu: { domain: 'farmasi.hu', country: 'Hungary', language: 'hu' },
+  cz: { domain: 'farmasi.cz', country: 'Czech Republic', language: 'cs' },
+  sk: { domain: 'farmasi.sk', country: 'Slovakia', language: 'sk' },
+  // Balkans
+  hr: { domain: 'farmasi.hr', country: 'Croatia', language: 'hr' },
+  si: { domain: 'farmasi.si', country: 'Slovenia', language: 'sl' },
+  rs: { domain: 'farmasi.rs', country: 'Serbia', language: 'sr' },
+  ba: { domain: 'farmasi.ba', country: 'Bosnia and Herzegovina', language: 'bs' },
+  mk: { domain: 'farmasi.mk', country: 'North Macedonia', language: 'mk' },
+  me: { domain: 'farmasi.co.me', country: 'Montenegro', language: 'sr' },
+  al: { domain: 'farmasi.al', country: 'Albania', language: 'sq' },
+  xk: { domain: 'farmasi.com.al', country: 'Kosovo', language: 'sq' },
+  // Other regions
+  tr: { domain: 'farmasi.com.tr', country: 'Turkey', language: 'tr' },
+  ge: { domain: 'farmasi.ge', country: 'Georgia', language: 'ka' },
+  by: { domain: 'farmasi.by', country: 'Belarus', language: 'be' },
+  md: { domain: 'farmasi.md', country: 'Moldova', language: 'ro' },
+  cy: { domain: 'farmasi.com.cy', country: 'Cyprus', language: 'el' },
+};
+
 const CONFIG = {
   // Firestore collections
   DISCOVERED_COLLECTION: 'farmasius_discovered_users',
   CONTACTS_COLLECTION: 'farmasius_contacts',
   STATE_COLLECTION: 'scraper_state',
   STATE_DOC: 'farmasius',
-
-  // Farmasius URL
-  BASE_URL: 'https://www.farmasius.com',
 
   // Rate limiting
   DELAY_BETWEEN_REQUESTS: 2000,   // 2 seconds between requests
@@ -56,6 +102,17 @@ const CONFIG = {
   // HTTP config
   USER_AGENT: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
 };
+
+/**
+ * Build the full URL for a username on a specific domain
+ */
+function buildProfileUrl(username, domain) {
+  // Handle subdomains like fr.farmasi.com and it.farmasi.com
+  if (domain.includes('.farmasi.com')) {
+    return `https://${domain}/${username}`;
+  }
+  return `https://www.${domain}/${username}`;
+}
 
 // ============================================================================
 // FIREBASE INITIALIZATION
@@ -197,6 +254,7 @@ function parseArgs() {
     reset: false,
     test: false,
     username: null,
+    domain: null,  // null = all domains, or specific country code (us, de, uk, etc.)
     max: CONFIG.MAX_CONTACTS_PER_RUN,
   };
 
@@ -208,6 +266,9 @@ function parseArgs() {
     if (arg === '--test') options.test = true;
     if (arg.startsWith('--username=')) {
       options.username = arg.split('=')[1];
+    }
+    if (arg.startsWith('--domain=')) {
+      options.domain = arg.split('=')[1].toLowerCase();
     }
     if (arg.startsWith('--max=')) {
       options.max = parseInt(arg.split('=')[1], 10);
@@ -405,10 +466,14 @@ function extractContactFromHtml(html, username) {
 }
 
 /**
- * Scrape contact info from a Farmasius representative page
+ * Scrape contact info from a Farmasi representative page
+ * @param {string} username - The username to scrape
+ * @param {string} domain - The domain (e.g., 'farmasius.com', 'farmasi.de')
+ * @param {string} countryCode - The country code (e.g., 'us', 'de')
  */
-async function scrapeContactFromPage(username) {
-  const url = `${CONFIG.BASE_URL}/${username}`;
+async function scrapeContactFromPage(username, domain = 'farmasius.com', countryCode = 'us') {
+  const url = buildProfileUrl(username, domain);
+  const domainConfig = FARMASI_DOMAINS[countryCode] || FARMASI_DOMAINS.us;
 
   try {
     console.log(`  Fetching: ${url}`);
@@ -436,13 +501,16 @@ async function scrapeContactFromPage(username) {
     const html = response.data;
     const contactInfo = extractContactFromHtml(html, username);
 
-    // Infer country from phone
-    contactInfo.country = inferCountryFromPhone(contactInfo.phone);
+    // Use country from domain config, fall back to phone inference
+    contactInfo.country = domainConfig.country || inferCountryFromPhone(contactInfo.phone);
+    contactInfo.countryCode = countryCode;
+    contactInfo.language = domainConfig.language || 'en';
+    contactInfo.domain = domain;
 
     console.log(`    Name: ${contactInfo.fullName || 'not found'}`);
     console.log(`    Email: ${contactInfo.email || 'not found'}`);
     console.log(`    Phone: ${contactInfo.phone || 'not found'}`);
-    console.log(`    Country: ${contactInfo.country || 'not found'}`);
+    console.log(`    Country: ${contactInfo.country}`);
 
     return contactInfo;
 
@@ -463,30 +531,64 @@ async function scrapeContactFromPage(username) {
 // FIRESTORE OPERATIONS
 // ============================================================================
 
-async function getUnscrapedUsernames(limit) {
-  console.log(`\n Loading unscraped usernames (limit: ${limit})...`);
+/**
+ * Get unscraped usernames from Firestore
+ * @param {number} limit - Max usernames to return
+ * @param {string|null} domainFilter - Optional country code to filter by (e.g., 'us', 'de')
+ */
+async function getUnscrapedUsernames(limit, domainFilter = null) {
+  console.log(`\n Loading unscraped usernames (limit: ${limit}${domainFilter ? `, domain: ${domainFilter}` : ''})...`);
 
-  const snapshot = await db.collection(CONFIG.DISCOVERED_COLLECTION)
-    .where('scraped', '==', false)
+  let query = db.collection(CONFIG.DISCOVERED_COLLECTION)
+    .where('scraped', '==', false);
+
+  // Filter by country code if specified
+  if (domainFilter) {
+    query = query.where('countryCode', '==', domainFilter);
+  }
+
+  const snapshot = await query
     .orderBy('discoveredAt', 'asc')
     .limit(limit)
     .get();
 
   const usernames = [];
   snapshot.forEach(doc => {
+    const data = doc.data();
     usernames.push({
       docId: doc.id,
-      username: doc.data().username,
+      username: data.username,
+      // Use stored domain info, or default to US for legacy records
+      domain: data.domain || 'farmasius.com',
+      countryCode: data.countryCode || 'us',
     });
   });
 
   console.log(`  Found ${usernames.length} unscraped usernames`);
+
+  // Show breakdown by country if not filtered
+  if (!domainFilter && usernames.length > 0) {
+    const byCountry = {};
+    for (const item of usernames) {
+      byCountry[item.countryCode] = (byCountry[item.countryCode] || 0) + 1;
+    }
+    if (Object.keys(byCountry).length > 1) {
+      console.log(`  By country: ${Object.entries(byCountry).map(([c, n]) => `${c}=${n}`).join(', ')}`);
+    }
+  }
+
   return usernames;
 }
 
-async function checkContactExists(username) {
+/**
+ * Check if a contact already exists
+ * @param {string} username - The username to check
+ * @param {string} countryCode - The country code (allows same username on different domains)
+ */
+async function checkContactExists(username, countryCode = 'us') {
   const snapshot = await db.collection(CONFIG.CONTACTS_COLLECTION)
     .where('username', '==', username)
+    .where('countryCode', '==', countryCode)
     .limit(1)
     .get();
 
@@ -498,6 +600,11 @@ async function saveContact(username, contactInfo, dryRun) {
   const email = normalizeEmail(contactInfo.email);
   const phone = normalizePhone(contactInfo.phone);
 
+  // Get domain config for metadata
+  const countryCode = contactInfo.countryCode || 'us';
+  const domain = contactInfo.domain || 'farmasius.com';
+  const domainConfig = FARMASI_DOMAINS[countryCode] || FARMASI_DOMAINS.us;
+
   const contact = {
     // Core fields
     firstName,
@@ -505,14 +612,19 @@ async function saveContact(username, contactInfo, dryRun) {
     fullName: contactInfo.fullName || '',
     email,
     phone,
-    country: contactInfo.country || null,
+    country: contactInfo.country || domainConfig.country,
     username,
-    profileUrl: `${CONFIG.BASE_URL}/${username}`,
+    profileUrl: buildProfileUrl(username, domain),
     sponsorNumber: contactInfo.sponsorNumber || null,
+
+    // Domain/location fields
+    countryCode,
+    domain,
+    language: contactInfo.language || domainConfig.language || 'en',
 
     // Metadata
     company: 'Farmasi',
-    source: 'farmasius_profile',
+    source: 'farmasi_profile',
     scraped: true,
     scrapedAt: admin.firestore.FieldValue.serverTimestamp(),
 
@@ -530,12 +642,12 @@ async function saveContact(username, contactInfo, dryRun) {
   };
 
   if (dryRun) {
-    console.log(`    DRY RUN - Would save: ${contact.fullName} (${contact.email || 'no email'})`);
+    console.log(`    DRY RUN - Would save: ${contact.fullName} (${contact.email || 'no email'}) [${countryCode}]`);
     return true;
   }
 
   await db.collection(CONFIG.CONTACTS_COLLECTION).add(contact);
-  console.log(`    Saved: ${contact.fullName} (${contact.email || 'no email'})`);
+  console.log(`    Saved: ${contact.fullName} (${contact.email || 'no email'}) [${countryCode}]`);
   return true;
 }
 
@@ -616,7 +728,7 @@ async function resetScraperState() {
 // ============================================================================
 
 async function showStats() {
-  console.log('\n Farmasius Scraper Stats\n');
+  console.log('\n Farmasius Scraper Stats (Multi-Domain)\n');
 
   // Discovered usernames
   const discoveredSnapshot = await db.collection(CONFIG.DISCOVERED_COLLECTION).get();
@@ -626,6 +738,22 @@ async function showStats() {
     .where('scraped', '==', true)
     .get();
   const scrapedCount = scrapedSnapshot.size;
+
+  // Build country breakdown for discovered usernames
+  const discoveredByCountry = {};
+  discoveredSnapshot.forEach(doc => {
+    const data = doc.data();
+    const code = data.countryCode || 'us';
+    if (!discoveredByCountry[code]) {
+      discoveredByCountry[code] = { total: 0, scraped: 0, pending: 0 };
+    }
+    discoveredByCountry[code].total++;
+    if (data.scraped) {
+      discoveredByCountry[code].scraped++;
+    } else {
+      discoveredByCountry[code].pending++;
+    }
+  });
 
   // Contacts
   const contactsSnapshot = await db.collection(CONFIG.CONTACTS_COLLECTION).get();
@@ -641,6 +769,17 @@ async function showStats() {
     .get();
   const sentCount = sentSnapshot.size;
 
+  // Build country breakdown for contacts
+  const contactsByCountry = {};
+  const contactsByLanguage = {};
+  contactsSnapshot.forEach(doc => {
+    const data = doc.data();
+    const code = data.countryCode || 'us';
+    const lang = data.language || 'en';
+    contactsByCountry[code] = (contactsByCountry[code] || 0) + 1;
+    contactsByLanguage[lang] = (contactsByLanguage[lang] || 0) + 1;
+  });
+
   // State
   const stateDoc = await db.collection(CONFIG.STATE_COLLECTION).doc(CONFIG.STATE_DOC).get();
   const state = stateDoc.exists ? stateDoc.data() : {};
@@ -650,10 +789,48 @@ async function showStats() {
   console.log(`  Scraped:   ${scrapedCount}`);
   console.log(`  Pending:   ${totalDiscovered - scrapedCount}`);
 
+  // Show country breakdown if multiple countries
+  const discoveredCountries = Object.keys(discoveredByCountry);
+  if (discoveredCountries.length > 1) {
+    console.log('\n  By Country (discovered):');
+    discoveredCountries.sort((a, b) => discoveredByCountry[b].total - discoveredByCountry[a].total);
+    for (const code of discoveredCountries.slice(0, 10)) {
+      const stats = discoveredByCountry[code];
+      const config = FARMASI_DOMAINS[code];
+      const name = config ? config.country : code;
+      console.log(`    ${code.toUpperCase()}: ${stats.total} total, ${stats.pending} pending (${name})`);
+    }
+    if (discoveredCountries.length > 10) {
+      console.log(`    ... and ${discoveredCountries.length - 10} more countries`);
+    }
+  }
+
   console.log('\nContacts:');
   console.log(`  Total:       ${totalContacts}`);
   console.log(`  With email:  ${withEmailCount}`);
   console.log(`  Sent:        ${sentCount}`);
+
+  // Show country breakdown for contacts
+  const contactCountries = Object.keys(contactsByCountry);
+  if (contactCountries.length > 1) {
+    console.log('\n  By Country (contacts):');
+    contactCountries.sort((a, b) => contactsByCountry[b] - contactsByCountry[a]);
+    for (const code of contactCountries.slice(0, 10)) {
+      const config = FARMASI_DOMAINS[code];
+      const name = config ? config.country : code;
+      console.log(`    ${code.toUpperCase()}: ${contactsByCountry[code]} (${name})`);
+    }
+  }
+
+  // Show language breakdown for email campaign routing
+  const languages = Object.keys(contactsByLanguage);
+  if (languages.length > 1) {
+    console.log('\n  By Language (for email templates):');
+    languages.sort((a, b) => contactsByLanguage[b] - contactsByLanguage[a]);
+    for (const lang of languages) {
+      console.log(`    ${lang}: ${contactsByLanguage[lang]}`);
+    }
+  }
 
   if (state.lastRunAt) {
     console.log(`\nLast Run: ${state.lastRunAt.toDate().toISOString()}`);
@@ -667,6 +844,9 @@ async function showStats() {
     console.log(`  Placeholder:         ${state.placeholder || 0}`);
     console.log(`  Not Found (404):     ${state.notFound || 0}`);
     console.log(`  Errors:              ${state.errors}`);
+    if (state.byCountry && Object.keys(state.byCountry).length > 0) {
+      console.log(`  By Country:          ${Object.entries(state.byCountry).map(([c, n]) => `${c}=${n}`).join(', ')}`);
+    }
   }
 
   // Sample contacts
@@ -678,7 +858,8 @@ async function showStats() {
 
   recentSnapshot.forEach(doc => {
     const data = doc.data();
-    console.log(`  ${data.fullName || data.username} - ${data.email || 'no email'}`);
+    const code = data.countryCode || 'us';
+    console.log(`  [${code.toUpperCase()}] ${data.fullName || data.username} - ${data.email || 'no email'}`);
   });
 }
 
@@ -686,29 +867,44 @@ async function showStats() {
 // TEST SINGLE USERNAME
 // ============================================================================
 
-async function testSingleUsername(username) {
-  console.log(`\n Testing single username: ${username}`);
+/**
+ * Test scraping a single username
+ * @param {string} username - The username to test
+ * @param {string} countryCode - The country code (e.g., 'us', 'de', 'uk')
+ */
+async function testSingleUsername(username, countryCode = 'us') {
+  const domainConfig = FARMASI_DOMAINS[countryCode];
+  if (!domainConfig) {
+    console.log(`\n Unknown country code: ${countryCode}`);
+    console.log(`  Valid codes: ${Object.keys(FARMASI_DOMAINS).join(', ')}`);
+    return;
+  }
 
-  const contactInfo = await scrapeContactFromPage(username);
+  const domain = domainConfig.domain;
+  console.log(`\n Testing single username: ${username}`);
+  console.log(`  Domain: ${domain} (${domainConfig.country})`);
+
+  const contactInfo = await scrapeContactFromPage(username, domain, countryCode);
 
   if (contactInfo && !contactInfo.notFound) {
     console.log('\n Contact found:');
-    console.log(`  Name:    ${contactInfo.fullName || 'not found'}`);
-    console.log(`  Email:   ${contactInfo.email || 'not found'}`);
-    console.log(`  Phone:   ${contactInfo.phone || 'not found'}`);
-    console.log(`  Country: ${contactInfo.country || 'not found'}`);
-    console.log(`  Sponsor: ${contactInfo.sponsorNumber || 'not found'}`);
+    console.log(`  Name:     ${contactInfo.fullName || 'not found'}`);
+    console.log(`  Email:    ${contactInfo.email || 'not found'}`);
+    console.log(`  Phone:    ${contactInfo.phone || 'not found'}`);
+    console.log(`  Country:  ${contactInfo.country || 'not found'}`);
+    console.log(`  Language: ${contactInfo.language || 'not found'}`);
+    console.log(`  Sponsor:  ${contactInfo.sponsorNumber || 'not found'}`);
 
     // Check for placeholder data
     const hasPlaceholderEmail = isPlaceholderEmail(contactInfo.email);
     const hasPlaceholderName = isPlaceholderName(contactInfo.fullName);
 
     if (hasPlaceholderEmail && hasPlaceholderName) {
-      console.log('\n  ⚠️  PLACEHOLDER DATA - would be SKIPPED (unconfigured profile)');
+      console.log('\n  PLACEHOLDER DATA - would be SKIPPED (unconfigured profile)');
     } else if (hasPlaceholderEmail) {
       console.log('\n  This contact has placeholder email - would be saved with status "no_email"');
     } else if (contactInfo.email) {
-      console.log('\n  ✓ This contact HAS email - would be saved for campaigns');
+      console.log('\n  This contact HAS email - would be saved for campaigns');
     } else {
       console.log('\n  This contact has NO email - would be saved with status "no_email"');
     }
@@ -727,14 +923,15 @@ async function runScraping(options) {
   const startTime = Date.now();
 
   console.log('='.repeat(60));
-  console.log('FARMASIUS CONTACT SCRAPER');
+  console.log('FARMASI CONTACT SCRAPER (Multi-Domain)');
   console.log('='.repeat(60));
   console.log(`Mode: ${options.dryRun ? 'DRY RUN' : 'LIVE'}`);
+  console.log(`Domain filter: ${options.domain || 'all'}`);
   console.log(`Max contacts: ${options.max}`);
   console.log(`Timestamp: ${new Date().toISOString()}`);
 
-  // Get unscraped usernames
-  const usernames = await getUnscrapedUsernames(options.max);
+  // Get unscraped usernames (with optional domain filter)
+  const usernames = await getUnscrapedUsernames(options.max, options.domain);
 
   if (usernames.length === 0) {
     console.log('\n No unscraped usernames found. Run discovery first.');
@@ -749,13 +946,14 @@ async function runScraping(options) {
     duplicates: 0,
     notFound: 0,
     placeholder: 0,
+    byCountry: {},
   };
 
-  for (const { docId, username } of usernames) {
-    console.log(`\n Processing: ${username} (${stats.usernamesProcessed + 1}/${usernames.length})`);
+  for (const { docId, username, domain, countryCode } of usernames) {
+    console.log(`\n Processing: ${username} [${countryCode}] (${stats.usernamesProcessed + 1}/${usernames.length})`);
 
-    // Check if contact already exists
-    const exists = await checkContactExists(username);
+    // Check if contact already exists (include domain to allow same username across different countries)
+    const exists = await checkContactExists(username, countryCode);
     if (exists) {
       console.log(`  Skipping: Contact already exists`);
       await markUsernameAsScraped(docId, true, options.dryRun);
@@ -764,14 +962,14 @@ async function runScraping(options) {
       continue;
     }
 
-    // Scrape contact
-    const contactInfo = await scrapeContactFromPage(username);
+    // Scrape contact (pass domain info)
+    const contactInfo = await scrapeContactFromPage(username, domain, countryCode);
 
     if (contactInfo?.notFound) {
       await markUsernameAsScraped(docId, false, options.dryRun);
       stats.notFound++;
     } else if (contactInfo && (contactInfo.fullName || contactInfo.email)) {
-      // Check for placeholder data (unconfigured Farmasius profiles)
+      // Check for placeholder data (unconfigured Farmasi profiles)
       const hasPlaceholderEmail = isPlaceholderEmail(contactInfo.email);
       const hasPlaceholderName = isPlaceholderName(contactInfo.fullName);
 
@@ -784,6 +982,7 @@ async function runScraping(options) {
         await saveContact(username, contactInfo, options.dryRun);
         await markUsernameAsScraped(docId, true, options.dryRun);
         stats.contactsSaved++;
+        stats.byCountry[countryCode] = (stats.byCountry[countryCode] || 0) + 1;
 
         if (!normalizeEmail(contactInfo.email)) {
           stats.noEmail++;
@@ -819,6 +1018,9 @@ async function runScraping(options) {
   console.log(`Not found (404):     ${stats.notFound}`);
   console.log(`Duplicates:          ${stats.duplicates}`);
   console.log(`Errors:              ${stats.errors}`);
+  if (Object.keys(stats.byCountry).length > 0) {
+    console.log(`By country:          ${Object.entries(stats.byCountry).map(([c, n]) => `${c}=${n}`).join(', ')}`);
+  }
   console.log(`Time elapsed:        ${elapsed}s`);
   console.log('='.repeat(60));
 }
@@ -843,7 +1045,7 @@ async function main() {
   }
 
   if (options.test && options.username) {
-    await testSingleUsername(options.username);
+    await testSingleUsername(options.username, options.domain || 'us');
     process.exit(0);
   }
 
@@ -854,12 +1056,18 @@ async function main() {
 
   // Default: show usage
   console.log('Usage:');
-  console.log('  node scripts/farmasius-scraper.js --scrape                     # Scrape next batch');
-  console.log('  node scripts/farmasius-scraper.js --scrape --max=50            # Limit to 50 contacts');
-  console.log('  node scripts/farmasius-scraper.js --dry-run                    # Preview only');
-  console.log('  node scripts/farmasius-scraper.js --stats                      # Show stats');
-  console.log('  node scripts/farmasius-scraper.js --reset                      # Reset scraper state');
-  console.log('  node scripts/farmasius-scraper.js --test --username=boss1      # Test single username');
+  console.log('  node scripts/farmasius-scraper.js --scrape                           # Scrape next batch (all domains)');
+  console.log('  node scripts/farmasius-scraper.js --scrape --domain=us               # Scrape USA only');
+  console.log('  node scripts/farmasius-scraper.js --scrape --domain=de               # Scrape Germany only');
+  console.log('  node scripts/farmasius-scraper.js --scrape --max=50                  # Limit to 50 contacts');
+  console.log('  node scripts/farmasius-scraper.js --dry-run                          # Preview only');
+  console.log('  node scripts/farmasius-scraper.js --stats                            # Show multi-domain stats');
+  console.log('  node scripts/farmasius-scraper.js --reset                            # Reset scraper state');
+  console.log('  node scripts/farmasius-scraper.js --test --username=boss1            # Test username (USA)');
+  console.log('  node scripts/farmasius-scraper.js --test --username=xyz --domain=de  # Test username (Germany)');
+  console.log('\nSupported domains:');
+  const codes = Object.keys(FARMASI_DOMAINS).slice(0, 15);
+  console.log(`  ${codes.join(', ')}... (${Object.keys(FARMASI_DOMAINS).length} total)`);
   process.exit(0);
 }
 

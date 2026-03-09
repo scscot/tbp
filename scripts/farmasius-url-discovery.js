@@ -1,20 +1,28 @@
 #!/usr/bin/env node
 /**
- * Farmasius URL Discovery Script
+ * Farmasi URL Discovery Script (Multi-Domain)
  *
- * Discovers Farmasius representative usernames using a hybrid approach:
+ * Discovers Farmasi representative usernames across ALL Farmasi country domains:
+ * - USA: farmasius.com
+ * - International: farmasi.de, farmasi.es, farmasi.co.uk, farmasi.pt, etc.
+ *
+ * Discovery sources (hybrid approach):
  * 1. Common Crawl Index API (18 indexes, 2024-2026)
  * 2. Wayback Machine CDX API (historical URLs)
  * 3. Google Search via SerpAPI (multiple queries for shared links)
  * 4. Manual seed file (scripts/farmasius-seed-usernames.txt)
  *
- * Farmasius URL format: https://www.farmasius.com/{username}
- * Examples:
- *   - https://www.farmasius.com/boss1
- *   - https://www.farmasius.com/daniellebaker
+ * URL formats:
+ *   - USA: https://www.farmasius.com/{username}
+ *   - International: https://farmasi.de/{username}, https://farmasi.co.uk/{username}, etc.
+ *
+ * NOTE: US domain (farmasius.com) is SKIPPED by default because all 1,311 US
+ * usernames have already been scraped. Use --domain=us to explicitly include it.
  *
  * Usage:
- *   node scripts/farmasius-url-discovery.js --discover              # Run full discovery
+ *   node scripts/farmasius-url-discovery.js --discover              # Run discovery (international only, US skipped)
+ *   node scripts/farmasius-url-discovery.js --discover --domain=us  # USA only (farmasius.com)
+ *   node scripts/farmasius-url-discovery.js --discover --domain=de  # Germany only
  *   node scripts/farmasius-url-discovery.js --discover --max=200    # Limit SerpAPI searches
  *   node scripts/farmasius-url-discovery.js --seed                  # Load from seed file only
  *   node scripts/farmasius-url-discovery.js --seed --dry-run        # Preview seed import
@@ -23,9 +31,8 @@
  *   node scripts/farmasius-url-discovery.js --reset                 # Reset discovery state
  *
  * Seed File: scripts/farmasius-seed-usernames.txt
- *   - One username per line
+ *   - Format: username or domain:username (e.g., "boss1" or "de:hannamuller")
  *   - Lines starting with # are comments
- *   - Useful for manually discovered usernames (social media, YouTube, etc.)
  *
  * Sources:
  *   - Common Crawl Index API (no key required)
@@ -49,7 +56,222 @@ const SERPAPI_KEY = fs.existsSync(SERPAPI_KEY_PATH)
   ? fs.readFileSync(SERPAPI_KEY_PATH, 'utf8').trim()
   : null;
 
-// Excluded paths (non-user pages on farmasius.com)
+// ============================================================================
+// FARMASI INTERNATIONAL DOMAINS
+// ============================================================================
+
+/**
+ * All Farmasi country domains with their configurations
+ * Key = country code (used in Firestore), Value = domain configuration
+ */
+const FARMASI_DOMAINS = {
+  // USA (primary - farmasius.com)
+  us: {
+    domain: 'farmasius.com',
+    country: 'United States',
+    language: 'en',
+    priority: 1,  // Higher = process first
+  },
+  // Western Europe (high priority - have email templates)
+  uk: {
+    domain: 'farmasi.co.uk',
+    country: 'United Kingdom',
+    language: 'en',
+    priority: 2,
+  },
+  de: {
+    domain: 'farmasi.de',
+    country: 'Germany',
+    language: 'de',
+    priority: 2,
+  },
+  es: {
+    domain: 'farmasi.es',
+    country: 'Spain',
+    language: 'es',
+    priority: 2,
+  },
+  pt: {
+    domain: 'farmasi.pt',
+    country: 'Portugal',
+    language: 'pt',
+    priority: 2,
+  },
+  ie: {
+    domain: 'farmasi.ie',
+    country: 'Ireland',
+    language: 'en',
+    priority: 2,
+  },
+  fr: {
+    domain: 'fr.farmasi.com',
+    country: 'France',
+    language: 'fr',  // No French template yet - will use EN
+    priority: 3,
+  },
+  it: {
+    domain: 'it.farmasi.com',
+    country: 'Italy',
+    language: 'it',  // No Italian template yet - will use EN
+    priority: 3,
+  },
+  // Eastern Europe
+  pl: {
+    domain: 'farmasi.pl',
+    country: 'Poland',
+    language: 'pl',
+    priority: 3,
+  },
+  ro: {
+    domain: 'farmasi.ro',
+    country: 'Romania',
+    language: 'ro',
+    priority: 3,
+  },
+  ua: {
+    domain: 'farmasi.ua',
+    country: 'Ukraine',
+    language: 'uk',
+    priority: 3,
+  },
+  hu: {
+    domain: 'farmasi.hu',
+    country: 'Hungary',
+    language: 'hu',
+    priority: 3,
+  },
+  cz: {
+    domain: 'farmasi.cz',
+    country: 'Czech Republic',
+    language: 'cs',
+    priority: 3,
+  },
+  sk: {
+    domain: 'farmasi.sk',
+    country: 'Slovakia',
+    language: 'sk',
+    priority: 3,
+  },
+  // Balkans
+  hr: {
+    domain: 'farmasi.hr',
+    country: 'Croatia',
+    language: 'hr',
+    priority: 4,
+  },
+  si: {
+    domain: 'farmasi.si',
+    country: 'Slovenia',
+    language: 'sl',
+    priority: 4,
+  },
+  rs: {
+    domain: 'farmasi.rs',
+    country: 'Serbia',
+    language: 'sr',
+    priority: 4,
+  },
+  ba: {
+    domain: 'farmasi.ba',
+    country: 'Bosnia and Herzegovina',
+    language: 'bs',
+    priority: 4,
+  },
+  mk: {
+    domain: 'farmasi.mk',
+    country: 'North Macedonia',
+    language: 'mk',
+    priority: 4,
+  },
+  me: {
+    domain: 'farmasi.co.me',
+    country: 'Montenegro',
+    language: 'sr',
+    priority: 4,
+  },
+  al: {
+    domain: 'farmasi.al',
+    country: 'Albania',
+    language: 'sq',
+    priority: 4,
+  },
+  xk: {
+    domain: 'farmasi.com.al',  // Kosovo uses .com.al
+    country: 'Kosovo',
+    language: 'sq',
+    priority: 4,
+  },
+  // Other regions
+  tr: {
+    domain: 'farmasi.com.tr',
+    country: 'Turkey',
+    language: 'tr',
+    priority: 3,
+  },
+  ge: {
+    domain: 'farmasi.ge',
+    country: 'Georgia',
+    language: 'ka',
+    priority: 4,
+  },
+  by: {
+    domain: 'farmasi.by',
+    country: 'Belarus',
+    language: 'be',
+    priority: 4,
+  },
+  md: {
+    domain: 'farmasi.md',
+    country: 'Moldova',
+    language: 'ro',
+    priority: 4,
+  },
+  cy: {
+    domain: 'farmasi.com.cy',
+    country: 'Cyprus',
+    language: 'el',
+    priority: 4,
+  },
+};
+
+/**
+ * Get country code from a Farmasi domain
+ */
+function getCountryCodeFromDomain(domain) {
+  const normalized = domain.toLowerCase().replace(/^www\./, '');
+  for (const [code, config] of Object.entries(FARMASI_DOMAINS)) {
+    if (normalized === config.domain || normalized === `www.${config.domain}`) {
+      return code;
+    }
+  }
+  return null;
+}
+
+/**
+ * Get all domains to process, optionally filtered by country code
+ *
+ * NOTE: US (farmasius.com) is SKIPPED by default because all 1,311 US usernames
+ * have already been scraped. Use --domain=us to explicitly include it.
+ */
+function getDomainsToProcess(filterCode = null) {
+  // Allow explicit single-domain selection (including US)
+  if (filterCode && filterCode !== 'all') {
+    const config = FARMASI_DOMAINS[filterCode];
+    if (config) {
+      return [{ code: filterCode, ...config }];
+    }
+    console.log(`  Warning: Unknown domain code "${filterCode}", processing international domains`);
+  }
+
+  // Return all domains EXCEPT US (US is complete with 1,311 usernames)
+  // Sorted by priority (lowest number first = highest priority)
+  return Object.entries(FARMASI_DOMAINS)
+    .filter(([code]) => code !== 'us')  // Skip US - already complete
+    .map(([code, config]) => ({ code, ...config }))
+    .sort((a, b) => a.priority - b.priority);
+}
+
+// Excluded paths (non-user pages on Farmasi sites)
 const EXCLUDED_PATHS = [
   // Core site pages
   'about', 'contact', 'products', 'login', 'signup', 'cart', 'checkout',
@@ -75,6 +297,11 @@ const EXCLUDED_PATHS = [
   'unsubscribe', 'subscribe', 'newsletter', 'sitemap', 'robots',
   'favicon', 'manifest', 'service-worker', 'sw', 'workbox',
   'logout', 'signout', 'signin', 'auth', 'oauth', 'callback',
+  'customer-login', 'customer-register', 'default',
+
+  // Technical/system paths (discovered via Wayback)
+  'app_code', 'app_data', 'app_webreferences', 'bin', 'obj',
+  'node_modules', 'vendor', 'packages', 'lib', 'dist', 'build',
 
   // E-commerce pages
   'wishlist', 'favorites', 'compare', 'reviews', 'ratings',
@@ -88,6 +315,7 @@ const EXCLUDED_PATHS = [
   // Farmasi-specific pages
   'influencer', 'fi', 'beauty-influencer', 'become-influencer',
   'rewards', 'compensation', 'hostess', 'host', 'party',
+  'girisimci-ol', 'farmasi', 'girisim',  // Turkish join pages & generic brand page
 ];
 
 const CONFIG = {
@@ -95,10 +323,6 @@ const CONFIG = {
   DISCOVERED_COLLECTION: 'farmasius_discovered_users',
   STATE_COLLECTION: 'scraper_state',
   STATE_DOC: 'farmasius_discovery',
-
-  // Farmasius URL patterns
-  FARMASIUS_DOMAIN: 'farmasius.com',
-  URL_PATTERN: 'farmasius.com/*',
 
   // Common Crawl indexes (same as MPG - 18 indexes from 2024-2026)
   COMMON_CRAWL_INDEXES: [
@@ -125,15 +349,19 @@ const CONFIG = {
 
   // SerpAPI - multiple queries to find representative links shared online
   SERPAPI_URL: 'https://serpapi.com/search',
-  SERPAPI_QUERIES: [
-    'site:farmasius.com -inurl:products -inurl:shop -inurl:about -inurl:category',
-    '"farmasius.com" influencer OR representative OR consultant',
+  // Base queries (domain placeholders will be filled dynamically)
+  SERPAPI_BASE_QUERIES: [
+    'site:{domain} -inurl:products -inurl:shop -inurl:about -inurl:category',
+    '"{domain}" influencer OR representative OR consultant',
+    '"{domain}/" skincare beauty',
+  ],
+  // Domain-specific queries for farmasius.com (US)
+  SERPAPI_US_QUERIES: [
     'farmasi beauty influencer "my link"',
-    '"farmasius.com/" skincare beauty',
     'farmasi US independent beauty influencer',
     '"shop with me" farmasi farmasius.com',
   ],
-  SERPAPI_MAX_PAGES: 5,  // Max pages per query (10 results per page)
+  SERPAPI_MAX_PAGES: 3,  // Max pages per query (10 results per page) - reduced for multi-domain
 
   // Rate limiting
   CC_DELAY: 1500,          // 1.5s between Common Crawl requests
@@ -177,23 +405,26 @@ function sleep(ms) {
 }
 
 /**
- * Extract username from Farmasius URL
+ * Extract username and domain info from a Farmasi URL
  *
- * ONLY accepts single-path URLs (representative pages):
- *   https://www.farmasius.com/daniellebaker
- *   https://farmasius.com/boss1
- *   https://www.farmasius.com/john/  (trailing slash OK)
+ * Supports ALL Farmasi domains:
+ *   - https://www.farmasius.com/daniellebaker (USA)
+ *   - https://farmasi.de/hannamuller (Germany)
+ *   - https://farmasi.co.uk/aliceadams (UK)
  *
- * REJECTS multi-path URLs (site pages):
- *   https://www.farmasius.com/products/skincare
- *   https://www.farmasius.com/category/makeup
+ * ONLY accepts single-path URLs (representative pages).
+ * REJECTS multi-path URLs (e.g., /products/skincare).
+ *
+ * @returns {object|null} { username, countryCode, domain } or null if invalid
  */
-function extractUsername(url) {
+function extractUsernameFromUrl(url) {
   try {
     const parsed = new URL(url);
+    const hostname = parsed.hostname.toLowerCase().replace(/^www\./, '');
 
-    // Check if it's a farmasius.com domain
-    if (!parsed.hostname.includes('farmasius.com')) {
+    // Check if it's any Farmasi domain
+    const countryCode = getCountryCodeFromDomain(hostname);
+    if (!countryCode) {
       return null;
     }
 
@@ -218,10 +449,22 @@ function extractUsername(url) {
       return null;
     }
 
-    return normalized;
+    return {
+      username: normalized,
+      countryCode,
+      domain: FARMASI_DOMAINS[countryCode].domain,
+    };
   } catch {
     return null;
   }
+}
+
+/**
+ * Legacy wrapper for backward compatibility - returns just the username
+ */
+function extractUsername(url) {
+  const result = extractUsernameFromUrl(url);
+  return result ? result.username : null;
 }
 
 function parseArgs() {
@@ -233,6 +476,7 @@ function parseArgs() {
     reset: false,
     seed: false,
     max: Infinity,  // No limit by default - discover all available usernames
+    domain: 'all',  // 'all' or specific country code (us, de, uk, etc.)
   };
 
   for (const arg of args) {
@@ -244,6 +488,9 @@ function parseArgs() {
     if (arg.startsWith('--max=')) {
       const val = parseInt(arg.split('=')[1], 10);
       options.max = val === 0 ? Infinity : val;
+    }
+    if (arg.startsWith('--domain=')) {
+      options.domain = arg.split('=')[1].toLowerCase();
     }
   }
 
@@ -259,13 +506,14 @@ const SEED_FILE_PATH = path.join(__dirname, 'farmasius-seed-usernames.txt');
 /**
  * Load usernames from seed file
  * Format: one username per line, lines starting with # are comments
+ * Supports optional country code prefix: "de:hannamuller" or just "boss1" (defaults to us)
  */
 async function loadSeedUsernames() {
-  const usernames = new Set();
+  const items = new Map();  // key = "countryCode:username", value = { username, countryCode, domain }
 
   if (!fs.existsSync(SEED_FILE_PATH)) {
     console.log(`  Seed file not found: ${SEED_FILE_PATH}`);
-    return usernames;
+    return items;
   }
 
   const content = fs.readFileSync(SEED_FILE_PATH, 'utf8');
@@ -276,36 +524,60 @@ async function loadSeedUsernames() {
     // Skip empty lines and comments
     if (!trimmed || trimmed.startsWith('#')) continue;
 
+    let countryCode = 'us';
+    let username = trimmed;
+
+    // Check for country code prefix (e.g., "de:hannamuller")
+    if (trimmed.includes(':')) {
+      const parts = trimmed.split(':');
+      const potentialCode = parts[0].toLowerCase();
+      if (FARMASI_DOMAINS[potentialCode]) {
+        countryCode = potentialCode;
+        username = parts.slice(1).join(':');
+      }
+    }
+
     // Validate username format
-    const normalized = trimmed.toLowerCase();
+    const normalized = username.toLowerCase();
     if (/^[a-z0-9_-]{2,50}$/i.test(normalized)) {
-      usernames.add(normalized);
+      const key = `${countryCode}:${normalized}`;
+      const domainConfig = FARMASI_DOMAINS[countryCode];
+      items.set(key, {
+        username: normalized,
+        countryCode,
+        domain: domainConfig.domain,
+      });
     }
   }
 
-  return usernames;
+  return items;
 }
 
 async function seedFromFile(dryRun) {
   console.log('\n Loading from seed file...');
 
-  const seedUsernames = await loadSeedUsernames();
-  console.log(`  Found ${seedUsernames.size} usernames in seed file`);
+  const seedItems = await loadSeedUsernames();
+  console.log(`  Found ${seedItems.size} usernames in seed file`);
 
-  if (seedUsernames.size === 0) {
+  if (seedItems.size === 0) {
     console.log('  No usernames to seed');
     return 0;
   }
 
   // Load existing usernames
-  const existingUsernames = await loadExistingUsernames();
+  const existingKeys = await loadExistingUsernames();
 
   // Filter out existing usernames
-  const newUsernames = Array.from(seedUsernames).filter(u => !existingUsernames.has(u));
-  console.log(`  New usernames: ${newUsernames.length}`);
+  const newItems = new Map();
+  for (const [key, value] of seedItems) {
+    if (!existingKeys.has(key)) {
+      newItems.set(key, value);
+    }
+  }
+  console.log(`  New usernames: ${newItems.size}`);
 
   // Save new usernames
-  const saved = await saveNewUsernames(newUsernames, 'seed', dryRun);
+  const saved = await saveNewUsernames(newItems, 'seed', dryRun);
   return saved;
 }
 
@@ -367,229 +639,319 @@ async function queryCommonCrawlIndex(indexName, pattern) {
   }
 }
 
-async function discoverFromCommonCrawl() {
-  const usernames = new Set();
+/**
+ * Discover usernames from Common Crawl across all specified domains
+ * @param {Array} domains - Array of domain configs to search
+ * @returns {Map} Map of "countryCode:username" -> { username, countryCode, domain }
+ */
+async function discoverFromCommonCrawl(domains) {
+  const discovered = new Map();  // key = "countryCode:username", value = { username, countryCode, domain }
   console.log('\n Discovering from Common Crawl...');
+  console.log(`  Searching ${domains.length} domain(s): ${domains.map(d => d.domain).join(', ')}`);
 
   if (circuitBreaker.isOpen) {
     console.log('  Circuit breaker OPEN - skipping Common Crawl');
-    return usernames;
+    return discovered;
   }
 
-  for (const indexName of CONFIG.COMMON_CRAWL_INDEXES) {
-    console.log(`  Querying ${indexName}...`);
-    const { urls, error } = await queryCommonCrawlIndex(indexName, CONFIG.URL_PATTERN);
+  for (const domainConfig of domains) {
+    console.log(`\n  Domain: ${domainConfig.domain} (${domainConfig.country})`);
+    const urlPattern = `${domainConfig.domain}/*`;
+    let domainUsernames = 0;
 
-    // Extract usernames
-    for (const url of urls) {
-      const username = extractUsername(url);
-      if (username) {
-        usernames.add(username);
-      }
-    }
+    for (const indexName of CONFIG.COMMON_CRAWL_INDEXES) {
+      if (circuitBreaker.isOpen) break;
 
-    console.log(`    Found ${urls.length} URLs -> ${usernames.size} unique usernames so far`);
+      console.log(`    Querying ${indexName}...`);
+      const { urls, error } = await queryCommonCrawlIndex(indexName, urlPattern);
 
-    // Circuit breaker tracking
-    if (error) {
-      circuitBreaker.consecutiveFailures++;
-      if (circuitBreaker.consecutiveFailures >= CONFIG.CIRCUIT_BREAKER_THRESHOLD) {
-        circuitBreaker.tripCount++;
-        if (circuitBreaker.tripCount >= CONFIG.MAX_CIRCUIT_TRIPS) {
-          console.log(`    Circuit breaker OPEN - Common Crawl appears down`);
-          circuitBreaker.isOpen = true;
-          break;
+      // Extract usernames
+      for (const url of urls) {
+        const result = extractUsernameFromUrl(url);
+        if (result) {
+          const key = `${result.countryCode}:${result.username}`;
+          if (!discovered.has(key)) {
+            discovered.set(key, result);
+            domainUsernames++;
+          }
         }
-        console.log(`    Circuit breaker tripped - pausing ${CONFIG.CIRCUIT_BREAKER_PAUSE / 1000}s...`);
-        circuitBreaker.consecutiveFailures = 0;
-        await sleep(CONFIG.CIRCUIT_BREAKER_PAUSE);
       }
-    } else {
-      circuitBreaker.consecutiveFailures = 0;
+
+      // Circuit breaker tracking
+      if (error) {
+        circuitBreaker.consecutiveFailures++;
+        if (circuitBreaker.consecutiveFailures >= CONFIG.CIRCUIT_BREAKER_THRESHOLD) {
+          circuitBreaker.tripCount++;
+          if (circuitBreaker.tripCount >= CONFIG.MAX_CIRCUIT_TRIPS) {
+            console.log(`    Circuit breaker OPEN - Common Crawl appears down`);
+            circuitBreaker.isOpen = true;
+            break;
+          }
+          console.log(`    Circuit breaker tripped - pausing ${CONFIG.CIRCUIT_BREAKER_PAUSE / 1000}s...`);
+          circuitBreaker.consecutiveFailures = 0;
+          await sleep(CONFIG.CIRCUIT_BREAKER_PAUSE);
+        }
+      } else {
+        circuitBreaker.consecutiveFailures = 0;
+      }
+
+      await sleep(CONFIG.CC_DELAY);
     }
 
-    await sleep(CONFIG.CC_DELAY);
+    console.log(`    ${domainConfig.domain}: ${domainUsernames} unique usernames`);
   }
 
-  console.log(`  Common Crawl total: ${usernames.size} unique usernames`);
-  return usernames;
+  console.log(`\n  Common Crawl total: ${discovered.size} unique usernames across all domains`);
+  return discovered;
 }
 
 // ============================================================================
 // WAYBACK MACHINE DISCOVERY
 // ============================================================================
 
-async function discoverFromWayback() {
-  const usernames = new Set();
+/**
+ * Discover usernames from Wayback Machine across all specified domains
+ * @param {Array} domains - Array of domain configs to search
+ * @returns {Map} Map of "countryCode:username" -> { username, countryCode, domain }
+ */
+async function discoverFromWayback(domains) {
+  const discovered = new Map();
   console.log('\n Discovering from Wayback Machine...');
+  console.log(`  Searching ${domains.length} domain(s)`);
 
-  const queryUrl = `https://web.archive.org/cdx/search/cdx?url=${encodeURIComponent(CONFIG.URL_PATTERN)}&output=json&fl=original&collapse=urlkey&limit=10000`;
+  for (const domainConfig of domains) {
+    console.log(`\n  Domain: ${domainConfig.domain}`);
+    const urlPattern = `${domainConfig.domain}/*`;
+    const queryUrl = `https://web.archive.org/cdx/search/cdx?url=${encodeURIComponent(urlPattern)}&output=json&fl=original&collapse=urlkey&limit=10000`;
 
-  try {
-    const response = await fetch(queryUrl, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (compatible; TBP-Farmasius-Discovery/1.0)',
-      },
-      signal: AbortSignal.timeout(60000),
-    });
+    try {
+      const response = await fetch(queryUrl, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (compatible; TBP-Farmasius-Discovery/1.0)',
+        },
+        signal: AbortSignal.timeout(60000),
+      });
 
-    if (!response.ok) {
-      if (response.status === 404) {
-        console.log('  Wayback: No results');
-        return usernames;
+      if (!response.ok) {
+        if (response.status === 404) {
+          console.log(`    No results`);
+          continue;
+        }
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-    }
 
-    const data = await response.json();
+      const data = await response.json();
+      let domainCount = 0;
 
-    // CDX JSON: first row is headers, rest are data
-    if (Array.isArray(data) && data.length > 1) {
-      for (let i = 1; i < data.length; i++) {
-        const url = data[i][0];
-        const username = extractUsername(url);
-        if (username) {
-          usernames.add(username);
+      // CDX JSON: first row is headers, rest are data
+      if (Array.isArray(data) && data.length > 1) {
+        for (let i = 1; i < data.length; i++) {
+          const url = data[i][0];
+          const result = extractUsernameFromUrl(url);
+          if (result) {
+            const key = `${result.countryCode}:${result.username}`;
+            if (!discovered.has(key)) {
+              discovered.set(key, result);
+              domainCount++;
+            }
+          }
         }
       }
-    }
 
-    console.log(`  Wayback total: ${usernames.size} unique usernames`);
-  } catch (error) {
-    console.log(`  Wayback error: ${error.message}`);
+      console.log(`    ${domainConfig.domain}: ${domainCount} unique usernames`);
+      await sleep(CONFIG.WB_DELAY);
+
+    } catch (error) {
+      console.log(`    ${domainConfig.domain} error: ${error.message}`);
+    }
   }
 
-  return usernames;
+  console.log(`\n  Wayback total: ${discovered.size} unique usernames across all domains`);
+  return discovered;
 }
 
 // ============================================================================
 // SERPAPI GOOGLE SEARCH DISCOVERY
 // ============================================================================
 
-async function discoverFromSerpAPI(maxSearches) {
-  const usernames = new Set();
+/**
+ * Discover usernames from Google Search via SerpAPI across all specified domains
+ * @param {Array} domains - Array of domain configs to search
+ * @param {number} maxSearches - Max total SerpAPI requests
+ * @returns {Map} Map of "countryCode:username" -> { username, countryCode, domain }
+ */
+async function discoverFromSerpAPI(domains, maxSearches) {
+  const discovered = new Map();
   console.log('\n Discovering from Google Search (SerpAPI)...');
 
   if (!SERPAPI_KEY) {
     console.log('  Skipping: SerpAPI key not found');
-    return usernames;
+    return discovered;
   }
 
   let totalSearchCount = 0;
 
-  // Iterate through all search queries
-  for (const query of CONFIG.SERPAPI_QUERIES) {
+  // Build queries for each domain
+  for (const domainConfig of domains) {
     if (totalSearchCount >= maxSearches) break;
 
-    console.log(`\n  Query: "${query}"`);
-    let start = 0;
-    let querySearchCount = 0;
+    console.log(`\n  Domain: ${domainConfig.domain} (${domainConfig.country})`);
 
-    while (querySearchCount < CONFIG.SERPAPI_MAX_PAGES && totalSearchCount < maxSearches) {
-      console.log(`    Page ${querySearchCount + 1}...`);
+    // Generate queries for this domain
+    const queries = CONFIG.SERPAPI_BASE_QUERIES.map(q =>
+      q.replace(/{domain}/g, domainConfig.domain)
+    );
 
-      try {
-        const response = await axios.get(CONFIG.SERPAPI_URL, {
-          params: {
-            api_key: SERPAPI_KEY,
-            engine: 'google',
-            q: query,
-            start: start,
-            num: 10,
-          },
-          timeout: CONFIG.FETCH_TIMEOUT,
-        });
+    // Add US-specific queries for farmasius.com
+    if (domainConfig.code === 'us') {
+      queries.push(...CONFIG.SERPAPI_US_QUERIES);
+    }
 
-        const results = response.data.organic_results || [];
+    for (const query of queries) {
+      if (totalSearchCount >= maxSearches) break;
 
-        if (results.length === 0) {
-          console.log(`    No more results for this query`);
-          break;
-        }
+      console.log(`    Query: "${query}"`);
+      let start = 0;
+      let querySearchCount = 0;
 
-        let pageUsernamesFound = 0;
-        for (const result of results) {
-          // Check the link itself
-          const username = extractUsername(result.link);
-          if (username) {
-            usernames.add(username);
-            pageUsernamesFound++;
+      while (querySearchCount < CONFIG.SERPAPI_MAX_PAGES && totalSearchCount < maxSearches) {
+        try {
+          const response = await axios.get(CONFIG.SERPAPI_URL, {
+            params: {
+              api_key: SERPAPI_KEY,
+              engine: 'google',
+              q: query,
+              start: start,
+              num: 10,
+            },
+            timeout: CONFIG.FETCH_TIMEOUT,
+          });
+
+          const results = response.data.organic_results || [];
+
+          if (results.length === 0) {
+            break;
           }
 
-          // Also check snippet for farmasius.com links
-          if (result.snippet) {
-            const urlMatches = result.snippet.match(/farmasius\.com\/([a-zA-Z0-9_-]+)/gi);
-            if (urlMatches) {
-              for (const match of urlMatches) {
-                const usernameMatch = match.match(/farmasius\.com\/([a-zA-Z0-9_-]+)/i);
-                if (usernameMatch && usernameMatch[1]) {
-                  const extractedUsername = usernameMatch[1].toLowerCase();
-                  if (!EXCLUDED_PATHS.includes(extractedUsername) && extractedUsername.length >= 2) {
-                    usernames.add(extractedUsername);
-                    pageUsernamesFound++;
+          let pageUsernamesFound = 0;
+          for (const result of results) {
+            // Check the link itself
+            const urlResult = extractUsernameFromUrl(result.link);
+            if (urlResult) {
+              const key = `${urlResult.countryCode}:${urlResult.username}`;
+              if (!discovered.has(key)) {
+                discovered.set(key, urlResult);
+                pageUsernamesFound++;
+              }
+            }
+
+            // Also check snippet for farmasi domain links
+            if (result.snippet) {
+              // Match any Farmasi domain pattern
+              const farmasisPattern = /(?:farmasius\.com|farmasi\.[a-z.]+)\/([a-zA-Z0-9_-]+)/gi;
+              const urlMatches = result.snippet.match(farmasisPattern);
+              if (urlMatches) {
+                for (const match of urlMatches) {
+                  // Reconstruct URL and extract
+                  const testUrl = `https://${match}`;
+                  const snippetResult = extractUsernameFromUrl(testUrl);
+                  if (snippetResult) {
+                    const key = `${snippetResult.countryCode}:${snippetResult.username}`;
+                    if (!discovered.has(key)) {
+                      discovered.set(key, snippetResult);
+                      pageUsernamesFound++;
+                    }
                   }
                 }
               }
             }
           }
+
+          console.log(`      Page ${querySearchCount + 1}: ${pageUsernamesFound} usernames`);
+
+          totalSearchCount++;
+          querySearchCount++;
+          start += 10;
+
+          await sleep(CONFIG.SERPAPI_DELAY);
+
+        } catch (error) {
+          console.log(`      SerpAPI error: ${error.message}`);
+          break;
         }
-
-        console.log(`      ${results.length} results -> ${pageUsernamesFound} usernames (${usernames.size} total unique)`);
-
-        totalSearchCount++;
-        querySearchCount++;
-        start += 10;
-
-        // Rate limit
-        await sleep(CONFIG.SERPAPI_DELAY);
-
-      } catch (error) {
-        console.log(`    SerpAPI error: ${error.message}`);
-        break;
       }
     }
   }
 
-  console.log(`\n  SerpAPI total: ${usernames.size} unique usernames`);
-  return usernames;
+  console.log(`\n  SerpAPI total: ${discovered.size} unique usernames across all domains`);
+  return discovered;
 }
 
 // ============================================================================
 // FIRESTORE OPERATIONS
 // ============================================================================
 
+/**
+ * Load existing usernames from Firestore
+ * Returns Set of "countryCode:username" keys for deduplication
+ */
 async function loadExistingUsernames() {
   console.log('\n Loading existing usernames from Firestore...');
 
-  const existingUsernames = new Set();
+  const existingKeys = new Set();
   const snapshot = await db.collection(CONFIG.DISCOVERED_COLLECTION)
-    .select('username')
+    .select('username', 'countryCode')
     .get();
 
   snapshot.forEach(doc => {
-    const username = doc.data().username;
+    const data = doc.data();
+    const username = data.username;
+    // Use countryCode if available, default to 'us' for legacy entries
+    const countryCode = data.countryCode || 'us';
     if (username) {
-      existingUsernames.add(username.toLowerCase());
+      existingKeys.add(`${countryCode}:${username.toLowerCase()}`);
     }
   });
 
-  console.log(`  Found ${existingUsernames.size} existing usernames`);
-  return existingUsernames;
+  console.log(`  Found ${existingKeys.size} existing usernames`);
+  return existingKeys;
 }
 
-async function saveNewUsernames(usernames, source, dryRun) {
-  if (usernames.length === 0) {
+/**
+ * Save new usernames to Firestore with domain metadata
+ * @param {Map|Array} usernameData - Map of "countryCode:username" -> { username, countryCode, domain } OR array of strings (legacy)
+ * @param {string} source - Discovery source (common_crawl, wayback, serpapi, seed)
+ * @param {boolean} dryRun - If true, don't actually save
+ * @returns {number} Number of usernames saved
+ */
+async function saveNewUsernames(usernameData, source, dryRun) {
+  // Convert to array of objects if it's a Map
+  let items;
+  if (usernameData instanceof Map) {
+    items = Array.from(usernameData.values());
+  } else if (Array.isArray(usernameData)) {
+    // Legacy format - assume US domain
+    items = usernameData.map(username => ({
+      username,
+      countryCode: 'us',
+      domain: 'farmasius.com',
+    }));
+  } else {
+    items = [];
+  }
+
+  if (items.length === 0) {
     console.log('  No new usernames to save');
     return 0;
   }
 
-  console.log(`\n Saving ${usernames.length} new usernames...`);
+  console.log(`\n Saving ${items.length} new usernames...`);
 
   if (dryRun) {
     console.log('  DRY RUN - Would save:');
-    usernames.slice(0, 10).forEach(username => console.log(`    ${username}`));
-    if (usernames.length > 10) {
-      console.log(`    ... and ${usernames.length - 10} more`);
+    items.slice(0, 10).forEach(item => console.log(`    ${item.countryCode}:${item.username} (${item.domain})`));
+    if (items.length > 10) {
+      console.log(`    ... and ${items.length - 10} more`);
     }
     return 0;
   }
@@ -598,11 +960,16 @@ async function saveNewUsernames(usernames, source, dryRun) {
   let batchCount = 0;
   let totalSaved = 0;
 
-  for (const username of usernames) {
+  for (const item of items) {
     const docRef = db.collection(CONFIG.DISCOVERED_COLLECTION).doc();
+    const domainConfig = FARMASI_DOMAINS[item.countryCode] || {};
 
     batch.set(docRef, {
-      username: username,
+      username: item.username,
+      countryCode: item.countryCode,
+      domain: item.domain,
+      country: domainConfig.country || null,
+      language: domainConfig.language || 'en',
       source: source,
       discoveredAt: admin.firestore.FieldValue.serverTimestamp(),
       scraped: false,
@@ -669,7 +1036,7 @@ async function resetDiscoveryState() {
 // ============================================================================
 
 async function showStats() {
-  console.log('\n Farmasius Discovery Stats\n');
+  console.log('\n Farmasi Discovery Stats (Multi-Domain)\n');
 
   // Get collection counts
   const discoveredSnapshot = await db.collection(CONFIG.DISCOVERED_COLLECTION).get();
@@ -682,6 +1049,20 @@ async function showStats() {
   const scrapedCount = scrapedSnapshot.size;
   const pendingCount = totalDiscovered - scrapedCount;
 
+  // Count by country
+  const countryStats = {};
+  discoveredSnapshot.forEach(doc => {
+    const data = doc.data();
+    const countryCode = data.countryCode || 'us';
+    if (!countryStats[countryCode]) {
+      countryStats[countryCode] = { total: 0, scraped: 0 };
+    }
+    countryStats[countryCode].total++;
+    if (data.scraped) {
+      countryStats[countryCode].scraped++;
+    }
+  });
+
   // Get state
   const stateDoc = await db.collection(CONFIG.STATE_COLLECTION).doc(CONFIG.STATE_DOC).get();
   const state = stateDoc.exists ? stateDoc.data() : {};
@@ -690,6 +1071,17 @@ async function showStats() {
   console.log(`  Total:    ${totalDiscovered}`);
   console.log(`  Scraped:  ${scrapedCount}`);
   console.log(`  Pending:  ${pendingCount}`);
+
+  // Show by country
+  if (Object.keys(countryStats).length > 0) {
+    console.log('\nBy Country:');
+    const sortedCountries = Object.entries(countryStats).sort((a, b) => b[1].total - a[1].total);
+    for (const [code, stats] of sortedCountries) {
+      const countryName = FARMASI_DOMAINS[code]?.country || code;
+      const pending = stats.total - stats.scraped;
+      console.log(`  ${countryName}: ${stats.total} total, ${stats.scraped} scraped, ${pending} pending`);
+    }
+  }
 
   if (state.lastDiscoveryAt) {
     console.log(`\nLast Discovery: ${state.lastDiscoveryAt.toDate().toISOString()}`);
@@ -704,7 +1096,7 @@ async function showStats() {
   }
 
   // Show sample usernames
-  console.log('\nSample usernames (first 10):');
+  console.log('\nRecent usernames (last 10):');
   const sampleSnapshot = await db.collection(CONFIG.DISCOVERED_COLLECTION)
     .orderBy('discoveredAt', 'desc')
     .limit(10)
@@ -712,7 +1104,9 @@ async function showStats() {
 
   sampleSnapshot.forEach(doc => {
     const data = doc.data();
-    console.log(`  ${data.username} (${data.source})`);
+    const countryCode = data.countryCode || 'us';
+    const countryName = FARMASI_DOMAINS[countryCode]?.country || countryCode;
+    console.log(`  ${data.username} - ${countryName} (${data.source})`);
   });
 }
 
@@ -723,54 +1117,91 @@ async function showStats() {
 async function runDiscovery(options) {
   const startTime = Date.now();
 
+  // Get domains to process
+  const domains = getDomainsToProcess(options.domain);
+
   console.log('='.repeat(60));
-  console.log('FARMASIUS URL DISCOVERY');
+  console.log('FARMASI URL DISCOVERY (Multi-Domain)');
   console.log('='.repeat(60));
   console.log(`Mode: ${options.dryRun ? 'DRY RUN' : 'LIVE'}`);
+  console.log(`Domains: ${options.domain === 'all' ? `ALL (${domains.length} domains)` : options.domain}`);
   console.log(`Max SerpAPI searches: ${options.max === Infinity ? 'unlimited' : options.max}`);
   console.log(`Timestamp: ${new Date().toISOString()}`);
 
-  // Load existing usernames
-  const existingUsernames = await loadExistingUsernames();
+  if (options.domain === 'all') {
+    console.log(`\nDomain list:`);
+    domains.forEach(d => console.log(`  - ${d.domain} (${d.country})`));
+  }
 
-  // Discover from all sources
-  const allUsernames = new Set();
+  // Load existing usernames
+  const existingKeys = await loadExistingUsernames();
+
+  // Discover from all sources - now returns Maps of "countryCode:username" -> { username, countryCode, domain }
+  const allDiscovered = new Map();
   const stats = {
     commonCrawlUsernames: 0,
     waybackUsernames: 0,
     serpApiUsernames: 0,
     totalNewUsernames: 0,
+    byCountry: {},
   };
 
   // Source 1: Common Crawl
-  const ccUsernames = await discoverFromCommonCrawl();
-  stats.commonCrawlUsernames = ccUsernames.size;
-  ccUsernames.forEach(u => allUsernames.add(u));
+  const ccDiscovered = await discoverFromCommonCrawl(domains);
+  stats.commonCrawlUsernames = ccDiscovered.size;
+  ccDiscovered.forEach((value, key) => allDiscovered.set(key, value));
 
   // Source 2: Wayback Machine
   await sleep(CONFIG.WB_DELAY);
-  const wbUsernames = await discoverFromWayback();
-  stats.waybackUsernames = wbUsernames.size;
-  wbUsernames.forEach(u => allUsernames.add(u));
+  const wbDiscovered = await discoverFromWayback(domains);
+  stats.waybackUsernames = wbDiscovered.size;
+  wbDiscovered.forEach((value, key) => {
+    if (!allDiscovered.has(key)) {
+      allDiscovered.set(key, value);
+    }
+  });
 
   // Source 3: SerpAPI Google Search
-  const serpUsernames = await discoverFromSerpAPI(options.max);
-  stats.serpApiUsernames = serpUsernames.size;
-  serpUsernames.forEach(u => allUsernames.add(u));
+  const serpDiscovered = await discoverFromSerpAPI(domains, options.max);
+  stats.serpApiUsernames = serpDiscovered.size;
+  serpDiscovered.forEach((value, key) => {
+    if (!allDiscovered.has(key)) {
+      allDiscovered.set(key, value);
+    }
+  });
 
   console.log(`\n Discovery Summary:`);
   console.log(`  Common Crawl: ${stats.commonCrawlUsernames} usernames`);
   console.log(`  Wayback:      ${stats.waybackUsernames} usernames`);
   console.log(`  SerpAPI:      ${stats.serpApiUsernames} usernames`);
-  console.log(`  Total unique: ${allUsernames.size} usernames`);
+  console.log(`  Total unique: ${allDiscovered.size} usernames`);
 
   // Filter out existing usernames
-  const newUsernames = Array.from(allUsernames).filter(u => !existingUsernames.has(u));
-  stats.totalNewUsernames = newUsernames.length;
-  console.log(`  New usernames: ${newUsernames.length}`);
+  const newDiscovered = new Map();
+  for (const [key, value] of allDiscovered) {
+    if (!existingKeys.has(key)) {
+      newDiscovered.set(key, value);
+
+      // Count by country
+      const countryCode = value.countryCode;
+      stats.byCountry[countryCode] = (stats.byCountry[countryCode] || 0) + 1;
+    }
+  }
+  stats.totalNewUsernames = newDiscovered.size;
+
+  console.log(`  New usernames: ${newDiscovered.size}`);
+
+  // Show breakdown by country
+  if (Object.keys(stats.byCountry).length > 0) {
+    console.log(`\n  By country:`);
+    for (const [code, count] of Object.entries(stats.byCountry).sort((a, b) => b[1] - a[1])) {
+      const countryName = FARMASI_DOMAINS[code]?.country || code;
+      console.log(`    ${countryName}: ${count}`);
+    }
+  }
 
   // Save new usernames
-  await saveNewUsernames(newUsernames, 'hybrid', options.dryRun);
+  await saveNewUsernames(newDiscovered, 'hybrid', options.dryRun);
 
   // Update state
   if (!options.dryRun) {
@@ -782,7 +1213,7 @@ async function runDiscovery(options) {
   console.log('\n' + '='.repeat(60));
   console.log('DISCOVERY COMPLETE');
   console.log('='.repeat(60));
-  console.log(`New usernames discovered: ${newUsernames.length}`);
+  console.log(`New usernames discovered: ${newDiscovered.size}`);
   console.log(`Time elapsed: ${elapsed}s`);
   console.log('='.repeat(60));
 }
@@ -817,13 +1248,23 @@ async function main() {
   }
 
   // Default: show usage
+  console.log('NOTE: US domain (farmasius.com) is SKIPPED by default (1,311 usernames already scraped).\n');
   console.log('Usage:');
-  console.log('  node scripts/farmasius-url-discovery.js --discover              # Run full discovery');
+  console.log('  node scripts/farmasius-url-discovery.js --discover              # Run discovery (international only)');
+  console.log('  node scripts/farmasius-url-discovery.js --discover --domain=us  # USA only (farmasius.com)');
+  console.log('  node scripts/farmasius-url-discovery.js --discover --domain=de  # Germany only (farmasi.de)');
   console.log('  node scripts/farmasius-url-discovery.js --discover --max=200    # Limit SerpAPI searches');
   console.log('  node scripts/farmasius-url-discovery.js --seed                  # Load usernames from seed file');
   console.log('  node scripts/farmasius-url-discovery.js --dry-run               # Preview only');
   console.log('  node scripts/farmasius-url-discovery.js --stats                 # Show stats');
   console.log('  node scripts/farmasius-url-discovery.js --reset                 # Reset discovery state');
+  console.log('\nSupported domains:');
+  console.log('  us  - farmasius.com (USA)');
+  console.log('  uk  - farmasi.co.uk (United Kingdom)');
+  console.log('  de  - farmasi.de (Germany)');
+  console.log('  es  - farmasi.es (Spain)');
+  console.log('  pt  - farmasi.pt (Portugal)');
+  console.log('  ... and 20+ more (use --stats to see breakdown)');
   process.exit(0);
 }
 
