@@ -49,7 +49,8 @@ jobs:
 
       - name: Setup Firebase credentials
         run: |
-          echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT_KEY }}' > scripts/serviceAccountKey.json
+          mkdir -p secrets
+          echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT_KEY }}' > secrets/serviceAccountKey.json
 
       - name: Run Scraper
         working-directory: scripts
@@ -77,4 +78,4 @@ jobs:
 
       - name: Cleanup credentials
         if: always()
-        run: rm -f scripts/serviceAccountKey.json
+        run: rm -f secrets/serviceAccountKey.json

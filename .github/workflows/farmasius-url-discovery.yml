@@ -6,14 +6,15 @@
 # Note: US domain (farmasius.com) is SKIPPED by default since all 1,311
 # US usernames have already been discovered. Use --domain=us to include it.
 #
-# Schedule: Every 6 hours (4x daily) to discover new international reps
+# STATUS: DISABLED - Discovery complete (2,594 usernames discovered)
+# Schedule was: Every 6 hours (4x daily)
 
 name: Farmasius URL Discovery
 
 on:
-  schedule:
-    # Run every 6 hours: 12am, 6am, 12pm, 6pm PT
-    - cron: '0 8,14,20,2 * * *'
+  # schedule:
+  #   # Run every 6 hours: 12am, 6am, 12pm, 6pm PT
+  #   - cron: '0 8,14,20,2 * * *'
   workflow_dispatch:
     inputs:
       max_searches:
