@@ -1421,7 +1421,7 @@ Corporate email domains are excluded from all contact collections using a **blac
   - Requires GMAIL_OAUTH_CREDENTIALS secret (OAuth client JSON)
 - `spam-monitor.js` - Email spam detection and auto-disable system
   - Sends test email directly via Mailgun API using V16 template
-  - Tests single subject line: "Getting recruiting prospects to YES with AI"
+  - Tests single subject line: "Building your team with AI"
   - Waits 2 minutes for Gmail delivery, then checks inbox vs spam placement
   - Auto-disables **ALL 8 campaigns** if spam detected:
     - `batchSize`, `batchSizePurchased`, `batchSizeBfh`, `batchSizePaparazzi`, `batchSizeFsr`, `batchSizeZinzino`, `batchSizePruvit`, `scentsyBatchSize`
@@ -1506,12 +1506,12 @@ Corporate email domains are excluded from all contact collections using a **blac
   - ES: "Team Build Pro: IA Equipo", PT: "Team Build Pro: IA Equipe", DE: "Team Build Pro: KI Team"
 
 **Email Campaign Infrastructure**
-- ✅ **V16 Subject Line Update** (Mar 7, 2026): Updated subject from "Getting prospects to YES with AI" to "Getting recruiting prospects to YES with AI"
+- ✅ **V16 Subject Line Update** (Mar 7, 2026): Updated subject to "Building your team with AI"
   - All 10 email campaign functions updated and redeployed
-  - Localized subjects updated: ES, PT, DE
+  - Localized subjects updated: ES ("Construyendo tu equipo con IA"), PT ("Construindo sua equipe com IA"), DE ("Dein Team mit KI aufbauen")
   - Spam monitor script updated to match new subject line
 - ✅ **V16 Template Standardization** (Feb 25, 2026): All campaigns migrated to V16 template
-  - Single subject line: "Getting recruiting prospects to YES with AI" (localized per language)
+  - Single subject line: "Building your team with AI" (localized per language)
   - A/B testing discontinued - standardized on V16 for consistency
   - Language variants: v16 (EN), v16-es (ES), v16-de (DE), v16-pt (PT) - all fully localized
   - Subject tags: `{campaign}_v16` for English, `{campaign}_v16_{lang}` for multilingual
@@ -1819,10 +1819,10 @@ Corporate email domains are excluded from all contact collections using a **blac
   - Reminders unnecessary and potentially confusing for auto-renewing subscriptions
   - Users don't need to take action - billing happens automatically
 
-### Current System Status (Mar 3, 2026)
+### Current System Status (Mar 9, 2026)
 
 **PROJECT STATUS: DYNAMIC BATCH SIZING LIVE**
-Main Campaign disabled. All scraper-fed campaigns use V16 template with unified subject "Getting recruiting prospects to YES with AI". Dynamic batch sizing auto-adjusts based on queue sizes with 4-week warming schedule (40%→60%→80%→100%).
+Main Campaign disabled. All scraper-fed campaigns use V16 template with unified subject "Building your team with AI". Dynamic batch sizing auto-adjusts based on queue sizes with 4-week warming schedule (40%→60%→80%→100%).
 
 | Component | Status | Notes |
 |-----------|--------|-------|
@@ -1837,7 +1837,7 @@ Main Campaign disabled. All scraper-fed campaigns use V16 template with unified 
 | Domain Warming | **Daily** | 6am PT · 4-week schedule (40%→60%→80%→100%) |
 | Contacts Campaign | Complete | 826 contacts (cleaned Feb 15) |
 | Email Sending | Mailgun API | Via Mailgun, news.teambuildpro.com |
-| Email Templates | V16 Standard | "Getting recruiting prospects to YES with AI" - updated Mar 7 |
+| Email Templates | V16 Standard | "Building your team with AI" - updated Mar 7 |
 | Yahoo Campaign | Removed | File and function deleted (Jan 31) |
 | Android Campaign | Removed | Function and all references deleted |
 | Subscription Reminders | Disabled | Auto-renewal handled by app stores (Feb 19) |
@@ -1856,6 +1856,9 @@ Main Campaign disabled. All scraper-fed campaigns use V16 template with unified 
 | Pruvit Discovery | Active | Every 6h, Common Crawl + Wayback + SerpAPI + seed file |
 | Pruvit Scraper | Active | Every 4h, 50/run, Puppeteer modal extraction |
 | Pruvit Collection | 5 contacts | 5 with emails (new Feb 24) |
+| Farmasius Discovery | Disabled | Complete: 2,594 usernames across 26 countries (Mar 9) |
+| Farmasius Scraper | **Active** | Every 4h, 200/run, 27 international domains |
+| Farmasius Campaign | Pending | `farmasius_contacts` collection, V16 template |
 | Spam Monitor | Active | 5x daily (6am/9am/12pm/3pm/6pm PT), Gmail API check, auto-disable on spam |
 | PreIntake.ai | Autonomous | See `preintake/CLAUDE.md` for details |
 
