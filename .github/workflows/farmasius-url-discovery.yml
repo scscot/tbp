@@ -1,0 +1,92 @@
+# Farmasius URL Discovery Workflow
+#
+# Discovers Farmasi representative usernames from 27 international domains
+# Sources: Common Crawl, Wayback Machine, SerpAPI Google Search
+#
+# Note: US domain (farmasius.com) is SKIPPED by default since all 1,311
+# US usernames have already been discovered. Use --domain=us to include it.
+#
+# Schedule: Every 6 hours (4x daily) to discover new international reps
+
+name: Farmasius URL Discovery
+
+on:
+  schedule:
+    # Run every 6 hours: 12am, 6am, 12pm, 6pm PT
+    - cron: '0 8,14,20,2 * * *'
+  workflow_dispatch:
+    inputs:
+      max_searches:
+        description: 'Max SerpAPI searches per domain (default: 10)'
+        required: false
+        default: '10'
+      dry_run:
+        description: 'Dry run (no Firestore writes)'
+        required: false
+        default: 'false'
+      domain:
+        description: 'Specific domain code (e.g., uk, de, es) or "all" for all including US'
+        required: false
+        default: ''
+      reset_state:
+        description: 'Reset discovery state before running'
+        required: false
+        default: 'false'
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        working-directory: scripts
+        run: npm install
+
+      - name: Setup Firebase credentials
+        run: |
+          echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT_KEY }}' > scripts/serviceAccountKey.json
+
+      - name: Run URL Discovery
+        working-directory: scripts
+        env:
+          SERPAPI_API_KEY: ${{ secrets.SERPAPI_API_KEY }}
+        run: |
+          # Build command with options
+          CMD="node farmasius-url-discovery.js --discover"
+
+          # Add max searches limit
+          MAX="${{ github.event.inputs.max_searches || '10' }}"
+          CMD="$CMD --max=$MAX"
+
+          # Add domain filter if specified
+          DOMAIN="${{ github.event.inputs.domain }}"
+          if [ -n "$DOMAIN" ]; then
+            CMD="$CMD --domain=$DOMAIN"
+          fi
+
+          # Add dry run flag if enabled
+          if [ "${{ github.event.inputs.dry_run }}" == "true" ]; then
+            CMD="$CMD --dry-run"
+          fi
+
+          # Reset state if requested
+          if [ "${{ github.event.inputs.reset_state }}" == "true" ]; then
+            echo "Resetting discovery state..."
+            node farmasius-url-discovery.js --reset
+          fi
+
+          echo "Running: $CMD"
+          $CMD
+
+      - name: Cleanup credentials
+        if: always()
+        run: rm -f scripts/serviceAccountKey.json

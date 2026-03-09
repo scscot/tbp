@@ -1,0 +1,80 @@
+# Farmasius Contact Scraper Workflow
+#
+# Scrapes contact information (name, email, phone) from discovered Farmasi
+# representative pages across 27 international domains.
+#
+# Uses HTTP requests (axios + cheerio) - NO Puppeteer required.
+# Contact data is stored in farmasius_contacts collection for email campaigns.
+#
+# Schedule: Every 4 hours (6x daily) to process discovery queue
+
+name: Farmasius Scraper
+
+on:
+  schedule:
+    # Run every 4 hours: 12am, 4am, 8am, 12pm, 4pm, 8pm PT
+    - cron: '0 8,12,16,20,0,4 * * *'
+  workflow_dispatch:
+    inputs:
+      max_contacts:
+        description: 'Max contacts to scrape (default: 200)'
+        required: false
+        default: '200'
+      dry_run:
+        description: 'Dry run (no Firestore writes)'
+        required: false
+        default: 'false'
+      domain:
+        description: 'Specific domain code (e.g., uk, de, es)'
+        required: false
+        default: ''
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        working-directory: scripts
+        run: npm install
+
+      - name: Setup Firebase credentials
+        run: |
+          echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT_KEY }}' > scripts/serviceAccountKey.json
+
+      - name: Run Scraper
+        working-directory: scripts
+        run: |
+          # Build command with options
+          CMD="node farmasius-scraper.js --scrape"
+
+          # Add max contacts limit
+          MAX="${{ github.event.inputs.max_contacts || '200' }}"
+          CMD="$CMD --max=$MAX"
+
+          # Add domain filter if specified
+          DOMAIN="${{ github.event.inputs.domain }}"
+          if [ -n "$DOMAIN" ]; then
+            CMD="$CMD --domain=$DOMAIN"
+          fi
+
+          # Add dry run flag if enabled
+          if [ "${{ github.event.inputs.dry_run }}" == "true" ]; then
+            CMD="$CMD --dry-run"
+          fi
+
+          echo "Running: $CMD"
+          $CMD
+
+      - name: Cleanup credentials
+        if: always()
+        run: rm -f scripts/serviceAccountKey.json
