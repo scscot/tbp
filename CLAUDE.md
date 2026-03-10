@@ -702,17 +702,17 @@ The email campaign system consists of multiple parallel campaigns targeting diff
 ### Scentsy Campaign (Mailgun API - Automated)
 - **Function**: `sendHourlyScentsyCampaign` in `functions/email-campaign-scentsy.js`
 - **Tags**: `scentsy_campaign`, `tracked`
-- **Schedule**: Every 2 hours (12x daily) - on the hour
+- **Schedule**: Every 6 hours (4x daily) - on the hour
 - **Data Source**: Firestore `scentsy_contacts` collection (scraped from Scentsy consultant finder)
 - **Control Variable**: SCENTSY_CAMPAIGN_ENABLED
 - **Batch Size**: Dynamic via Firestore `config/emailCampaign.scentsyBatchSize`
-- **Subject**: V16 template with language variants (`scentsy_v16_en`, `scentsy_v16_es`, `scentsy_v16_de`) - "Build your downline with AI"
+- **V18 A/B/C Testing** (33% distribution each):
+  - V18-A: "What if your next recruit joined with 12 people?" (Curiosity Hook) - `scentsy_v18_a`
+  - V18-B: "75% of your recruits will quit this year (here's why)" (Pain Point Hook) - `scentsy_v18_b`
+  - V18-C: "Give your prospects an AI recruiting coach" (Direct Value Hook) - `scentsy_v18_c`
 - **Query**: `status == 'pending' && sent == false`, ordered by randomIndex
 - **Template Variables**: `first_name`, `tracked_cta_url`, `unsubscribe_url`
-- **Language Selection**: Based on countryCode field mapping:
-  - EN: US, CA, GB, AU, IE, NZ
-  - ES: MX, ES, AR, CO, CL, PE, VE
-  - DE: DE, AT, CH
+- **Language**: English only for V18 test phase
 
 - **Scraper Architecture** (Feb 2026):
   - `scripts/scentsy-scraper.js` - Puppeteer scraper for Scentsy consultant finder
@@ -722,14 +722,17 @@ The email campaign system consists of multiple parallel campaigns targeting diff
 ### Zinzino Campaign (Mailgun API - Automated)
 - **Function**: `sendHourlyZinzinoCampaign` in `functions/email-campaign-zinzino.js`
 - **Tags**: `zinzino_campaign`, `tracked`
-- **Schedule**: Every 2 hours (12x daily) - 20 minutes past the hour
+- **Schedule**: Every 6 hours (4x daily) - 10 minutes past the hour
 - **Data Source**: Firestore `zinzino_contacts` collection (scraped from Zinzino partner finder)
 - **Control Variable**: ZINZINO_CAMPAIGN_ENABLED
 - **Batch Size**: Dynamic via Firestore `config/emailCampaign.batchSizeZinzino`
-- **Subject**: V16 template with language variants (`zinzino_v16_en`, `zinzino_v16_es`, `zinzino_v16_de`) - "Build your downline with AI"
+- **V18 A/B/C Testing** (33% distribution each):
+  - V18-A: "What if your next recruit joined with 12 people?" (Curiosity Hook) - `zinzino_v18_a`
+  - V18-B: "75% of your recruits will quit this year (here's why)" (Pain Point Hook) - `zinzino_v18_b`
+  - V18-C: "Give your prospects an AI recruiting coach" (Direct Value Hook) - `zinzino_v18_c`
 - **Query**: `status == 'pending' && sent == false`, ordered by randomIndex
 - **Template Variables**: `first_name`, `tracked_cta_url`, `unsubscribe_url`
-- **Language Selection**: Based on country field (EN default, ES for Spain/Mexico/etc., DE for Germany/Austria/etc.)
+- **Language**: English only for V18 test phase
 
 - **Scraper Architecture**:
   - `scripts/zinzino-scraper.js` - Puppeteer scraper for Zinzino partner finder
@@ -1844,6 +1847,19 @@ Corporate email domains are excluded from all contact collections using a **blac
 - ✅ **All Scraper-fed Campaigns Active**: Purchased, BFH, Zinzino, FSR, Paparazzi, Pruvit, Scentsy
   - Batch sizes auto-adjust as scrapers add contacts
 
+**V18 A/B/C Testing Implementation (Mar 10, 2026)**
+- ✅ **V18 Templates Created**: 3 variations for conversion optimization testing
+  - V18-A: "What if your next recruit joined with 12 people?" (Curiosity Hook)
+  - V18-B: "75% of your recruits will quit this year (here's why)" (Pain Point Hook)
+  - V18-C: "Give your prospects an AI recruiting coach" (Direct Value Hook)
+- ✅ **33% Distribution**: Each variant receives equal traffic for statistical comparison
+- ✅ **Test Campaigns**: Scentsy and Zinzino campaigns migrated to V18 A/B/C testing
+- ✅ **Spam Monitor Updated**: Tests all 3 V18 variants for inbox placement
+- ✅ **All Tests Passed**: All 3 variants confirmed landing in INBOX
+- ✅ **Target**: Improve CTR from 0.096% to 1% (10x improvement)
+- ✅ **Subject Tags**: `{campaign}_v18_a`, `{campaign}_v18_b`, `{campaign}_v18_c`
+- ✅ **Documentation Updated**: SKILL.md, TBP-analytics.html, CLAUDE.md synchronized
+
 **V14 Template & Subject Line Update (Mar 1, 2026)**
 - ✅ **Subject Line Reverted**: Changed back from "Using AI to grow your team faster" to "AI is changing how teams grow"
   - All 9 email campaign scripts updated with reverted subject line
@@ -1966,23 +1982,23 @@ Corporate email domains are excluded from all contact collections using a **blac
 
 ### Current System Status (Mar 10, 2026)
 
-**PROJECT STATUS: DYNAMIC BATCH SIZING LIVE**
-Main Campaign disabled. All scraper-fed campaigns use V16 template with unified subject "Building your team with AI". Dynamic batch sizing auto-adjusts based on queue sizes with 4-week warming schedule (40%→60%→80%→100%).
+**PROJECT STATUS: V18 A/B/C TESTING LIVE**
+Main Campaign disabled. Scentsy and Zinzino campaigns use V18 A/B/C testing (33% distribution per variant). Other campaigns use V14 template. Dynamic batch sizing auto-adjusts based on queue sizes with 4-week warming schedule (40%→60%→80%→100%).
 
 | Component | Status | Notes |
 |-----------|--------|-------|
 | Main Campaign | Disabled | Batch size 0 (underperforming) |
 | Purchased Campaign | **Active** | Dynamic batch sizing · `purchased_leads` |
 | BFH Campaign | **Active** | Dynamic batch sizing · `bfh_contacts` |
-| Zinzino Campaign | Active | Dynamic batch sizing · `zinzino_contacts` |
+| Zinzino Campaign | **V18 A/B/C** | Dynamic batch sizing · V18 A/B/C testing |
 | Paparazzi Campaign | Active | Dynamic batch sizing · `paparazzi_contacts` |
 | FSR Campaign | Active | Dynamic batch sizing · `fsr_contacts` |
 | Pruvit Campaign | Active | Dynamic batch sizing · `pruvit_contacts` |
-| Scentsy Campaign | Active | Dynamic batch sizing · `scentsy_contacts` |
+| Scentsy Campaign | **V18 A/B/C** | Dynamic batch sizing · V18 A/B/C testing |
 | Domain Warming | **Daily** | 6am PT · 4-week schedule (40%→60%→80%→100%) |
 | Contacts Campaign | Complete | 826 contacts (cleaned Feb 15) |
 | Email Sending | Mailgun API | Via Mailgun, news.teambuildpro.com |
-| Email Templates | V16 Standard | "Building your team with AI" - updated Mar 7 |
+| Email Templates | V18 A/B/C | Scentsy/Zinzino: V18 A/B/C test · Others: V14 |
 | Yahoo Campaign | Removed | File and function deleted (Jan 31) |
 | Android Campaign | Removed | Function and all references deleted |
 | Subscription Reminders | Disabled | Auto-renewal handled by app stores (Feb 19) |

@@ -1,15 +1,20 @@
 /**
  * Email Deliverability Monitoring Script
  *
- * Sends test email directly via Mailgun API using v16 template,
- * then uses Gmail API to verify inbox placement. If email lands
+ * Sends test emails directly via Mailgun API using V18 A/B/C templates,
+ * then uses Gmail API to verify inbox placement. If any email lands
  * in junk folder, all campaigns are automatically disabled and an alert is sent.
  *
+ * V18 Template Variants Tested:
+ * - V18-A: Curiosity Hook - "What if your next recruit joined with 20 people?"
+ * - V18-B: Pain Point Hook - "75% of your recruits will quit this year (here's why)"
+ * - V18-C: Direct Value Hook - "Give your prospects an AI recruiting coach"
+ *
  * Key behaviors:
- * - Sends single v16 template with subject "Build your downline with AI"
- * - No A/B testing - single template/subject for consistent monitoring
- * - Waits 2 minutes after send before checking Gmail placement
- * - Total runtime: ~2-3 minutes
+ * - Tests all 3 V18 variants sequentially with 5-second delays between sends
+ * - Waits 2 minutes after all sends before checking Gmail placement
+ * - If ANY variant lands in junk, ALL campaigns are disabled
+ * - Total runtime: ~3-4 minutes
  *
  * Usage:
  *   node scripts/spam-monitor.js
@@ -49,13 +54,27 @@ const MAILGUN_DOMAIN = 'news.teambuildpro.com';
 const FROM_ADDRESS = 'Stephen Scott <stephen@news.teambuildpro.com>';
 const CHECK_DELAY_MS = 2 * 60 * 1000; // 2 minutes (Gmail typically delivers in 1-2 min)
 
-// Single template configuration (no A/B testing)
-const TEMPLATE_CONFIG = {
-  templateVersion: 'v16',
-  subject: "Build your downline with AI",
-  subjectTag: 'delivery_test_v16',
-  description: 'V16 template - Professional focused'
-};
+// V18 A/B/C template configurations for spam testing
+const V18_TEMPLATES = [
+  {
+    templateVersion: 'v18-a',
+    subject: 'What if your next recruit joined with 12 people?',
+    subjectTag: 'delivery_test_v18_a',
+    description: 'V18-A: Curiosity Hook'
+  },
+  {
+    templateVersion: 'v18-b',
+    subject: "75% of your recruits will quit this year (here's why)",
+    subjectTag: 'delivery_test_v18_b',
+    description: 'V18-B: Pain Point Hook'
+  },
+  {
+    templateVersion: 'v18-c',
+    subject: 'Give your prospects an AI recruiting coach',
+    subjectTag: 'delivery_test_v18_c',
+    description: 'V18-C: Direct Value Hook'
+  }
+];
 
 // All campaigns to disable if junk detected
 const ALL_BATCH_SIZE_FIELDS = ['batchSize', 'batchSizePurchased', 'batchSizeBfh', 'batchSizePaparazzi', 'batchSizeFsr', 'batchSizeZinzino', 'batchSizePruvit', 'scentsyBatchSize', 'batchSizeMpg'];
@@ -97,26 +116,26 @@ async function getGmailClient() {
 // SEND TEST EMAIL DIRECTLY VIA MAILGUN
 // =============================================================================
 
-async function sendTestEmailViaMailgun() {
+async function sendTestEmailViaMailgun(templateConfig) {
   const apiKey = process.env.MAILGUN_API_KEY;
   if (!apiKey) {
     throw new Error('MAILGUN_API_KEY not configured');
   }
 
-  console.log(`Sending test email via Mailgun: ${TEMPLATE_CONFIG.templateVersion}`);
+  console.log(`Sending test email via Mailgun: ${templateConfig.templateVersion}`);
 
   const form = new FormData();
   form.append('from', FROM_ADDRESS);
   form.append('to', TEST_EMAIL);
-  form.append('subject', TEMPLATE_CONFIG.subject);
+  form.append('subject', templateConfig.subject);
   form.append('template', 'mailer');
-  form.append('t:version', TEMPLATE_CONFIG.templateVersion);
+  form.append('t:version', templateConfig.templateVersion);
   form.append('t:variables', JSON.stringify({
     first_name: 'Stephen',
     tracked_cta_url: 'https://teambuildpro.com',
     unsubscribe_url: 'https://teambuildpro.com/unsubscribe'
   }));
-  form.append('o:tag', TEMPLATE_CONFIG.subjectTag);
+  form.append('o:tag', templateConfig.subjectTag);
   form.append('o:tag', 'delivery_monitor');
 
   const response = await axios.post(
@@ -131,12 +150,12 @@ async function sendTestEmailViaMailgun() {
     }
   );
 
-  console.log(`Sent: "${TEMPLATE_CONFIG.subject}" (${response.data.id})`);
+  console.log(`Sent: "${templateConfig.subject}" (${response.data.id})`);
 
   return {
-    campaign: 'Template V16',
-    variant: 'v16',
-    subject: TEMPLATE_CONFIG.subject,
+    campaign: templateConfig.description,
+    variant: templateConfig.templateVersion,
+    subject: templateConfig.subject,
     messageId: response.data.id,
     success: true
   };
@@ -313,71 +332,87 @@ Generated at ${new Date().toISOString()}`;
 // =============================================================================
 
 async function main() {
-  console.log('=== Email Monitor ===');
+  console.log('=== Email Monitor (V18 A/B/C Testing) ===');
   console.log(`Time: ${new Date().toISOString()}`);
   console.log(`Target: ${TEST_EMAIL}`);
-  console.log(`Template: V16`);
-  console.log(`Subject: ${TEMPLATE_CONFIG.subject}`);
+  console.log(`Templates: V18-A, V18-B, V18-C (3 variants)`);
   console.log(`Method: Direct Mailgun API\n`);
 
   const results = [];
+  const sentEmails = [];
   const gmail = await getGmailClient();
 
-  console.log(`\n--- Testing V16 Template ---\n`);
+  // Step 1: Send all test emails
+  console.log(`\n--- Step 1: Sending Test Emails ---\n`);
 
-  // Step 1: Send test email
-  console.log(`Step 1: Sending test email...`);
-  let sent;
-  try {
-    sent = await sendTestEmailViaMailgun();
-  } catch (error) {
-    console.error(`Failed to send test email: ${error.message}`);
-    results.push({
-      campaign: 'Template V16',
-      variant: 'v16',
-      placement: 'send_failed',
-      error: error.message
-    });
+  for (let i = 0; i < V18_TEMPLATES.length; i++) {
+    const template = V18_TEMPLATES[i];
+    console.log(`[${i + 1}/${V18_TEMPLATES.length}] ${template.description}`);
+
+    try {
+      const sent = await sendTestEmailViaMailgun(template);
+      sentEmails.push(sent);
+    } catch (error) {
+      console.error(`Failed to send ${template.templateVersion}: ${error.message}`);
+      results.push({
+        campaign: template.description,
+        variant: template.templateVersion,
+        placement: 'send_failed',
+        subject: template.subject,
+        error: error.message
+      });
+    }
+
+    // Small delay between sends to avoid rate limiting
+    if (i < V18_TEMPLATES.length - 1) {
+      await new Promise(resolve => setTimeout(resolve, 5000));
+    }
+  }
+
+  if (sentEmails.length === 0) {
     console.log('\n=== Summary ===');
-    console.log('Template V16: ERROR (send failed)');
+    console.log('All emails failed to send. Exiting.');
     process.exit(1);
   }
 
-  // Step 2: Wait for email to be delivered
-  console.log(`Step 2: Waiting ${CHECK_DELAY_MS / 1000} seconds for delivery...`);
+  // Step 2: Wait for emails to be delivered
+  console.log(`\n--- Step 2: Waiting ${CHECK_DELAY_MS / 1000} seconds for delivery ---\n`);
   await new Promise(resolve => setTimeout(resolve, CHECK_DELAY_MS));
 
-  // Step 3: Check Gmail for placement
-  console.log(`Step 3: Checking email placement...`);
-  try {
-    const placement = await checkEmailPlacement(gmail, sent.subject);
-    console.log(`Result: ${placement.toUpperCase()}`);
+  // Step 3: Check placement for each sent email
+  console.log(`--- Step 3: Checking Email Placement ---\n`);
 
-    results.push({
-      campaign: sent.campaign,
-      variant: sent.variant,
-      placement,
-      subject: sent.subject
-    });
+  for (const sent of sentEmails) {
+    console.log(`Checking ${sent.variant}...`);
+    try {
+      const placement = await checkEmailPlacement(gmail, sent.subject);
+      console.log(`  ${sent.variant}: ${placement.toUpperCase()}`);
 
-    // Disable ALL campaigns immediately if junk detected
-    // TEMPORARILY DISABLED - uncomment to re-enable auto-disable
-    if (placement === 'junk') {
-      console.log(`\nJUNK FOLDER DETECTED: Auto-disable is TEMPORARILY DISABLED`);
-      await disableAllCampaigns(sent.variant);
+      results.push({
+        campaign: sent.campaign,
+        variant: sent.variant,
+        placement,
+        subject: sent.subject
+      });
+
+      // Disable ALL campaigns immediately if junk detected
+      if (placement === 'junk') {
+        console.log(`\n  JUNK FOLDER DETECTED for ${sent.variant}`);
+        await disableAllCampaigns(sent.variant);
+      }
+    } catch (error) {
+      console.error(`  Failed to check ${sent.variant}: ${error.message}`);
+      results.push({
+        campaign: sent.campaign,
+        variant: sent.variant,
+        placement: 'check_failed',
+        subject: sent.subject,
+        error: error.message
+      });
     }
-  } catch (error) {
-    console.error(`Failed to check placement: ${error.message}`);
-    results.push({
-      campaign: sent.campaign,
-      variant: sent.variant,
-      placement: 'check_failed',
-      subject: sent.subject,
-      error: error.message
-    });
   }
 
-  // Send alert if junk detected
+  // Send alert if any junk detected
   const hasJunk = results.some(r => r.placement === 'junk');
 
   if (hasJunk) {
@@ -399,11 +434,19 @@ async function main() {
     console.log(`${result.campaign}: ${status}`);
   }
 
+  const inboxCount = results.filter(r => r.placement === 'inbox').length;
+  const junkCount = results.filter(r => r.placement === 'junk').length;
+  const notFoundCount = results.filter(r => r.placement === 'not_found').length;
+
+  console.log(`\nResults: ${inboxCount} INBOX, ${junkCount} JUNK, ${notFoundCount} NOT FOUND`);
+
   if (hasJunk) {
     console.log(`\nJunk folder detected. ALL campaigns disabled.`);
     process.exit(1); // Non-zero exit for GitHub Actions visibility
+  } else if (inboxCount === V18_TEMPLATES.length) {
+    console.log('\nAll V18 templates passed deliverability check.');
   } else {
-    console.log('\nV16 template passed deliverability check.');
+    console.log('\nSome templates not found - may need more delivery time.');
   }
 }
 

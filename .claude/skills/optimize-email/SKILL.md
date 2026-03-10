@@ -68,9 +68,17 @@ Read the spam monitor script output:
 ## Optimization Checklist
 
 ### Subject Line Analysis
-- Current: "Build your downline with AI" (V16 template)
+
+**V18 A/B/C Testing (Active on Scentsy & Zinzino)**
+- V18-A: "What if your next recruit joined with 12 people?" (Curiosity Hook)
+- V18-B: "75% of your recruits will quit this year (here's why)" (Pain Point Hook)
+- V18-C: "Give your prospects an AI recruiting coach" (Direct Value Hook)
+- Distribution: 33% per variant for statistically valid comparison
+- Subject tags: `{campaign}_v18_a`, `{campaign}_v18_b`, `{campaign}_v18_c`
+
+**V14 Template (Other campaigns)**
+- Subject: "AI is changing how teams grow"
 - Localized: ES, PT, DE variants
-- Single subject (no A/B testing since Feb 25, 2026)
 
 ### Batch Size Optimization
 Dynamic batch sizing formula:

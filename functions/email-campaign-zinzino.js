@@ -2,19 +2,19 @@
  * Team Build Pro Email Campaign for Zinzino Contacts
  *
  * Sends emails to scraped zinzino_contacts (distributors from Zinzino partner finder).
- * Uses Mailgun API with v16 template and single subject line (no A/B testing).
+ * Uses Mailgun API with V18 A/B/C testing (3 template variations for conversion optimization).
+ *
+ * V18 A/B/C Test (33% distribution each):
+ * - V18-A: Curiosity Hook - "What if your next recruit joined with 12 people?"
+ * - V18-B: Pain Point Hook - "75% of your recruits will quit this year (here's why)"
+ * - V18-C: Direct Value Hook - "Give your prospects an AI recruiting coach"
  *
  * Templates stored in Mailgun under 'mailer' template:
- * - v16: English (Professional-focused messaging)
- * - v16-es: Spanish
- * - v16-de: German
+ * - v18-a: Curiosity Hook (English only for initial test)
+ * - v18-b: Pain Point Hook (English only for initial test)
+ * - v18-c: Direct Value Hook (English only for initial test)
  *
- * Subject: "Getting prospects to YES with AI" (localized per language)
- *
- * Language Selection:
- * - Spanish (es): Spain, Mexico, Colombia, Peru
- * - German (de): Germany, Austria, Switzerland
- * - English (en): All other countries (default)
+ * Language Selection: English only for initial V18 test phase
  *
  * Collection: zinzino_contacts
  * Query: status == 'pending', sent == false
@@ -75,27 +75,46 @@ const CTA_DOMAINS = {
 };
 
 // =============================================================================
-// TEMPLATE CONFIGURATION (No A/B Testing)
+// V18 A/B/C TEMPLATE CONFIGURATION (Conversion Optimization Test)
 // =============================================================================
 
-// Language-specific template and subject configuration
-const TEMPLATE_CONFIG = {
-  en: {
-    templateVersion: 'v16',
-    subject: "Build your downline with AI",
-    subjectTag: 'zinzino_v16_en'
+/**
+ * V18 Template Variants for A/B/C Testing
+ * 33% distribution per variant for statistically valid comparison
+ *
+ * Initial test uses English only to isolate subject/body impact
+ */
+const V18_VARIANTS = {
+  'v18-a': {
+    templateVersion: 'v18-a',
+    subject: 'What if your next recruit joined with 12 people?',
+    subjectTag: 'zinzino_v18_a',
+    description: 'Curiosity Hook'
   },
-  es: {
-    templateVersion: 'v16-es',
-    subject: 'Construye tu downline con IA',
-    subjectTag: 'zinzino_v16_es'
+  'v18-b': {
+    templateVersion: 'v18-b',
+    subject: "75% of your recruits will quit this year (here's why)",
+    subjectTag: 'zinzino_v18_b',
+    description: 'Pain Point Hook'
   },
-  de: {
-    templateVersion: 'v16-de',
-    subject: 'Baue deine Downline mit KI auf',
-    subjectTag: 'zinzino_v16_de'
+  'v18-c': {
+    templateVersion: 'v18-c',
+    subject: 'Give your prospects an AI recruiting coach',
+    subjectTag: 'zinzino_v18_c',
+    description: 'Direct Value Hook'
   }
 };
+
+/**
+ * Select variant using 33% distribution
+ * Returns one of: 'v18-a', 'v18-b', 'v18-c'
+ */
+function selectV18Variant() {
+  const rand = Math.random();
+  if (rand < 0.333) return 'v18-a';
+  if (rand < 0.666) return 'v18-b';
+  return 'v18-c';
+}
 
 // =============================================================================
 // CAMPAIGN CONFIGURATION
@@ -177,7 +196,7 @@ function buildLandingPageUrl(utmCampaign, utmContent, language = 'en') {
 // =============================================================================
 
 /**
- * Send email via Mailgun API using v16 templates (no A/B testing)
+ * Send email via Mailgun API using V18 A/B/C testing
  *
  * @param {object} contact - Contact data { firstName, lastName, email, country, ... }
  * @param {string} docId - Firestore document ID (used as tracking ID)
@@ -192,12 +211,13 @@ async function sendEmailViaMailgun(contact, docId, config) {
     throw new Error('TBP_MAILGUN_API_KEY not configured');
   }
 
-  // Determine language and get appropriate template config
-  const language = getContactLanguage(contact);
-  const templateConfig = TEMPLATE_CONFIG[language] || TEMPLATE_CONFIG.en;
+  // Select V18 variant (33% distribution each)
+  const variantKey = selectV18Variant();
+  const templateConfig = V18_VARIANTS[variantKey];
 
-  // Build URLs (direct links for better deliverability)
-  const ctaDomain = CTA_DOMAINS[language] || CTA_DOMAINS.en;
+  // V18 test uses English only - force EN domain
+  const language = 'en';
+  const ctaDomain = CTA_DOMAINS.en;
   const unsubscribeUrl = `https://${ctaDomain}/unsubscribe.html?email=${encodeURIComponent(contact.email)}`;
   const landingPageUrl = buildLandingPageUrl(config.utmCampaign, templateConfig.subjectTag, language);
 
@@ -239,7 +259,7 @@ async function sendEmailViaMailgun(contact, docId, config) {
   form.append('h:List-Unsubscribe', `<mailto:${unsubscribeEmail}?subject=Unsubscribe>, <${unsubscribeUrl}>`);
   form.append('h:List-Unsubscribe-Post', 'List-Unsubscribe=One-Click');
 
-  console.log(`   Lang: ${language.toUpperCase()} | Template: V16 | CTA: ${ctaDomain}`);
+  console.log(`   V18 Variant: ${variantKey.toUpperCase()} (${templateConfig.description}) | CTA: ${ctaDomain}`);
 
   // Send via Mailgun API
   const mailgunBaseUrl = `https://api.mailgun.net/v3/${domain}`;
@@ -255,10 +275,11 @@ async function sendEmailViaMailgun(contact, docId, config) {
     messageId: response.data.id,
     response: response.data.message,
     subjectTag: templateConfig.subjectTag,
-    templateVariant: 'v16',
+    templateVariant: variantKey,
     templateVersion: templateConfig.templateVersion,
     language: language,
-    usedSubject: templateConfig.subject
+    usedSubject: templateConfig.subject,
+    variantDescription: templateConfig.description
   };
 }
 
@@ -316,15 +337,11 @@ async function processZinzinoCampaignBatch(batchSize) {
       return { status: 'complete', sent: 0 };
     }
 
-    // Count by language
-    const langCounts = { en: 0, es: 0, de: 0 };
-    docsWithEmail.forEach(doc => {
-      const lang = getContactLanguage(doc.data());
-      langCounts[lang] = (langCounts[lang] || 0) + 1;
-    });
+    // Track variant distribution (will be populated during send)
+    const variantCounts = { 'v18-a': 0, 'v18-b': 0, 'v18-c': 0 };
 
     console.log(`${logPrefix} ${name}: Processing ${docsWithEmail.length} emails in ${batchId}`);
-    console.log(`   By language: EN=${langCounts.en} | ES=${langCounts.es} | DE=${langCounts.de}`);
+    console.log(`   V18 A/B/C test with 33% distribution per variant`);
 
     let sent = 0;
     let failed = 0;
@@ -351,14 +368,18 @@ async function processZinzinoCampaignBatch(batchSize) {
             templateVersion: result.templateVersion,
             sentLanguage: result.language,
             sentSubject: result.usedSubject,
+            variantDescription: result.variantDescription,
             mailgunResponse: result.response || ''
           };
 
           await doc.ref.update(updateData);
 
-          const langEmoji = result.language === 'es' ? '🇪🇸' :
-            result.language === 'de' ? '🇩🇪' : '🇺🇸';
-          console.log(`${langEmoji} Sent to ${contact.email} (${result.templateVariant}): ${result.messageId}`);
+          // Track variant distribution
+          variantCounts[result.templateVariant] = (variantCounts[result.templateVariant] || 0) + 1;
+
+          const variantEmoji = result.templateVariant === 'v18-a' ? '🅰️' :
+            result.templateVariant === 'v18-b' ? '🅱️' : '🇨';
+          console.log(`${variantEmoji} Sent to ${contact.email} (${result.templateVariant}): ${result.messageId}`);
           sent++;
         } else {
           throw new Error(result.error || 'Unknown Mailgun error');
@@ -391,7 +412,7 @@ async function processZinzinoCampaignBatch(batchSize) {
     if (sent > 0) {
       console.log(`   Success rate: ${((sent / (sent + failed)) * 100).toFixed(1)}%`);
     }
-    console.log(`   By language: EN=${langCounts.en} | ES=${langCounts.es} | DE=${langCounts.de}`);
+    console.log(`   V18 Distribution: A=${variantCounts['v18-a']} | B=${variantCounts['v18-b']} | C=${variantCounts['v18-c']}`);
 
     return {
       status: 'success',
@@ -399,7 +420,7 @@ async function processZinzinoCampaignBatch(batchSize) {
       failed,
       total: docsWithEmail.length,
       batchId,
-      languageCounts: langCounts
+      variantCounts: variantCounts
     };
 
   } catch (error) {
