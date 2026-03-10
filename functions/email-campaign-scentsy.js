@@ -10,11 +10,11 @@
  * - V18-C: Direct Value Hook - "Give your prospects an AI recruiting coach"
  *
  * Templates stored in Mailgun under 'mailer' template:
- * - v18-a: Curiosity Hook (English only for initial test)
- * - v18-b: Pain Point Hook (English only for initial test)
- * - v18-c: Direct Value Hook (English only for initial test)
+ * - v18-a, v18-a-es, v18-a-de: Curiosity Hook (EN/ES/DE)
+ * - v18-b, v18-b-es, v18-b-de: Pain Point Hook (EN/ES/DE)
+ * - v18-c, v18-c-es, v18-c-de: Direct Value Hook (EN/ES/DE)
  *
- * Language Selection: English only for initial V18 test phase
+ * Language Selection: Based on contact's country (EN default, ES for Mexico/Spain, DE for Germany/Austria)
  *
  * Collection: scentsy_contacts
  * Query: status == 'pending', sent == false
@@ -78,41 +78,92 @@ const CTA_DOMAINS = {
 // =============================================================================
 
 /**
- * V18 Template Variants for A/B/C Testing
+ * V18 Template Variants for A/B/C Testing (Multilingual)
  * 33% distribution per variant for statistically valid comparison
  *
- * Initial test uses English only to isolate subject/body impact
+ * Each variant available in EN, ES, DE (no PT for Scentsy - no Portuguese markets)
  */
 const V18_VARIANTS = {
+  // English variants
   'v18-a': {
     templateVersion: 'v18-a',
     subject: 'What if your next recruit joined with 12 people?',
-    subjectTag: 'scentsy_v18_a',
-    description: 'Curiosity Hook'
+    subjectTag: 'scentsy_v18_a_en',
+    description: 'Curiosity Hook (EN)',
+    language: 'en'
   },
   'v18-b': {
     templateVersion: 'v18-b',
     subject: "75% of your recruits will quit this year (here's why)",
-    subjectTag: 'scentsy_v18_b',
-    description: 'Pain Point Hook'
+    subjectTag: 'scentsy_v18_b_en',
+    description: 'Pain Point Hook (EN)',
+    language: 'en'
   },
   'v18-c': {
     templateVersion: 'v18-c',
     subject: 'Give your prospects an AI recruiting coach',
-    subjectTag: 'scentsy_v18_c',
-    description: 'Direct Value Hook'
+    subjectTag: 'scentsy_v18_c_en',
+    description: 'Direct Value Hook (EN)',
+    language: 'en'
+  },
+  // Spanish variants
+  'v18-a-es': {
+    templateVersion: 'v18-a-es',
+    subject: '¿Y si tu próximo recluta llegara con 12 personas?',
+    subjectTag: 'scentsy_v18_a_es',
+    description: 'Curiosity Hook (ES)',
+    language: 'es'
+  },
+  'v18-b-es': {
+    templateVersion: 'v18-b-es',
+    subject: 'El 75% de tus reclutas renunciarán este año (descubre por qué)',
+    subjectTag: 'scentsy_v18_b_es',
+    description: 'Pain Point Hook (ES)',
+    language: 'es'
+  },
+  'v18-c-es': {
+    templateVersion: 'v18-c-es',
+    subject: 'Dale a tus prospectos un coach de reclutamiento con IA',
+    subjectTag: 'scentsy_v18_c_es',
+    description: 'Direct Value Hook (ES)',
+    language: 'es'
+  },
+  // German variants
+  'v18-a-de': {
+    templateVersion: 'v18-a-de',
+    subject: 'Was wenn Ihr nächster Rekrut mit 12 Leuten kommt?',
+    subjectTag: 'scentsy_v18_a_de',
+    description: 'Curiosity Hook (DE)',
+    language: 'de'
+  },
+  'v18-b-de': {
+    templateVersion: 'v18-b-de',
+    subject: '75% Ihrer Rekruten werden dieses Jahr aufhören (hier ist warum)',
+    subjectTag: 'scentsy_v18_b_de',
+    description: 'Pain Point Hook (DE)',
+    language: 'de'
+  },
+  'v18-c-de': {
+    templateVersion: 'v18-c-de',
+    subject: 'Geben Sie Ihren Interessenten einen KI-Recruiting-Coach',
+    subjectTag: 'scentsy_v18_c_de',
+    description: 'Direct Value Hook (DE)',
+    language: 'de'
   }
 };
 
 /**
- * Select variant using 33% distribution
- * Returns one of: 'v18-a', 'v18-b', 'v18-c'
+ * Select variant using 33% distribution with language support
+ * @param {string} language - Contact language (en, es, de)
+ * @returns {string} Variant key (e.g., 'v18-a', 'v18-b-es', 'v18-c-de')
  */
-function selectV18Variant() {
+function selectV18Variant(language = 'en') {
   const rand = Math.random();
-  if (rand < 0.333) return 'v18-a';
-  if (rand < 0.666) return 'v18-b';
-  return 'v18-c';
+  const suffix = language === 'en' ? '' : `-${language}`;
+
+  if (rand < 0.333) return `v18-a${suffix}`;
+  if (rand < 0.666) return `v18-b${suffix}`;
+  return `v18-c${suffix}`;
 }
 
 // =============================================================================
@@ -210,13 +261,15 @@ async function sendEmailViaMailgun(contact, docId, config) {
     throw new Error('TBP_MAILGUN_API_KEY not configured');
   }
 
-  // Select V18 variant (33% distribution each)
-  const variantKey = selectV18Variant();
+  // Determine language from contact's country
+  const language = getContactLanguage(contact);
+
+  // Select V18 variant (33% distribution each) for the contact's language
+  const variantKey = selectV18Variant(language);
   const templateConfig = V18_VARIANTS[variantKey];
 
-  // V18 test uses English only - force EN domain
-  const language = 'en';
-  const ctaDomain = CTA_DOMAINS.en;
+  // Use language-specific CTA domain
+  const ctaDomain = CTA_DOMAINS[language] || CTA_DOMAINS.en;
   const unsubscribeUrl = `https://${ctaDomain}/unsubscribe.html?email=${encodeURIComponent(contact.email)}`;
   const landingPageUrl = buildLandingPageUrl(config.utmCampaign, templateConfig.subjectTag, language);
 

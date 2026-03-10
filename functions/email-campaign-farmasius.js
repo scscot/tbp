@@ -2,14 +2,19 @@
  * Team Build Pro Email Campaign for Farmasius Contacts (Multi-Language)
  *
  * Sends emails to scraped farmasius_contacts (representatives from Farmasi pages).
- * Uses Mailgun API with v16 template and single subject line (no A/B testing).
+ * Uses Mailgun API with V18 A/B/C testing (3 template variations for conversion optimization).
  * Supports contacts from 27+ Farmasi country domains with language routing.
  *
- * Templates stored in Mailgun under 'mailer' template:
- * - v16: English (Professional-focused messaging)
- * - v16-es: Spanish (Spain, Mexico, Argentina, etc.)
- * - v16-pt: Portuguese (Portugal, Brazil)
- * - v16-de: German (Germany, Austria, Switzerland)
+ * V18 A/B/C Test (33% distribution each):
+ * - V18-A: Curiosity Hook - "What if your next recruit joined with 12 people?"
+ * - V18-B: Pain Point Hook - "75% of your recruits will quit this year (here's why)"
+ * - V18-C: Direct Value Hook - "Give your prospects an AI recruiting coach"
+ *
+ * Multilingual Templates in Mailgun 'mailer' template:
+ * - v18-a, v18-b, v18-c: English variants
+ * - v18-a-es, v18-b-es, v18-c-es: Spanish variants
+ * - v18-a-pt, v18-b-pt, v18-c-pt: Portuguese variants
+ * - v18-a-de, v18-b-de, v18-c-de: German variants
  *
  * Language Selection (from contact.language field):
  * - en: United States, United Kingdom, Ireland
@@ -17,8 +22,6 @@
  * - pt: Portugal
  * - de: Germany
  * - Other languages (pl, ro, hr, etc.) fallback to English template
- *
- * Subject: "Building your team with AI" (localized per language)
  *
  * Collection: farmasius_contacts
  * Query: status == 'pending', sent == false, email != null
@@ -69,35 +72,119 @@ const CTA_DOMAINS = {
 const SUPPORTED_LANGUAGES = ['en', 'es', 'pt', 'de'];
 
 // =============================================================================
-// TEMPLATE CONFIGURATION BY LANGUAGE (no A/B testing - single v16 template)
+// V18 A/B/C TEMPLATE CONFIGURATION (Conversion Optimization Test)
 // =============================================================================
 
 /**
- * Language-specific template and subject configuration
- * All languages use v16 template with localized subjects
+ * V18 Template Variants for A/B/C Testing (Multilingual)
+ * 33% distribution per variant for statistically valid comparison
+ *
+ * Each variant available in EN, ES, PT, DE
  */
-const TEMPLATE_CONFIG = {
-  en: {
-    templateVersion: 'v16',
-    subject: "Build your downline with AI",
-    subjectTag: 'farmasius_v16_en'
+const V18_VARIANTS = {
+  // English variants
+  'v18-a': {
+    templateVersion: 'v18-a',
+    subject: 'What if your next recruit joined with 12 people?',
+    subjectTag: 'farmasius_v18_a_en',
+    description: 'Curiosity Hook (EN)',
+    language: 'en'
   },
-  es: {
-    templateVersion: 'v16-es',
-    subject: 'Construye tu downline con IA',
-    subjectTag: 'farmasius_v16_es'
+  'v18-b': {
+    templateVersion: 'v18-b',
+    subject: "75% of your recruits will quit this year (here's why)",
+    subjectTag: 'farmasius_v18_b_en',
+    description: 'Pain Point Hook (EN)',
+    language: 'en'
   },
-  pt: {
-    templateVersion: 'v16-pt',
-    subject: 'Construa sua downline com IA',
-    subjectTag: 'farmasius_v16_pt'
+  'v18-c': {
+    templateVersion: 'v18-c',
+    subject: 'Give your prospects an AI recruiting coach',
+    subjectTag: 'farmasius_v18_c_en',
+    description: 'Direct Value Hook (EN)',
+    language: 'en'
   },
-  de: {
-    templateVersion: 'v16-de',
-    subject: 'Baue deine Downline mit KI auf',
-    subjectTag: 'farmasius_v16_de'
+  // Spanish variants
+  'v18-a-es': {
+    templateVersion: 'v18-a-es',
+    subject: '¿Y si tu próximo recluta llegara con 12 personas?',
+    subjectTag: 'farmasius_v18_a_es',
+    description: 'Curiosity Hook (ES)',
+    language: 'es'
+  },
+  'v18-b-es': {
+    templateVersion: 'v18-b-es',
+    subject: 'El 75% de tus reclutas renunciarán este año (descubre por qué)',
+    subjectTag: 'farmasius_v18_b_es',
+    description: 'Pain Point Hook (ES)',
+    language: 'es'
+  },
+  'v18-c-es': {
+    templateVersion: 'v18-c-es',
+    subject: 'Dale a tus prospectos un coach de reclutamiento con IA',
+    subjectTag: 'farmasius_v18_c_es',
+    description: 'Direct Value Hook (ES)',
+    language: 'es'
+  },
+  // Portuguese variants
+  'v18-a-pt': {
+    templateVersion: 'v18-a-pt',
+    subject: 'E se o seu próximo recruta chegasse com 12 pessoas?',
+    subjectTag: 'farmasius_v18_a_pt',
+    description: 'Curiosity Hook (PT)',
+    language: 'pt'
+  },
+  'v18-b-pt': {
+    templateVersion: 'v18-b-pt',
+    subject: '75% dos seus recrutas vão desistir este ano (saiba por quê)',
+    subjectTag: 'farmasius_v18_b_pt',
+    description: 'Pain Point Hook (PT)',
+    language: 'pt'
+  },
+  'v18-c-pt': {
+    templateVersion: 'v18-c-pt',
+    subject: 'Dê aos seus prospectos um coach de recrutamento com IA',
+    subjectTag: 'farmasius_v18_c_pt',
+    description: 'Direct Value Hook (PT)',
+    language: 'pt'
+  },
+  // German variants
+  'v18-a-de': {
+    templateVersion: 'v18-a-de',
+    subject: 'Was wenn Ihr nächster Rekrut mit 12 Leuten kommt?',
+    subjectTag: 'farmasius_v18_a_de',
+    description: 'Curiosity Hook (DE)',
+    language: 'de'
+  },
+  'v18-b-de': {
+    templateVersion: 'v18-b-de',
+    subject: '75% Ihrer Rekruten werden dieses Jahr aufhören (hier ist warum)',
+    subjectTag: 'farmasius_v18_b_de',
+    description: 'Pain Point Hook (DE)',
+    language: 'de'
+  },
+  'v18-c-de': {
+    templateVersion: 'v18-c-de',
+    subject: 'Geben Sie Ihren Interessenten einen KI-Recruiting-Coach',
+    subjectTag: 'farmasius_v18_c_de',
+    description: 'Direct Value Hook (DE)',
+    language: 'de'
   }
 };
+
+/**
+ * Select variant using 33% distribution with language support
+ * @param {string} language - Contact language (en, es, pt, de)
+ * @returns {string} Variant key (e.g., 'v18-a', 'v18-b-es', 'v18-c-de')
+ */
+function selectV18Variant(language = 'en') {
+  const rand = Math.random();
+  const suffix = language === 'en' ? '' : `-${language}`;
+
+  if (rand < 0.333) return `v18-a${suffix}`;
+  if (rand < 0.666) return `v18-b${suffix}`;
+  return `v18-c${suffix}`;
+}
 
 // =============================================================================
 // CAMPAIGN CONFIGURATION
@@ -181,7 +268,7 @@ function buildLandingPageUrl(utmCampaign, utmContent, language = 'en') {
 // =============================================================================
 
 /**
- * Send email via Mailgun API using v16 templates (multi-language)
+ * Send email via Mailgun API using V18 A/B/C templates (multi-language)
  *
  * @param {object} contact - Contact data { firstName, lastName, email, language, ... }
  * @param {string} docId - Firestore document ID (used as tracking ID)
@@ -196,9 +283,10 @@ async function sendEmailViaMailgun(contact, docId, config) {
     throw new Error('TBP_MAILGUN_API_KEY not configured');
   }
 
-  // Determine language and get appropriate template config
+  // Determine language and select V18 variant with 33% distribution
   const language = getContactLanguage(contact);
-  const templateConfig = TEMPLATE_CONFIG[language] || TEMPLATE_CONFIG.en;
+  const variantKey = selectV18Variant(language);
+  const templateConfig = V18_VARIANTS[variantKey];
 
   // Build URLs (direct links for better deliverability)
   const ctaDomain = CTA_DOMAINS[language] || CTA_DOMAINS.en;
@@ -243,7 +331,7 @@ async function sendEmailViaMailgun(contact, docId, config) {
   form.append('h:List-Unsubscribe', `<mailto:${unsubscribeEmail}?subject=Unsubscribe>, <${unsubscribeUrl}>`);
   form.append('h:List-Unsubscribe-Post', 'List-Unsubscribe=One-Click');
 
-  console.log(`   Template: ${templateConfig.templateVersion} (${language})`);
+  console.log(`   V18 Variant: ${variantKey.toUpperCase()} (${templateConfig.description}) | CTA: ${CTA_DOMAINS[language] || CTA_DOMAINS.en}`);
 
   // Send via Mailgun API
   const mailgunBaseUrl = `https://api.mailgun.net/v3/${domain}`;
@@ -259,10 +347,11 @@ async function sendEmailViaMailgun(contact, docId, config) {
     messageId: response.data.id,
     response: response.data.message,
     subjectTag: templateConfig.subjectTag,
-    templateVariant: templateConfig.templateVersion,
+    templateVariant: variantKey,
     templateVersion: templateConfig.templateVersion,
     usedSubject: templateConfig.subject,
-    language: language
+    language: language,
+    variantDescription: templateConfig.description
   };
 }
 
@@ -320,7 +409,12 @@ async function processFarmasiusCampaignBatch(batchSize) {
       return { status: 'complete', sent: 0 };
     }
 
+    // Track variant distribution by base variant (a/b/c) and language
+    const variantCounts = { 'a': 0, 'b': 0, 'c': 0 };
+    const languageCounts = { 'en': 0, 'es': 0, 'pt': 0, 'de': 0 };
+
     console.log(`${logPrefix} ${name}: Processing ${docsWithEmail.length} emails in ${batchId}`);
+    console.log(`   V18 A/B/C multilingual test (EN/ES/PT/DE) with 33% distribution per variant`);
 
     let sent = 0;
     let failed = 0;
@@ -347,13 +441,21 @@ async function processFarmasiusCampaignBatch(batchSize) {
             templateVersion: result.templateVersion,
             sentSubject: result.usedSubject,
             sentLanguage: result.language || 'en',
+            variantDescription: result.variantDescription,
             mailgunResponse: result.response || ''
           };
 
           await doc.ref.update(updateData);
 
-          const countryCode = contact.countryCode || 'us';
-          console.log(`💄 Sent to ${contact.email} [${countryCode.toUpperCase()}/${result.language}] (${result.templateVariant}): ${result.messageId}`);
+          // Track variant distribution (extract base variant a/b/c from 'v18-a', 'v18-b-es', etc.)
+          const baseVariant = result.templateVariant.includes('-a') ? 'a' :
+            result.templateVariant.includes('-b') ? 'b' : 'c';
+          variantCounts[baseVariant]++;
+          languageCounts[result.language] = (languageCounts[result.language] || 0) + 1;
+
+          const variantEmoji = baseVariant === 'a' ? '🅰️' : baseVariant === 'b' ? '🅱️' : '🇨';
+          const langFlag = result.language === 'es' ? '🇪🇸' : result.language === 'de' ? '🇩🇪' : result.language === 'pt' ? '🇧🇷' : '🇺🇸';
+          console.log(`${variantEmoji}${langFlag} Sent to ${contact.email} (${result.templateVariant}): ${result.messageId}`);
           sent++;
         } else {
           throw new Error(result.error || 'Unknown Mailgun error');
@@ -386,13 +488,17 @@ async function processFarmasiusCampaignBatch(batchSize) {
     if (sent > 0) {
       console.log(`   Success rate: ${((sent / (sent + failed)) * 100).toFixed(1)}%`);
     }
+    console.log(`   V18 Variants: A=${variantCounts['a']} | B=${variantCounts['b']} | C=${variantCounts['c']}`);
+    console.log(`   Languages: EN=${languageCounts['en']} | ES=${languageCounts['es']} | PT=${languageCounts['pt']} | DE=${languageCounts['de']}`);
 
     return {
       status: 'success',
       sent,
       failed,
       total: docsWithEmail.length,
-      batchId
+      batchId,
+      variantCounts: variantCounts,
+      languageCounts: languageCounts
     };
 
   } catch (error) {

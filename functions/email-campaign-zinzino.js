@@ -9,12 +9,12 @@
  * - V18-B: Pain Point Hook - "75% of your recruits will quit this year (here's why)"
  * - V18-C: Direct Value Hook - "Give your prospects an AI recruiting coach"
  *
- * Templates stored in Mailgun under 'mailer' template:
- * - v18-a: Curiosity Hook (English only for initial test)
- * - v18-b: Pain Point Hook (English only for initial test)
- * - v18-c: Direct Value Hook (English only for initial test)
+ * Multilingual Templates in Mailgun 'mailer' template:
+ * - v18-a, v18-b, v18-c: English variants
+ * - v18-a-es, v18-b-es, v18-c-es: Spanish variants
+ * - v18-a-de, v18-b-de, v18-c-de: German variants
  *
- * Language Selection: English only for initial V18 test phase
+ * Language Selection: Based on contact country field (EN/ES/DE)
  *
  * Collection: zinzino_contacts
  * Query: status == 'pending', sent == false
@@ -79,41 +79,92 @@ const CTA_DOMAINS = {
 // =============================================================================
 
 /**
- * V18 Template Variants for A/B/C Testing
+ * V18 Template Variants for A/B/C Testing (Multilingual)
  * 33% distribution per variant for statistically valid comparison
  *
- * Initial test uses English only to isolate subject/body impact
+ * Each variant available in EN, ES, DE (no PT for Zinzino - limited Portuguese markets)
  */
 const V18_VARIANTS = {
+  // English variants
   'v18-a': {
     templateVersion: 'v18-a',
     subject: 'What if your next recruit joined with 12 people?',
-    subjectTag: 'zinzino_v18_a',
-    description: 'Curiosity Hook'
+    subjectTag: 'zinzino_v18_a_en',
+    description: 'Curiosity Hook (EN)',
+    language: 'en'
   },
   'v18-b': {
     templateVersion: 'v18-b',
     subject: "75% of your recruits will quit this year (here's why)",
-    subjectTag: 'zinzino_v18_b',
-    description: 'Pain Point Hook'
+    subjectTag: 'zinzino_v18_b_en',
+    description: 'Pain Point Hook (EN)',
+    language: 'en'
   },
   'v18-c': {
     templateVersion: 'v18-c',
     subject: 'Give your prospects an AI recruiting coach',
-    subjectTag: 'zinzino_v18_c',
-    description: 'Direct Value Hook'
+    subjectTag: 'zinzino_v18_c_en',
+    description: 'Direct Value Hook (EN)',
+    language: 'en'
+  },
+  // Spanish variants
+  'v18-a-es': {
+    templateVersion: 'v18-a-es',
+    subject: '¿Y si tu próximo recluta llegara con 12 personas?',
+    subjectTag: 'zinzino_v18_a_es',
+    description: 'Curiosity Hook (ES)',
+    language: 'es'
+  },
+  'v18-b-es': {
+    templateVersion: 'v18-b-es',
+    subject: 'El 75% de tus reclutas renunciarán este año (descubre por qué)',
+    subjectTag: 'zinzino_v18_b_es',
+    description: 'Pain Point Hook (ES)',
+    language: 'es'
+  },
+  'v18-c-es': {
+    templateVersion: 'v18-c-es',
+    subject: 'Dale a tus prospectos un coach de reclutamiento con IA',
+    subjectTag: 'zinzino_v18_c_es',
+    description: 'Direct Value Hook (ES)',
+    language: 'es'
+  },
+  // German variants
+  'v18-a-de': {
+    templateVersion: 'v18-a-de',
+    subject: 'Was wenn Ihr nächster Rekrut mit 12 Leuten kommt?',
+    subjectTag: 'zinzino_v18_a_de',
+    description: 'Curiosity Hook (DE)',
+    language: 'de'
+  },
+  'v18-b-de': {
+    templateVersion: 'v18-b-de',
+    subject: '75% Ihrer Rekruten werden dieses Jahr aufhören (hier ist warum)',
+    subjectTag: 'zinzino_v18_b_de',
+    description: 'Pain Point Hook (DE)',
+    language: 'de'
+  },
+  'v18-c-de': {
+    templateVersion: 'v18-c-de',
+    subject: 'Geben Sie Ihren Interessenten einen KI-Recruiting-Coach',
+    subjectTag: 'zinzino_v18_c_de',
+    description: 'Direct Value Hook (DE)',
+    language: 'de'
   }
 };
 
 /**
- * Select variant using 33% distribution
- * Returns one of: 'v18-a', 'v18-b', 'v18-c'
+ * Select variant using 33% distribution with language support
+ * @param {string} language - Contact language (en, es, de)
+ * @returns {string} Variant key (e.g., 'v18-a', 'v18-b-es', 'v18-c-de')
  */
-function selectV18Variant() {
+function selectV18Variant(language = 'en') {
   const rand = Math.random();
-  if (rand < 0.333) return 'v18-a';
-  if (rand < 0.666) return 'v18-b';
-  return 'v18-c';
+  const suffix = language === 'en' ? '' : `-${language}`;
+
+  if (rand < 0.333) return `v18-a${suffix}`;
+  if (rand < 0.666) return `v18-b${suffix}`;
+  return `v18-c${suffix}`;
 }
 
 // =============================================================================
@@ -211,13 +262,15 @@ async function sendEmailViaMailgun(contact, docId, config) {
     throw new Error('TBP_MAILGUN_API_KEY not configured');
   }
 
-  // Select V18 variant (33% distribution each)
-  const variantKey = selectV18Variant();
+  // Determine contact language from country field
+  const language = getContactLanguage(contact);
+
+  // Select V18 variant (33% distribution each) with language
+  const variantKey = selectV18Variant(language);
   const templateConfig = V18_VARIANTS[variantKey];
 
-  // V18 test uses English only - force EN domain
-  const language = 'en';
-  const ctaDomain = CTA_DOMAINS.en;
+  // Use language-specific CTA domain
+  const ctaDomain = CTA_DOMAINS[language] || CTA_DOMAINS.en;
   const unsubscribeUrl = `https://${ctaDomain}/unsubscribe.html?email=${encodeURIComponent(contact.email)}`;
   const landingPageUrl = buildLandingPageUrl(config.utmCampaign, templateConfig.subjectTag, language);
 
@@ -337,11 +390,12 @@ async function processZinzinoCampaignBatch(batchSize) {
       return { status: 'complete', sent: 0 };
     }
 
-    // Track variant distribution (will be populated during send)
-    const variantCounts = { 'v18-a': 0, 'v18-b': 0, 'v18-c': 0 };
+    // Track variant distribution by base variant (a/b/c) and language
+    const variantCounts = { 'a': 0, 'b': 0, 'c': 0 };
+    const languageCounts = { 'en': 0, 'es': 0, 'de': 0 };
 
     console.log(`${logPrefix} ${name}: Processing ${docsWithEmail.length} emails in ${batchId}`);
-    console.log(`   V18 A/B/C test with 33% distribution per variant`);
+    console.log(`   V18 A/B/C multilingual test (EN/ES/DE) with 33% distribution per variant`);
 
     let sent = 0;
     let failed = 0;
@@ -374,12 +428,15 @@ async function processZinzinoCampaignBatch(batchSize) {
 
           await doc.ref.update(updateData);
 
-          // Track variant distribution
-          variantCounts[result.templateVariant] = (variantCounts[result.templateVariant] || 0) + 1;
+          // Track variant distribution (extract base variant a/b/c from 'v18-a', 'v18-b-es', etc.)
+          const baseVariant = result.templateVariant.includes('-a') ? 'a' :
+            result.templateVariant.includes('-b') ? 'b' : 'c';
+          variantCounts[baseVariant]++;
+          languageCounts[result.language] = (languageCounts[result.language] || 0) + 1;
 
-          const variantEmoji = result.templateVariant === 'v18-a' ? '🅰️' :
-            result.templateVariant === 'v18-b' ? '🅱️' : '🇨';
-          console.log(`${variantEmoji} Sent to ${contact.email} (${result.templateVariant}): ${result.messageId}`);
+          const variantEmoji = baseVariant === 'a' ? '🅰️' : baseVariant === 'b' ? '🅱️' : '🇨';
+          const langFlag = result.language === 'es' ? '🇪🇸' : result.language === 'de' ? '🇩🇪' : '🇺🇸';
+          console.log(`${variantEmoji}${langFlag} Sent to ${contact.email} (${result.templateVariant}): ${result.messageId}`);
           sent++;
         } else {
           throw new Error(result.error || 'Unknown Mailgun error');
@@ -412,7 +469,8 @@ async function processZinzinoCampaignBatch(batchSize) {
     if (sent > 0) {
       console.log(`   Success rate: ${((sent / (sent + failed)) * 100).toFixed(1)}%`);
     }
-    console.log(`   V18 Distribution: A=${variantCounts['v18-a']} | B=${variantCounts['v18-b']} | C=${variantCounts['v18-c']}`);
+    console.log(`   V18 Variants: A=${variantCounts['a']} | B=${variantCounts['b']} | C=${variantCounts['c']}`);
+    console.log(`   Languages: EN=${languageCounts['en']} | ES=${languageCounts['es']} | DE=${languageCounts['de']}`);
 
     return {
       status: 'success',
@@ -420,7 +478,8 @@ async function processZinzinoCampaignBatch(batchSize) {
       failed,
       total: docsWithEmail.length,
       batchId,
-      variantCounts: variantCounts
+      variantCounts: variantCounts,
+      languageCounts: languageCounts
     };
 
   } catch (error) {

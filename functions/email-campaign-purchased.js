@@ -2,8 +2,13 @@
  * Purchased Leads Email Campaign Functions
  *
  * Sends email campaigns to leads purchased from external sources (Apollo, Apache, Exact Data)
- * Uses v16 template with single subject line (no A/B testing).
+ * Uses V18 A/B/C testing (3 template variations for conversion optimization).
  * Tracks performance by source for ROI analysis.
+ *
+ * V18 A/B/C Test (33% distribution each):
+ * - V18-A: Curiosity Hook - "What if your next recruit joined with 12 people?"
+ * - V18-B: Pain Point Hook - "75% of your recruits will quit this year (here's why)"
+ * - V18-C: Direct Value Hook - "Give your prospects an AI recruiting coach"
  */
 
 const { onSchedule } = require("firebase-functions/v2/scheduler");
@@ -30,12 +35,45 @@ const FROM_ADDRESS = 'Stephen Scott <stephen@news.teambuildpro.com>';
 const SEND_DELAY_MS = 1000;
 const LANDING_PAGE_URL = 'https://teambuildpro.com';
 
-// Single template and subject line for all sends (no A/B testing)
-const TEMPLATE_CONFIG = {
-  templateVersion: 'v16',
-  subject: "Build your downline with AI",
-  subjectTag: 'purchased_v16'
+// =============================================================================
+// V18 A/B/C TEMPLATE CONFIGURATION (Conversion Optimization Test)
+// =============================================================================
+
+/**
+ * V18 Template Variants for A/B/C Testing
+ * 33% distribution per variant for statistically valid comparison
+ */
+const V18_VARIANTS = {
+  'v18-a': {
+    templateVersion: 'v18-a',
+    subject: 'What if your next recruit joined with 12 people?',
+    subjectTag: 'purchased_v18_a',
+    description: 'Curiosity Hook'
+  },
+  'v18-b': {
+    templateVersion: 'v18-b',
+    subject: "75% of your recruits will quit this year (here's why)",
+    subjectTag: 'purchased_v18_b',
+    description: 'Pain Point Hook'
+  },
+  'v18-c': {
+    templateVersion: 'v18-c',
+    subject: 'Give your prospects an AI recruiting coach',
+    subjectTag: 'purchased_v18_c',
+    description: 'Direct Value Hook'
+  }
 };
+
+/**
+ * Select variant using 33% distribution
+ * Returns one of: 'v18-a', 'v18-b', 'v18-c'
+ */
+function selectV18Variant() {
+  const rand = Math.random();
+  if (rand < 0.333) return 'v18-a';
+  if (rand < 0.666) return 'v18-b';
+  return 'v18-c';
+}
 
 // =============================================================================
 // HELPER FUNCTIONS
@@ -92,18 +130,22 @@ async function sendEmailViaMailgun(lead, docId) {
     throw new Error('TBP_MAILGUN_API_KEY not configured');
   }
 
+  // Select V18 variant (33% distribution each)
+  const variantKey = selectV18Variant();
+  const templateConfig = V18_VARIANTS[variantKey];
+
   // Build URLs (direct links for better deliverability)
   const utmCampaign = `purchased_${lead.source}`;
-  const landingPageUrl = buildLandingPageUrl(utmCampaign, TEMPLATE_CONFIG.subjectTag, lead.source);
+  const landingPageUrl = buildLandingPageUrl(utmCampaign, templateConfig.subjectTag, lead.source);
   const unsubscribeUrl = `${LANDING_PAGE_URL}/unsubscribe.html?email=${encodeURIComponent(lead.email)}`;
 
   // Build form data for Mailgun API
   const form = new FormData();
   form.append('from', FROM_ADDRESS);
   form.append('to', `${lead.firstName} ${lead.lastName || ''} <${lead.email}>`.trim());
-  form.append('subject', TEMPLATE_CONFIG.subject);
+  form.append('subject', templateConfig.subject);
   form.append('template', TEMPLATE_NAME);
-  form.append('t:version', TEMPLATE_CONFIG.templateVersion);
+  form.append('t:version', templateConfig.templateVersion);
 
   // Mailgun tracking disabled — clicks tracked via GA4 using UTM parameters in direct landing page URLs
   form.append('o:tracking', 'no');
@@ -113,8 +155,7 @@ async function sendEmailViaMailgun(lead, docId) {
   // Tags for analytics
   form.append('o:tag', 'purchased_campaign');
   form.append('o:tag', `source_${lead.source}`);
-  form.append('o:tag', TEMPLATE_CONFIG.templateVersion);
-  form.append('o:tag', TEMPLATE_CONFIG.subjectTag);
+  form.append('o:tag', templateConfig.subjectTag);
   form.append('o:tag', lead.batchId || 'unknown_batch');
 
   // List-Unsubscribe headers
@@ -130,7 +171,7 @@ async function sendEmailViaMailgun(lead, docId) {
   };
   form.append('h:X-Mailgun-Variables', JSON.stringify(templateVars));
 
-  console.log(`   Source: ${lead.source} | Template: V16`);
+  console.log(`   V18 Variant: ${variantKey.toUpperCase()} (${templateConfig.description}) | Source: ${lead.source}`);
 
   // Send via Mailgun API
   const response = await axios.post(
@@ -148,8 +189,10 @@ async function sendEmailViaMailgun(lead, docId) {
     success: true,
     messageId: response.data.id,
     response: response.data.message,
-    subjectTag: TEMPLATE_CONFIG.subjectTag,
-    templateVariant: 'v14'
+    subjectTag: templateConfig.subjectTag,
+    templateVariant: variantKey,
+    templateVersion: templateConfig.templateVersion,
+    variantDescription: templateConfig.description
   };
 }
 
@@ -260,10 +303,12 @@ const sendPurchasedLeadsCampaign = onSchedule({
     }
 
     console.log(`📧 PURCHASED LEADS CAMPAIGN: Processing ${unsentSnapshot.size} leads in ${batchId}`);
+    console.log(`   V18 A/B/C test with 33% distribution per variant`);
 
     let sent = 0;
     let failed = 0;
     const sentBySource = {};
+    const variantCounts = { 'v18-a': 0, 'v18-b': 0, 'v18-c': 0 };
 
     for (let i = 0; i < unsentSnapshot.docs.length; i++) {
       const doc = unsentSnapshot.docs[i];
@@ -279,13 +324,20 @@ const sendPurchasedLeadsCampaign = onSchedule({
             sent: true,
             sentTimestamp: FieldValue.serverTimestamp(),
             status: 'sent',
-            templateVersion: result.templateVariant,
+            templateVariant: result.templateVariant,
+            templateVersion: result.templateVersion,
             subjectTag: result.subjectTag,
+            variantDescription: result.variantDescription,
             mailgunId: result.messageId || '',
             updatedAt: FieldValue.serverTimestamp()
           });
 
-          console.log(`✅ Sent to ${lead.email} (${lead.source}/${result.templateVariant})`);
+          // Track variant distribution
+          variantCounts[result.templateVariant] = (variantCounts[result.templateVariant] || 0) + 1;
+
+          const variantEmoji = result.templateVariant === 'v18-a' ? '🅰️' :
+            result.templateVariant === 'v18-b' ? '🅱️' : '🇨';
+          console.log(`${variantEmoji} Sent to ${lead.email} (${result.templateVariant}): ${result.messageId}`);
           sent++;
 
           // Track by source
@@ -323,6 +375,7 @@ const sendPurchasedLeadsCampaign = onSchedule({
     console.log(`   Total processed: ${unsentSnapshot.size}`);
     console.log(`   Successfully sent: ${sent}`);
     console.log(`   Failed: ${failed}`);
+    console.log(`   V18 Distribution: A=${variantCounts['v18-a']} | B=${variantCounts['v18-b']} | C=${variantCounts['v18-c']}`);
     console.log(`   By source: ${JSON.stringify(sentBySource)}`);
 
     return {

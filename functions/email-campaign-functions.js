@@ -1,13 +1,18 @@
 /**
  * Team Build Pro Email Campaign Functions (Mailgun Templates Version)
  *
- * Scheduled email campaigns using Mailgun API with template versioning.
- * Uses v16 template with single subject line (no A/B testing).
+ * Scheduled email campaigns using Mailgun API with V18 A/B/C testing.
+ * Uses V18 templates with 3 subject line variations for conversion optimization.
  *
- * Templates stored in Mailgun under 'mailer' template:
- * - v16: Current production template (Professional-focused messaging)
+ * V18 A/B/C Test (33% distribution each):
+ * - V18-A: Curiosity Hook - "What if your next recruit joined with 12 people?"
+ * - V18-B: Pain Point Hook - "75% of your recruits will quit this year (here's why)"
+ * - V18-C: Direct Value Hook - "Give your prospects an AI recruiting coach"
  *
- * Subject: "Your prospects don't believe they can recruit"
+ * Language Selection: English only for Main campaign
+ *
+ * Collection: emailCampaigns/master/contacts
+ * Schedule: 8am, 11am, 2pm, 5pm PT
  */
 
 const { onSchedule } = require("firebase-functions/v2/scheduler");
@@ -36,15 +41,44 @@ const SEND_DELAY_MS = 1000;
 const LANDING_PAGE_URL = 'https://teambuildpro.com';
 
 // =============================================================================
-// TEMPLATE CONFIGURATION (No A/B Testing)
+// V18 A/B/C TEMPLATE CONFIGURATION (Conversion Optimization Test)
 // =============================================================================
 
-// Single template and subject line for all sends
-const TEMPLATE_CONFIG = {
-  templateVersion: 'v16',
-  subject: "Build your downline with AI",
-  subjectTag: 'main_v16'
+/**
+ * V18 Template Variants for A/B/C Testing
+ * 33% distribution per variant for statistically valid comparison
+ */
+const V18_VARIANTS = {
+  'v18-a': {
+    templateVersion: 'v18-a',
+    subject: 'What if your next recruit joined with 12 people?',
+    subjectTag: 'main_v18_a',
+    description: 'Curiosity Hook'
+  },
+  'v18-b': {
+    templateVersion: 'v18-b',
+    subject: "75% of your recruits will quit this year (here's why)",
+    subjectTag: 'main_v18_b',
+    description: 'Pain Point Hook'
+  },
+  'v18-c': {
+    templateVersion: 'v18-c',
+    subject: 'Give your prospects an AI recruiting coach',
+    subjectTag: 'main_v18_c',
+    description: 'Direct Value Hook'
+  }
 };
+
+/**
+ * Select variant using 33% distribution
+ * Returns one of: 'v18-a', 'v18-b', 'v18-c'
+ */
+function selectV18Variant() {
+  const rand = Math.random();
+  if (rand < 0.333) return 'v18-a';
+  if (rand < 0.666) return 'v18-b';
+  return 'v18-c';
+}
 
 // =============================================================================
 // CAMPAIGN CONFIGURATIONS
@@ -108,12 +142,11 @@ function buildLandingPageUrl(utmCampaign, utmContent) {
 // =============================================================================
 
 /**
- * Send email via Mailgun API using templates with A/B testing
+ * Send email via Mailgun API using V18 A/B/C testing
  *
  * @param {object} contact - Contact data { firstName, lastName, email }
  * @param {string} docId - Firestore document ID (used as tracking ID)
  * @param {object} config - Campaign configuration
- * @param {number} index - Batch index for strict A/B alternation
  * @returns {Promise<object>} Send result
  */
 async function sendEmailViaMailgun(contact, docId, config) {
@@ -124,17 +157,21 @@ async function sendEmailViaMailgun(contact, docId, config) {
     throw new Error('TBP_MAILGUN_API_KEY not configured');
   }
 
+  // Select V18 variant (33% distribution each)
+  const variantKey = selectV18Variant();
+  const templateConfig = V18_VARIANTS[variantKey];
+
   // Build URLs (direct links for better deliverability)
-  const landingPageUrl = buildLandingPageUrl(config.utmCampaign, TEMPLATE_CONFIG.subjectTag);
+  const landingPageUrl = buildLandingPageUrl(config.utmCampaign, templateConfig.subjectTag);
   const unsubscribeUrl = `${LANDING_PAGE_URL}/unsubscribe.html?email=${encodeURIComponent(contact.email)}`;
 
   // Build form data for Mailgun API
   const form = new FormData();
   form.append('from', FROM_ADDRESS);
   form.append('to', `${contact.firstName} ${contact.lastName} <${contact.email}>`);
-  form.append('subject', TEMPLATE_CONFIG.subject);
+  form.append('subject', templateConfig.subject);
   form.append('template', TEMPLATE_NAME);
-  form.append('t:version', TEMPLATE_CONFIG.templateVersion);
+  form.append('t:version', templateConfig.templateVersion);
 
   // Mailgun tracking disabled — clicks tracked via GA4 using UTM parameters in direct landing page URLs
   form.append('o:tracking', 'no');
@@ -143,8 +180,7 @@ async function sendEmailViaMailgun(contact, docId, config) {
 
   // Tags for analytics
   form.append('o:tag', config.campaignTag);
-  form.append('o:tag', TEMPLATE_CONFIG.templateVersion);
-  form.append('o:tag', TEMPLATE_CONFIG.subjectTag);
+  form.append('o:tag', templateConfig.subjectTag);
   form.append('o:tag', 'tracked');
 
   // List-Unsubscribe headers (required by Gmail for bulk senders)
@@ -160,7 +196,7 @@ async function sendEmailViaMailgun(contact, docId, config) {
   };
   form.append('h:X-Mailgun-Variables', JSON.stringify(templateVars));
 
-  console.log(`   Template: V16 | Subject: "${TEMPLATE_CONFIG.subject}"`);
+  console.log(`   V18 Variant: ${variantKey.toUpperCase()} (${templateConfig.description})`);
 
   // Send via Mailgun API
   const mailgunBaseUrl = `https://api.mailgun.net/v3/${domain}`;
@@ -175,8 +211,11 @@ async function sendEmailViaMailgun(contact, docId, config) {
     success: true,
     messageId: response.data.id,
     response: response.data.message,
-    subjectTag: TEMPLATE_CONFIG.subjectTag,
-    templateVariant: 'v14'
+    subjectTag: templateConfig.subjectTag,
+    templateVariant: variantKey,
+    templateVersion: templateConfig.templateVersion,
+    usedSubject: templateConfig.subject,
+    variantDescription: templateConfig.description
   };
 }
 
@@ -256,6 +295,8 @@ async function processCampaignBatch(config, enabledParam, batchSize) {
             [messageIdField]: result.messageId || '',
             subjectTag: result.subjectTag,
             templateVariant: result.templateVariant,
+            templateVersion: result.templateVersion,
+            sentSubject: result.usedSubject,
             mailgunResponse: result.response || ''
           };
 

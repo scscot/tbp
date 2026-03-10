@@ -2,15 +2,14 @@
  * Team Build Pro Email Campaign for BFH (Business For Home) Contacts
  *
  * Sends emails to scraped bfh_contacts (distributors from Business For Home website).
- * Uses Mailgun API with v16 template and single subject line (no A/B testing).
+ * Uses Mailgun API with V18 A/B/C testing (3 template variations for conversion optimization).
  *
- * Templates stored in Mailgun under 'mailer' template:
- * - v16: English (Professional-focused messaging)
- * - v16-es: Spanish
- * - v16-pt: Portuguese (Brazil)
- * - v16-de: German
+ * V18 A/B/C Test (33% distribution each):
+ * - V18-A: Curiosity Hook - "What if your next recruit joined with 12 people?"
+ * - V18-B: Pain Point Hook - "75% of your recruits will quit this year (here's why)"
+ * - V18-C: Direct Value Hook - "Give your prospects an AI recruiting coach"
  *
- * Subject: "Getting prospects to YES with AI" (localized per language)
+ * Language Selection: Based on contact's detectedLanguage field (EN, ES, PT, DE)
  *
  * Collection: bfh_contacts
  * Query: bfhScraped == true, email != null, sent == false
@@ -42,32 +41,119 @@ const SEND_DELAY_MS = 1000;
 const LANDING_PAGE_URL = 'https://teambuildpro.com';
 
 // =============================================================================
-// TEMPLATE CONFIGURATION (No A/B Testing)
+// V18 A/B/C TEMPLATE CONFIGURATION (Conversion Optimization Test)
 // =============================================================================
 
-// Language-specific template and subject configuration
-const TEMPLATE_CONFIG = {
-  en: {
-    templateVersion: 'v16',
-    subject: "Build your downline with AI",
-    subjectTag: 'bfh_v16_en'
+/**
+ * V18 Template Variants for A/B/C Testing (Multilingual)
+ * 33% distribution per variant for statistically valid comparison
+ *
+ * Each variant available in EN, ES, PT, DE
+ */
+const V18_VARIANTS = {
+  // English variants
+  'v18-a': {
+    templateVersion: 'v18-a',
+    subject: 'What if your next recruit joined with 12 people?',
+    subjectTag: 'bfh_v18_a_en',
+    description: 'Curiosity Hook (EN)',
+    language: 'en'
   },
-  es: {
-    templateVersion: 'v16-es',
-    subject: 'Construye tu downline con IA',
-    subjectTag: 'bfh_v16_es'
+  'v18-b': {
+    templateVersion: 'v18-b',
+    subject: "75% of your recruits will quit this year (here's why)",
+    subjectTag: 'bfh_v18_b_en',
+    description: 'Pain Point Hook (EN)',
+    language: 'en'
   },
-  pt: {
-    templateVersion: 'v16-pt',
-    subject: 'Construa sua downline com IA',
-    subjectTag: 'bfh_v16_pt'
+  'v18-c': {
+    templateVersion: 'v18-c',
+    subject: 'Give your prospects an AI recruiting coach',
+    subjectTag: 'bfh_v18_c_en',
+    description: 'Direct Value Hook (EN)',
+    language: 'en'
   },
-  de: {
-    templateVersion: 'v16-de',
-    subject: 'Baue deine Downline mit KI auf',
-    subjectTag: 'bfh_v16_de'
+  // Spanish variants
+  'v18-a-es': {
+    templateVersion: 'v18-a-es',
+    subject: '¿Y si tu próximo recluta llegara con 12 personas?',
+    subjectTag: 'bfh_v18_a_es',
+    description: 'Curiosity Hook (ES)',
+    language: 'es'
+  },
+  'v18-b-es': {
+    templateVersion: 'v18-b-es',
+    subject: 'El 75% de tus reclutas renunciarán este año (descubre por qué)',
+    subjectTag: 'bfh_v18_b_es',
+    description: 'Pain Point Hook (ES)',
+    language: 'es'
+  },
+  'v18-c-es': {
+    templateVersion: 'v18-c-es',
+    subject: 'Dale a tus prospectos un coach de reclutamiento con IA',
+    subjectTag: 'bfh_v18_c_es',
+    description: 'Direct Value Hook (ES)',
+    language: 'es'
+  },
+  // Portuguese variants
+  'v18-a-pt': {
+    templateVersion: 'v18-a-pt',
+    subject: 'E se seu próximo recrutado chegasse com 12 pessoas?',
+    subjectTag: 'bfh_v18_a_pt',
+    description: 'Curiosity Hook (PT)',
+    language: 'pt'
+  },
+  'v18-b-pt': {
+    templateVersion: 'v18-b-pt',
+    subject: '75% dos seus recrutados vão desistir este ano (descubra por quê)',
+    subjectTag: 'bfh_v18_b_pt',
+    description: 'Pain Point Hook (PT)',
+    language: 'pt'
+  },
+  'v18-c-pt': {
+    templateVersion: 'v18-c-pt',
+    subject: 'Dê aos seus prospectos um coach de recrutamento com IA',
+    subjectTag: 'bfh_v18_c_pt',
+    description: 'Direct Value Hook (PT)',
+    language: 'pt'
+  },
+  // German variants
+  'v18-a-de': {
+    templateVersion: 'v18-a-de',
+    subject: 'Was wenn Ihr nächster Rekrut mit 12 Leuten kommt?',
+    subjectTag: 'bfh_v18_a_de',
+    description: 'Curiosity Hook (DE)',
+    language: 'de'
+  },
+  'v18-b-de': {
+    templateVersion: 'v18-b-de',
+    subject: '75% Ihrer Rekruten werden dieses Jahr aufhören (hier ist warum)',
+    subjectTag: 'bfh_v18_b_de',
+    description: 'Pain Point Hook (DE)',
+    language: 'de'
+  },
+  'v18-c-de': {
+    templateVersion: 'v18-c-de',
+    subject: 'Geben Sie Ihren Interessenten einen KI-Recruiting-Coach',
+    subjectTag: 'bfh_v18_c_de',
+    description: 'Direct Value Hook (DE)',
+    language: 'de'
   }
 };
+
+/**
+ * Select variant using 33% distribution with language support
+ * @param {string} language - Contact language (en, es, pt, de)
+ * @returns {string} Variant key (e.g., 'v18-a', 'v18-b-es', 'v18-c-de')
+ */
+function selectV18Variant(language = 'en') {
+  const rand = Math.random();
+  const suffix = language === 'en' ? '' : `-${language}`;
+
+  if (rand < 0.333) return `v18-a${suffix}`;
+  if (rand < 0.666) return `v18-b${suffix}`;
+  return `v18-c${suffix}`;
+}
 
 // Language-specific CTA domains
 const CTA_DOMAINS = {
@@ -148,14 +234,7 @@ function buildLandingPageUrl(utmCampaign, utmContent, language = 'en') {
 // =============================================================================
 
 /**
- * Get language for contact (defaults to English)
- */
-function getContactLanguage(contact) {
-  return contact.detectedLanguage || 'en';
-}
-
-/**
- * Send email via Mailgun API using v14 templates (no A/B testing)
+ * Send email via Mailgun API using V18 A/B/C testing
  *
  * @param {object} contact - Contact data { firstName, lastName, email, ... }
  * @param {string} docId - Firestore document ID (used as tracking ID)
@@ -170,10 +249,15 @@ async function sendEmailViaMailgun(contact, docId, config) {
     throw new Error('TBP_MAILGUN_API_KEY not configured');
   }
 
-  const language = getContactLanguage(contact);
-  const templateConfig = TEMPLATE_CONFIG[language] || TEMPLATE_CONFIG.en;
+  // Determine language from contact's detectedLanguage field (default to EN)
+  const contactLanguage = contact.detectedLanguage || 'en';
+  const language = ['en', 'es', 'pt', 'de'].includes(contactLanguage) ? contactLanguage : 'en';
 
-  // Build tracking URLs with language-specific domain
+  // Select V18 variant (33% distribution each) for the contact's language
+  const variantKey = selectV18Variant(language);
+  const templateConfig = V18_VARIANTS[variantKey];
+
+  // Use language-specific CTA domain
   const ctaDomain = CTA_DOMAINS[language] || CTA_DOMAINS.en;
   const unsubscribeUrl = `https://${ctaDomain}/unsubscribe.html?email=${encodeURIComponent(contact.email)}`;
   const landingPageUrl = buildLandingPageUrl(config.utmCampaign, templateConfig.subjectTag, language);
@@ -194,8 +278,6 @@ async function sendEmailViaMailgun(contact, docId, config) {
   };
   form.append('h:X-Mailgun-Variables', JSON.stringify(templateVars));
 
-  console.log(`   Lang: ${language.toUpperCase()} | Template: V16 | CTA: ${ctaDomain}`);
-
   // Mailgun tracking disabled — clicks tracked via GA4 using UTM parameters in direct landing page URLs
   form.append('o:tracking', 'no');
   form.append('o:tracking-opens', 'no');
@@ -212,6 +294,8 @@ async function sendEmailViaMailgun(contact, docId, config) {
   form.append('h:List-Unsubscribe', `<mailto:${unsubscribeEmail}?subject=Unsubscribe>, <${unsubscribeUrl}>`);
   form.append('h:List-Unsubscribe-Post', 'List-Unsubscribe=One-Click');
 
+  console.log(`   V18 Variant: ${variantKey.toUpperCase()} (${templateConfig.description}) | CTA: ${ctaDomain}`);
+
   // Send via Mailgun API
   const mailgunBaseUrl = `https://api.mailgun.net/v3/${domain}`;
   const response = await axios.post(`${mailgunBaseUrl}/messages`, form, {
@@ -226,9 +310,11 @@ async function sendEmailViaMailgun(contact, docId, config) {
     messageId: response.data.id,
     response: response.data.message,
     subjectTag: templateConfig.subjectTag,
-    templateVariant: 'v14',
+    templateVariant: variantKey,
+    templateVersion: templateConfig.templateVersion,
     language: language,
-    usedSubject: templateConfig.subject
+    usedSubject: templateConfig.subject,
+    variantDescription: templateConfig.description
   };
 }
 
