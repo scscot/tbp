@@ -43,8 +43,8 @@ const db = admin.firestore();
 // =============================================================================
 
 const TEST_EMAIL = 'Stephen Scott <scscot@gmail.com>';
-const TEST_EMAIL = 'Patricia Craig <pattycraig80@gmail.com>';
-// const ALERT_EMAIL = 'scscot@gmail.com';
+// const TEST_EMAIL = 'Patricia Craig <pattycraig80@gmail.com>';
+const ALERT_EMAIL = 'scscot@gmail.com';
 const MAILGUN_DOMAIN = 'news.teambuildpro.com';
 const FROM_ADDRESS = 'Stephen Scott <stephen@news.teambuildpro.com>';
 const CHECK_DELAY_MS = 2 * 60 * 1000; // 2 minutes (Gmail typically delivers in 1-2 min)
