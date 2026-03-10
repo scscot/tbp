@@ -2,12 +2,15 @@
  * Team Build Pro Email Campaign for Marketplace Global (MPG) Contacts
  *
  * Sends emails to scraped mpg_contacts (representatives from MPG pages).
- * Uses Mailgun API with v16 template and single subject line (no A/B testing).
+ * Uses Mailgun API with V18 A/B/C testing (3 template variations for conversion optimization).
+ *
+ * V18 A/B/C Test (33% distribution each):
+ * - V18-A: Curiosity Hook - "What if your next recruit joined with 12 people?"
+ * - V18-B: Pain Point Hook - "75% of your recruits will quit this year (here's why)"
+ * - V18-C: Direct Value Hook - "Give your prospects an AI recruiting coach"
  *
  * Templates stored in Mailgun under 'mailer' template:
- * - v16: English (Professional-focused messaging)
- *
- * Subject: "Getting prospects to YES with AI"
+ * - v18-a, v18-b, v18-c: English variants
  *
  * Collection: mpg_contacts
  * Query: status == 'pending', sent == false, email != null
@@ -39,15 +42,44 @@ const SEND_DELAY_MS = 1000;
 const CTA_DOMAIN = 'teambuildpro.com';
 
 // =============================================================================
-// TEMPLATE CONFIGURATION (No A/B Testing)
+// V18 A/B/C TEMPLATE CONFIGURATION (Conversion Optimization Test)
 // =============================================================================
 
-// Single template and subject line for all sends
-const TEMPLATE_CONFIG = {
-  templateVersion: 'v16',
-  subject: "Build your downline with AI",
-  subjectTag: 'mpg_v16'
+/**
+ * V18 Template Variants for A/B/C Testing (English Only)
+ * 33% distribution per variant for statistically valid comparison
+ */
+const V18_VARIANTS = {
+  'v18-a': {
+    templateVersion: 'v18-a',
+    subject: 'What if your next recruit joined with 12 people?',
+    subjectTag: 'mpg_v18_a',
+    description: 'Curiosity Hook'
+  },
+  'v18-b': {
+    templateVersion: 'v18-b',
+    subject: "75% of your recruits will quit this year (here's why)",
+    subjectTag: 'mpg_v18_b',
+    description: 'Pain Point Hook'
+  },
+  'v18-c': {
+    templateVersion: 'v18-c',
+    subject: 'Give your prospects an AI recruiting coach',
+    subjectTag: 'mpg_v18_c',
+    description: 'Direct Value Hook'
+  }
 };
+
+/**
+ * Select variant using 33% distribution
+ * @returns {string} Variant key (e.g., 'v18-a', 'v18-b', 'v18-c')
+ */
+function selectV18Variant() {
+  const rand = Math.random();
+  if (rand < 0.333) return 'v18-a';
+  if (rand < 0.666) return 'v18-b';
+  return 'v18-c';
+}
 
 // =============================================================================
 // CAMPAIGN CONFIGURATION
@@ -120,7 +152,7 @@ function buildLandingPageUrl(utmCampaign, utmContent) {
 // =============================================================================
 
 /**
- * Send email via Mailgun API using v16 template (no A/B testing)
+ * Send email via Mailgun API using V18 A/B/C testing
  *
  * @param {object} contact - Contact data { firstName, lastName, email, ... }
  * @param {string} docId - Firestore document ID (used as tracking ID)
@@ -135,9 +167,13 @@ async function sendEmailViaMailgun(contact, docId, config) {
     throw new Error('TBP_MAILGUN_API_KEY not configured');
   }
 
+  // Select V18 variant (33% each for A/B/C testing)
+  const variantKey = selectV18Variant();
+  const variant = V18_VARIANTS[variantKey];
+
   // Build URLs (direct links for better deliverability)
   const unsubscribeUrl = `https://${CTA_DOMAIN}/unsubscribe.html?email=${encodeURIComponent(contact.email)}`;
-  const landingPageUrl = buildLandingPageUrl(config.utmCampaign, TEMPLATE_CONFIG.subjectTag);
+  const landingPageUrl = buildLandingPageUrl(config.utmCampaign, variant.subjectTag);
 
   // Build form data for Mailgun API
   const form = new FormData();
@@ -149,9 +185,9 @@ async function sendEmailViaMailgun(contact, docId, config) {
     : contact.firstName;
   form.append('to', `${recipientName} <${contact.email}>`);
 
-  form.append('subject', TEMPLATE_CONFIG.subject);
+  form.append('subject', variant.subject);
   form.append('template', TEMPLATE_NAME);
-  form.append('t:version', TEMPLATE_CONFIG.templateVersion);
+  form.append('t:version', variant.templateVersion);
 
   // Template variables (using direct landing page URL for deliverability)
   const templateVars = {
@@ -168,7 +204,7 @@ async function sendEmailViaMailgun(contact, docId, config) {
 
   // Tags for analytics
   form.append('o:tag', config.campaignTag);
-  form.append('o:tag', TEMPLATE_CONFIG.subjectTag);
+  form.append('o:tag', variant.subjectTag);
   form.append('o:tag', 'tracked');
 
   // List-Unsubscribe headers (required by Gmail for bulk senders)
@@ -176,7 +212,7 @@ async function sendEmailViaMailgun(contact, docId, config) {
   form.append('h:List-Unsubscribe', `<mailto:${unsubscribeEmail}?subject=Unsubscribe>, <${unsubscribeUrl}>`);
   form.append('h:List-Unsubscribe-Post', 'List-Unsubscribe=One-Click');
 
-  console.log(`   Template: V16`);
+  console.log(`   Template: ${variant.templateVersion} (${variant.description})`);
 
   // Send via Mailgun API
   const mailgunBaseUrl = `https://api.mailgun.net/v3/${domain}`;
@@ -191,10 +227,10 @@ async function sendEmailViaMailgun(contact, docId, config) {
     success: true,
     messageId: response.data.id,
     response: response.data.message,
-    subjectTag: TEMPLATE_CONFIG.subjectTag,
-    templateVariant: 'v16',
-    templateVersion: TEMPLATE_CONFIG.templateVersion,
-    usedSubject: TEMPLATE_CONFIG.subject
+    subjectTag: variant.subjectTag,
+    templateVariant: variantKey,
+    templateVersion: variant.templateVersion,
+    usedSubject: variant.subject
   };
 }
 
@@ -283,7 +319,7 @@ async function processMpgCampaignBatch(batchSize) {
 
           await doc.ref.update(updateData);
 
-          console.log(`🌐 Sent to ${contact.email} (${result.templateVariant}): ${result.messageId}`);
+          console.log(`🌐 Sent to ${contact.email} (${result.templateVersion}): ${result.messageId}`);
           sent++;
         } else {
           throw new Error(result.error || 'Unknown Mailgun error');

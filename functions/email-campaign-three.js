@@ -2,12 +2,16 @@
  * Team Build Pro Email Campaign for THREE International Contacts
  *
  * Sends emails to scraped three_contacts (distributors from THREE International pages).
- * Uses Mailgun API with v17 template (generic greeting, no personalization).
+ * Uses Mailgun API with V19 A/B/C testing (3 template variations for conversion optimization).
+ * V19 templates use generic "Greetings!" greeting since THREE pages don't have usable names.
+ *
+ * V19 A/B/C Test (33% distribution each):
+ * - V19-A: Curiosity Hook - "What if your next recruit joined with 12 people?"
+ * - V19-B: Pain Point Hook - "75% of your recruits will quit this year (here's why)"
+ * - V19-C: Direct Value Hook - "Give your prospects an AI recruiting coach"
  *
  * Templates stored in Mailgun under 'mailer' template:
- * - v17: English (Generic "Greetings!" greeting - names not available from THREE pages)
- *
- * Subject: "Building your team with AI"
+ * - v19-a, v19-b, v19-c: English variants (generic "Greetings!" greeting)
  *
  * Collection: three_contacts
  * Query: status == 'pending', sent == false, email != null
@@ -39,16 +43,47 @@ const SEND_DELAY_MS = 1000;
 const CTA_DOMAIN = 'teambuildpro.com';
 
 // =============================================================================
-// TEMPLATE CONFIGURATION (No A/B Testing)
+// V19 A/B/C TEMPLATE CONFIGURATION (Conversion Optimization Test)
 // =============================================================================
 
-// Single template and subject line for all sends
-// v17 uses generic greeting (no {{first_name}}) since THREE pages don't have usable names
-const TEMPLATE_CONFIG = {
-  templateVersion: 'v17',
-  subject: "Build your downline with AI",
-  subjectTag: 'three_v17'
+/**
+ * V19 Template Variants for A/B/C Testing (English Only)
+ * 33% distribution per variant for statistically valid comparison
+ *
+ * V19 uses generic "Greetings!" greeting (no {{first_name}}) since THREE pages
+ * don't have usable names (only subdomain-based names like "Avery66").
+ */
+const V19_VARIANTS = {
+  'v19-a': {
+    templateVersion: 'v19-a',
+    subject: 'What if your next recruit joined with 12 people?',
+    subjectTag: 'three_v19_a',
+    description: 'Curiosity Hook'
+  },
+  'v19-b': {
+    templateVersion: 'v19-b',
+    subject: "75% of your recruits will quit this year (here's why)",
+    subjectTag: 'three_v19_b',
+    description: 'Pain Point Hook'
+  },
+  'v19-c': {
+    templateVersion: 'v19-c',
+    subject: 'Give your prospects an AI recruiting coach',
+    subjectTag: 'three_v19_c',
+    description: 'Direct Value Hook'
+  }
 };
+
+/**
+ * Select variant using 33% distribution
+ * @returns {string} Variant key (e.g., 'v19-a', 'v19-b', 'v19-c')
+ */
+function selectV19Variant() {
+  const rand = Math.random();
+  if (rand < 0.333) return 'v19-a';
+  if (rand < 0.666) return 'v19-b';
+  return 'v19-c';
+}
 
 // =============================================================================
 // CAMPAIGN CONFIGURATION
@@ -121,7 +156,9 @@ function buildLandingPageUrl(utmCampaign, utmContent) {
 // =============================================================================
 
 /**
- * Send email via Mailgun API using v16 template (no A/B testing)
+ * Send email via Mailgun API using V19 A/B/C testing
+ * V19 uses generic "Greetings!" greeting (no {{first_name}}) since THREE pages
+ * don't have usable names.
  *
  * @param {object} contact - Contact data { firstName, lastName, email, ... }
  * @param {string} docId - Firestore document ID (used as tracking ID)
@@ -136,9 +173,13 @@ async function sendEmailViaMailgun(contact, docId, config) {
     throw new Error('TBP_MAILGUN_API_KEY not configured');
   }
 
+  // Select V19 variant (33% each for A/B/C testing)
+  const variantKey = selectV19Variant();
+  const variant = V19_VARIANTS[variantKey];
+
   // Build URLs (direct links for better deliverability)
   const unsubscribeUrl = `https://${CTA_DOMAIN}/unsubscribe.html?email=${encodeURIComponent(contact.email)}`;
-  const landingPageUrl = buildLandingPageUrl(config.utmCampaign, TEMPLATE_CONFIG.subjectTag);
+  const landingPageUrl = buildLandingPageUrl(config.utmCampaign, variant.subjectTag);
 
   // Build form data for Mailgun API
   const form = new FormData();
@@ -148,11 +189,11 @@ async function sendEmailViaMailgun(contact, docId, config) {
   // So we omit the name from the recipient field
   form.append('to', contact.email);
 
-  form.append('subject', TEMPLATE_CONFIG.subject);
+  form.append('subject', variant.subject);
   form.append('template', TEMPLATE_NAME);
-  form.append('t:version', TEMPLATE_CONFIG.templateVersion);
+  form.append('t:version', variant.templateVersion);
 
-  // Template variables (v17 uses generic greeting, no first_name needed)
+  // Template variables (V19 uses generic "Greetings!" greeting, no first_name needed)
   const templateVars = {
     tracked_cta_url: landingPageUrl,
     unsubscribe_url: unsubscribeUrl
@@ -166,7 +207,7 @@ async function sendEmailViaMailgun(contact, docId, config) {
 
   // Tags for analytics
   form.append('o:tag', config.campaignTag);
-  form.append('o:tag', TEMPLATE_CONFIG.subjectTag);
+  form.append('o:tag', variant.subjectTag);
   form.append('o:tag', 'tracked');
 
   // List-Unsubscribe headers (required by Gmail for bulk senders)
@@ -174,7 +215,7 @@ async function sendEmailViaMailgun(contact, docId, config) {
   form.append('h:List-Unsubscribe', `<mailto:${unsubscribeEmail}?subject=Unsubscribe>, <${unsubscribeUrl}>`);
   form.append('h:List-Unsubscribe-Post', 'List-Unsubscribe=One-Click');
 
-  console.log(`   Template: V17 (generic greeting)`);
+  console.log(`   Template: ${variant.templateVersion} (${variant.description})`);
 
   // Send via Mailgun API
   const mailgunBaseUrl = `https://api.mailgun.net/v3/${domain}`;
@@ -189,10 +230,10 @@ async function sendEmailViaMailgun(contact, docId, config) {
     success: true,
     messageId: response.data.id,
     response: response.data.message,
-    subjectTag: TEMPLATE_CONFIG.subjectTag,
-    templateVariant: 'v16',
-    templateVersion: TEMPLATE_CONFIG.templateVersion,
-    usedSubject: TEMPLATE_CONFIG.subject
+    subjectTag: variant.subjectTag,
+    templateVariant: variantKey,
+    templateVersion: variant.templateVersion,
+    usedSubject: variant.subject
   };
 }
 
@@ -281,7 +322,7 @@ async function processThreeCampaignBatch(batchSize) {
 
           await doc.ref.update(updateData);
 
-          console.log(`🌿 Sent to ${contact.email} (${result.templateVariant}): ${result.messageId}`);
+          console.log(`🌿 Sent to ${contact.email} (${result.templateVersion}): ${result.messageId}`);
           sent++;
         } else {
           throw new Error(result.error || 'Unknown Mailgun error');

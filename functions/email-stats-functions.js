@@ -23,6 +23,8 @@ const PAPARAZZI_CAMPAIGN_COLLECTION = 'paparazzi_contacts';
 const PRUVIT_CAMPAIGN_COLLECTION = 'pruvit_contacts';
 const SCENTSY_CAMPAIGN_COLLECTION = 'scentsy_contacts';
 const MPG_CAMPAIGN_COLLECTION = 'mpg_contacts';
+const THREE_CAMPAIGN_COLLECTION = 'three_contacts';
+const FARMASIUS_CAMPAIGN_COLLECTION = 'farmasius_contacts';
 const MONITORING_PASSWORD = process.env.MONITORING_PASSWORD || 'TeamBuildPro2024!';
 const GA4_PROPERTY_ID = '485651473';
 
@@ -362,7 +364,7 @@ const getEmailCampaignStats = onRequest({
     const startOfTodayUTC = new Date(startOfTodayPT.getTime() - (ptOffset + now.getTimezoneOffset()) * 60 * 1000);
 
     // Fetch stats for all campaigns in parallel
-    const [mainCampaignStats, contactsCampaignStats, purchasedCampaignStats, bfhCampaignStats, zinzinoCampaignStats, fsrCampaignStats, paparazziCampaignStats, pruvitCampaignStats, scentsyCampaignStats, mpgCampaignStats] = await Promise.all([
+    const [mainCampaignStats, contactsCampaignStats, purchasedCampaignStats, bfhCampaignStats, zinzinoCampaignStats, fsrCampaignStats, paparazziCampaignStats, pruvitCampaignStats, scentsyCampaignStats, mpgCampaignStats, threeCampaignStats, farmasiusCampaignStats] = await Promise.all([
       fetchCampaignStats(MAIN_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC),
       fetchCampaignStats(CONTACTS_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC, { isContactsCampaign: true }),
       fetchCampaignStats(PURCHASED_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC),
@@ -372,7 +374,9 @@ const getEmailCampaignStats = onRequest({
       fetchCampaignStats(PAPARAZZI_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC, { isPaparazziCampaign: true }),
       fetchCampaignStats(PRUVIT_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC),
       fetchCampaignStats(SCENTSY_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC, { isScentsyCampaign: true }),
-      fetchCampaignStats(MPG_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC)
+      fetchCampaignStats(MPG_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC),
+      fetchCampaignStats(THREE_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC),
+      fetchCampaignStats(FARMASIUS_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC, { isFarmasiusCampaign: true })
     ]);
 
     // Get GA4 stats (shared across campaigns)
@@ -489,6 +493,27 @@ const getEmailCampaignStats = onRequest({
         tracking: mpgCampaignStats.tracking,
         subjectLines: mpgCampaignStats.subjectLines,
         recentSends: mpgCampaignStats.recentSends
+      },
+
+      // Three campaign data
+      threeCampaign: {
+        campaign: threeCampaignStats.campaign,
+        last24h: threeCampaignStats.last24h,
+        today: threeCampaignStats.today,
+        tracking: threeCampaignStats.tracking,
+        subjectLines: threeCampaignStats.subjectLines,
+        recentSends: threeCampaignStats.recentSends
+      },
+
+      // Farmasius campaign data
+      farmasiusCampaign: {
+        campaign: farmasiusCampaignStats.campaign,
+        last24h: farmasiusCampaignStats.last24h,
+        today: farmasiusCampaignStats.today,
+        tracking: farmasiusCampaignStats.tracking,
+        subjectLines: farmasiusCampaignStats.subjectLines,
+        recentSends: farmasiusCampaignStats.recentSends,
+        languageBreakdown: farmasiusCampaignStats.languageBreakdown
       },
 
       // GA4 stats (shared)

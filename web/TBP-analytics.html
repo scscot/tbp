@@ -761,6 +761,16 @@
             color: #3730a3;
         }
 
+        .campaign-label.three {
+            background: #fce7f3;
+            color: #be185d;
+        }
+
+        .campaign-label.farmasius {
+            background: #ecfeff;
+            color: #0891b2;
+        }
+
         .source-label {
             display: inline-block;
             font-size: 0.7rem;
@@ -1884,6 +1894,12 @@
                     <div class="campaign-tab" onclick="switchEmailTab('mpg')">
                         MPG <span class="tab-badge" id="emailMpgTabBadge">-</span>
                     </div>
+                    <div class="campaign-tab" onclick="switchEmailTab('three')">
+                        Three <span class="tab-badge" id="emailThreeTabBadge">-</span>
+                    </div>
+                    <div class="campaign-tab" onclick="switchEmailTab('farmasius')">
+                        Farmasius <span class="tab-badge" id="emailFarmasiusTabBadge">-</span>
+                    </div>
                     <div class="campaign-tab comparison" onclick="switchEmailTab('comparison')">
                         &#128202; Comparison
                     </div>
@@ -2496,6 +2512,142 @@
                     </div>
                 </div>
 
+                <!-- Three Campaign Sub-Tab Content -->
+                <div id="emailThreeTab" class="campaign-content">
+                    <!-- Campaign Progress -->
+                    <h2 class="section-title">Campaign Progress <span class="campaign-label three">Three</span></h2>
+                    <div class="section-card" style="margin-bottom: 30px;">
+                        <h3>Overall Send Progress</h3>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar" id="emailThreeProgressBar" style="width: 0%;">0%</div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+                            <span><strong id="emailThreeTotalSent">0</strong> sent</span>
+                            <span><strong id="emailThreeTotalRemaining">0</strong> remaining</span>
+                            <span><strong id="emailThreeTotalContacts">0</strong> total</span>
+                        </div>
+                    </div>
+
+                    <div class="section-card">
+                        <h3>Send Statistics</h3>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-value" id="emailThreeTotal">-</div>
+                                <div class="stat-label">Total Contacts</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value green" id="emailThreeSent">-</div>
+                                <div class="stat-label">Sent</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value blue" id="emailThreeRemaining">-</div>
+                                <div class="stat-label">Remaining</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="emailThreeSent24h">-</div>
+                                <div class="stat-label">Last 24 Hours</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value red" id="emailThreeFailed">-</div>
+                                <div class="stat-label">Failed</div>
+                            </div>
+                        </div>
+                        <!-- Click Performance - Now tracked via GA4 -->
+                        <div style="margin-top: 15px; padding: 12px; background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 8px; border-left: 4px solid #0ea5e9;">
+                            <div style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem;">
+                                <span>&#128202;</span>
+                                <span><strong>Click Tracking via GA4</strong> - See Website tab, filter by medium = email</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-card" style="margin-top: 30px;">
+                        <h3>Recent Sends</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Time (PT)</th>
+                                    <th>Email</th>
+                                    <th>Name</th>
+                                    <th>Variant</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="emailThreeRecentSendsBody">
+                                <tr><td colspan="5" class="no-data-message">Loading...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Farmasius Campaign Sub-Tab Content -->
+                <div id="emailFarmasiusTab" class="campaign-content">
+                    <!-- Campaign Progress -->
+                    <h2 class="section-title">Campaign Progress <span class="campaign-label farmasius">Farmasius</span></h2>
+                    <div class="section-card" style="margin-bottom: 30px;">
+                        <h3>Overall Send Progress</h3>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar" id="emailFarmasiusProgressBar" style="width: 0%;">0%</div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+                            <span><strong id="emailFarmasiusTotalSent">0</strong> sent</span>
+                            <span><strong id="emailFarmasiusTotalRemaining">0</strong> remaining</span>
+                            <span><strong id="emailFarmasiusTotalContacts">0</strong> total</span>
+                        </div>
+                    </div>
+
+                    <div class="section-card">
+                        <h3>Send Statistics</h3>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-value" id="emailFarmasiusTotal">-</div>
+                                <div class="stat-label">Total Contacts</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value green" id="emailFarmasiusSent">-</div>
+                                <div class="stat-label">Sent</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value blue" id="emailFarmasiusRemaining">-</div>
+                                <div class="stat-label">Remaining</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="emailFarmasiusSent24h">-</div>
+                                <div class="stat-label">Last 24 Hours</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value red" id="emailFarmasiusFailed">-</div>
+                                <div class="stat-label">Failed</div>
+                            </div>
+                        </div>
+                        <!-- Click Performance - Now tracked via GA4 -->
+                        <div style="margin-top: 15px; padding: 12px; background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 8px; border-left: 4px solid #0ea5e9;">
+                            <div style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem;">
+                                <span>&#128202;</span>
+                                <span><strong>Click Tracking via GA4</strong> - See Website tab, filter by medium = email</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-card" style="margin-top: 30px;">
+                        <h3>Recent Sends</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Time (PT)</th>
+                                    <th>Email</th>
+                                    <th>Name</th>
+                                    <th>Variant</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="emailFarmasiusRecentSendsBody">
+                                <tr><td colspan="5" class="no-data-message">Loading...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
                 <!-- Campaign Comparison Tab Content -->
                 <div id="emailComparisonTab" class="campaign-content">
                     <h2 class="section-title">&#128202; Campaign Performance Comparison</h2>
@@ -2752,7 +2904,9 @@
             { id: 'paparazzi', name: 'PAPARAZZI CAMPAIGN', color: '#a16207' },
             { id: 'pruvit', name: 'PRUVIT CAMPAIGN', color: '#7c3aed' },
             { id: 'scentsy', name: 'SCENTSY CAMPAIGN', color: '#2e7d32' },
-            { id: 'mpg', name: 'MPG CAMPAIGN', color: '#3730a3' }
+            { id: 'mpg', name: 'MPG CAMPAIGN', color: '#3730a3' },
+            { id: 'three', name: 'THREE CAMPAIGN', color: '#be185d' },
+            { id: 'farmasius', name: 'FARMASIUS CAMPAIGN', color: '#0891b2' }
         ];
 
         // Generate campaign cards dynamically
@@ -3208,6 +3362,16 @@
                 const mpg = campaigns.mpg || {};
                 document.getElementById('execMpgSent').textContent = formatNumber(mpg.sent || 0);
                 document.getElementById('execMpgRemaining').textContent = formatNumber(mpg.remaining || 0);
+
+                // Three Campaign
+                const three = campaigns.three || {};
+                document.getElementById('execThreeSent').textContent = formatNumber(three.sent || 0);
+                document.getElementById('execThreeRemaining').textContent = formatNumber(three.remaining || 0);
+
+                // Farmasius Campaign
+                const farmasius = campaigns.farmasius || {};
+                document.getElementById('execFarmasiusSent').textContent = formatNumber(farmasius.sent || 0);
+                document.getElementById('execFarmasiusRemaining').textContent = formatNumber(farmasius.remaining || 0);
             }
 
             // GA4 Campaign Traffic (from date-range website data)
@@ -3771,6 +3935,110 @@
                 document.getElementById('emailMpgTabBadge').textContent = formatNumber(mpgSent) + ' sent';
             }
 
+            // ==================== THREE CAMPAIGN ====================
+            if (emailStatsData.threeCampaign) {
+                const three = emailStatsData.threeCampaign;
+
+                // Progress bar
+                const threeTotal = three.campaign?.total || 1;
+                const threeSent = three.campaign?.sent || 0;
+                const threeProgress = (threeSent / threeTotal * 100);
+
+                document.getElementById('emailThreeProgressBar').style.width = threeProgress + '%';
+                document.getElementById('emailThreeProgressBar').textContent = threeProgress.toFixed(1) + '%';
+                document.getElementById('emailThreeTotalSent').textContent = formatNumber(threeSent);
+                document.getElementById('emailThreeTotalRemaining').textContent = formatNumber(three.campaign?.remaining || 0);
+                document.getElementById('emailThreeTotalContacts').textContent = formatNumber(three.campaign?.total || 0);
+
+                // Stats cards
+                document.getElementById('emailThreeTotal').textContent = formatNumber(three.campaign?.total || 0);
+                document.getElementById('emailThreeSent').textContent = formatNumber(threeSent);
+                document.getElementById('emailThreeRemaining').textContent = formatNumber(three.campaign?.remaining || 0);
+                document.getElementById('emailThreeSent24h').textContent = formatNumber(three.last24h?.sent || 0);
+
+                // Failed count (clicks tracked via GA4)
+                if (three.tracking) {
+                    document.getElementById('emailThreeFailed').textContent = formatNumber(three.tracking.failed || 0);
+                }
+
+                // Recent sends
+                const threeTbody = document.getElementById('emailThreeRecentSendsBody');
+                if (three.recentSends && three.recentSends.length > 0) {
+                    threeTbody.innerHTML = three.recentSends.map(send => {
+                        const variantBadge = getVariantBadge(send.subjectTag);
+                        const statusBadge = send.clicked
+                            ? '<span class="badge badge-clicked">Clicked</span>'
+                            : '<span class="badge badge-sent">Sent</span>';
+                        return `
+                            <tr>
+                                <td>${escapeHtml(send.time || '')}</td>
+                                <td>${escapeHtml(send.email || '')}</td>
+                                <td>${escapeHtml(send.name || '')}</td>
+                                <td>${variantBadge}</td>
+                                <td>${statusBadge}</td>
+                            </tr>
+                        `;
+                    }).join('');
+                } else {
+                    threeTbody.innerHTML = '<tr><td colspan="5" class="no-data-message">No recent sends</td></tr>';
+                }
+
+                // Update tab badge
+                document.getElementById('emailThreeTabBadge').textContent = formatNumber(threeSent) + ' sent';
+            }
+
+            // ==================== FARMASIUS CAMPAIGN ====================
+            if (emailStatsData.farmasiusCampaign) {
+                const farmasius = emailStatsData.farmasiusCampaign;
+
+                // Progress bar
+                const farmasiusTotal = farmasius.campaign?.total || 1;
+                const farmasiusSent = farmasius.campaign?.sent || 0;
+                const farmasiusProgress = (farmasiusSent / farmasiusTotal * 100);
+
+                document.getElementById('emailFarmasiusProgressBar').style.width = farmasiusProgress + '%';
+                document.getElementById('emailFarmasiusProgressBar').textContent = farmasiusProgress.toFixed(1) + '%';
+                document.getElementById('emailFarmasiusTotalSent').textContent = formatNumber(farmasiusSent);
+                document.getElementById('emailFarmasiusTotalRemaining').textContent = formatNumber(farmasius.campaign?.remaining || 0);
+                document.getElementById('emailFarmasiusTotalContacts').textContent = formatNumber(farmasius.campaign?.total || 0);
+
+                // Stats cards
+                document.getElementById('emailFarmasiusTotal').textContent = formatNumber(farmasius.campaign?.total || 0);
+                document.getElementById('emailFarmasiusSent').textContent = formatNumber(farmasiusSent);
+                document.getElementById('emailFarmasiusRemaining').textContent = formatNumber(farmasius.campaign?.remaining || 0);
+                document.getElementById('emailFarmasiusSent24h').textContent = formatNumber(farmasius.last24h?.sent || 0);
+
+                // Failed count (clicks tracked via GA4)
+                if (farmasius.tracking) {
+                    document.getElementById('emailFarmasiusFailed').textContent = formatNumber(farmasius.tracking.failed || 0);
+                }
+
+                // Recent sends
+                const farmasiusTbody = document.getElementById('emailFarmasiusRecentSendsBody');
+                if (farmasius.recentSends && farmasius.recentSends.length > 0) {
+                    farmasiusTbody.innerHTML = farmasius.recentSends.map(send => {
+                        const variantBadge = getVariantBadge(send.subjectTag);
+                        const statusBadge = send.clicked
+                            ? '<span class="badge badge-clicked">Clicked</span>'
+                            : '<span class="badge badge-sent">Sent</span>';
+                        return `
+                            <tr>
+                                <td>${escapeHtml(send.time || '')}</td>
+                                <td>${escapeHtml(send.email || '')}</td>
+                                <td>${escapeHtml(send.name || '')}</td>
+                                <td>${variantBadge}</td>
+                                <td>${statusBadge}</td>
+                            </tr>
+                        `;
+                    }).join('');
+                } else {
+                    farmasiusTbody.innerHTML = '<tr><td colspan="5" class="no-data-message">No recent sends</td></tr>';
+                }
+
+                // Update tab badge
+                document.getElementById('emailFarmasiusTabBadge').textContent = formatNumber(farmasiusSent) + ' sent';
+            }
+
             // ==================== GA4 EMAIL TRAFFIC ====================
             if (emailStatsData.ga4) {
                 const trafficContent = document.getElementById('emailCampaignTrafficContent');
@@ -3941,7 +4209,9 @@
                     { key: 'paparazzi', name: 'Paparazzi', data: campaigns.paparazzi },
                     { key: 'pruvit', name: 'Pruvit', data: campaigns.pruvit },
                     { key: 'scentsy', name: 'Scentsy', data: campaigns.scentsy },
-                    { key: 'mpg', name: 'MPG', data: campaigns.mpg }
+                    { key: 'mpg', name: 'MPG', data: campaigns.mpg },
+                    { key: 'three', name: 'Three', data: campaigns.three },
+                    { key: 'farmasius', name: 'Farmasius', data: campaigns.farmasius }
                 ];
 
                 campaignList.forEach(c => {

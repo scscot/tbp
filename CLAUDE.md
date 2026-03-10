@@ -117,7 +117,7 @@ The Team Build Pro ecosystem is a comprehensive, interconnected network of digit
 | Email Click Rate | Tracked via GA4 UTM parameters | 3%+ |
 | Email Open Rate | N/A (disabled for deliverability) | - |
 | Website Languages | 4 (EN, ES, PT, DE) | 4 |
-| Blog Posts (per language) | 29 | 30+ |
+| Blog Posts (per language) | 31 | 35+ |
 | Company Landing Pages | 114 (EN/ES) | 150+ |
 | App Languages | 4 (EN, ES, PT, DE) | 4 |
 
@@ -202,26 +202,26 @@ The world's first AI-powered platform that lets **prospects pre-build their team
 │   ├── faq.html          # FAQ with dynamic filtering
 │   ├── books.html        # Books landing page
 │   ├── companies/        # Company-specific recruiting guides (114 pages)
-│   └── blog/             # Blog posts (29 articles)
+│   └── blog/             # Blog posts (31 articles)
 ├── web-es/                # Spanish website (es.teambuildpro.com)
 │   ├── index.html        # Spanish homepage
 │   ├── faq.html          # Spanish FAQ
 │   ├── books.html        # Spanish books page
-│   ├── blog/             # Spanish blog (29 translated posts)
+│   ├── blog/             # Spanish blog (31 translated posts)
 │   ├── sitemap.xml       # Spanish sitemap
 │   └── robots.txt        # Spanish search engine directives
 ├── web-pt/                # Portuguese website (pt.teambuildpro.com)
 │   ├── index.html        # Portuguese homepage
 │   ├── faq.html          # Portuguese FAQ
 │   ├── books.html        # Portuguese books page
-│   ├── blog/             # Portuguese blog (29 translated posts)
+│   ├── blog/             # Portuguese blog (31 translated posts)
 │   ├── sitemap.xml       # Portuguese sitemap
 │   └── robots.txt        # Portuguese search engine directives
 ├── web-de/                # German website (de.teambuildpro.com)
 │   ├── index.html        # German homepage (3x2 screenshot grid)
 │   ├── faq.html          # German FAQ
 │   ├── books.html        # German books page
-│   ├── blog/             # German blog (29 translated posts)
+│   ├── blog/             # German blog (31 translated posts)
 │   ├── sitemap.xml       # German sitemap
 │   └── robots.txt        # German search engine directives
 ├── sscott/                # Stephen Scott author website (stephenscott.us)
@@ -384,7 +384,7 @@ All four main sites have identical structure:
 - `/faq.html` - Dynamic FAQ (audience-aware, 8 questions)
 - `/books.html` - Books landing page with AI/MLM book covers
 - `/blog.html` - Blog index
-- `/blog/` - 29 blog posts (auto-generated twice weekly via GitHub Actions)
+- `/blog/` - 31 blog posts (auto-generated twice weekly via GitHub Actions)
 - `/companies.html` - 114 company-specific recruiting guides
 - `/companies/ai-recruiting-[company].html` - Individual company pages
 - `/contact_us.html` - Contact form
@@ -399,7 +399,7 @@ All four main sites have identical structure:
 - `/faq.html` - Spanish FAQ (8 questions with accordion)
 - `/books.html` - Spanish books page (MLM-Cover-ES.jpg)
 - `/blog.html` - Spanish blog index
-- `/blog/` - 29 translated blog posts (same titles as EN)
+- `/blog/` - 31 translated blog posts (same titles as EN)
 - `/companies.html` - Company recruiting guides index (114 companies with pagination)
 - `/companies/` - 114 company-specific recruiting guides in Spanish
 - `/contact_us.html` - Spanish contact form
@@ -413,7 +413,7 @@ All four main sites have identical structure:
 - `/faq.html` - Portuguese FAQ (8 questions with accordion)
 - `/books.html` - Portuguese books page (MLM-Cover-BR.jpg)
 - `/blog.html` - Portuguese blog index
-- `/blog/` - 29 translated blog posts (same titles as EN)
+- `/blog/` - 31 translated blog posts (same titles as EN)
 - `/companies.html` - Company recruiting guides index (39 companies with pagination)
 - `/companies/` - 39 company-specific recruiting guides in Portuguese
 - `/contact_us.html` - Portuguese contact form
@@ -427,7 +427,7 @@ All four main sites have identical structure:
 - `/faq.html` - German FAQ (8 questions with accordion)
 - `/books.html` - German books page (MLM-Cover-DE.jpg)
 - `/blog.html` - German blog index
-- `/blog/` - 29 translated blog posts (same titles as EN)
+- `/blog/` - 31 translated blog posts (same titles as EN)
 - `/companies.html` - Company recruiting guides index (20 companies with pagination)
 - `/companies/` - 20 company-specific recruiting guides in German
 - `/contact_us.html` - German contact form
@@ -610,16 +610,16 @@ The email campaign system consists of multiple parallel campaigns targeting diff
 **Email Configuration:**
 - **Sending Domain**: `news.teambuildpro.com`
 - **From**: `Stephen Scott <stephen@news.teambuildpro.com>`
-- **Template**: Mailgun-hosted 'mailer' template v16 (gradient header, white card design)
-  - All campaigns use v16 with single subject line "Build your downline with AI"
-  - Language variants: v16 (EN), v16-es (ES), v16-de (DE), v16-pt (PT) - all fully localized
-  - Legacy templates (v9/v10/v11/v12/v14) deprecated - tags retained for historical analytics
-- **Subject Line**: "Build your downline with AI" (localized per language)
-  - ES: "Construye tu downline con IA"
-  - DE: "Baue deine Downline mit KI auf"
-  - PT: "Construa sua downline com IA"
-  - Tags: `{campaign}_v16` for English, `{campaign}_v16_{lang}` for multilingual campaigns
-  - **Note**: A/B testing discontinued Feb 25, 2026 - all campaigns standardized on v16
+- **Template**: Mailgun-hosted 'mailer' template with multiple versions:
+  - **V18 A/B/C**: Primary templates with personalized greeting ("Hello {{first_name}}")
+    - V18-A: Curiosity Hook - "What if your next recruit joined with 12 people?"
+    - V18-B: Pain Point Hook - "75% of your recruits will quit this year (here's why)"
+    - V18-C: Direct Value Hook - "Give your prospects an AI recruiting coach"
+  - **V19 A/B/C**: Generic greeting templates ("Greetings!") for campaigns without usable names
+    - Same subject lines as V18, but uses "Greetings!" instead of "Hello {{first_name}}"
+  - **V16**: Legacy single-template campaigns (being phased out)
+  - Language variants: EN, ES, PT, DE (where applicable per campaign)
+- **A/B/C Distribution**: 33% per variant for statistically valid comparison
 - **Tracking**: Click tracking via GA4 UTM parameters in direct landing page URLs; open tracking disabled (pixel removed for deliverability)
 - **DNS**: SPF + DKIM + DMARC configured for 10/10 mail-tester.com score
 - **Mailgun Credentials**: `functions/.env.teambuilder-plus-fe74d` (TBP_MAILGUN_* variables)
@@ -653,11 +653,14 @@ The email campaign system consists of multiple parallel campaigns targeting diff
 ### BFH Campaign (Mailgun API - Automated)
 - **Function**: `sendHourlyBfhCampaign` in `functions/email-campaign-bfh.js`
 - **Tags**: `bfh_campaign`, `tracked`
-- **Schedule**: 10am, 1pm, 4pm, 7pm PT (4 runs/day, staggered from Main and Contacts)
+- **Schedule**: 12:30am, 6:30am, 12:30pm, 6:30pm PT (4 runs/day, every 6 hours)
 - **Data Source**: Firestore `bfh_contacts` collection
 - **Control Variable**: BFH_CAMPAIGN_ENABLED
 - **Batch Size**: Dynamic via Firestore `config/emailCampaign.batchSizeBfh` (or falls back to shared `batchSize`)
-- **Subject**: V16 template per language (`bfh_v16_en`, `bfh_v16_es`, `bfh_v16_pt`, `bfh_v16_de`)
+- **V18 A/B/C Testing** (33% distribution each, multilingual EN/ES/PT/DE):
+  - V18-A: "What if your next recruit joined with 12 people?" (Curiosity Hook) - `bfh_v18_a_{lang}`
+  - V18-B: "75% of your recruits will quit this year (here's why)" (Pain Point Hook) - `bfh_v18_b_{lang}`
+  - V18-C: "Give your prospects an AI recruiting coach" (Direct Value Hook) - `bfh_v18_c_{lang}`
 - **Query**: `bfhScraped == true && emailSearched == true && email != null && sent == false`
 - **Template Variables**: `first_name`, `tracked_cta_url`, `unsubscribe_url`
 - **Scripts**:
@@ -667,22 +670,28 @@ The email campaign system consists of multiple parallel campaigns targeting diff
 ### FSR Campaign (Mailgun API - Automated)
 - **Function**: `sendFsrContactsCampaign` in `functions/email-campaign-fsr.js`
 - **Tags**: `fsr_campaign`, `tracked`
-- **Schedule**: 10am, 1pm, 4pm, 7pm PT (4 runs/day, same as BFH)
+- **Schedule**: 12:50am, 6:50am, 12:50pm, 6:50pm PT (4 runs/day, every 6 hours)
 - **Data Source**: Firestore `fsr_contacts` collection (scraped from findsalesrep.com)
 - **Control Variable**: FSR_CAMPAIGN_ENABLED
 - **Batch Size**: Dynamic via Firestore `config/emailCampaign.batchSizeFsr`
-- **Subject**: V16 template (`fsr_v16`) - "Build your downline with AI"
+- **V18 A/B/C Testing** (33% distribution each, EN only):
+  - V18-A: "What if your next recruit joined with 12 people?" (Curiosity Hook) - `fsr_v18_a`
+  - V18-B: "75% of your recruits will quit this year (here's why)" (Pain Point Hook) - `fsr_v18_b`
+  - V18-C: "Give your prospects an AI recruiting coach" (Direct Value Hook) - `fsr_v18_c`
 - **Query**: `sent == false && email != null`, ordered by randomIndex
 - **Template Variables**: `first_name`, `tracked_cta_url`, `unsubscribe_url`
 
 ### Paparazzi Campaign (Mailgun API - Automated)
 - **Function**: `sendHourlyPaparazziCampaign` in `functions/email-campaign-paparazzi.js`
 - **Tags**: `paparazzi_campaign`, `tracked`
-- **Schedule**: Every 2 hours (12x daily) - 40 minutes past the hour
+- **Schedule**: 12:20am, 6:20am, 12:20pm, 6:20pm PT (4 runs/day, every 6 hours)
 - **Data Source**: Firestore `paparazzi_contacts` collection (scraped from Paparazzi distributor pages)
 - **Control Variable**: PAPARAZZI_CAMPAIGN_ENABLED
 - **Batch Size**: Dynamic via Firestore `config/emailCampaign.batchSizePaparazzi`
-- **Subject**: V16 template (`paparazzi_v16`) - "Build your downline with AI"
+- **V18 A/B/C Testing** (33% distribution each, EN only):
+  - V18-A: "What if your next recruit joined with 12 people?" (Curiosity Hook) - `paparazzi_v18_a`
+  - V18-B: "75% of your recruits will quit this year (here's why)" (Pain Point Hook) - `paparazzi_v18_b`
+  - V18-C: "Give your prospects an AI recruiting coach" (Direct Value Hook) - `paparazzi_v18_c`
 - **Query**: `sent == false && email != null`, ordered by randomIndex
 - **Template Variables**: `first_name`, `tracked_cta_url`, `unsubscribe_url`
 - **Test Endpoint**: `testPaparazziEmail` - HTTP endpoint for spam monitoring workflow
@@ -694,7 +703,10 @@ The email campaign system consists of multiple parallel campaigns targeting diff
 - **Data Source**: Firestore `pruvit_contacts` collection (scraped from Pruvit referral pages)
 - **Control Variable**: PRUVIT_CAMPAIGN_ENABLED
 - **Batch Size**: Dynamic via Firestore `config/emailCampaign.batchSizePruvit`
-- **Subject**: V16 template with language variants (`pruvit_v16_en`, `pruvit_v16_es`, `pruvit_v16_de`) - "Build your downline with AI"
+- **V18 A/B/C Testing** (33% distribution each, EN only):
+  - V18-A: "What if your next recruit joined with 12 people?" (Curiosity Hook) - `pruvit_v18_a`
+  - V18-B: "75% of your recruits will quit this year (here's why)" (Pain Point Hook) - `pruvit_v18_b`
+  - V18-C: "Give your prospects an AI recruiting coach" (Direct Value Hook) - `pruvit_v18_c`
 - **Query**: `sent == false && email != null`, ordered by randomIndex
 - **Template Variables**: `first_name`, `tracked_cta_url`, `unsubscribe_url`
 - **Language Selection**: Based on country field (EN default, ES for Spain/Mexico/etc., DE for Germany/Austria/etc.)
@@ -745,9 +757,13 @@ The email campaign system consists of multiple parallel campaigns targeting diff
 - **Data Source**: Firestore `three_contacts` collection (scraped from THREE International rep pages)
 - **Control Variable**: THREE_CAMPAIGN_ENABLED
 - **Batch Size**: Dynamic via Firestore `config/emailCampaign.batchSizeThree`
-- **Subject**: V17 template (`three_v17`) - "Build your downline with AI"
+- **V19 A/B/C Testing** (33% distribution each, EN only):
+  - V19-A: "What if your next recruit joined with 12 people?" (Curiosity Hook) - `three_v19_a`
+  - V19-B: "75% of your recruits will quit this year (here's why)" (Pain Point Hook) - `three_v19_b`
+  - V19-C: "Give your prospects an AI recruiting coach" (Direct Value Hook) - `three_v19_c`
+  - **Note**: V19 uses generic "Greetings!" greeting since THREE pages don't have usable names
 - **Query**: `status == 'pending' && sent == false`, ordered by randomIndex
-- **Template Variables**: `first_name`, `tracked_cta_url`, `unsubscribe_url`
+- **Template Variables**: `tracked_cta_url`, `unsubscribe_url` (no first_name - generic greeting)
 
 - **THREE Data Pipeline** (Mar 2026):
   - `scripts/three-url-discovery.js` - Discovers subdomains from Common Crawl + Wayback + SerpAPI
@@ -757,6 +773,38 @@ The email campaign system consists of multiple parallel campaigns targeting diff
   - URL Pattern: `{subdomain}.threeinternational.com`
   - Collections: `three_discovered_subdomains` (URLs), `three_contacts` (contacts)
   - Contact extraction: Email from mailto link, phone from fa-phone icon, name from Facebook link href or subdomain fallback
+  - **Status**: Disabled - contacts deleted due to unusable names (subdomain-based only)
+
+### MPG Campaign (Mailgun API - Automated)
+- **Function**: `sendHourlyMpgCampaign` in `functions/email-campaign-mpg.js`
+- **Tags**: `mpg_campaign`, `tracked`
+- **Schedule**: 12:55 AM, 6:55 AM, 12:55 PM, 6:55 PM PT (4x daily)
+- **Data Source**: Firestore `mpg_contacts` collection (scraped from Marketplace Global rep pages)
+- **Control Variable**: MPG_CAMPAIGN_ENABLED
+- **Batch Size**: Dynamic via Firestore `config/emailCampaign.batchSizeMpg`
+- **V18 A/B/C Testing** (33% distribution each, EN only):
+  - V18-A: "What if your next recruit joined with 12 people?" (Curiosity Hook) - `mpg_v18_a`
+  - V18-B: "75% of your recruits will quit this year (here's why)" (Pain Point Hook) - `mpg_v18_b`
+  - V18-C: "Give your prospects an AI recruiting coach" (Direct Value Hook) - `mpg_v18_c`
+- **Query**: `status == 'pending' && sent == false`, ordered by randomIndex
+- **Template Variables**: `first_name`, `tracked_cta_url`, `unsubscribe_url`
+
+### Farmasius Campaign (Mailgun API - Automated)
+- **Function**: `sendHourlyFarmasiusCampaign` in `functions/email-campaign-farmasius.js`
+- **Tags**: `farmasius_campaign`, `tracked`
+- **Schedule**: 12:45 AM, 6:45 AM, 12:45 PM, 6:45 PM PT (4x daily)
+- **Data Source**: Firestore `farmasius_contacts` collection (scraped from Farmasi country domains)
+- **Control Variable**: FARMASIUS_CAMPAIGN_ENABLED
+- **Batch Size**: Dynamic via Firestore `config/emailCampaign.batchSizeFarmasius`
+- **V18 A/B/C Testing** (33% distribution each, multilingual EN/ES/PT/DE):
+  - V18-A: "What if your next recruit joined with 12 people?" (Curiosity Hook) - `farmasius_v18_a_{lang}`
+  - V18-B: "75% of your recruits will quit this year (here's why)" (Pain Point Hook) - `farmasius_v18_b_{lang}`
+  - V18-C: "Give your prospects an AI recruiting coach" (Direct Value Hook) - `farmasius_v18_c_{lang}`
+- **Query**: `status == 'pending' && sent == false`, ordered by randomIndex
+- **Template Variables**: `first_name`, `tracked_cta_url`, `unsubscribe_url`
+- **Language Selection**: From contact.language field (en/es/pt/de supported, others fallback to English)
+- **Supported Countries**: 27+ Farmasi domains including US, UK, Spain, Germany, Portugal, and others
+- **Status**: Blocked - scraper disabled due to 403 bot protection on all Farmasi domains (Mar 9)
 
 - **FSR Two-Script Architecture** (Feb 2026):
   - `scripts/fsr-id-harvester.js` - Fast ID harvester (no CAPTCHA, 12x daily, 50 pages/run)
@@ -790,7 +838,9 @@ The email campaign system consists of multiple parallel campaigns targeting diff
   | Paparazzi | `paparazzi_contacts` | `batchSizePaparazzi` | Active |
   | Pruvit | `pruvit_contacts` | `batchSizePruvit` | Active |
   | Scentsy | `scentsy_contacts` | `scentsyBatchSize` | Active |
-  | THREE | `three_contacts` | `batchSizeThree` | Active |
+  | THREE | `three_contacts` | `batchSizeThree` | Disabled |
+  | MPG | `mpg_contacts` | `batchSizeMpg` | Active |
+  | Farmasius | `farmasius_contacts` | `batchSizeFarmasius` | Blocked |
 - **Benefits**:
   - Self-balancing: campaigns with more contacts automatically get higher batch sizes
   - Auto-adjusts as scrapers add contacts or queues deplete
@@ -1995,7 +2045,8 @@ Main Campaign disabled. ALL active campaigns use V18 A/B/C testing (33% distribu
 | FSR Campaign | **V18 A/B/C** | Dynamic batch sizing · EN only |
 | Pruvit Campaign | **V18 A/B/C** | Dynamic batch sizing · EN only |
 | Scentsy Campaign | **V18 A/B/C** | Dynamic batch sizing · EN/ES/DE |
-| Farmasius Campaign | **V18 A/B/C** | Dynamic batch sizing · EN/ES/PT/DE |
+| Farmasius Campaign | Blocked | 403 bot protection · EN/ES/PT/DE |
+| MPG Campaign | **V18 A/B/C** | Dynamic batch sizing · EN only |
 | Domain Warming | **Daily** | 6am PT · 4-week schedule (40%→60%→80%→100%) |
 | Contacts Campaign | Complete | 826 contacts (cleaned Feb 15) |
 | Email Sending | Mailgun API | Via Mailgun, news.teambuildpro.com |
@@ -2006,7 +2057,7 @@ Main Campaign disabled. ALL active campaigns use V18 A/B/C testing (33% distribu
 | Email Tracking | GA4 | Clicks via UTM parameters; opens disabled |
 | Analytics Dashboard | Enhanced | 6 campaign cards, GA4 click tracking, A/B testing removed (Feb 25) |
 | Push Notifications | Working | profile_reminder, trial_expired verified |
-| Blog Automation | Running | Mon/Thu schedule, 4 languages (29/29/29/29 posts) |
+| Blog Automation | Running | Mon/Thu schedule, 4 languages (31/31/31/31 posts) |
 | Sitemap Pings | Active | Google + Bing pinged after each blog deploy |
 | URL Discovery | Active | Every 2h, 120 companies/batch (processing 1,082 companies) |
 | Contacts Seeder | Active | Every 4h, 3 sources (Common Crawl + Wayback + crt.sh) |
@@ -2025,6 +2076,7 @@ Main Campaign disabled. ALL active campaigns use V18 A/B/C testing (33% distribu
 | THREE Scraper | Disabled | Name extraction unusable (subdomain-based names only) |
 | THREE Campaign | Disabled | Batch size 0 - contacts deleted |
 | THREE Collection | 0 contacts | Deleted Mar 10 - names not usable for personalization |
+| MPG Collection | Active | Scraped from Marketplace Global rep pages |
 | Spam Monitor | Active | 5x daily (6am/9am/12pm/3pm/6pm PT), Gmail API check, auto-disable on spam |
 | PreIntake.ai | Autonomous | See `preintake/CLAUDE.md` for details |
 
