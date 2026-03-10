@@ -270,6 +270,35 @@ The world's first AI-powered platform that lets **prospects pre-build their team
 - Language-specific domains: es.teambuildpro.com (Spanish), pt.teambuildpro.com (Portuguese), de.teambuildpro.com (German)
 - Share screen uses language selection to route to appropriate domain
 
+### MCP & Claude Skills Integration
+
+**Model Context Protocol (MCP)** servers enable Claude Code to connect directly to project data sources.
+
+**Configured MCP Servers** (`.mcp.json`):
+
+| Server | Purpose | Authentication |
+|--------|---------|----------------|
+| `firebase` | Firebase/Firestore operations | `secrets/serviceAccountKey.json` |
+| `firestore` | Direct Firestore queries | `secrets/serviceAccountKey.json` |
+| `google-analytics` | GA4 data access | `secrets/ga4-service-account.json` |
+
+**Usage**: MCP servers auto-start when Claude Code loads. Query Firestore collections or GA4 metrics directly in conversation.
+
+**Claude Skills** (`.claude/skills/`) provide reusable workflows:
+
+| Skill | Command | Purpose |
+|-------|---------|---------|
+| `generate-blog` | `/generate-blog [title]` | Create blog posts in 4 languages |
+| `optimize-email` | `/optimize-email [campaign]` | Analyze campaign performance |
+
+**Skill Modes**:
+- `/generate-blog "Title"` - Generate specific post
+- `/generate-blog --research` - Research trending topics
+- `/generate-blog --full-auto` - Full automation workflow
+- `/optimize-email --all` - All campaigns overview
+- `/optimize-email bfh` - Single campaign analysis
+- `/optimize-email --deliverability` - Spam/bounce check
+
 ---
 
 ## 💬 Messaging & Positioning
@@ -1606,6 +1635,20 @@ Corporate email domains are excluded from all contact collections using a **blac
 - ✅ **Multi-Language Websites** (Nov 21-30): Launched ES, PT, DE sites with full content parity
 - ✅ **App Store Localizations** (Dec 2025): App names localized across iOS and Android
   - ES: "Team Build Pro: IA Equipo", PT: "Team Build Pro: IA Equipe", DE: "Team Build Pro: KI Team"
+
+**MCP & Claude Skills Integration** (Mar 10, 2026)
+- ✅ **MCP Server Configuration**: Added `.mcp.json` with Firestore, Firebase, and GA4 MCP servers
+  - Enables real-time Firestore queries directly in Claude Code
+  - GA4 metrics accessible without running separate scripts
+  - Service account authentication via existing credentials
+- ✅ **Blog Generation Skill** (`/generate-blog`): Reusable workflow for AI blog creation
+  - Supports `--research`, `--generate`, `--full-auto` modes
+  - Generates posts in EN, ES, PT, DE
+  - Includes terminology balance (MLM/Direct Sales/Network Marketing)
+- ✅ **Email Optimization Skill** (`/optimize-email`): Campaign analysis workflow
+  - Campaign status checks, deliverability analysis
+  - Batch size optimization recommendations
+  - Integration with GA4 for click tracking analysis
 
 **Email Campaign Infrastructure**
 - ✅ **Subject Line Update to Imperative Form** (Mar 10, 2026): Changed to "Build your downline with AI"

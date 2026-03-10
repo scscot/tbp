@@ -22,6 +22,7 @@ flutter_*.log
 !preintake/PLAN.md
 !CLAUDE.md
 !TEAM_BUILD_PRO_KNOWLEDGE.md
+!.claude/**/*.md
 
 # === Environment Variables and Secrets ===
 # DO NOT commit sensitive environment variables or secrets.
@@ -35,6 +36,9 @@ functions/ga4-service-account.json
 # Gmail OAuth credentials (spam monitor)
 scripts/gmail-credentials.json
 scripts/gmail-token.json
+
+# MCP Server Configuration (machine-specific paths)
+.mcp.json
 
 # === IDE Specific Ignores ===
 # IntelliJ / Android Studio
