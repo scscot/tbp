@@ -23,6 +23,7 @@ flutter_*.log
 !CLAUDE.md
 !TEAM_BUILD_PRO_KNOWLEDGE.md
 !.claude/**/*.md
+!preintake/.claude/**/*.md
 
 # === Environment Variables and Secrets ===
 # DO NOT commit sensitive environment variables or secrets.
