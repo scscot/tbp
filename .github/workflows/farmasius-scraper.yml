@@ -9,6 +9,8 @@
 # STATUS: DISABLED - Farmasi sites returning 403 (bot protection/Cloudflare)
 # All 27 international domains are blocking requests. Would require Puppeteer+stealth
 # or proxy rotation to bypass, which isn't worth the investment given other working pipelines.
+# US domain (farmasius.com) worked previously - 1,036 US contacts already scraped.
+# International domains (farmasi.es, farmasi.co.uk, etc.) all return 403.
 # Schedule was: Every 4 hours (6x daily)
 
 name: Farmasius Scraper
