@@ -522,7 +522,7 @@ All four main sites have identical structure:
 - **Data sources**: Firestore (send tracking) + GA4 (click tracking via `sessionMedium: 'email'`)
 - **Tracking**: Sends tracked via Firestore; clicks tracked via GA4 UTM parameters; open tracking disabled
 - **Metrics**: Campaign progress (sent/remaining/failed), subject tag breakdown
-- **Subject tags**: All campaigns use V16 template tags (e.g., `main_v16`, `bfh_v16_en`); legacy v9/v10/v14 tags retained for historical data
+- **Subject tags**: All campaigns use V18 A/B/C template tags (e.g., `main_v18_a`, `bfh_v18_b_en`); legacy v9/v10/v14/v16 tags retained for historical data
 - Backend: `getEmailCampaignStats` Cloud Function
 
 ### Core Analytics Scripts
@@ -706,13 +706,13 @@ The email campaign system consists of multiple parallel campaigns targeting diff
 - **Data Source**: Firestore `scentsy_contacts` collection (scraped from Scentsy consultant finder)
 - **Control Variable**: SCENTSY_CAMPAIGN_ENABLED
 - **Batch Size**: Dynamic via Firestore `config/emailCampaign.scentsyBatchSize`
-- **V18 A/B/C Testing** (33% distribution each):
-  - V18-A: "What if your next recruit joined with 12 people?" (Curiosity Hook) - `scentsy_v18_a`
-  - V18-B: "75% of your recruits will quit this year (here's why)" (Pain Point Hook) - `scentsy_v18_b`
-  - V18-C: "Give your prospects an AI recruiting coach" (Direct Value Hook) - `scentsy_v18_c`
+- **V18 A/B/C Testing** (33% distribution each, multilingual EN/ES/DE):
+  - V18-A: "What if your next recruit joined with 12 people?" (Curiosity Hook) - `scentsy_v18_a_{lang}`
+  - V18-B: "75% of your recruits will quit this year (here's why)" (Pain Point Hook) - `scentsy_v18_b_{lang}`
+  - V18-C: "Give your prospects an AI recruiting coach" (Direct Value Hook) - `scentsy_v18_c_{lang}`
 - **Query**: `status == 'pending' && sent == false`, ordered by randomIndex
 - **Template Variables**: `first_name`, `tracked_cta_url`, `unsubscribe_url`
-- **Language**: English only for V18 test phase
+- **Language Selection**: Based on countryCode field (EN: US/CA/GB/AU, ES: MX/ES/AR, DE: DE/AT/CH)
 
 - **Scraper Architecture** (Feb 2026):
   - `scripts/scentsy-scraper.js` - Puppeteer scraper for Scentsy consultant finder
@@ -726,13 +726,13 @@ The email campaign system consists of multiple parallel campaigns targeting diff
 - **Data Source**: Firestore `zinzino_contacts` collection (scraped from Zinzino partner finder)
 - **Control Variable**: ZINZINO_CAMPAIGN_ENABLED
 - **Batch Size**: Dynamic via Firestore `config/emailCampaign.batchSizeZinzino`
-- **V18 A/B/C Testing** (33% distribution each):
-  - V18-A: "What if your next recruit joined with 12 people?" (Curiosity Hook) - `zinzino_v18_a`
-  - V18-B: "75% of your recruits will quit this year (here's why)" (Pain Point Hook) - `zinzino_v18_b`
-  - V18-C: "Give your prospects an AI recruiting coach" (Direct Value Hook) - `zinzino_v18_c`
+- **V18 A/B/C Testing** (33% distribution each, multilingual EN/ES/DE):
+  - V18-A: "What if your next recruit joined with 12 people?" (Curiosity Hook) - `zinzino_v18_a_{lang}`
+  - V18-B: "75% of your recruits will quit this year (here's why)" (Pain Point Hook) - `zinzino_v18_b_{lang}`
+  - V18-C: "Give your prospects an AI recruiting coach" (Direct Value Hook) - `zinzino_v18_c_{lang}`
 - **Query**: `status == 'pending' && sent == false`, ordered by randomIndex
 - **Template Variables**: `first_name`, `tracked_cta_url`, `unsubscribe_url`
-- **Language**: English only for V18 test phase
+- **Language Selection**: Based on country field (EN default, ES: Spain/Mexico/etc., DE: Germany/Austria/etc.)
 
 - **Scraper Architecture**:
   - `scripts/zinzino-scraper.js` - Puppeteer scraper for Zinzino partner finder
@@ -810,7 +810,7 @@ The email campaign system consists of multiple parallel campaigns targeting diff
 - **Click Tracking**: GA4 via UTM parameters in direct landing page URLs (utm_source=mailgun, utm_medium=email, utm_campaign, utm_content)
 - **Open Tracking**: Disabled (tracking pixel removed for deliverability)
 - **GA4 Campaign Traffic**: Filtered by `sessionMedium: 'email'`
-- **Subject Tag Tracking**: By `subjectTag` field - All campaigns use V16 tags (e.g., `main_v16`, `bfh_v16_en`, `scentsy_v16_de`); legacy v9/v10/v14 tags retained for historical data
+- **Subject Tag Tracking**: By `subjectTag` field - All campaigns use V18 A/B/C tags (e.g., `main_v18_a`, `bfh_v18_b_en`, `scentsy_v18_c_de`); legacy v9/v10/v14/v16 tags retained for historical data
 - **Dashboards**: `email-stats.html` (email-focused) and `TBP-analytics.html` (unified analytics with GA4 click tracking)
 
 ### Android Launch Campaign (REMOVED - Jan 2026)
@@ -1847,17 +1847,17 @@ Corporate email domains are excluded from all contact collections using a **blac
 - ✅ **All Scraper-fed Campaigns Active**: Purchased, BFH, Zinzino, FSR, Paparazzi, Pruvit, Scentsy
   - Batch sizes auto-adjust as scrapers add contacts
 
-**V18 A/B/C Testing Implementation (Mar 10, 2026)**
-- ✅ **V18 Templates Created**: 3 variations for conversion optimization testing
+**V18 A/B/C Testing Full Rollout (Mar 10, 2026)**
+- ✅ **ALL 9 Campaigns Migrated**: Complete V18 A/B/C rollout across all TBP email campaigns
   - V18-A: "What if your next recruit joined with 12 people?" (Curiosity Hook)
   - V18-B: "75% of your recruits will quit this year (here's why)" (Pain Point Hook)
   - V18-C: "Give your prospects an AI recruiting coach" (Direct Value Hook)
+- ✅ **Multilingual V18 Templates**: 12 Mailgun templates (3 variants × 4 languages: EN/ES/PT/DE)
+- ✅ **Multilingual Campaigns**: BFH/Farmasius (EN/ES/PT/DE), Scentsy/Zinzino (EN/ES/DE)
+- ✅ **English-Only Campaigns**: Main, Purchased, FSR, Paparazzi, Pruvit
 - ✅ **33% Distribution**: Each variant receives equal traffic for statistical comparison
-- ✅ **Test Campaigns**: Scentsy and Zinzino campaigns migrated to V18 A/B/C testing
-- ✅ **Spam Monitor Updated**: Tests all 3 V18 variants for inbox placement
-- ✅ **All Tests Passed**: All 3 variants confirmed landing in INBOX
+- ✅ **Subject Tags**: `{campaign}_v18_{a|b|c}` (EN) or `{campaign}_v18_{a|b|c}_{lang}` (multilingual)
 - ✅ **Target**: Improve CTR from 0.096% to 1% (10x improvement)
-- ✅ **Subject Tags**: `{campaign}_v18_a`, `{campaign}_v18_b`, `{campaign}_v18_c`
 - ✅ **Documentation Updated**: SKILL.md, TBP-analytics.html, CLAUDE.md synchronized
 
 **V14 Template & Subject Line Update (Mar 1, 2026)**
@@ -1982,23 +1982,24 @@ Corporate email domains are excluded from all contact collections using a **blac
 
 ### Current System Status (Mar 10, 2026)
 
-**PROJECT STATUS: V18 A/B/C TESTING LIVE**
-Main Campaign disabled. Scentsy and Zinzino campaigns use V18 A/B/C testing (33% distribution per variant). Other campaigns use V14 template. Dynamic batch sizing auto-adjusts based on queue sizes with 4-week warming schedule (40%→60%→80%→100%).
+**PROJECT STATUS: V18 A/B/C FULL ROLLOUT**
+Main Campaign disabled. ALL active campaigns use V18 A/B/C testing (33% distribution per variant). Multilingual support: BFH/Farmasius (EN/ES/PT/DE), Scentsy/Zinzino (EN/ES/DE). Dynamic batch sizing auto-adjusts based on queue sizes with 4-week warming schedule (40%→60%→80%→100%).
 
 | Component | Status | Notes |
 |-----------|--------|-------|
 | Main Campaign | Disabled | Batch size 0 (underperforming) |
-| Purchased Campaign | **Active** | Dynamic batch sizing · `purchased_leads` |
-| BFH Campaign | **Active** | Dynamic batch sizing · `bfh_contacts` |
-| Zinzino Campaign | **V18 A/B/C** | Dynamic batch sizing · V18 A/B/C testing |
-| Paparazzi Campaign | Active | Dynamic batch sizing · `paparazzi_contacts` |
-| FSR Campaign | Active | Dynamic batch sizing · `fsr_contacts` |
-| Pruvit Campaign | Active | Dynamic batch sizing · `pruvit_contacts` |
-| Scentsy Campaign | **V18 A/B/C** | Dynamic batch sizing · V18 A/B/C testing |
+| Purchased Campaign | **V18 A/B/C** | Dynamic batch sizing · EN only |
+| BFH Campaign | **V18 A/B/C** | Dynamic batch sizing · EN/ES/PT/DE |
+| Zinzino Campaign | **V18 A/B/C** | Dynamic batch sizing · EN/ES/DE |
+| Paparazzi Campaign | **V18 A/B/C** | Dynamic batch sizing · EN only |
+| FSR Campaign | **V18 A/B/C** | Dynamic batch sizing · EN only |
+| Pruvit Campaign | **V18 A/B/C** | Dynamic batch sizing · EN only |
+| Scentsy Campaign | **V18 A/B/C** | Dynamic batch sizing · EN/ES/DE |
+| Farmasius Campaign | **V18 A/B/C** | Dynamic batch sizing · EN/ES/PT/DE |
 | Domain Warming | **Daily** | 6am PT · 4-week schedule (40%→60%→80%→100%) |
 | Contacts Campaign | Complete | 826 contacts (cleaned Feb 15) |
 | Email Sending | Mailgun API | Via Mailgun, news.teambuildpro.com |
-| Email Templates | V18 A/B/C | Scentsy/Zinzino: V18 A/B/C test · Others: V14 |
+| Email Templates | **V18 A/B/C** | All campaigns: V18 A/B/C (3 variants × 4 languages) |
 | Yahoo Campaign | Removed | File and function deleted (Jan 31) |
 | Android Campaign | Removed | Function and all references deleted |
 | Subscription Reminders | Disabled | Auto-renewal handled by app stores (Feb 19) |

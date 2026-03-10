@@ -2,8 +2,6 @@
 name: optimize-email
 description: Analyze email campaign performance and recommend optimizations. Use when reviewing campaign metrics, troubleshooting deliverability, or planning A/B tests.
 argument-hint: "[campaign-name] or --all or --deliverability"
-allowed-tools: Bash(node *), Bash(cd *), Bash(curl *), Read, Glob, Grep
-disable-model-invocation: true
 ---
 
 # Email Campaign Optimization Skill
@@ -69,16 +67,17 @@ Read the spam monitor script output:
 
 ### Subject Line Analysis
 
-**V18 A/B/C Testing (Active on Scentsy & Zinzino)**
+**V18 A/B/C Testing (Active on ALL campaigns)**
 - V18-A: "What if your next recruit joined with 12 people?" (Curiosity Hook)
 - V18-B: "75% of your recruits will quit this year (here's why)" (Pain Point Hook)
 - V18-C: "Give your prospects an AI recruiting coach" (Direct Value Hook)
 - Distribution: 33% per variant for statistically valid comparison
-- Subject tags: `{campaign}_v18_a`, `{campaign}_v18_b`, `{campaign}_v18_c`
 
-**V14 Template (Other campaigns)**
-- Subject: "AI is changing how teams grow"
-- Localized: ES, PT, DE variants
+**Subject Tag Format:**
+- English-only campaigns: `{campaign}_v18_a`, `{campaign}_v18_b`, `{campaign}_v18_c`
+- Multilingual campaigns: `{campaign}_v18_a_{lang}`, `{campaign}_v18_b_{lang}`, `{campaign}_v18_c_{lang}`
+  - BFH/Farmasius: EN/ES/PT/DE (12 variants each)
+  - Scentsy/Zinzino: EN/ES/DE (9 variants each)
 
 ### Batch Size Optimization
 Dynamic batch sizing formula:
