@@ -1,6 +1,6 @@
 # Team Build Pro - Comprehensive Knowledge Base
 
-**Last Updated**: 2026-03-07
+**Last Updated**: 2026-03-10
 **Purpose**: Persistent knowledge base for AI assistants across sessions
 
 ---
@@ -42,7 +42,7 @@ The Team Build Pro ecosystem is a comprehensive, interconnected network of digit
 │    114 Company            Localized              Localized             │
 │    Landing Pages       Content (ES/PT/DE)     Content (ES/PT/DE)      │
 │         │                      │                        │               │
-│    Blog (29 posts)        Blog (29 each)        Blog (29 each)        │
+│    Blog (31 posts)        Blog (31 each)        Blog (31 each)        │
 │         │                      │                        │               │
 │    FAQ/Books              FAQ/Books              FAQ/Books             │
 └─────────────────────────────────────────────────────────────────────────┘
@@ -174,7 +174,7 @@ The world's first AI-powered platform that lets **prospects pre-build their team
 ### Platform
 - **Frontend**: Flutter (Dart) for iOS and Android
 - **Backend**: Firebase (Firestore, Cloud Functions v2, Authentication, Remote Config)
-- **Functions**: 104 Cloud Functions handling real-time operations
+- **Functions**: 117 Cloud Functions handling real-time operations
 - **Hosting**: Firebase Hosting for web properties
 - **Email**: Mailgun API (news.teambuildpro.com) for campaign delivery
 
@@ -194,7 +194,7 @@ The world's first AI-powered platform that lets **prospects pre-build their team
 │   ├── weekly-blog.yml              # Twice-weekly blog automation (Mon/Thu 10am PST) + sitemap pings
 │   ├── weekly-sscott-blog.yml       # Stephen Scott blog automation
 │   ├── domain-warming-update.yml    # TBP/PreIntake domain warming batch sizes
-│   ├── url-discovery.yml            # URL pattern discovery (every 2h, 120 companies/batch)
+│   ├── url-discovery.yml            # URL pattern discovery (DISABLED - pool exhausted Mar 6, 2026)
 │   ├── contacts-scraper.yml         # Contact scraping (hourly, 400 URLs/batch)
 │   └── preintake-*.yml / *bar-scraper.yml  # PreIntake workflows (see preintake/CLAUDE.md)
 ├── web/                   # Public website files (English)
@@ -231,7 +231,7 @@ The world's first AI-powered platform that lets **prospects pre-build their team
 │   │   ├── books/       # 13 individual book pages
 │   │   ├── podcasts.html # Podcast listings
 │   │   ├── blog.html    # Author blog index
-│   │   └── blog/        # 19 blog posts (auto-generated weekly)
+│   │   └── blog/        # 26 blog posts (auto-generated weekly)
 │   └── scripts/         # Build automation scripts
 ├── analytics/             # Analytics workspace (GA4)
 │   ├── fetch-combined-analytics.js  # Combined reporting
@@ -836,7 +836,7 @@ The email campaign system consists of multiple parallel campaigns targeting diff
   | Zinzino | `zinzino_contacts` | `batchSizeZinzino` | Active |
   | FSR | `fsr_contacts` | `batchSizeFsr` | Active |
   | Paparazzi | `paparazzi_contacts` | `batchSizePaparazzi` | Active |
-  | Pruvit | `pruvit_contacts` | `batchSizePruvit` | Active |
+  | Pruvit | `pruvit_contacts` | `batchSizePruvit` | Disabled |
   | Scentsy | `scentsy_contacts` | `scentsyBatchSize` | Active |
   | THREE | `three_contacts` | `batchSizeThree` | Active |
   | MPG | `mpg_contacts` | `batchSizeMpg` | Active |
@@ -920,16 +920,16 @@ Automated 4-stage pipeline that discovers direct sales distributor URLs, scrapes
 │  Source: BusinessForHome.org sitemap (~710 companies)               │
 │  Manual run, appends new company domains                            │
 ├──────────────────────────────────────────────────────────────────────┤
-│  Stage 2: URL Pattern Discovery                                     │
+│  Stage 2: URL Pattern Discovery (DISABLED - pool exhausted Mar 6)   │
 │  scripts/base_url_discovery.js → patterns.json                      │
 │  Source: Common Crawl Index (5 indexes)                             │
-│  Schedule: Every 2 hours, 120 companies/batch (GitHub Actions)      │
+│  Schedule: DISABLED - all 1,082 companies processed                 │
 │  Discovers subdomain/path patterns for distributor pages            │
 ├──────────────────────────────────────────────────────────────────────┤
 │  Stage 3: Distributor URL Seeding                                   │
 │  scripts/seed-contacts-urls.js → Firestore direct_sales_contacts   │
 │  Sources: Common Crawl (17 indexes) + Wayback Machine + crt.sh     │
-│  Schedule: Every 4 hours, 40 companies/batch (GitHub Actions)       │
+│  Schedule: Every 6 hours, 40 companies/batch (GitHub Actions)       │
 │  Queries web indexes for actual distributor page URLs               │
 ├──────────────────────────────────────────────────────────────────────┤
 │  Stage 4: Contact Scraping                                          │
@@ -949,8 +949,8 @@ Automated 4-stage pipeline that discovers direct sales distributor URLs, scrapes
 | Script | Purpose | Schedule |
 |--------|---------|----------|
 | `scrape-bfh-companies.js` | Discover new MLM companies from BFH | Manual |
-| `base_url_discovery.js` | Find distributor URL patterns via Common Crawl | Every 2h (120/batch) |
-| `seed-contacts-urls.js` | Seed distributor URLs from 3 web indexes | Every 4h (40/batch) |
+| `base_url_discovery.js` | Find distributor URL patterns via Common Crawl | DISABLED (pool exhausted) |
+| `seed-contacts-urls.js` | Seed distributor URLs from 3 web indexes | Every 6h (40/batch) |
 | `contacts-scraper.js` | Scrape contact info from distributor pages | Hourly (400/batch) |
 
 ### Key Files
@@ -995,7 +995,7 @@ Automated 4-stage pipeline that discovers direct sales distributor URLs, scrapes
                               ▼
               BFH Campaign (email-campaign-bfh.js)
               Schedule: 10am, 1pm, 4pm, 7pm PT
-              V16 template with language variants (EN/ES/PT/DE)
+              V18 A/B/C template with language variants (EN/ES/PT/DE)
 ```
 
 ### BFH Collection Schema: `bfh_contacts`
@@ -2043,7 +2043,7 @@ Main Campaign disabled. ALL active campaigns use V18 A/B/C testing (33% distribu
 | Zinzino Campaign | **V18 A/B/C** | Dynamic batch sizing · EN/ES/DE |
 | Paparazzi Campaign | **V18 A/B/C** | Dynamic batch sizing · EN only |
 | FSR Campaign | **V18 A/B/C** | Dynamic batch sizing · EN only |
-| Pruvit Campaign | **V18 A/B/C** | Dynamic batch sizing · EN only |
+| Pruvit Campaign | Paused | Workflows disabled (low data yield) · EN only |
 | Scentsy Campaign | **V18 A/B/C** | Dynamic batch sizing · EN/ES/DE |
 | Farmasius Campaign | Blocked | 403 bot protection · EN/ES/PT/DE |
 | MPG Campaign | **V18 A/B/C** | Dynamic batch sizing · EN only |
@@ -2059,16 +2059,16 @@ Main Campaign disabled. ALL active campaigns use V18 A/B/C testing (33% distribu
 | Push Notifications | Working | profile_reminder, trial_expired verified |
 | Blog Automation | Running | Mon/Thu schedule, 4 languages (31/31/31/31 posts) |
 | Sitemap Pings | Active | Google + Bing pinged after each blog deploy |
-| URL Discovery | Active | Every 2h, 120 companies/batch (processing 1,082 companies) |
-| Contacts Seeder | Active | Every 4h, 3 sources (Common Crawl + Wayback + crt.sh) |
+| URL Discovery | Disabled | Pool exhausted Mar 6 (all 1,082 companies processed) |
+| Contacts Seeder | Active | Every 6h, 3 sources (Common Crawl + Wayback + crt.sh) |
 | Contacts Scraper | Active | Hourly, 400 URLs/batch, 12 blocked platforms |
 | BFH Collection | 776 contacts | Primary campaign focus (Feb 18) |
 | FSR ID Harvester | Active | Every 2h (12x daily), 50 pages/run, 6,800 combinations |
 | FSR Contact Scraper | Active | 4x daily, 75/run, consumes fsr_user_ids queue |
 | FSR Collection | 17+ contacts | Two-script architecture (Feb 20) |
-| Pruvit Discovery | Active | Every 6h, Common Crawl + Wayback + SerpAPI + seed file |
-| Pruvit Scraper | Active | Every 4h, 50/run, Puppeteer modal extraction |
-| Pruvit Collection | 5 contacts | 5 with emails (new Feb 24) |
+| Pruvit Discovery | Disabled | Manual trigger only (low data yield) |
+| Pruvit Scraper | Disabled | Manual trigger only (low data yield) |
+| Pruvit Collection | 5 contacts | Pipeline paused due to low yield |
 | Farmasius Discovery | Disabled | Complete: 2,594 usernames across 26 countries (Mar 9) |
 | Farmasius Scraper | Disabled | 403 bot protection on all domains (Mar 9) |
 | Farmasius Campaign | Blocked | Cannot scrape contacts due to bot protection |
