@@ -773,7 +773,7 @@ The email campaign system consists of multiple parallel campaigns targeting diff
   - URL Pattern: `{subdomain}.threeinternational.com`
   - Collections: `three_discovered_subdomains` (URLs), `three_contacts` (contacts)
   - Contact extraction: Email from mailto link, phone from fa-phone icon, name from Facebook link href or subdomain fallback
-  - **Status**: Disabled - contacts deleted due to unusable names (subdomain-based only)
+  - **Status**: Active - V19 uses generic "Greetings!" greeting (subdomain-based names unusable for personalization)
 
 ### MPG Campaign (Mailgun API - Automated)
 - **Function**: `sendHourlyMpgCampaign` in `functions/email-campaign-mpg.js`
@@ -838,7 +838,7 @@ The email campaign system consists of multiple parallel campaigns targeting diff
   | Paparazzi | `paparazzi_contacts` | `batchSizePaparazzi` | Active |
   | Pruvit | `pruvit_contacts` | `batchSizePruvit` | Active |
   | Scentsy | `scentsy_contacts` | `scentsyBatchSize` | Active |
-  | THREE | `three_contacts` | `batchSizeThree` | Disabled |
+  | THREE | `three_contacts` | `batchSizeThree` | Active |
   | MPG | `mpg_contacts` | `batchSizeMpg` | Active |
   | Farmasius | `farmasius_contacts` | `batchSizeFarmasius` | Blocked |
 - **Benefits**:
@@ -2074,8 +2074,8 @@ Main Campaign disabled. ALL active campaigns use V18 A/B/C testing (33% distribu
 | Farmasius Campaign | Blocked | Cannot scrape contacts due to bot protection |
 | THREE Discovery | Disabled | Name extraction unusable (subdomain-based names only) |
 | THREE Scraper | Disabled | Name extraction unusable (subdomain-based names only) |
-| THREE Campaign | Disabled | Batch size 0 - contacts deleted |
-| THREE Collection | 0 contacts | Deleted Mar 10 - names not usable for personalization |
+| THREE Campaign | **V19 A/B/C** | Dynamic batch sizing · EN only (generic greeting) |
+| THREE Collection | Active | V19 uses generic "Greetings!" (subdomain-based names unusable) |
 | MPG Collection | Active | Scraped from Marketplace Global rep pages |
 | Spam Monitor | Active | 5x daily (6am/9am/12pm/3pm/6pm PT), Gmail API check, auto-disable on spam |
 | PreIntake.ai | Autonomous | See `preintake/CLAUDE.md` for details |
