@@ -2,10 +2,10 @@
  * Team Build Pro Email Campaign for THREE International Contacts
  *
  * Sends emails to scraped three_contacts (distributors from THREE International pages).
- * Uses Mailgun API with v16 template and single subject line (no A/B testing).
+ * Uses Mailgun API with v17 template (generic greeting, no personalization).
  *
  * Templates stored in Mailgun under 'mailer' template:
- * - v16: English (Professional-focused messaging)
+ * - v17: English (Generic "Greetings!" greeting - names not available from THREE pages)
  *
  * Subject: "Building your team with AI"
  *
@@ -43,10 +43,11 @@ const CTA_DOMAIN = 'teambuildpro.com';
 // =============================================================================
 
 // Single template and subject line for all sends
+// v17 uses generic greeting (no {{first_name}}) since THREE pages don't have usable names
 const TEMPLATE_CONFIG = {
-  templateVersion: 'v16',
+  templateVersion: 'v17',
   subject: "Building your team with AI",
-  subjectTag: 'three_v16'
+  subjectTag: 'three_v17'
 };
 
 // =============================================================================
@@ -143,19 +144,16 @@ async function sendEmailViaMailgun(contact, docId, config) {
   const form = new FormData();
   form.append('from', FROM_ADDRESS);
 
-  // Format recipient name (use firstName only if lastName is missing)
-  const recipientName = contact.lastName
-    ? `${contact.firstName} ${contact.lastName}`
-    : contact.firstName;
-  form.append('to', `${recipientName} <${contact.email}>`);
+  // THREE contacts don't have usable names (only subdomain-based names like "Avery66")
+  // So we omit the name from the recipient field
+  form.append('to', contact.email);
 
   form.append('subject', TEMPLATE_CONFIG.subject);
   form.append('template', TEMPLATE_NAME);
   form.append('t:version', TEMPLATE_CONFIG.templateVersion);
 
-  // Template variables (using direct landing page URL for deliverability)
+  // Template variables (v17 uses generic greeting, no first_name needed)
   const templateVars = {
-    first_name: contact.firstName,
     tracked_cta_url: landingPageUrl,
     unsubscribe_url: unsubscribeUrl
   };
@@ -176,7 +174,7 @@ async function sendEmailViaMailgun(contact, docId, config) {
   form.append('h:List-Unsubscribe', `<mailto:${unsubscribeEmail}?subject=Unsubscribe>, <${unsubscribeUrl}>`);
   form.append('h:List-Unsubscribe-Post', 'List-Unsubscribe=One-Click');
 
-  console.log(`   Template: V16`);
+  console.log(`   Template: V17 (generic greeting)`);
 
   // Send via Mailgun API
   const mailgunBaseUrl = `https://api.mailgun.net/v3/${domain}`;

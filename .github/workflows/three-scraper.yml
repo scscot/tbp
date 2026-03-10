@@ -11,10 +11,9 @@
 name: THREE Contact Scraper
 
 on:
-  # DISABLED: Name extraction produces unusable data (subdomain-based names only)
-  # schedule:
-  #   # Run every 4 hours: 8am, 12pm, 4pm, 8pm, 12am, 4am PT
-  #   - cron: '0 16,20,0,4,8,12 * * *'
+  schedule:
+    # Run every 4 hours: 8am, 12pm, 4pm, 8pm, 12am, 4am PT
+    - cron: '0 16,20,0,4,8,12 * * *'
 
   workflow_dispatch:
     inputs:

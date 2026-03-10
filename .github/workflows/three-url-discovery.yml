@@ -11,10 +11,9 @@
 name: THREE URL Discovery
 
 on:
-  # DISABLED: Name extraction produces unusable data (subdomain-based names only)
-  # schedule:
-  #   # Run every 6 hours: 6am, 12pm, 6pm, 12am PT
-  #   - cron: '0 14,20,2,8 * * *'
+  schedule:
+    # Run every 6 hours: 6am, 12pm, 6pm, 12am PT
+    - cron: '0 14,20,2,8 * * *'
 
   workflow_dispatch:
     inputs:
