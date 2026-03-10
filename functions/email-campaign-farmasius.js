@@ -79,22 +79,22 @@ const SUPPORTED_LANGUAGES = ['en', 'es', 'pt', 'de'];
 const TEMPLATE_CONFIG = {
   en: {
     templateVersion: 'v16',
-    subject: "Building your team with AI",
+    subject: "Build your downline with AI",
     subjectTag: 'farmasius_v16_en'
   },
   es: {
     templateVersion: 'v16-es',
-    subject: 'Construyendo tu equipo con IA',
+    subject: 'Construye tu downline con IA',
     subjectTag: 'farmasius_v16_es'
   },
   pt: {
     templateVersion: 'v16-pt',
-    subject: 'Construindo sua equipe com IA',
+    subject: 'Construa sua downline com IA',
     subjectTag: 'farmasius_v16_pt'
   },
   de: {
     templateVersion: 'v16-de',
-    subject: 'Dein Team mit KI aufbauen',
+    subject: 'Baue deine Downline mit KI auf',
     subjectTag: 'farmasius_v16_de'
   }
 };
