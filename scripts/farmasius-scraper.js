@@ -94,10 +94,10 @@ const CONFIG = {
   STATE_DOC: 'farmasius',
 
   // Rate limiting
-  DELAY_BETWEEN_REQUESTS: 2000,   // 2 seconds between requests
+  DELAY_BETWEEN_REQUESTS: 3000,   // 3 seconds between requests
   DELAY_JITTER: 1000,             // Random jitter up to 1 second
   REQUEST_TIMEOUT: 15000,         // 15 second timeout
-  MAX_CONTACTS_PER_RUN: 200,      // Default max contacts per run
+  MAX_CONTACTS_PER_RUN: 10,      // Default max contacts per run
 
   // HTTP config
   USER_AGENT: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
