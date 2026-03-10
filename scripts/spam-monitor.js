@@ -364,7 +364,7 @@ async function main() {
     // TEMPORARILY DISABLED - uncomment to re-enable auto-disable
     if (placement === 'junk') {
       console.log(`\nJUNK FOLDER DETECTED: Auto-disable is TEMPORARILY DISABLED`);
-      // await disableAllCampaigns(sent.variant);
+      await disableAllCampaigns(sent.variant);
     }
   } catch (error) {
     console.error(`Failed to check placement: ${error.message}`);
