@@ -112,7 +112,7 @@ async function sendTestEmailViaMailgun() {
   form.append('template', 'mailer');
   form.append('t:version', TEMPLATE_CONFIG.templateVersion);
   form.append('t:variables', JSON.stringify({
-    first_name: 'Test',
+    first_name: 'Stephen',
     tracked_cta_url: 'https://teambuildpro.com',
     unsubscribe_url: 'https://teambuildpro.com/unsubscribe'
   }));
