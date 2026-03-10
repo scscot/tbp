@@ -71,7 +71,7 @@
       "three": {
         "collection": "three_contacts",
         "firestoreField": "batchSizeThree",
-        "enabled": true
+        "enabled": false
       }
     }
   }

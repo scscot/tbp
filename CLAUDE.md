@@ -1961,10 +1961,10 @@ Main Campaign disabled. All scraper-fed campaigns use V16 template with unified 
 | Farmasius Discovery | Disabled | Complete: 2,594 usernames across 26 countries (Mar 9) |
 | Farmasius Scraper | Disabled | 403 bot protection on all domains (Mar 9) |
 | Farmasius Campaign | Blocked | Cannot scrape contacts due to bot protection |
-| THREE Discovery | Active | Every 6h, Common Crawl + Wayback + SerpAPI + subdomain extraction |
-| THREE Scraper | Active | Every 4h, 50/run, HTTP-based (no Puppeteer) |
-| THREE Campaign | Active | Dynamic batch sizing · `three_contacts` |
-| THREE Collection | 252 subdomains | New Mar 10 - scraping in progress |
+| THREE Discovery | Disabled | Name extraction unusable (subdomain-based names only) |
+| THREE Scraper | Disabled | Name extraction unusable (subdomain-based names only) |
+| THREE Campaign | Disabled | Batch size 0 - contacts deleted |
+| THREE Collection | 0 contacts | Deleted Mar 10 - names not usable for personalization |
 | Spam Monitor | Active | 5x daily (6am/9am/12pm/3pm/6pm PT), Gmail API check, auto-disable on spam |
 | PreIntake.ai | Autonomous | See `preintake/CLAUDE.md` for details |
 
