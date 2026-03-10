@@ -373,6 +373,39 @@
       ]
     },
     {
+      "collectionGroup": "three_discovered_subdomains",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "scraped", "order": "ASCENDING" },
+        { "fieldPath": "discoveredAt", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "three_contacts",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "status", "order": "ASCENDING" },
+        { "fieldPath": "sent", "order": "ASCENDING" },
+        { "fieldPath": "randomIndex", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "three_contacts",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "sent", "order": "ASCENDING" },
+        { "fieldPath": "sentTimestamp", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "three_contacts",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "sent", "order": "ASCENDING" },
+        { "fieldPath": "sentTimestamp", "order": "ASCENDING" }
+      ]
+    },
+    {
       "collectionGroup": "users",
       "queryScope": "COLLECTION",
       "fields": [

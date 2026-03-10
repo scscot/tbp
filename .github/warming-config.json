@@ -67,6 +67,11 @@
         "collection": "farmasius_contacts",
         "firestoreField": "batchSizeFarmasius",
         "enabled": true
+      },
+      "three": {
+        "collection": "three_contacts",
+        "firestoreField": "batchSizeThree",
+        "enabled": true
       }
     }
   }

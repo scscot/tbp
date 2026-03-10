@@ -706,6 +706,26 @@ The email campaign system consists of multiple parallel campaigns targeting diff
   - `scripts/zinzino-scraper.js` - Puppeteer scraper for Zinzino partner finder
   - `.github/workflows/zinzino-scraper.yml` - Scheduled scraper workflow
 
+### THREE Campaign (Mailgun API - Automated)
+- **Function**: `sendHourlyThreeCampaign` in `functions/email-campaign-three.js`
+- **Tags**: `three_campaign`, `tracked`
+- **Schedule**: 12:00pm, 3:00pm, 6:00pm, 9:00pm PT (4 runs/day)
+- **Data Source**: Firestore `three_contacts` collection (scraped from THREE International rep pages)
+- **Control Variable**: THREE_CAMPAIGN_ENABLED
+- **Batch Size**: Dynamic via Firestore `config/emailCampaign.batchSizeThree`
+- **Subject**: V16 template (`three_v16`) - "Building your team with AI"
+- **Query**: `status == 'pending' && sent == false`, ordered by randomIndex
+- **Template Variables**: `first_name`, `tracked_cta_url`, `unsubscribe_url`
+
+- **THREE Data Pipeline** (Mar 2026):
+  - `scripts/three-url-discovery.js` - Discovers subdomains from Common Crawl + Wayback + SerpAPI
+  - `scripts/three-scraper.js` - HTTP-based contact scraper (no Puppeteer required)
+  - `.github/workflows/three-url-discovery.yml` - Every 6 hours
+  - `.github/workflows/three-scraper.yml` - Every 4 hours, 50 contacts/run
+  - URL Pattern: `{subdomain}.threeinternational.com`
+  - Collections: `three_discovered_subdomains` (URLs), `three_contacts` (contacts)
+  - Contact extraction: Email from mailto link, phone from fa-phone icon, name from Facebook link href or subdomain fallback
+
 - **FSR Two-Script Architecture** (Feb 2026):
   - `scripts/fsr-id-harvester.js` - Fast ID harvester (no CAPTCHA, 12x daily, 50 pages/run)
   - `scripts/fsr-scraper.js` - Contact scraper with 2Captcha reCAPTCHA solver (4x daily, 75/run)
@@ -738,6 +758,7 @@ The email campaign system consists of multiple parallel campaigns targeting diff
   | Paparazzi | `paparazzi_contacts` | `batchSizePaparazzi` | Active |
   | Pruvit | `pruvit_contacts` | `batchSizePruvit` | Active |
   | Scentsy | `scentsy_contacts` | `scentsyBatchSize` | Active |
+  | THREE | `three_contacts` | `batchSizeThree` | Active |
 - **Benefits**:
   - Self-balancing: campaigns with more contacts automatically get higher batch sizes
   - Auto-adjusts as scrapers add contacts or queues deplete
@@ -1180,6 +1201,85 @@ Discovers Pruvit referral codes from the web and scrapes contact information fro
 | `pruvit-url-discovery.yml` | Every 6 hours | Discover referral codes (unlimited) |
 | `pruvit-scraper.yml` | Every 4 hours | Scrape contacts, 50/run |
 
+### THREE International Data Pipeline
+
+Discovers THREE International representative subdomains and scrapes contact information from rep pages.
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│  Stage 1: Subdomain Discovery                                       │
+│  scripts/three-url-discovery.js                                     │
+│  Sources: Common Crawl + Wayback Machine + SerpAPI                 │
+│  Schedule: Every 6 hours via GitHub Actions                         │
+│  Extracts subdomains from: {subdomain}.threeinternational.com      │
+│  Output: three_discovered_subdomains collection                     │
+├─────────────────────────────────────────────────────────────────────┤
+│  Stage 2: Contact Scraping (HTTP-based, no Puppeteer)              │
+│  scripts/three-scraper.js                                           │
+│  Uses axios + cheerio for static HTML extraction                    │
+│  Schedule: Every 4 hours via GitHub Actions (50 contacts/run)      │
+│  Extracts: email (mailto), phone (fa-phone), name (FB link/subdomain)│
+│  Filters out corporate emails (support@iii.earth)                   │
+│  Output: three_contacts collection                                  │
+└─────────────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+              THREE Campaign (email-campaign-three.js)
+              Schedule: 12:00pm, 3:00pm, 6:00pm, 9:00pm PT
+              V16 template (English only)
+```
+
+### THREE Collection Schemas
+
+**`three_discovered_subdomains`** - Discovered representative subdomains
+```javascript
+{
+  subdomain: string,        // e.g., 'corbinandholly'
+  profileUrl: string,       // Full URL
+  source: string,           // 'common_crawl' | 'wayback' | 'serpapi' | 'seed'
+  discoveredAt: timestamp,
+  scraped: boolean,
+  scrapedAt: timestamp | null
+}
+```
+
+**`three_contacts`** - Scraped contact information
+```javascript
+{
+  firstName: string,
+  lastName: string,
+  fullName: string,
+  email: string | null,
+  phone: string | null,
+  country: string | null,    // Inferred from phone prefix
+  subdomain: string,
+  profileUrl: string,
+  company: 'THREE International',
+  source: 'three_scraper',
+  sent: boolean,
+  sentTimestamp: timestamp | null,
+  status: string,            // 'pending' | 'sent' | 'failed' | 'no_email'
+  subjectTag: string | null,
+  randomIndex: number,
+  createdAt: timestamp,
+  updatedAt: timestamp
+}
+```
+
+### THREE Scripts
+
+| Script | Purpose | Usage |
+|--------|---------|-------|
+| `three-url-discovery.js` | Discover subdomains from web | `--discover`, `--seed`, `--stats`, `--reset`, `--dry-run` |
+| `three-scraper.js` | Scrape contacts from rep pages | `--scrape`, `--test --subdomain=X`, `--stats`, `--dry-run` |
+
+### THREE GitHub Actions Workflows
+
+| Workflow | Schedule | Purpose |
+|----------|----------|---------|
+| `three-url-discovery.yml` | Every 6 hours | Discover subdomains (Common Crawl + Wayback + SerpAPI) |
+| `three-scraper.yml` | Every 4 hours | Scrape contacts, 50/run |
+
 ### Purchased Leads Data Pipeline
 
 The `purchased_leads` collection consolidates contacts from multiple sources for email campaigns. This collection uses the existing campaign infrastructure (`sendHourlyPurchasedLeadsCampaign`).
@@ -1364,6 +1464,8 @@ Corporate email domains are excluded from all contact collections using a **blac
 - `scripts/pruvit-url-discovery.js` - Pruvit referral code discovery (Common Crawl + Wayback + SerpAPI)
 - `scripts/pruvit-scraper.js` - Pruvit contact scraper (Puppeteer modal extraction)
 - `scripts/scentsy-scraper.js` - Scentsy consultant scraper (Puppeteer, queries scentsy_zipcodes by population)
+- `scripts/three-url-discovery.js` - THREE subdomain discovery (Common Crawl + Wayback + SerpAPI)
+- `scripts/three-scraper.js` - THREE contact scraper (HTTP-based, no Puppeteer)
 
 ### Utility Scripts (functions/)
 - `count-todays-emails.js` - Query Firestore for daily email send counts
@@ -1819,7 +1921,7 @@ Corporate email domains are excluded from all contact collections using a **blac
   - Reminders unnecessary and potentially confusing for auto-renewing subscriptions
   - Users don't need to take action - billing happens automatically
 
-### Current System Status (Mar 9, 2026)
+### Current System Status (Mar 10, 2026)
 
 **PROJECT STATUS: DYNAMIC BATCH SIZING LIVE**
 Main Campaign disabled. All scraper-fed campaigns use V16 template with unified subject "Building your team with AI". Dynamic batch sizing auto-adjusts based on queue sizes with 4-week warming schedule (40%→60%→80%→100%).
@@ -1859,6 +1961,10 @@ Main Campaign disabled. All scraper-fed campaigns use V16 template with unified 
 | Farmasius Discovery | Disabled | Complete: 2,594 usernames across 26 countries (Mar 9) |
 | Farmasius Scraper | Disabled | 403 bot protection on all domains (Mar 9) |
 | Farmasius Campaign | Blocked | Cannot scrape contacts due to bot protection |
+| THREE Discovery | Active | Every 6h, Common Crawl + Wayback + SerpAPI + subdomain extraction |
+| THREE Scraper | Active | Every 4h, 50/run, HTTP-based (no Puppeteer) |
+| THREE Campaign | Active | Dynamic batch sizing · `three_contacts` |
+| THREE Collection | 252 subdomains | New Mar 10 - scraping in progress |
 | Spam Monitor | Active | 5x daily (6am/9am/12pm/3pm/6pm PT), Gmail API check, auto-disable on spam |
 | PreIntake.ai | Autonomous | See `preintake/CLAUDE.md` for details |
 
