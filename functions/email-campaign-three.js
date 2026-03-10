@@ -46,7 +46,7 @@ const CTA_DOMAIN = 'teambuildpro.com';
 // v17 uses generic greeting (no {{first_name}}) since THREE pages don't have usable names
 const TEMPLATE_CONFIG = {
   templateVersion: 'v17',
-  subject: "Building your team with AI",
+  subject: "Build your downline with AI",
   subjectTag: 'three_v17'
 };
 

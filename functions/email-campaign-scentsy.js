@@ -84,17 +84,17 @@ const CTA_DOMAINS = {
 const TEMPLATE_CONFIG = {
   en: {
     templateVersion: 'v16',
-    subject: "Building your team with AI",
+    subject: "Build your downline with AI",
     subjectTag: 'scentsy_v16_en'
   },
   es: {
     templateVersion: 'v16-es',
-    subject: 'Construyendo tu equipo con IA',
+    subject: 'Construye tu downline con IA',
     subjectTag: 'scentsy_v16_es'
   },
   de: {
     templateVersion: 'v16-de',
-    subject: 'Dein Team mit KI aufbauen',
+    subject: 'Baue deine Downline mit KI auf',
     subjectTag: 'scentsy_v16_de'
   }
 };

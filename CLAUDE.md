@@ -582,13 +582,13 @@ The email campaign system consists of multiple parallel campaigns targeting diff
 - **Sending Domain**: `news.teambuildpro.com`
 - **From**: `Stephen Scott <stephen@news.teambuildpro.com>`
 - **Template**: Mailgun-hosted 'mailer' template v16 (gradient header, white card design)
-  - All campaigns use v16 with single subject line "Building your team with AI"
+  - All campaigns use v16 with single subject line "Build your downline with AI"
   - Language variants: v16 (EN), v16-es (ES), v16-de (DE), v16-pt (PT) - all fully localized
   - Legacy templates (v9/v10/v11/v12/v14) deprecated - tags retained for historical analytics
-- **Subject Line**: "Building your team with AI" (localized per language)
-  - ES: "Construyendo tu equipo con IA"
-  - DE: "Dein Team mit KI aufbauen"
-  - PT: "Construindo sua equipe com IA"
+- **Subject Line**: "Build your downline with AI" (localized per language)
+  - ES: "Construye tu downline con IA"
+  - DE: "Baue deine Downline mit KI auf"
+  - PT: "Construa sua downline com IA"
   - Tags: `{campaign}_v16` for English, `{campaign}_v16_{lang}` for multilingual campaigns
   - **Note**: A/B testing discontinued Feb 25, 2026 - all campaigns standardized on v16
 - **Tracking**: Click tracking via GA4 UTM parameters in direct landing page URLs; open tracking disabled (pixel removed for deliverability)
@@ -642,7 +642,7 @@ The email campaign system consists of multiple parallel campaigns targeting diff
 - **Data Source**: Firestore `fsr_contacts` collection (scraped from findsalesrep.com)
 - **Control Variable**: FSR_CAMPAIGN_ENABLED
 - **Batch Size**: Dynamic via Firestore `config/emailCampaign.batchSizeFsr`
-- **Subject**: V16 template (`fsr_v16`) - "Building your team with AI"
+- **Subject**: V16 template (`fsr_v16`) - "Build your downline with AI"
 - **Query**: `sent == false && email != null`, ordered by randomIndex
 - **Template Variables**: `first_name`, `tracked_cta_url`, `unsubscribe_url`
 
@@ -653,7 +653,7 @@ The email campaign system consists of multiple parallel campaigns targeting diff
 - **Data Source**: Firestore `paparazzi_contacts` collection (scraped from Paparazzi distributor pages)
 - **Control Variable**: PAPARAZZI_CAMPAIGN_ENABLED
 - **Batch Size**: Dynamic via Firestore `config/emailCampaign.batchSizePaparazzi`
-- **Subject**: V16 template (`paparazzi_v16`) - "Building your team with AI"
+- **Subject**: V16 template (`paparazzi_v16`) - "Build your downline with AI"
 - **Query**: `sent == false && email != null`, ordered by randomIndex
 - **Template Variables**: `first_name`, `tracked_cta_url`, `unsubscribe_url`
 - **Test Endpoint**: `testPaparazziEmail` - HTTP endpoint for spam monitoring workflow
@@ -665,7 +665,7 @@ The email campaign system consists of multiple parallel campaigns targeting diff
 - **Data Source**: Firestore `pruvit_contacts` collection (scraped from Pruvit referral pages)
 - **Control Variable**: PRUVIT_CAMPAIGN_ENABLED
 - **Batch Size**: Dynamic via Firestore `config/emailCampaign.batchSizePruvit`
-- **Subject**: V16 template with language variants (`pruvit_v16_en`, `pruvit_v16_es`, `pruvit_v16_de`) - "Building your team with AI"
+- **Subject**: V16 template with language variants (`pruvit_v16_en`, `pruvit_v16_es`, `pruvit_v16_de`) - "Build your downline with AI"
 - **Query**: `sent == false && email != null`, ordered by randomIndex
 - **Template Variables**: `first_name`, `tracked_cta_url`, `unsubscribe_url`
 - **Language Selection**: Based on country field (EN default, ES for Spain/Mexico/etc., DE for Germany/Austria/etc.)
@@ -677,7 +677,7 @@ The email campaign system consists of multiple parallel campaigns targeting diff
 - **Data Source**: Firestore `scentsy_contacts` collection (scraped from Scentsy consultant finder)
 - **Control Variable**: SCENTSY_CAMPAIGN_ENABLED
 - **Batch Size**: Dynamic via Firestore `config/emailCampaign.scentsyBatchSize`
-- **Subject**: V16 template with language variants (`scentsy_v16_en`, `scentsy_v16_es`, `scentsy_v16_de`) - "Building your team with AI"
+- **Subject**: V16 template with language variants (`scentsy_v16_en`, `scentsy_v16_es`, `scentsy_v16_de`) - "Build your downline with AI"
 - **Query**: `status == 'pending' && sent == false`, ordered by randomIndex
 - **Template Variables**: `first_name`, `tracked_cta_url`, `unsubscribe_url`
 - **Language Selection**: Based on countryCode field mapping:
@@ -697,7 +697,7 @@ The email campaign system consists of multiple parallel campaigns targeting diff
 - **Data Source**: Firestore `zinzino_contacts` collection (scraped from Zinzino partner finder)
 - **Control Variable**: ZINZINO_CAMPAIGN_ENABLED
 - **Batch Size**: Dynamic via Firestore `config/emailCampaign.batchSizeZinzino`
-- **Subject**: V16 template with language variants (`zinzino_v16_en`, `zinzino_v16_es`, `zinzino_v16_de`) - "Building your team with AI"
+- **Subject**: V16 template with language variants (`zinzino_v16_en`, `zinzino_v16_es`, `zinzino_v16_de`) - "Build your downline with AI"
 - **Query**: `status == 'pending' && sent == false`, ordered by randomIndex
 - **Template Variables**: `first_name`, `tracked_cta_url`, `unsubscribe_url`
 - **Language Selection**: Based on country field (EN default, ES for Spain/Mexico/etc., DE for Germany/Austria/etc.)
@@ -713,7 +713,7 @@ The email campaign system consists of multiple parallel campaigns targeting diff
 - **Data Source**: Firestore `three_contacts` collection (scraped from THREE International rep pages)
 - **Control Variable**: THREE_CAMPAIGN_ENABLED
 - **Batch Size**: Dynamic via Firestore `config/emailCampaign.batchSizeThree`
-- **Subject**: V16 template (`three_v16`) - "Building your team with AI"
+- **Subject**: V17 template (`three_v17`) - "Build your downline with AI"
 - **Query**: `status == 'pending' && sent == false`, ordered by randomIndex
 - **Template Variables**: `first_name`, `tracked_cta_url`, `unsubscribe_url`
 
@@ -1523,7 +1523,7 @@ Corporate email domains are excluded from all contact collections using a **blac
   - Requires GMAIL_OAUTH_CREDENTIALS secret (OAuth client JSON)
 - `spam-monitor.js` - Email spam detection and auto-disable system
   - Sends test email directly via Mailgun API using V16 template
-  - Tests single subject line: "Building your team with AI"
+  - Tests single subject line: "Build your downline with AI"
   - Waits 2 minutes for Gmail delivery, then checks inbox vs spam placement
   - Auto-disables **ALL 8 campaigns** if spam detected:
     - `batchSize`, `batchSizePurchased`, `batchSizeBfh`, `batchSizePaparazzi`, `batchSizeFsr`, `batchSizeZinzino`, `batchSizePruvit`, `scentsyBatchSize`
@@ -1608,12 +1608,12 @@ Corporate email domains are excluded from all contact collections using a **blac
   - ES: "Team Build Pro: IA Equipo", PT: "Team Build Pro: IA Equipe", DE: "Team Build Pro: KI Team"
 
 **Email Campaign Infrastructure**
-- ✅ **V16 Subject Line Update** (Mar 7, 2026): Updated subject to "Building your team with AI"
-  - All 10 email campaign functions updated and redeployed
-  - Localized subjects updated: ES ("Construyendo tu equipo con IA"), PT ("Construindo sua equipe com IA"), DE ("Dein Team mit KI aufbauen")
-  - Spam monitor script updated to match new subject line
+- ✅ **Subject Line Update to Imperative Form** (Mar 10, 2026): Changed to "Build your downline with AI"
+  - All 11 email campaign functions updated with imperative form (more action-oriented)
+  - Uses MLM-specific "downline" terminology (validated as inbox-safe)
+  - Localized subjects: ES ("Construye tu downline con IA"), PT ("Construa sua downline com IA"), DE ("Baue deine Downline mit KI auf")
 - ✅ **V16 Template Standardization** (Feb 25, 2026): All campaigns migrated to V16 template
-  - Single subject line: "Building your team with AI" (localized per language)
+  - Single subject line: "Build your downline with AI" (localized per language)
   - A/B testing discontinued - standardized on V16 for consistency
   - Language variants: v16 (EN), v16-es (ES), v16-de (DE), v16-pt (PT) - all fully localized
   - Subject tags: `{campaign}_v16` for English, `{campaign}_v16_{lang}` for multilingual

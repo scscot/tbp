@@ -6,7 +6,7 @@
  * in junk folder, all campaigns are automatically disabled and an alert is sent.
  *
  * Key behaviors:
- * - Sends single v16 template with subject "How AI turns prospects into YES"
+ * - Sends single v16 template with subject "Build your downline with AI"
  * - No A/B testing - single template/subject for consistent monitoring
  * - Waits 2 minutes after send before checking Gmail placement
  * - Total runtime: ~2-3 minutes
