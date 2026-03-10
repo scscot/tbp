@@ -1,0 +1,40 @@
+How to Use Claude Skills
+
+  The /generate-blog and /optimize-email commands are Claude Code slash commands that you type directly in this conversation. Here's how they work:
+
+  Blog Generation
+
+  Research topics first:
+  /generate-blog --research
+  This runs the blog research mode to analyze trends and suggest topics.
+
+  Generate a specific post:
+  /generate-blog "How AI is Transforming Network Marketing in 2026"
+  This generates a blog post with the given title in all 4 languages.
+
+  Full automation:
+  /generate-blog --full-auto
+  This researches, generates, deploys, and sends notification email.
+
+  Email Optimization
+
+  Check all campaigns:
+  /optimize-email --all
+  This shows status of all 9 email campaigns (sent/remaining counts).
+
+  Check specific campaign:
+  /optimize-email bfh
+  This analyzes the BFH campaign specifically.
+
+  Deliverability check:
+  /optimize-email --deliverability
+  This reviews spam monitor status and bounce rates.
+
+  MCP Servers (Automatic)
+
+  The MCP servers I configured (Firestore, GA4) load automatically when Claude Code starts. You don't invoke them directly - they enable me to query your database and analytics directly when needed.
+
+  Example queries I can now do:
+  - "How many BFH contacts haven't been sent yet?"
+  - "What's the click rate from email traffic this week?"
+  - "Show me the current batch sizes for all campaigns"
