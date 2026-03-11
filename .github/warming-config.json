@@ -77,6 +77,11 @@
         "collection": "spanish_contacts",
         "firestoreField": "spanishBatchSize",
         "enabled": true
+      },
+      "rodanfields": {
+        "collection": "rodanfields_contacts",
+        "firestoreField": "batchSizeRodanfields",
+        "enabled": true
       }
     }
   }

@@ -218,6 +218,14 @@ const {
 } = require('./email-campaign-three');
 
 // ==============================
+// Import Email Campaign for Rodan + Fields Contacts
+// ==============================
+const {
+  sendHourlyRodanfieldsCampaign,
+  testRodanfieldsEmail,
+} = require('./email-campaign-rodanfields');
+
+// ==============================
 // Import Email Tracking Functions (SMTP Migration)
 // ==============================
 const {
@@ -505,6 +513,10 @@ module.exports = {
 
   // Email campaign for THREE contacts (scheduled)
   sendHourlyThreeCampaign,
+
+  // Email campaign for Rodan + Fields contacts (scheduled)
+  sendHourlyRodanfieldsCampaign,
+  testRodanfieldsEmail,
 
   // Email tracking endpoints (SMTP migration)
   trackEmailOpen,

@@ -771,6 +771,11 @@
             color: #0891b2;
         }
 
+        .campaign-label.rodanfields {
+            background: #fce4ec;
+            color: #c2185b;
+        }
+
         .source-label {
             display: inline-block;
             font-size: 0.7rem;
@@ -1900,6 +1905,9 @@
                     <div class="campaign-tab" onclick="switchEmailTab('farmasius')">
                         Farmasius <span class="tab-badge" id="emailFarmasiusTabBadge">-</span>
                     </div>
+                    <div class="campaign-tab" onclick="switchEmailTab('rodanfields')">
+                        R+F <span class="tab-badge" id="emailRodanfieldsTabBadge">-</span>
+                    </div>
                     <div class="campaign-tab comparison" onclick="switchEmailTab('comparison')">
                         &#128202; Comparison
                     </div>
@@ -2648,6 +2656,74 @@
                     </div>
                 </div>
 
+                <!-- Rodan + Fields Campaign Sub-Tab Content -->
+                <div id="emailRodanfieldsTab" class="campaign-content">
+                    <!-- Campaign Progress -->
+                    <h2 class="section-title">Campaign Progress <span class="campaign-label rodanfields">R+F</span></h2>
+                    <div class="section-card" style="margin-bottom: 30px;">
+                        <h3>Overall Send Progress</h3>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar" id="emailRodanfieldsProgressBar" style="width: 0%;">0%</div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+                            <span><strong id="emailRodanfieldsTotalSent">0</strong> sent</span>
+                            <span><strong id="emailRodanfieldsTotalRemaining">0</strong> remaining</span>
+                            <span><strong id="emailRodanfieldsTotalContacts">0</strong> total</span>
+                        </div>
+                    </div>
+
+                    <div class="section-card">
+                        <h3>Send Statistics</h3>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-value" id="emailRodanfieldsTotal">-</div>
+                                <div class="stat-label">Total Contacts</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value green" id="emailRodanfieldsSent">-</div>
+                                <div class="stat-label">Sent</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value blue" id="emailRodanfieldsRemaining">-</div>
+                                <div class="stat-label">Remaining</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="emailRodanfieldsSent24h">-</div>
+                                <div class="stat-label">Last 24 Hours</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value red" id="emailRodanfieldsFailed">-</div>
+                                <div class="stat-label">Failed</div>
+                            </div>
+                        </div>
+                        <!-- Click Performance - Now tracked via GA4 -->
+                        <div style="margin-top: 15px; padding: 12px; background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 8px; border-left: 4px solid #0ea5e9;">
+                            <div style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem;">
+                                <span>&#128202;</span>
+                                <span><strong>Click Tracking via GA4</strong> - See Website tab, filter by medium = email</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-card" style="margin-top: 30px;">
+                        <h3>Recent Sends</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Time (PT)</th>
+                                    <th>Email</th>
+                                    <th>Name</th>
+                                    <th>Variant</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="emailRodanfieldsRecentSendsBody">
+                                <tr><td colspan="5" class="no-data-message">Loading...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
                 <!-- Campaign Comparison Tab Content -->
                 <div id="emailComparisonTab" class="campaign-content">
                     <h2 class="section-title">&#128202; Campaign Performance Comparison</h2>
@@ -2803,6 +2879,10 @@
             'farmasius_v18_a_de': 'V18-A DE: "Was wenn Ihr nächster Rekrut mit 12 Leuten kommt?"',
             'farmasius_v18_b_de': 'V18-B DE: "75% Ihrer Rekruten werden aufhören..."',
             'farmasius_v18_c_de': 'V18-C DE: "Geben Sie Ihren Interessenten einen KI-Coach"',
+            // Rodan + Fields campaign (V18 A/B/C - English only)
+            'rodanfields_v18_a': 'V18-A: "What if your next recruit joined with 12 people?"',
+            'rodanfields_v18_b': 'V18-B: "75% of your recruits will quit this year..."',
+            'rodanfields_v18_c': 'V18-C: "Give your prospects an AI recruiting coach"',
             // ============ LEGACY V14 TEMPLATE (single subject line) ============
             // Main campaign (legacy: v14)
             'main_v14': 'V14: "AI is changing how teams grow"',
@@ -2906,7 +2986,8 @@
             { id: 'scentsy', name: 'SCENTSY CAMPAIGN', color: '#2e7d32' },
             { id: 'mpg', name: 'MPG CAMPAIGN', color: '#3730a3' },
             { id: 'three', name: 'THREE CAMPAIGN', color: '#be185d' },
-            { id: 'farmasius', name: 'FARMASIUS CAMPAIGN', color: '#0891b2' }
+            { id: 'farmasius', name: 'FARMASIUS CAMPAIGN', color: '#0891b2' },
+            { id: 'rodanfields', name: 'R+F CAMPAIGN', color: '#c2185b' }
         ];
 
         // Generate campaign cards dynamically
@@ -3372,6 +3453,11 @@
                 const farmasius = campaigns.farmasius || {};
                 document.getElementById('execFarmasiusSent').textContent = formatNumber(farmasius.sent || 0);
                 document.getElementById('execFarmasiusRemaining').textContent = formatNumber(farmasius.remaining || 0);
+
+                // Rodan + Fields Campaign
+                const rodanfields = campaigns.rodanfields || {};
+                document.getElementById('execRodanfieldsSent').textContent = formatNumber(rodanfields.sent || 0);
+                document.getElementById('execRodanfieldsRemaining').textContent = formatNumber(rodanfields.remaining || 0);
             }
 
             // GA4 Campaign Traffic (from date-range website data)
@@ -3449,6 +3535,7 @@
                 document.getElementById('emailFsrTabBadge').textContent = '-';
                 document.getElementById('emailPaparazziTabBadge').textContent = '-';
                 document.getElementById('emailPruvitTabBadge').textContent = '-';
+                document.getElementById('emailRodanfieldsTabBadge').textContent = '-';
                 return;
             }
 
@@ -4039,6 +4126,58 @@
                 document.getElementById('emailFarmasiusTabBadge').textContent = formatNumber(farmasiusSent) + ' sent';
             }
 
+            // ==================== RODAN + FIELDS CAMPAIGN ====================
+            if (emailStatsData.rodanfieldsCampaign) {
+                const rodanfields = emailStatsData.rodanfieldsCampaign;
+
+                // Progress bar
+                const rodanfieldsTotal = rodanfields.campaign?.total || 1;
+                const rodanfieldsSent = rodanfields.campaign?.sent || 0;
+                const rodanfieldsProgress = (rodanfieldsSent / rodanfieldsTotal * 100);
+
+                document.getElementById('emailRodanfieldsProgressBar').style.width = rodanfieldsProgress + '%';
+                document.getElementById('emailRodanfieldsProgressBar').textContent = rodanfieldsProgress.toFixed(1) + '%';
+                document.getElementById('emailRodanfieldsTotalSent').textContent = formatNumber(rodanfieldsSent);
+                document.getElementById('emailRodanfieldsTotalRemaining').textContent = formatNumber(rodanfields.campaign?.remaining || 0);
+                document.getElementById('emailRodanfieldsTotalContacts').textContent = formatNumber(rodanfields.campaign?.total || 0);
+
+                // Stats cards
+                document.getElementById('emailRodanfieldsTotal').textContent = formatNumber(rodanfields.campaign?.total || 0);
+                document.getElementById('emailRodanfieldsSent').textContent = formatNumber(rodanfieldsSent);
+                document.getElementById('emailRodanfieldsRemaining').textContent = formatNumber(rodanfields.campaign?.remaining || 0);
+                document.getElementById('emailRodanfieldsSent24h').textContent = formatNumber(rodanfields.last24h?.sent || 0);
+
+                // Failed count (clicks tracked via GA4)
+                if (rodanfields.tracking) {
+                    document.getElementById('emailRodanfieldsFailed').textContent = formatNumber(rodanfields.tracking.failed || 0);
+                }
+
+                // Recent sends
+                const rodanfieldsTbody = document.getElementById('emailRodanfieldsRecentSendsBody');
+                if (rodanfields.recentSends && rodanfields.recentSends.length > 0) {
+                    rodanfieldsTbody.innerHTML = rodanfields.recentSends.map(send => {
+                        const variantBadge = getVariantBadge(send.subjectTag);
+                        const statusBadge = send.clicked
+                            ? '<span class="badge badge-clicked">Clicked</span>'
+                            : '<span class="badge badge-sent">Sent</span>';
+                        return `
+                            <tr>
+                                <td>${escapeHtml(send.time || '')}</td>
+                                <td>${escapeHtml(send.email || '')}</td>
+                                <td>${escapeHtml(send.name || '')}</td>
+                                <td>${variantBadge}</td>
+                                <td>${statusBadge}</td>
+                            </tr>
+                        `;
+                    }).join('');
+                } else {
+                    rodanfieldsTbody.innerHTML = '<tr><td colspan="5" class="no-data-message">No recent sends</td></tr>';
+                }
+
+                // Update tab badge
+                document.getElementById('emailRodanfieldsTabBadge').textContent = formatNumber(rodanfieldsSent) + ' sent';
+            }
+
             // ==================== GA4 EMAIL TRAFFIC ====================
             if (emailStatsData.ga4) {
                 const trafficContent = document.getElementById('emailCampaignTrafficContent');
@@ -4211,7 +4350,8 @@
                     { key: 'scentsy', name: 'Scentsy', data: campaigns.scentsy },
                     { key: 'mpg', name: 'MPG', data: campaigns.mpg },
                     { key: 'three', name: 'Three', data: campaigns.three },
-                    { key: 'farmasius', name: 'Farmasius', data: campaigns.farmasius }
+                    { key: 'farmasius', name: 'Farmasius', data: campaigns.farmasius },
+                    { key: 'rodanfields', name: 'R+F', data: campaigns.rodanfields }
                 ];
 
                 campaignList.forEach(c => {

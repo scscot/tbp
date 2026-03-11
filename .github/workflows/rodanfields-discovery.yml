@@ -1,0 +1,98 @@
+name: Rodan + Fields Consultant Discovery
+
+on:
+  schedule:
+    # Run every 4 hours: 6am, 10am, 2pm, 6pm, 10pm, 2am PT (UTC: 14, 18, 22, 02, 06, 10)
+    - cron: '0 14,18,22,2,6,10 * * *'
+
+  # Allow manual trigger for testing
+  workflow_dispatch:
+    inputs:
+      max_pages:
+        description: 'Maximum pages to process per run'
+        required: false
+        default: '100'
+        type: string
+      dry_run:
+        description: 'Dry run (preview only, no Firestore writes)'
+        required: false
+        default: false
+        type: boolean
+      reset_state:
+        description: 'Reset discovery state before running'
+        required: false
+        default: false
+        type: boolean
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: 'scripts/package.json'
+
+      - name: Install dependencies
+        run: |
+          cd scripts && npm ci && cd ..
+          echo "Dependencies installed"
+
+      - name: Install Playwright Firefox
+        run: |
+          cd scripts
+          npx playwright install firefox
+          npx playwright install-deps firefox
+          cd ..
+          echo "Playwright Firefox installed"
+
+      - name: Setup Firebase credentials
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          mkdir -p secrets
+          echo "$FIREBASE_SERVICE_ACCOUNT" > secrets/serviceAccountKey.json
+          echo "Firebase credentials configured"
+
+      - name: Reset state (if requested)
+        if: ${{ github.event.inputs.reset_state == 'true' }}
+        run: |
+          echo "Resetting discovery state..."
+          node scripts/rodanfields-discovery.js --reset
+          echo "State reset complete"
+
+      - name: Show pre-run stats
+        run: |
+          echo "Pre-run stats:"
+          node scripts/rodanfields-discovery.js --stats || true
+
+      - name: Run R+F Consultant Discovery
+        env:
+          MAX_PAGES: ${{ github.event.inputs.max_pages || '100' }}
+        run: |
+          echo "Starting Rodan + Fields Consultant Discovery..."
+          echo "Max pages per run: $MAX_PAGES"
+
+          node scripts/rodanfields-discovery.js --discover --max-pages=$MAX_PAGES
+
+      - name: Show final stats
+        if: always()
+        run: |
+          echo "Final stats:"
+          node scripts/rodanfields-discovery.js --stats || true
+
+      - name: Cleanup
+        if: always()
+        run: |
+          rm -rf secrets/
+          echo "Cleanup complete"

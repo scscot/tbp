@@ -23,6 +23,7 @@
     "googleapis": "^148.0.0",
     "node-fetch": "^3.3.2",
     "nodemailer": "^7.0.12",
+    "playwright": "^1.58.2",
     "puppeteer": "^24.35.0",
     "puppeteer-extra": "^3.3.6",
     "puppeteer-extra-plugin-recaptcha": "^3.6.8",
