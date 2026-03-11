@@ -1019,6 +1019,7 @@ const getEmailAnalytics = onRequest(
     {
         cors: true,
         region: 'us-west1',
+        memory: '1GiB',
     },
     async (req, res) => {
         try {

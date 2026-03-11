@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Budget Calculator</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        /* Password Screen */
+        #password-screen {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .password-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 40px;
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .password-container h1 {
+            margin-bottom: 10px;
+            font-size: 24px;
+        }
+
+        .password-container p {
+            color: #aaa;
+            margin-bottom: 30px;
+        }
+
+        .password-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+
+        .password-input:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+
+        .password-btn {
+            width: 100%;
+            padding: 15px;
+            background: #4CAF50;
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .password-btn:hover {
+            background: #45a049;
+        }
+
+        .error-msg {
+            color: #ff6b6b;
+            margin-top: 15px;
+            display: none;
+        }
+
+        /* Main App */
+        #main-app {
+            display: none;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #aaa;
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .section-header h2 {
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-header h2 .icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .icon-balance { background: #3498db; }
+        .icon-income { background: #27ae60; }
+        .icon-expense { background: #e74c3c; }
+
+        .add-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.3);
+            background: transparent;
+            color: #fff;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .add-btn:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: #4CAF50;
+            color: #4CAF50;
+        }
+
+        .item-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 12px;
+            align-items: center;
+        }
+
+        .item-row input[type="text"] {
+            flex: 2;
+            padding: 12px 15px;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            background: rgba(255,255,255,0.05);
+            color: #fff;
+            font-size: 14px;
+        }
+
+        .item-row input[type="number"] {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            background: rgba(255,255,255,0.05);
+            color: #fff;
+            font-size: 14px;
+            text-align: right;
+        }
+
+        .item-row input:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+
+        .remove-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(231, 76, 60, 0.2);
+            color: #e74c3c;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .remove-btn:hover {
+            background: #e74c3c;
+            color: #fff;
+        }
+
+        .section-total {
+            display: flex;
+            justify-content: space-between;
+            padding-top: 15px;
+            margin-top: 15px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .total-positive { color: #27ae60; }
+        .total-negative { color: #e74c3c; }
+
+        .calculate-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            border: none;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 10px;
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(76, 175, 80, 0.3);
+        }
+
+        /* Results */
+        #results {
+            display: none;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 30px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .result-title {
+            font-size: 18px;
+            color: #aaa;
+            margin-bottom: 15px;
+        }
+
+        .result-date {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .result-positive {
+            color: #27ae60;
+        }
+
+        .result-negative {
+            color: #e74c3c;
+        }
+
+        .result-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .detail-card {
+            background: rgba(255,255,255,0.05);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .detail-label {
+            font-size: 12px;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .detail-value {
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .months-table {
+            margin-top: 25px;
+            width: 100%;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .months-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .months-table th,
+        .months-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .months-table th {
+            background: rgba(255,255,255,0.05);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #aaa;
+        }
+
+        .months-table tr:hover {
+            background: rgba(255,255,255,0.03);
+        }
+
+        .balance-negative {
+            color: #e74c3c;
+        }
+
+        .balance-positive {
+            color: #27ae60;
+        }
+
+        .reset-btn {
+            padding: 10px 20px;
+            background: rgba(231, 76, 60, 0.2);
+            border: 1px solid #e74c3c;
+            border-radius: 8px;
+            color: #e74c3c;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 20px;
+        }
+
+        .reset-btn:hover {
+            background: #e74c3c;
+            color: #fff;
+        }
+
+        .save-indicator {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #27ae60;
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: 8px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 1000;
+        }
+
+        .save-indicator.show {
+            opacity: 1;
+        }
+
+        @media (max-width: 600px) {
+            .item-row {
+                flex-wrap: wrap;
+            }
+            .item-row input[type="text"] {
+                flex: 1 1 100%;
+            }
+            .item-row input[type="number"] {
+                flex: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Password Screen -->
+    <div id="password-screen">
+        <div class="password-container">
+            <h1>Budget Calculator</h1>
+            <p>Enter password to access</p>
+            <input type="password" id="password-input" class="password-input" placeholder="Enter password" onkeypress="if(event.key==='Enter')checkPassword()">
+            <button class="password-btn" onclick="checkPassword()">Unlock</button>
+            <p class="error-msg" id="error-msg">Incorrect password. Please try again.</p>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div id="main-app">
+        <div class="header">
+            <h1>Personal Budget Calculator</h1>
+            <p>Track your finances and project when your net worth will reach zero</p>
+        </div>
+
+        <!-- Account Balances -->
+        <div class="section">
+            <div class="section-header">
+                <h2><span class="icon icon-balance">$</span> Account Balances</h2>
+            </div>
+            <div id="balances-container">
+                <div class="item-row">
+                    <input type="text" value="USAA Checking" readonly style="background: rgba(255,255,255,0.02);">
+                    <input type="number" id="usaa-ck" value="622" step="0.01" min="0">
+                </div>
+                <div class="item-row">
+                    <input type="text" value="USAA Savings" readonly style="background: rgba(255,255,255,0.02);">
+                    <input type="number" id="usaa-sv" value="13737" step="0.01" min="0">
+                </div>
+                <div class="item-row">
+                    <input type="text" value="Charles Schwab" readonly style="background: rgba(255,255,255,0.02);">
+                    <input type="number" id="schwab" value="0" step="0.01" min="0">
+                </div>
+            </div>
+            <div class="section-total">
+                <span>Total Assets</span>
+                <span id="total-balance" class="total-positive">$0.00</span>
+            </div>
+        </div>
+
+        <!-- Income Section -->
+        <div class="section">
+            <div class="section-header">
+                <h2><span class="icon icon-income">+</span> Monthly Income</h2>
+                <button class="add-btn" onclick="addIncomeItem()">+</button>
+            </div>
+            <div id="income-container">
+                <div class="item-row" data-type="income">
+                    <input type="text" value="Primary Income" placeholder="Income source">
+                    <input type="number" value="250" step="0.01" min="0" placeholder="Amount">
+                    <button class="remove-btn" onclick="removeItem(this)">&times;</button>
+                </div>
+            </div>
+            <div class="section-total">
+                <span>Total Monthly Income</span>
+                <span id="total-income" class="total-positive">$0.00</span>
+            </div>
+        </div>
+
+        <!-- Expenses Section -->
+        <div class="section">
+            <div class="section-header">
+                <h2><span class="icon icon-expense">-</span> Monthly Expenses</h2>
+                <button class="add-btn" onclick="addExpenseItem()">+</button>
+            </div>
+            <div id="expenses-container">
+                <div class="item-row" data-type="expense">
+                    <input type="text" value="Rent" placeholder="Expense name">
+                    <input type="number" value="2100" step="0.01" min="0" placeholder="Amount">
+                    <button class="remove-btn" onclick="removeItem(this)">&times;</button>
+                </div>
+                <div class="item-row" data-type="expense">
+                    <input type="text" value="Water Bill" placeholder="Expense name">
+                    <input type="number" value="60" step="0.01" min="0" placeholder="Amount">
+                    <button class="remove-btn" onclick="removeItem(this)">&times;</button>
+                </div>
+                <div class="item-row" data-type="expense">
+                    <input type="text" value="Electric" placeholder="Expense name">
+                    <input type="number" value="120" step="0.01" min="0" placeholder="Amount">
+                    <button class="remove-btn" onclick="removeItem(this)">&times;</button>
+                </div>
+                <div class="item-row" data-type="expense">
+                    <input type="text" value="Gas" placeholder="Expense name">
+                    <input type="number" value="60" step="0.01" min="0" placeholder="Amount">
+                    <button class="remove-btn" onclick="removeItem(this)">&times;</button>
+                </div>
+                <div class="item-row" data-type="expense">
+                    <input type="text" value="Renters Insurance" placeholder="Expense name">
+                    <input type="number" value="14" step="0.01" min="0" placeholder="Amount">
+                    <button class="remove-btn" onclick="removeItem(this)">&times;</button>
+                </div>
+                <div class="item-row" data-type="expense">
+                    <input type="text" value="Spectrum Internet" placeholder="Expense name">
+                    <input type="number" value="40" step="0.01" min="0" placeholder="Amount">
+                    <button class="remove-btn" onclick="removeItem(this)">&times;</button>
+                </div>
+                <div class="item-row" data-type="expense">
+                    <input type="text" value="AT&T Mobile" placeholder="Expense name">
+                    <input type="number" value="50" step="0.01" min="0" placeholder="Amount">
+                    <button class="remove-btn" onclick="removeItem(this)">&times;</button>
+                </div>
+                <div class="item-row" data-type="expense">
+                    <input type="text" value="Groceries" placeholder="Expense name">
+                    <input type="number" value="0" step="0.01" min="0" placeholder="Amount">
+                    <button class="remove-btn" onclick="removeItem(this)">&times;</button>
+                </div>
+                <div class="item-row" data-type="expense">
+                    <input type="text" value="Auto Insurance" placeholder="Expense name">
+                    <input type="number" value="45" step="0.01" min="0" placeholder="Amount">
+                    <button class="remove-btn" onclick="removeItem(this)">&times;</button>
+                </div>
+                <div class="item-row" data-type="expense">
+                    <input type="text" value="Golds Gym" placeholder="Expense name">
+                    <input type="number" value="30" step="0.01" min="0" placeholder="Amount">
+                    <button class="remove-btn" onclick="removeItem(this)">&times;</button>
+                </div>
+                <div class="item-row" data-type="expense">
+                    <input type="text" value="Website Hosting" placeholder="Expense name">
+                    <input type="number" value="63" step="0.01" min="0" placeholder="Amount">
+                    <button class="remove-btn" onclick="removeItem(this)">&times;</button>
+                </div>
+                <div class="item-row" data-type="expense">
+                    <input type="text" value="Gasoline" placeholder="Expense name">
+                    <input type="number" value="75" step="0.01" min="0" placeholder="Amount">
+                    <button class="remove-btn" onclick="removeItem(this)">&times;</button>
+                </div>
+                <div class="item-row" data-type="expense">
+                    <input type="text" value="SBA Loan" placeholder="Expense name">
+                    <input type="number" value="63" step="0.01" min="0" placeholder="Amount">
+                    <button class="remove-btn" onclick="removeItem(this)">&times;</button>
+                </div>
+                <div class="item-row" data-type="expense">
+                    <input type="text" value="Misc" placeholder="Expense name">
+                    <input type="number" value="200" step="0.01" min="0" placeholder="Amount">
+                    <button class="remove-btn" onclick="removeItem(this)">&times;</button>
+                </div>
+            </div>
+            <div class="section-total">
+                <span>Total Monthly Expenses</span>
+                <span id="total-expenses" class="total-negative">$0.00</span>
+            </div>
+        </div>
+
+        <!-- Calculate Button -->
+        <button class="calculate-btn" onclick="calculateRunway()">Calculate Financial Runway</button>
+
+        <!-- Reset Button -->
+        <div style="text-align: center;">
+            <button class="reset-btn" onclick="resetToDefaults()">Reset to Defaults</button>
+        </div>
+
+        <!-- Save Indicator -->
+        <div class="save-indicator" id="save-indicator">Data saved</div>
+
+        <!-- Results Section -->
+        <div id="results">
+            <p class="result-title">Net Worth Reaches $0 or Less</p>
+            <p class="result-date" id="zero-date">-</p>
+
+            <div class="result-details">
+                <div class="detail-card">
+                    <p class="detail-label">Starting Balance</p>
+                    <p class="detail-value" id="result-balance">$0</p>
+                </div>
+                <div class="detail-card">
+                    <p class="detail-label">Monthly Income</p>
+                    <p class="detail-value total-positive" id="result-income">$0</p>
+                </div>
+                <div class="detail-card">
+                    <p class="detail-label">Monthly Expenses</p>
+                    <p class="detail-value total-negative" id="result-expenses">$0</p>
+                </div>
+                <div class="detail-card">
+                    <p class="detail-label">Monthly Net</p>
+                    <p class="detail-value" id="result-net">$0</p>
+                </div>
+            </div>
+
+            <div class="months-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Month</th>
+                            <th>Income</th>
+                            <th>Expenses</th>
+                            <th>Balance</th>
+                        </tr>
+                    </thead>
+                    <tbody id="projection-table">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Password check
+        const CORRECT_PASSWORD = 'TeamBuildPro2024!';
+        const STORAGE_KEY = 'budgetCalculatorData';
+
+        // Default values
+        const DEFAULTS = {
+            balances: {
+                usaaCk: 622,
+                usaaSv: 13737,
+                schwab: 0
+            },
+            income: [
+                { name: 'Primary Income', amount: 250 }
+            ],
+            expenses: [
+                { name: 'Rent', amount: 2100 },
+                { name: 'Water Bill', amount: 60 },
+                { name: 'Electric', amount: 120 },
+                { name: 'Gas', amount: 60 },
+                { name: 'Renters Insurance', amount: 14 },
+                { name: 'Spectrum Internet', amount: 40 },
+                { name: 'AT&T Mobile', amount: 50 },
+                { name: 'Groceries', amount: 0 },
+                { name: 'Auto Insurance', amount: 45 },
+                { name: 'Golds Gym', amount: 30 },
+                { name: 'Website Hosting', amount: 63 },
+                { name: 'Gasoline', amount: 75 },
+                { name: 'SBA Loan', amount: 63 },
+                { name: 'Misc', amount: 200 }
+            ]
+        };
+
+        function checkPassword() {
+            const input = document.getElementById('password-input').value;
+            const errorMsg = document.getElementById('error-msg');
+
+            if (input === CORRECT_PASSWORD) {
+                document.getElementById('password-screen').style.display = 'none';
+                document.getElementById('main-app').style.display = 'block';
+                loadFromStorage();
+                updateTotals();
+            } else {
+                errorMsg.style.display = 'block';
+                document.getElementById('password-input').value = '';
+                document.getElementById('password-input').focus();
+            }
+        }
+
+        // Show save indicator
+        function showSaveIndicator() {
+            const indicator = document.getElementById('save-indicator');
+            indicator.classList.add('show');
+            setTimeout(() => indicator.classList.remove('show'), 1500);
+        }
+
+        // Save to localStorage
+        function saveToStorage() {
+            const data = {
+                balances: {
+                    usaaCk: parseFloat(document.getElementById('usaa-ck').value) || 0,
+                    usaaSv: parseFloat(document.getElementById('usaa-sv').value) || 0,
+                    schwab: parseFloat(document.getElementById('schwab').value) || 0
+                },
+                income: [],
+                expenses: []
+            };
+
+            // Collect income items
+            document.querySelectorAll('#income-container .item-row').forEach(row => {
+                const name = row.querySelector('input[type="text"]').value;
+                const amount = parseFloat(row.querySelector('input[type="number"]').value) || 0;
+                data.income.push({ name, amount });
+            });
+
+            // Collect expense items
+            document.querySelectorAll('#expenses-container .item-row').forEach(row => {
+                const name = row.querySelector('input[type="text"]').value;
+                const amount = parseFloat(row.querySelector('input[type="number"]').value) || 0;
+                data.expenses.push({ name, amount });
+            });
+
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+            showSaveIndicator();
+        }
+
+        // Load from localStorage
+        function loadFromStorage() {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            if (!stored) return;
+
+            try {
+                const data = JSON.parse(stored);
+
+                // Load balances
+                if (data.balances) {
+                    document.getElementById('usaa-ck').value = data.balances.usaaCk || 0;
+                    document.getElementById('usaa-sv').value = data.balances.usaaSv || 0;
+                    document.getElementById('schwab').value = data.balances.schwab || 0;
+                }
+
+                // Load income items
+                if (data.income && data.income.length > 0) {
+                    const incomeContainer = document.getElementById('income-container');
+                    incomeContainer.innerHTML = '';
+                    data.income.forEach(item => {
+                        const row = createItemRow('income', item.name, item.amount);
+                        incomeContainer.appendChild(row);
+                    });
+                }
+
+                // Load expense items
+                if (data.expenses && data.expenses.length > 0) {
+                    const expenseContainer = document.getElementById('expenses-container');
+                    expenseContainer.innerHTML = '';
+                    data.expenses.forEach(item => {
+                        const row = createItemRow('expense', item.name, item.amount);
+                        expenseContainer.appendChild(row);
+                    });
+                }
+            } catch (e) {
+                console.error('Error loading from storage:', e);
+            }
+        }
+
+        // Create item row helper
+        function createItemRow(type, name, amount) {
+            const row = document.createElement('div');
+            row.className = 'item-row';
+            row.setAttribute('data-type', type);
+            row.innerHTML = `
+                <input type="text" value="${name}" placeholder="${type === 'income' ? 'Income source' : 'Expense name'}">
+                <input type="number" value="${amount}" step="0.01" min="0" placeholder="Amount">
+                <button class="remove-btn" onclick="removeItem(this)">&times;</button>
+            `;
+            return row;
+        }
+
+        // Reset to defaults
+        function resetToDefaults() {
+            if (!confirm('Are you sure you want to reset all values to defaults? This cannot be undone.')) {
+                return;
+            }
+
+            localStorage.removeItem(STORAGE_KEY);
+
+            // Reset balances
+            document.getElementById('usaa-ck').value = DEFAULTS.balances.usaaCk;
+            document.getElementById('usaa-sv').value = DEFAULTS.balances.usaaSv;
+            document.getElementById('schwab').value = DEFAULTS.balances.schwab;
+
+            // Reset income
+            const incomeContainer = document.getElementById('income-container');
+            incomeContainer.innerHTML = '';
+            DEFAULTS.income.forEach(item => {
+                incomeContainer.appendChild(createItemRow('income', item.name, item.amount));
+            });
+
+            // Reset expenses
+            const expenseContainer = document.getElementById('expenses-container');
+            expenseContainer.innerHTML = '';
+            DEFAULTS.expenses.forEach(item => {
+                expenseContainer.appendChild(createItemRow('expense', item.name, item.amount));
+            });
+
+            updateTotals();
+            document.getElementById('results').style.display = 'none';
+        }
+
+        // Add income item
+        function addIncomeItem() {
+            const container = document.getElementById('income-container');
+            const row = createItemRow('income', '', 0);
+            container.appendChild(row);
+            row.querySelector('input[type="text"]').focus();
+            saveToStorage();
+        }
+
+        // Add expense item
+        function addExpenseItem() {
+            const container = document.getElementById('expenses-container');
+            const row = createItemRow('expense', '', 0);
+            container.appendChild(row);
+            row.querySelector('input[type="text"]').focus();
+            saveToStorage();
+        }
+
+        // Remove item
+        function removeItem(btn) {
+            btn.parentElement.remove();
+            updateTotals();
+            saveToStorage();
+        }
+
+        // Format currency
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD'
+            }).format(amount);
+        }
+
+        // Update totals
+        function updateTotals() {
+            // Calculate total balance
+            const usaaCk = parseFloat(document.getElementById('usaa-ck').value) || 0;
+            const usaaSv = parseFloat(document.getElementById('usaa-sv').value) || 0;
+            const schwab = parseFloat(document.getElementById('schwab').value) || 0;
+            const totalBalance = usaaCk + usaaSv + schwab;
+            document.getElementById('total-balance').textContent = formatCurrency(totalBalance);
+
+            // Calculate total income
+            let totalIncome = 0;
+            document.querySelectorAll('#income-container .item-row').forEach(row => {
+                const amount = parseFloat(row.querySelector('input[type="number"]').value) || 0;
+                totalIncome += amount;
+            });
+            document.getElementById('total-income').textContent = formatCurrency(totalIncome);
+
+            // Calculate total expenses
+            let totalExpenses = 0;
+            document.querySelectorAll('#expenses-container .item-row').forEach(row => {
+                const amount = parseFloat(row.querySelector('input[type="number"]').value) || 0;
+                totalExpenses += amount;
+            });
+            document.getElementById('total-expenses').textContent = formatCurrency(totalExpenses);
+        }
+
+        // Calculate runway
+        function calculateRunway() {
+            const usaaCk = parseFloat(document.getElementById('usaa-ck').value) || 0;
+            const usaaSv = parseFloat(document.getElementById('usaa-sv').value) || 0;
+            const schwab = parseFloat(document.getElementById('schwab').value) || 0;
+            const startingBalance = usaaCk + usaaSv + schwab;
+
+            let monthlyIncome = 0;
+            document.querySelectorAll('#income-container .item-row').forEach(row => {
+                monthlyIncome += parseFloat(row.querySelector('input[type="number"]').value) || 0;
+            });
+
+            let monthlyExpenses = 0;
+            document.querySelectorAll('#expenses-container .item-row').forEach(row => {
+                monthlyExpenses += parseFloat(row.querySelector('input[type="number"]').value) || 0;
+            });
+
+            const monthlyNet = monthlyIncome - monthlyExpenses;
+
+            // Update result details
+            document.getElementById('result-balance').textContent = formatCurrency(startingBalance);
+            document.getElementById('result-income').textContent = formatCurrency(monthlyIncome);
+            document.getElementById('result-expenses').textContent = formatCurrency(monthlyExpenses);
+            document.getElementById('result-net').textContent = formatCurrency(monthlyNet);
+            document.getElementById('result-net').className = 'detail-value ' + (monthlyNet >= 0 ? 'total-positive' : 'total-negative');
+
+            // Project months
+            const tableBody = document.getElementById('projection-table');
+            tableBody.innerHTML = '';
+
+            let balance = startingBalance;
+            const now = new Date();
+            let currentMonth = now.getMonth();
+            let currentYear = now.getFullYear();
+            let zeroMonth = null;
+            let monthsToProject = 36; // Project 3 years max
+
+            for (let i = 0; i < monthsToProject; i++) {
+                balance = balance + monthlyIncome - monthlyExpenses;
+
+                const monthName = new Date(currentYear, currentMonth, 1).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${monthName}</td>
+                    <td class="total-positive">${formatCurrency(monthlyIncome)}</td>
+                    <td class="total-negative">${formatCurrency(monthlyExpenses)}</td>
+                    <td class="${balance >= 0 ? 'balance-positive' : 'balance-negative'}">${formatCurrency(balance)}</td>
+                `;
+                tableBody.appendChild(row);
+
+                if (balance <= 0 && !zeroMonth) {
+                    zeroMonth = monthName;
+                }
+
+                currentMonth++;
+                if (currentMonth > 11) {
+                    currentMonth = 0;
+                    currentYear++;
+                }
+            }
+
+            // Update zero date
+            const zeroDateEl = document.getElementById('zero-date');
+            if (monthlyNet >= 0) {
+                zeroDateEl.textContent = 'Never (Positive Cash Flow)';
+                zeroDateEl.className = 'result-date result-positive';
+            } else if (zeroMonth) {
+                zeroDateEl.textContent = zeroMonth;
+                zeroDateEl.className = 'result-date result-negative';
+            } else {
+                zeroDateEl.textContent = 'Beyond 3 years';
+                zeroDateEl.className = 'result-date result-positive';
+            }
+
+            // Show results
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+
+            // Save after calculation
+            saveToStorage();
+        }
+
+        // Debounce helper for auto-save
+        let saveTimeout;
+        function debouncedSave() {
+            clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(saveToStorage, 1000);
+        }
+
+        // Add event listeners for real-time updates and auto-save
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('input[type="number"]').forEach(input => {
+                input.addEventListener('change', updateTotals);
+                input.addEventListener('input', updateTotals);
+            });
+        });
+
+        // Also update when inputs are changed dynamically
+        document.addEventListener('input', function(e) {
+            if (e.target.type === 'number' || e.target.type === 'text') {
+                updateTotals();
+                debouncedSave();
+            }
+        });
+
+        document.addEventListener('change', function(e) {
+            if (e.target.type === 'number' || e.target.type === 'text') {
+                saveToStorage();
+            }
+        });
+    </script>
+</body>
+</html>

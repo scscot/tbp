@@ -1688,6 +1688,108 @@ async function fetchPurchasedLeadsROI() {
 }
 
 /**
+ * Map GA4 campaign names (utm_campaign values) to dashboard campaign keys
+ * GA4 campaigns can have multiple naming patterns that should map to the same dashboard key
+ */
+const GA4_CAMPAIGN_TO_DASHBOARD_KEY = {
+  // Main campaign
+  'tbp_outreach_feb': 'main',
+  'tbp_outreach': 'main',
+
+  // Contacts campaign
+  'direct_sales_contacts': 'contacts',
+
+  // Purchased leads campaign (multiple sources)
+  'purchased_apollo': 'purchased',
+  'purchased_serpapi': 'purchased',
+  'purchased_data_axle': 'purchased',
+
+  // Company-specific campaigns
+  'bfh_outreach_feb': 'bfh',
+  'bfh_outreach': 'bfh',
+  'zinzino_outreach_feb': 'zinzino',
+  'zinzino_outreach': 'zinzino',
+  'scentsy_outreach_feb': 'scentsy',
+  'scentsy_outreach': 'scentsy',
+  'paparazzi_outreach_feb': 'paparazzi',
+  'paparazzi_outreach': 'paparazzi',
+  'pruvit_outreach_feb': 'pruvit',
+  'pruvit_outreach': 'pruvit',
+  'fsr_outreach_feb': 'fsr',
+  'fsr_outreach': 'fsr',
+  'mpg_outreach': 'mpg',
+  'three_outreach': 'three',
+  'farmasius_outreach': 'farmasius'
+};
+
+/**
+ * Inject per-campaign GA4 click data into campaign stats
+ * Maps GA4 sessionCampaignName to dashboard campaign keys and calculates click rates
+ *
+ * @param {Object} allCampaignStats - Campaign stats from fetchAllEmailCampaignStats
+ * @param {Object} ga4Data - GA4 data containing emailCampaign.data array
+ */
+function injectPerCampaignClickData(allCampaignStats, ga4Data) {
+  if (!allCampaignStats?.campaigns || !ga4Data?.emailCampaign?.data) {
+    return;
+  }
+
+  // Aggregate GA4 sessions by dashboard campaign key
+  const clicksByKey = {};
+  const ga4CampaignData = ga4Data.emailCampaign.data || [];
+
+  ga4CampaignData.forEach(row => {
+    const ga4CampaignName = row.sessionCampaignName || '';
+    const sessions = row.sessions || 0;
+    const activeUsers = row.activeUsers || 0;
+
+    // Map to dashboard key
+    let dashboardKey = GA4_CAMPAIGN_TO_DASHBOARD_KEY[ga4CampaignName];
+
+    // Handle unmapped campaigns - check for partial matches
+    if (!dashboardKey && ga4CampaignName && ga4CampaignName !== '(not set)') {
+      // Try to find a partial match
+      for (const [pattern, key] of Object.entries(GA4_CAMPAIGN_TO_DASHBOARD_KEY)) {
+        if (ga4CampaignName.includes(pattern.replace('_outreach_feb', '').replace('_outreach', ''))) {
+          dashboardKey = key;
+          break;
+        }
+      }
+    }
+
+    if (dashboardKey) {
+      if (!clicksByKey[dashboardKey]) {
+        clicksByKey[dashboardKey] = { sessions: 0, activeUsers: 0 };
+      }
+      clicksByKey[dashboardKey].sessions += sessions;
+      clicksByKey[dashboardKey].activeUsers += activeUsers;
+    }
+  });
+
+  // Inject click data into each campaign object
+  Object.keys(allCampaignStats.campaigns).forEach(campaignKey => {
+    const campaign = allCampaignStats.campaigns[campaignKey];
+    const clickData = clicksByKey[campaignKey] || { sessions: 0, activeUsers: 0 };
+
+    // Use activeUsers as "clicked" (unique users who clicked)
+    campaign.clicked = clickData.activeUsers;
+
+    // Calculate click rate based on sent count
+    const sent = campaign.sent || 0;
+    campaign.clickRate = sent > 0
+      ? ((clickData.activeUsers / sent) * 100).toFixed(2) + '%'
+      : '0.00%';
+
+    // Also store sessions for reference
+    campaign.sessions = clickData.sessions;
+  });
+
+  logger.info('Per-campaign GA4 click data injected:', Object.keys(clicksByKey).map(k =>
+    `${k}: ${clicksByKey[k].activeUsers} clicks`
+  ).join(', '));
+}
+
+/**
  * Build executive summary aggregating all data sources
  *
  * NOTE: Email click tracking is GA4-based (via UTM parameters).
@@ -2089,6 +2191,10 @@ const getTBPAnalytics = onRequest({
     const ga4Data7 = await fetchGA4Analytics('7daysAgo', ga4Credentials);
     const ga4DataYesterday = await fetchGA4Analytics('yesterday', ga4Credentials);
     const ga4DataToday = await fetchGA4Analytics('today', ga4Credentials);
+
+    // Inject per-campaign GA4 click data into campaign stats
+    // Uses 30-day data to match the benchmark period for sent counts
+    injectPerCampaignClickData(allCampaignStats, ga4Data30);
 
     // Build executive summary using benchmark-filtered data, conversion funnel using 7-day data
     const executiveSummary = buildExecutiveSummary(ga4Data7, iosData, androidData, allCampaignStats);

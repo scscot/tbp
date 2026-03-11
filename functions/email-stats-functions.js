@@ -30,8 +30,11 @@ const GA4_PROPERTY_ID = '485651473';
 
 /**
  * Get email tracking statistics from Firestore
- * Click tracking via trackEmailClick Cloud Function (permanent Firestore data)
+ * Click tracking now via GA4 UTM parameters (not Firestore clickedAt field)
  * Open tracking disabled — Mailgun pixel removed for deliverability
+ *
+ * NOTE: clicked count is populated by fetchPerCampaignGA4Sessions() which queries GA4
+ * The old clickedAt Firestore field is NOT populated and should not be used.
  */
 async function fetchEmailTrackingStats(contactsRef) {
   try {
@@ -43,12 +46,11 @@ async function fetchEmailTrackingStats(contactsRef) {
     const failedSnapshot = await contactsRef.where('status', '==', 'failed').count().get();
     const failed = failedSnapshot.data().count;
 
-    // Get clicked count (contacts with clickedAt timestamp — tracked via trackEmailClick endpoint)
-    const clickedSnapshot = await contactsRef.where('clickedAt', '!=', null).count().get();
-    const clicked = clickedSnapshot.data().count;
-
-    // Calculate click rate against sent
-    const clickRate = sent > 0 ? ((clicked / sent) * 100).toFixed(1) + '%' : '0%';
+    // NOTE: clicked is now populated from GA4 session data, not Firestore clickedAt
+    // See fetchPerCampaignGA4Sessions() which queries GA4 by utm_campaign
+    // Return 0 here as placeholder - actual value comes from GA4
+    const clicked = 0;
+    const clickRate = '0%';
 
     return {
       sent,
@@ -194,6 +196,119 @@ async function fetchGA4Stats(serviceAccountJson) {
   } catch (error) {
     console.error('Error fetching GA4 stats:', error.message);
     return null;
+  }
+}
+
+/**
+ * Fetch per-campaign GA4 sessions for accurate click tracking
+ * Maps utm_campaign values back to TBP campaign names
+ *
+ * GA4 utm_campaign patterns used by TBP campaigns:
+ * - main_v14, main_v9, etc. → Main campaign
+ * - purchased_v14, purchased_apollo, purchased_serpapi → Purchased campaign
+ * - bfh_v14_en, bfh_v14_es, etc. → BFH campaign
+ * - scentsy_v14_en, scentsy_outreach_feb → Scentsy campaign
+ * - zinzino_v14, etc. → Zinzino campaign
+ * - fsr_v14, etc. → FSR campaign
+ * - paparazzi_v14, etc. → Paparazzi campaign
+ * - pruvit_v14, etc. → Pruvit campaign
+ * - mpg_v14, etc. → MPG campaign
+ * - three_v14, etc. → Three campaign
+ * - farmasius_v14, etc. → Farmasius campaign
+ */
+async function fetchPerCampaignGA4Sessions(serviceAccountJson) {
+  try {
+    const credentials = JSON.parse(serviceAccountJson);
+
+    const analyticsDataClient = new BetaAnalyticsDataClient({
+      credentials: {
+        client_email: credentials.client_email,
+        private_key: credentials.private_key
+      },
+      projectId: credentials.project_id
+    });
+
+    // Fetch last 30 days of email campaign traffic by campaign name
+    const [response] = await analyticsDataClient.runReport({
+      property: `properties/${GA4_PROPERTY_ID}`,
+      dateRanges: [{ startDate: '30daysAgo', endDate: 'today' }],
+      dimensions: [
+        { name: 'sessionCampaignName' }
+      ],
+      metrics: [
+        { name: 'sessions' }
+      ],
+      dimensionFilter: {
+        filter: {
+          fieldName: 'sessionMedium',
+          stringFilter: {
+            value: 'email',
+            matchType: 'EXACT'
+          }
+        }
+      }
+    });
+
+    if (!response.rows || response.rows.length === 0) {
+      return {};
+    }
+
+    // Map GA4 campaign names to TBP campaign identifiers
+    const campaignSessions = {
+      main: 0,
+      purchased: 0,
+      bfh: 0,
+      zinzino: 0,
+      fsr: 0,
+      paparazzi: 0,
+      pruvit: 0,
+      scentsy: 0,
+      mpg: 0,
+      three: 0,
+      farmasius: 0,
+      contacts: 0,
+      unknown: 0
+    };
+
+    response.rows.forEach(row => {
+      const campaignName = (row.dimensionValues[0].value || '').toLowerCase();
+      const sessions = parseInt(row.metricValues[0].value) || 0;
+
+      // Map to campaign based on prefix patterns
+      if (campaignName.startsWith('main_') || campaignName === 'tbp_campaign') {
+        campaignSessions.main += sessions;
+      } else if (campaignName.startsWith('purchased_') || campaignName.includes('purchased')) {
+        campaignSessions.purchased += sessions;
+      } else if (campaignName.startsWith('bfh_') || campaignName.includes('bfh')) {
+        campaignSessions.bfh += sessions;
+      } else if (campaignName.startsWith('scentsy_') || campaignName.includes('scentsy')) {
+        campaignSessions.scentsy += sessions;
+      } else if (campaignName.startsWith('zinzino_') || campaignName.includes('zinzino')) {
+        campaignSessions.zinzino += sessions;
+      } else if (campaignName.startsWith('fsr_') || campaignName.includes('fsr')) {
+        campaignSessions.fsr += sessions;
+      } else if (campaignName.startsWith('paparazzi_') || campaignName.includes('paparazzi')) {
+        campaignSessions.paparazzi += sessions;
+      } else if (campaignName.startsWith('pruvit_') || campaignName.includes('pruvit')) {
+        campaignSessions.pruvit += sessions;
+      } else if (campaignName.startsWith('mpg_') || campaignName.includes('mpg')) {
+        campaignSessions.mpg += sessions;
+      } else if (campaignName.startsWith('three_') || campaignName.includes('three')) {
+        campaignSessions.three += sessions;
+      } else if (campaignName.startsWith('farmasius_') || campaignName.includes('farmasius')) {
+        campaignSessions.farmasius += sessions;
+      } else if (campaignName.startsWith('contacts_') || campaignName.includes('contacts')) {
+        campaignSessions.contacts += sessions;
+      } else {
+        campaignSessions.unknown += sessions;
+      }
+    });
+
+    return campaignSessions;
+
+  } catch (error) {
+    console.error('Error fetching per-campaign GA4 sessions:', error.message);
+    return {};
   }
 }
 
@@ -381,14 +496,46 @@ const getEmailCampaignStats = onRequest({
 
     // Get GA4 stats (shared across campaigns)
     let ga4Stats = null;
+    let perCampaignClicks = {};
     try {
       const serviceAccountJson = ga4ServiceAccount.value();
       if (serviceAccountJson) {
-        ga4Stats = await fetchGA4Stats(serviceAccountJson);
+        // Fetch both aggregate stats and per-campaign sessions in parallel
+        const [aggregateStats, campaignClicks] = await Promise.all([
+          fetchGA4Stats(serviceAccountJson),
+          fetchPerCampaignGA4Sessions(serviceAccountJson)
+        ]);
+        ga4Stats = aggregateStats;
+        perCampaignClicks = campaignClicks;
       }
     } catch (ga4Error) {
       console.error('GA4 stats error:', ga4Error.message);
     }
+
+    // Helper to inject GA4 click data into campaign tracking stats
+    const injectClickData = (stats, campaignKey) => {
+      if (perCampaignClicks && perCampaignClicks[campaignKey] !== undefined) {
+        const clicked = perCampaignClicks[campaignKey];
+        const sent = stats.tracking?.sent || 0;
+        stats.tracking.clicked = clicked;
+        stats.tracking.clickRate = sent > 0 ? ((clicked / sent) * 100).toFixed(1) + '%' : '0%';
+      }
+      return stats;
+    };
+
+    // Inject GA4 click data into each campaign's tracking stats
+    injectClickData(mainCampaignStats, 'main');
+    injectClickData(contactsCampaignStats, 'contacts');
+    injectClickData(purchasedCampaignStats, 'purchased');
+    injectClickData(bfhCampaignStats, 'bfh');
+    injectClickData(zinzinoCampaignStats, 'zinzino');
+    injectClickData(fsrCampaignStats, 'fsr');
+    injectClickData(paparazziCampaignStats, 'paparazzi');
+    injectClickData(pruvitCampaignStats, 'pruvit');
+    injectClickData(scentsyCampaignStats, 'scentsy');
+    injectClickData(mpgCampaignStats, 'mpg');
+    injectClickData(threeCampaignStats, 'three');
+    injectClickData(farmasiusCampaignStats, 'farmasius');
 
     // Build response - maintain backward compatibility with existing dashboard
     // while adding contacts campaign data
