@@ -72,6 +72,11 @@
         "collection": "three_contacts",
         "firestoreField": "batchSizeThree",
         "enabled": true
+      },
+      "spanish": {
+        "collection": "spanish_contacts",
+        "firestoreField": "spanishBatchSize",
+        "enabled": true
       }
     }
   }

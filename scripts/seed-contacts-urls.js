@@ -210,6 +210,14 @@ const CONFIG = {
     'exprealty.com': 'eXp Realty',
     // F
     'faberlic.com': 'Faberlic',
+    // Rep domains for Spanish-speaking companies
+    'empresario.omnilife.com': 'Omnilife',
+    'vivri.site': 'Vivri',
+    'ifuxion.com': 'FuXion',
+    'tiendabelcorp.com': 'Belcorp',
+    'lbel.tiendabelcorp.com': 'Belcorp',
+    'esika.tiendabelcorp.com': 'Belcorp',
+    'cyzone.tiendabelcorp.com': 'Belcorp',
     'familyfirstlife.com': 'Family First Life',
     'farmasi.com': 'Farmasi',
     'fifthavenuecollection.com': 'Fifth Avenue Collection',

@@ -190,6 +190,13 @@ const {
 } = require('./email-campaign-scentsy');
 
 // ==============================
+// Import Email Campaign for Spanish MLM Contacts
+// ==============================
+const {
+  sendHourlySpanishCampaign,
+} = require('./email-campaign-spanish');
+
+// ==============================
 // Import Email Campaign for MPG Contacts
 // ==============================
 const {
@@ -486,6 +493,9 @@ module.exports = {
 
   // Email campaign for Scentsy contacts (scheduled)
   sendHourlyScentsyCampaign,
+
+  // Email campaign for Spanish MLM contacts (scheduled)
+  sendHourlySpanishCampaign,
 
   // Email campaign for MPG contacts (scheduled)
   sendHourlyMpgCampaign,

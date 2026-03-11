@@ -1648,15 +1648,16 @@
   },
   "omnilife.com": {
     "companyDomain": "omnilife.com",
-    "type": "unknown",
-    "repDomain": null,
-    "pattern": null,
+    "type": "subdomain",
+    "repDomain": "empresario.omnilife.com",
+    "pattern": "*.empresario.omnilife.com/*",
     "urlCount": 0,
     "sampleUrls": [],
     "noEmailPlatform": false,
     "detectedAt": null,
-    "discoveredAt": "2026-01-31T00:13:09.483Z",
-    "siteStatus": "active"
+    "discoveredAt": "2026-03-11T15:52:08.711Z",
+    "siteStatus": "active",
+    "manualPattern": true
   },
   "pinkzebrahome.com": {
     "companyDomain": "pinkzebrahome.com",
@@ -1672,15 +1673,16 @@
   },
   "fuxion.com": {
     "companyDomain": "fuxion.com",
-    "type": "inactive",
-    "repDomain": null,
-    "pattern": null,
+    "type": "path",
+    "repDomain": "ifuxion.com",
+    "pattern": "ifuxion.com/*",
     "urlCount": 0,
     "sampleUrls": [],
     "noEmailPlatform": false,
     "detectedAt": null,
-    "discoveredAt": "2026-01-31T06:08:02.234Z",
-    "siteStatus": "Page too short (47 chars) - likely parked"
+    "discoveredAt": "2026-03-11T15:52:08.711Z",
+    "siteStatus": "active",
+    "manualPattern": true
   },
   "limelifebyalcone.com": {
     "companyDomain": "limelifebyalcone.com",
@@ -2656,15 +2658,16 @@
   },
   "yanbal.com": {
     "companyDomain": "yanbal.com",
-    "type": "unknown",
-    "repDomain": null,
-    "pattern": null,
+    "type": "path",
+    "repDomain": "yanbal.com",
+    "pattern": "yanbal.com/*/*",
     "urlCount": 0,
     "sampleUrls": [],
     "noEmailPlatform": false,
     "detectedAt": null,
-    "discoveredAt": "2026-02-01T04:45:13.321Z",
-    "siteStatus": "active"
+    "discoveredAt": "2026-03-11T15:52:08.711Z",
+    "siteStatus": "active",
+    "manualPattern": true
   },
   "wellstar.de": {
     "companyDomain": "wellstar.de",
@@ -2680,15 +2683,16 @@
   },
   "belcorp.biz": {
     "companyDomain": "belcorp.biz",
-    "type": "inactive",
-    "repDomain": null,
-    "pattern": null,
+    "type": "subdomain",
+    "repDomain": "tiendabelcorp.com",
+    "pattern": "*.tiendabelcorp.com/*",
     "urlCount": 0,
     "sampleUrls": [],
     "noEmailPlatform": false,
     "detectedAt": null,
-    "discoveredAt": "2026-02-01T04:45:52.093Z",
-    "siteStatus": "Timeout - site not responding"
+    "discoveredAt": "2026-03-11T15:52:08.711Z",
+    "siteStatus": "active",
+    "manualPattern": true
   },
   "visi-global.com": {
     "companyDomain": "visi-global.com",
@@ -3319,15 +3323,16 @@
   },
   "exialoe.es": {
     "companyDomain": "exialoe.es",
-    "type": "inactive",
-    "repDomain": null,
-    "pattern": null,
+    "type": "path",
+    "repDomain": "exialoe.es",
+    "pattern": "exialoe.es/tienda*",
     "urlCount": 0,
     "sampleUrls": [],
     "noEmailPlatform": false,
     "detectedAt": null,
-    "discoveredAt": "2026-02-01T08:11:27.842Z",
-    "siteStatus": "Timeout - site not responding"
+    "discoveredAt": "2026-03-11T15:52:08.711Z",
+    "siteStatus": "active",
+    "manualPattern": true
   },
   "viiva.com": {
     "companyDomain": "viiva.com",
@@ -4399,15 +4404,16 @@
   },
   "vivri.com": {
     "companyDomain": "vivri.com",
-    "type": "unknown",
-    "repDomain": null,
-    "pattern": null,
+    "type": "path",
+    "repDomain": "vivri.site",
+    "pattern": "vivri.site/*",
     "urlCount": 0,
     "sampleUrls": [],
     "noEmailPlatform": false,
     "detectedAt": null,
-    "discoveredAt": "2026-02-01T16:14:43.663Z",
-    "siteStatus": "active"
+    "discoveredAt": "2026-03-11T15:52:08.711Z",
+    "siteStatus": "active",
+    "manualPattern": true
   },
   "bwlgroup.com": {
     "companyDomain": "bwlgroup.com",
@@ -8658,15 +8664,16 @@
   },
   "vivri.site": {
     "companyDomain": "vivri.site",
-    "type": "unknown",
-    "repDomain": null,
-    "pattern": null,
+    "type": "path",
+    "repDomain": "vivri.site",
+    "pattern": "vivri.site/*",
     "urlCount": 0,
     "sampleUrls": [],
     "noEmailPlatform": false,
     "detectedAt": null,
-    "discoveredAt": "2026-02-06T08:26:35.810Z",
-    "siteStatus": "active"
+    "discoveredAt": "2026-03-11T15:52:08.711Z",
+    "siteStatus": "active",
+    "manualPattern": true
   },
   "juaraskincare.com": {
     "companyDomain": "juaraskincare.com",

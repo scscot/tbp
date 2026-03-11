@@ -61,6 +61,14 @@ const CONFIG = {
     'usana.com': { repDomain: 'usana.com', type: 'path' },
     'youngliving.com': { repDomain: 'youngliving.com', type: 'path' },
     'isagenix.com': { repDomain: 'isagenix.com', type: 'path' },
+    // Spanish-speaking country companies
+    'omnilife.com': { repDomain: 'empresario.omnilife.com', type: 'subdomain' },
+    'vivri.com': { repDomain: 'vivri.site', type: 'path' },
+    'vivri.site': { repDomain: 'vivri.site', type: 'path' },
+    'yanbal.com': { repDomain: 'yanbal.com', type: 'path' },
+    'belcorp.biz': { repDomain: 'tiendabelcorp.com', type: 'subdomain' },
+    'fuxion.com': { repDomain: 'ifuxion.com', type: 'path' },
+    'exialoe.es': { repDomain: 'exialoe.es', type: 'path' },
   },
 
   // Priority companies (first 20 to process)

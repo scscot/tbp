@@ -1,0 +1,102 @@
+name: Omnilife Contact Scraper
+
+on:
+  schedule:
+    # Run 4x daily: 7am, 1pm, 7pm, 1am PT (UTC: 15, 21, 03, 09)
+    # Staggered from other scrapers
+    - cron: '0 15,21,3,9 * * *'
+
+  # Allow manual trigger for testing
+  workflow_dispatch:
+    inputs:
+      max_urls:
+        description: 'Maximum URLs to scrape per run'
+        required: false
+        default: '100'
+        type: string
+      dry_run:
+        description: 'Dry run (preview only, no Firestore writes)'
+        required: false
+        default: false
+        type: boolean
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: 'scripts/package.json'
+
+      - name: Install dependencies
+        run: |
+          cd scripts && npm ci && cd ..
+          echo "Dependencies installed"
+
+      - name: Install Puppeteer Chrome dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libnss3 \
+            libatk-bridge2.0-0 \
+            libdrm2 \
+            libxkbcommon0 \
+            libgbm1 \
+            libasound2t64 \
+            libxshmfence1
+          echo "Chrome dependencies installed"
+
+      - name: Setup Firebase credentials
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          mkdir -p secrets
+          echo "$FIREBASE_SERVICE_ACCOUNT" > secrets/serviceAccountKey.json
+          echo "Firebase credentials configured"
+
+      - name: Show pre-run stats
+        run: |
+          echo "Pre-run stats:"
+          node scripts/omnilife-scraper.js --stats || true
+
+      - name: Run Omnilife Scraper
+        env:
+          MAX_URLS: ${{ github.event.inputs.max_urls || '100' }}
+          DRY_RUN: ${{ github.event.inputs.dry_run }}
+        run: |
+          echo "Starting Omnilife Contact Scraper..."
+          echo "Max URLs per run: $MAX_URLS"
+
+          ARGS="--scrape --max=$MAX_URLS"
+
+          if [ "$DRY_RUN" = "true" ]; then
+            echo "Mode: DRY RUN"
+            ARGS="$ARGS --dry-run"
+          else
+            echo "Mode: LIVE"
+          fi
+
+          node scripts/omnilife-scraper.js $ARGS
+
+      - name: Show final stats
+        if: always()
+        run: |
+          echo "Final stats:"
+          node scripts/omnilife-scraper.js --stats || true
+
+      - name: Cleanup
+        if: always()
+        run: |
+          rm -rf secrets/
+          echo "Cleanup complete"
