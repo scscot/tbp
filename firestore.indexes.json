@@ -125,6 +125,24 @@
       ]
     },
     {
+      "collectionGroup": "bfh_contacts",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "bfhScraped", "order": "ASCENDING" },
+        { "fieldPath": "emailSearched", "order": "ASCENDING" },
+        { "fieldPath": "sent", "order": "ASCENDING" },
+        { "fieldPath": "randomIndex", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "bfh_contacts",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "personalizationApproved", "order": "ASCENDING" },
+        { "fieldPath": "sent", "order": "ASCENDING" }
+      ]
+    },
+    {
       "collectionGroup": "purchased_leads",
       "queryScope": "COLLECTION",
       "fields": [
@@ -403,6 +421,30 @@
       "fields": [
         { "fieldPath": "sent", "order": "ASCENDING" },
         { "fieldPath": "sentTimestamp", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "spanish_contacts",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "sent", "order": "ASCENDING" },
+        { "fieldPath": "sentTimestamp", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "spanish_contacts",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "sent", "order": "ASCENDING" },
+        { "fieldPath": "sentTimestamp", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "spanish_contacts",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "sent", "order": "ASCENDING" },
+        { "fieldPath": "randomIndex", "order": "ASCENDING" }
       ]
     },
     {

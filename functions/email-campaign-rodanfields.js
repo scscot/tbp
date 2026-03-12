@@ -346,7 +346,7 @@ async function processRodanfieldsCampaignBatch(batchSize) {
 // =============================================================================
 
 const sendHourlyRodanfieldsCampaign = onSchedule({
-  schedule: "0 19,22,1,4 * * *",
+  schedule: "0 11,14,17,20 * * *",  // 11am, 2pm, 5pm, 8pm PT
   timeZone: "America/Los_Angeles",
   region: "us-central1",
   memory: "512MiB",
