@@ -3,7 +3,7 @@
  * FuXion Contact Scraper
  *
  * Scrapes distributor contact information from FuXion enrollment pages.
- * Uses Puppeteer because the page content is JavaScript-rendered.
+ * Uses Playwright with Firefox for better anti-bot detection bypass.
  *
  * Flow:
  * 1. Get distributorId from spanish_discovered_urls (company == 'fuxion')
@@ -21,11 +21,7 @@
 
 const admin = require('firebase-admin');
 const path = require('path');
-const puppeteer = require('puppeteer-extra');
-const StealthPlugin = require('puppeteer-extra-plugin-stealth');
-
-// Use stealth plugin to avoid bot detection
-puppeteer.use(StealthPlugin());
+const { firefox } = require('playwright');
 
 // ============================================================================
 // CONFIGURATION
@@ -38,9 +34,9 @@ const CONFIG = {
 
   // Scraping settings
   DEFAULT_MAX: 100,
-  DELAY_BETWEEN_SCRAPES: 2000,  // 2 seconds between requests
-  PAGE_TIMEOUT: 30000,
-  WAIT_FOR_CONTENT: 5000,  // Wait for JS to render
+  DELAY_BETWEEN_SCRAPES: 3000,  // 3 seconds between requests
+  PAGE_TIMEOUT: 45000,
+  WAIT_FOR_CONTENT: 8000,  // Wait for JS to render
 
   // URL template
   ENROLLMENT_URL_TEMPLATE: 'https://ifuxion.com/{distributorId}/enrollment/enrolleeinfo?rule=3',
@@ -108,41 +104,90 @@ function delay(ms) {
 // ============================================================================
 
 /**
- * Scrape contact info from FuXion enrollment page using Puppeteer
+ * Scrape contact info from FuXion enrollment page using Playwright
+ * Simulates real user behavior: visits homepage, clicks "JOIN US", navigates through enrollment flow.
  */
 async function scrapeDistributor(browser, distributorId, profileUrl) {
   const enrollmentUrl = CONFIG.ENROLLMENT_URL_TEMPLATE.replace('{distributorId}', distributorId);
+  const homepageUrl = `https://ifuxion.com/${distributorId}`;
+  let context = null;
   let page = null;
 
   try {
-    console.log(`  Fetching: ${enrollmentUrl}`);
+    console.log(`  Starting user flow: ${homepageUrl}`);
 
-    page = await browser.newPage();
-
-    // Set viewport to look like a real browser
-    await page.setViewport({ width: 1920, height: 1080 });
-
-    // Set extra HTTP headers to appear more legitimate
-    await page.setExtraHTTPHeaders({
-      'Accept-Language': 'es-ES,es;q=0.9,en;q=0.8',
-      'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
-      'Cache-Control': 'no-cache',
-      'Pragma': 'no-cache',
+    // Create a new browser context with realistic settings
+    context = await browser.newContext({
+      viewport: { width: 1920, height: 1080 },
+      locale: 'es-MX',
+      timezoneId: 'America/Mexico_City',
+      userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15',
+      extraHTTPHeaders: {
+        'Accept-Language': 'es-MX,es;q=0.9,en;q=0.8',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
+      }
     });
 
-    // Navigate to page
-    await page.goto(enrollmentUrl, {
-      waitUntil: 'networkidle0',
+    page = await context.newPage();
+
+    // Visit the distributor's homepage
+    await page.goto(homepageUrl, {
+      waitUntil: 'networkidle',
       timeout: CONFIG.PAGE_TIMEOUT
     });
 
-    // Wait for content to load - try waiting for specific element
+    // Wait and simulate mouse movement
+    await delay(2000);
+    await page.mouse.move(500, 300);
+    await delay(500);
+
+    // Try to accept cookie consent if present
     try {
-      await page.waitForSelector('div.media-body', { timeout: 10000 });
+      const acceptButton = await page.locator('button:has-text("Aceptar")').first();
+      if (await acceptButton.isVisible({ timeout: 3000 })) {
+        await acceptButton.click();
+        console.log('    Accepted cookie consent');
+        await delay(1000);
+      }
     } catch (e) {
-      // Element not found within timeout, continue anyway
+      // No cookie consent button, that's fine
+    }
+
+    // Try clicking on "JOIN US" / "ÚNETE A NOSOTROS" link
+    try {
+      console.log('    Looking for JOIN US link...');
+      const joinLink = page.locator('a:has-text("ÚNETE A NOSOTROS"), a:has-text("JOIN US")').first();
+      if (await joinLink.isVisible({ timeout: 5000 })) {
+        await joinLink.click();
+        console.log('    Clicked JOIN US link');
+        await page.waitForLoadState('networkidle');
+        await delay(2000);
+      }
+    } catch (e) {
+      console.log('    JOIN US link not found, trying direct navigation');
+    }
+
+    // Now navigate to the enrollment page with rule=3
+    console.log(`  Fetching: ${enrollmentUrl}`);
+    await page.goto(enrollmentUrl, {
+      waitUntil: 'networkidle',
+      timeout: CONFIG.PAGE_TIMEOUT
+    });
+
+    // Wait for content to load
+    try {
+      await page.waitForSelector('div.media-body', { timeout: 15000 });
+    } catch (e) {
+      // Element not found within timeout, wait longer
       console.log('    Warning: media-body not found quickly, waiting longer...');
       await delay(CONFIG.WAIT_FOR_CONTENT);
+    }
+
+    // Take screenshot for debugging if test mode
+    const isTest = process.argv.includes('--test');
+    if (isTest) {
+      await page.screenshot({ path: '/tmp/fuxion-playwright.png', fullPage: true });
+      console.log('    Screenshot saved to /tmp/fuxion-playwright.png');
     }
 
     // Try to find the media-body element
@@ -151,7 +196,7 @@ async function scrapeDistributor(browser, distributorId, profileUrl) {
       const mediaBody = document.querySelector('div.media-body');
 
       if (!mediaBody) {
-        return { success: false, reason: 'no_media_body' };
+        return { success: false, reason: 'no_media_body', html: document.body.innerHTML.substring(0, 500) };
       }
 
       // Extract name from <strong class="media-heading">
@@ -176,6 +221,9 @@ async function scrapeDistributor(browser, distributorId, profileUrl) {
     });
 
     if (!contactData.success) {
+      if (isTest && contactData.html) {
+        console.log('    Page HTML preview:', contactData.html);
+      }
       return { success: false, reason: contactData.reason };
     }
 
@@ -216,6 +264,9 @@ async function scrapeDistributor(browser, distributorId, profileUrl) {
   } finally {
     if (page) {
       await page.close();
+    }
+    if (context) {
+      await context.close();
     }
   }
 }
@@ -347,7 +398,7 @@ async function runScrape(options = {}) {
   const { maxUrls = CONFIG.DEFAULT_MAX, dryRun = false } = options;
 
   console.log('============================================================');
-  console.log('FUXION CONTACT SCRAPER (Puppeteer)');
+  console.log('FUXION CONTACT SCRAPER (Playwright Firefox)');
   console.log('============================================================');
   console.log(`Mode: ${dryRun ? 'DRY RUN' : 'LIVE'}`);
   console.log(`Max URLs: ${maxUrls}`);
@@ -362,17 +413,10 @@ async function runScrape(options = {}) {
     return { processed: 0, successful: 0, duplicates: 0, failed: 0 };
   }
 
-  // Launch browser with stealth settings
-  const browser = await puppeteer.launch({
-    headless: 'new',
-    args: [
-      '--no-sandbox',
-      '--disable-setuid-sandbox',
-      '--disable-dev-shm-usage',
-      '--disable-gpu',
-      '--disable-blink-features=AutomationControlled',
-      '--window-size=1920,1080'
-    ]
+  // Launch Firefox browser (better anti-detection than Chromium)
+  const browser = await firefox.launch({
+    headless: true,
+    args: ['--disable-blink-features=AutomationControlled']
   });
 
   let processed = 0;
@@ -438,21 +482,14 @@ async function runScrape(options = {}) {
 
 async function testDistributor(distributorId) {
   console.log('============================================================');
-  console.log('FUXION SCRAPER - TEST MODE (Puppeteer)');
+  console.log('FUXION SCRAPER - TEST MODE (Playwright Firefox)');
   console.log('============================================================');
   console.log(`Testing distributor: ${distributorId}\n`);
 
-  // Launch browser with stealth settings
-  const browser = await puppeteer.launch({
-    headless: 'new',
-    args: [
-      '--no-sandbox',
-      '--disable-setuid-sandbox',
-      '--disable-dev-shm-usage',
-      '--disable-gpu',
-      '--disable-blink-features=AutomationControlled',
-      '--window-size=1920,1080'
-    ]
+  // Launch Firefox browser
+  const browser = await firefox.launch({
+    headless: true,
+    args: ['--disable-blink-features=AutomationControlled']
   });
 
   try {
@@ -503,7 +540,7 @@ async function main() {
 
   // Default: show usage
   console.log(`
-FuXion Contact Scraper (Puppeteer)
+FuXion Contact Scraper (Playwright Firefox)
 
 Usage:
   node scripts/fuxion-scraper.js --scrape              # Scrape contacts

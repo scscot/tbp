@@ -1,13 +1,26 @@
 name: FuXion Contact Scraper
 
-on:
-  schedule:
-    # Run 4x daily: 8am, 2pm, 8pm, 2am PT (UTC: 16, 22, 04, 10)
-    # Staggered from Omnilife scraper (7am, 1pm, 7pm, 1am)
-    - cron: '0 16,22,4,10 * * *'
+# PERMANENTLY DISABLED (Mar 11, 2026)
+#
+# FuXion scraping is not viable due to:
+# 1. Website bot detection blocks Puppeteer/Playwright (shows "Oops!" error page)
+# 2. Distributor IDs are usernames (e.g., "bienxtar", "viviarevalo"), not real names
+# 3. SerpAPI Google search yields only ~10% with mostly generic emails
+# 4. 752 URLs discovered but effectively unscrapeble
+#
+# Tested: Puppeteer, Puppeteer+Stealth, Playwright Chromium, Playwright Firefox,
+#         headed/headless modes, session warming, user flow simulation - all blocked.
+# SerpAPI test: 10 searches = 1 contact (generic fuxionmexico@outlook.com)
+#
+# Focus efforts on Omnilife (working) and other Spanish companies instead.
 
-  # Allow manual trigger for testing
-  workflow_dispatch:
+on:
+  # Permanently disabled - do not re-enable
+  # schedule:
+  #   - cron: '0 16,22,4,10 * * *'
+
+  # Manual trigger disabled to prevent accidental credit usage
+  # workflow_dispatch:
     inputs:
       max_urls:
         description: 'Maximum URLs to scrape per run'
@@ -44,18 +57,10 @@ jobs:
           cd scripts && npm ci && cd ..
           echo "Dependencies installed"
 
-      - name: Install Puppeteer Chrome dependencies
+      - name: Install Playwright browsers
         run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            libnss3 \
-            libatk-bridge2.0-0 \
-            libdrm2 \
-            libxkbcommon0 \
-            libgbm1 \
-            libasound2t64 \
-            libxshmfence1
-          echo "Chrome dependencies installed"
+          cd scripts && npx playwright install firefox --with-deps
+          echo "Playwright Firefox installed"
 
       - name: Setup Firebase credentials
         env:
@@ -75,8 +80,11 @@ jobs:
           MAX_URLS: ${{ github.event.inputs.max_urls || '100' }}
           DRY_RUN: ${{ github.event.inputs.dry_run }}
         run: |
-          echo "Starting FuXion Contact Scraper..."
+          echo "Starting FuXion Contact Scraper (Playwright Firefox)..."
           echo "Max URLs per run: $MAX_URLS"
+          echo ""
+          echo "NOTE: FuXion has bot detection - this may fail."
+          echo ""
 
           ARGS="--scrape --max=$MAX_URLS"
 
