@@ -24,7 +24,6 @@ Analyze and optimize Team Build Pro email campaigns across all 9 active campaign
 | Three | three_contacts | batchSizeThree | Active |
 | Farmasius | farmasius_contacts | batchSizeFarmasius | Active |
 | Spanish | spanish_contacts | spanishBatchSize | Active |
-| Rodanfields | rodanfields_contacts | batchSizeRodanfields | Active |
 
 ## Analysis Modes
 

@@ -448,39 +448,6 @@
       ]
     },
     {
-      "collectionGroup": "rodanfields_consultants",
-      "queryScope": "COLLECTION",
-      "fields": [
-        { "fieldPath": "scraped", "order": "ASCENDING" },
-        { "fieldPath": "createdAt", "order": "ASCENDING" }
-      ]
-    },
-    {
-      "collectionGroup": "rodanfields_contacts",
-      "queryScope": "COLLECTION",
-      "fields": [
-        { "fieldPath": "status", "order": "ASCENDING" },
-        { "fieldPath": "sent", "order": "ASCENDING" },
-        { "fieldPath": "randomIndex", "order": "ASCENDING" }
-      ]
-    },
-    {
-      "collectionGroup": "rodanfields_contacts",
-      "queryScope": "COLLECTION",
-      "fields": [
-        { "fieldPath": "sent", "order": "ASCENDING" },
-        { "fieldPath": "sentTimestamp", "order": "DESCENDING" }
-      ]
-    },
-    {
-      "collectionGroup": "rodanfields_contacts",
-      "queryScope": "COLLECTION",
-      "fields": [
-        { "fieldPath": "sent", "order": "ASCENDING" },
-        { "fieldPath": "sentTimestamp", "order": "ASCENDING" }
-      ]
-    },
-    {
       "collectionGroup": "users",
       "queryScope": "COLLECTION",
       "fields": [

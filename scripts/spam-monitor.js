@@ -90,7 +90,6 @@ const ALL_BATCH_SIZE_FIELDS = [
   'batchSizeFarmasius',  // Farmasius
   'batchSizeThree',      // Three
   'spanishBatchSize',    // Spanish
-  'batchSizeRodanfields' // Rodan+Fields
 ];
 
 // =============================================================================

@@ -99,7 +99,7 @@ The Team Build Pro ecosystem is a comprehensive, interconnected network of digit
 - Each post includes app download CTAs
 
 **6. Email Campaign Integration**
-- 13 campaigns total: Main (disabled), Purchased, BFH, Zinzino, FSR, Paparazzi, Pruvit (disabled), Scentsy, MPG, Three, Farmasius (blocked), Spanish, Rodanfields
+- 12 campaigns total: Main (disabled), Purchased, BFH, Zinzino, FSR, Paparazzi, Pruvit (disabled), Scentsy, MPG, Three, Farmasius, Spanish
 - V18 A/B/C template testing with 33% distribution per variant across all campaigns
 - Mailgun API via news.teambuildpro.com with Firestore send tracking
 - Click tracking via GA4 UTM parameters (direct landing page URLs); open tracking disabled for deliverability
@@ -822,26 +822,6 @@ The email campaign system consists of multiple parallel campaigns targeting diff
 - **Language Selection**: From contact.language field (en/es/pt supported)
 - **Target Companies**: Omnilife (Mexico), Belcorp, FuXion, Yanbal, Vivri, Exialoe
 
-### Rodan+Fields Campaign (Mailgun API - Automated)
-- **Function**: `sendHourlyRodanfieldsCampaign` in `functions/email-campaign-rodanfields.js`
-- **Tags**: `rodanfields_campaign`, `tracked`
-- **Schedule**: 11am, 2pm, 5pm, 8pm PT (4 runs/day, staggered from other campaigns)
-- **Data Source**: Firestore `rodanfields_contacts` collection (scraped from R+F consultant finder)
-- **Control Variable**: RODANFIELDS_CAMPAIGN_ENABLED
-- **Batch Size**: Dynamic via Firestore `config/emailCampaign.batchSizeRodanfields`
-- **V18 A/B/C Testing** (33% distribution each, English only):
-  - V18-A: "What if your next recruit joined with 12 people?" (Curiosity Hook) - `rodanfields_v18_a`
-  - V18-B: "75% of your recruits will quit this year (here's why)" (Pain Point Hook) - `rodanfields_v18_b`
-  - V18-C: "Give your prospects an AI recruiting coach" (Direct Value Hook) - `rodanfields_v18_c`
-- **Query**: `status == 'pending' && sent == false`, ordered by randomIndex
-- **Template Variables**: `first_name`, `tracked_cta_url`, `unsubscribe_url`
-- **Note**: R+F abandoned their MLM model in Sept 2024, but former consultants likely moved to other MLM companies
-- **Discovery Pipeline**:
-  - `scripts/rodanfields-discovery.js` - Discover consultants via name search (40 common US names)
-  - `scripts/rodanfields-scraper.js` - Extract emails from profile pages (~11% exposure rate)
-  - `.github/workflows/rodanfields-discovery.yml` - Run every 4 hours, 100 pages/run
-  - `.github/workflows/rodanfields-scraper.yml` - Run hourly, 50/run
-
 - **FSR Two-Script Architecture** (Feb 2026):
   - `scripts/fsr-id-harvester.js` - Fast ID harvester (no CAPTCHA, 12x daily, 50 pages/run)
   - `scripts/fsr-scraper.js` - Contact scraper with 2Captcha reCAPTCHA solver (4x daily, 75/run)
@@ -878,7 +858,6 @@ The email campaign system consists of multiple parallel campaigns targeting diff
   | MPG | `mpg_contacts` | `batchSizeMpg` | Active |
   | Farmasius | `farmasius_contacts` | `batchSizeFarmasius` | Blocked |
   | Spanish | `spanish_contacts` | `spanishBatchSize` | Active |
-  | Rodanfields | `rodanfields_contacts` | `batchSizeRodanfields` | Active |
 - **Benefits**:
   - Self-balancing: campaigns with more contacts automatically get higher batch sizes
   - Auto-adjusts as scrapers add contacts or queues deplete
@@ -1762,8 +1741,8 @@ Corporate email domains are excluded from all contact collections using a **blac
   - Sends test emails directly via Mailgun API using V18 A/B/C templates
   - Tests 3 subject line variants: V18-A (Curiosity), V18-B (Pain Point), V18-C (Direct Value)
   - Waits 2 minutes for Gmail delivery, then checks inbox vs spam placement
-  - Auto-disables **ALL 13 campaigns** if spam detected:
-    - `batchSize`, `batchSizePurchased`, `batchSizeBfh`, `batchSizePaparazzi`, `batchSizeFsr`, `batchSizeZinzino`, `batchSizePruvit`, `scentsyBatchSize`, `batchSizeMpg`, `batchSizeFarmasius`, `batchSizeThree`, `spanishBatchSize`, `batchSizeRodanfields`
+  - Auto-disables **ALL 12 campaigns** if spam detected:
+    - `batchSize`, `batchSizePurchased`, `batchSizeBfh`, `batchSizePaparazzi`, `batchSizeFsr`, `batchSizeZinzino`, `batchSizePruvit`, `scentsyBatchSize`, `batchSizeMpg`, `batchSizeFarmasius`, `batchSizeThree`, `spanishBatchSize`
   - Sends alert email via Mailgun on spam detection
   - Stores previous batch size values for recovery
   - Schedule: 5x daily (6am, 9am, 12pm, 3pm, 6pm PT) via `.github/workflows/spam-monitor.yml`
@@ -1859,10 +1838,16 @@ Corporate email domains are excluded from all contact collections using a **blac
   - Integration with GA4 for click tracking analysis
 
 **Email Campaign Infrastructure**
+- ✅ **Rodanfields Campaign Removed** (Mar 11, 2026): Entire R+F funnel deleted due to non-viable email exposure rate
+  - Only 2 emails found from 587 consultants scraped (0.34% exposure rate)
+  - All consultant profiles only have contact forms, no direct email addresses
+  - Deleted: `email-campaign-rodanfields.js`, scraper scripts, GitHub workflows
+  - Removed from: index.js, warming-config.json, spam-monitor.js, Firestore indexes, analytics dashboard
+  - Campaign count reduced from 13 to 12
 - ✅ **V18 A/B/C Full Rollout** (Mar 11, 2026): All campaigns migrated to V18 A/B/C template testing
   - 3 subject line variants: V18-A (Curiosity Hook), V18-B (Pain Point Hook), V18-C (Direct Value Hook)
   - 33% distribution per variant for statistically valid A/B/C testing
-  - 13 total campaigns: Main (disabled), Purchased, BFH, Zinzino, FSR, Paparazzi, Pruvit (disabled), Scentsy, MPG, Three (V19), Farmasius (blocked), Spanish, Rodanfields
+  - 12 total campaigns: Main (disabled), Purchased, BFH, Zinzino, FSR, Paparazzi, Pruvit (disabled), Scentsy, MPG, Three (V19), Farmasius (blocked), Spanish
   - Multilingual support: BFH/Farmasius (EN/ES/PT/DE), Scentsy/Zinzino (EN/ES/DE)
   - Subject tags: `{campaign}_v18_a`, `{campaign}_v18_b`, `{campaign}_v18_c` (or `{campaign}_v18_a_{lang}` for multilingual)
   - THREE uses V19 A/B/C (generic greeting for subdomain-based contacts)
@@ -2210,7 +2195,6 @@ Main Campaign disabled. ALL active campaigns use V18 A/B/C testing (33% distribu
 | Farmasius Campaign | Blocked | 403 bot protection · EN/ES/PT/DE |
 | MPG Campaign | **V18 A/B/C** | Dynamic batch sizing · EN only |
 | Spanish Campaign | **V18 A/B/C** | Dynamic batch sizing · EN/ES/PT (Omnilife targets) |
-| Rodanfields Campaign | **V18 A/B/C** | Dynamic batch sizing · EN only (former R+F consultants) |
 | Domain Warming | **Daily** | 6am PT · 4-week schedule (40%→60%→80%→100%) |
 | Contacts Campaign | Complete | 826 contacts (cleaned Feb 15) |
 | Email Sending | Mailgun API | Via Mailgun, news.teambuildpro.com |
