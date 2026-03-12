@@ -40,12 +40,10 @@ jobs:
           cd scripts
           npm install firebase-admin axios
 
-      - name: Create service account file
+      - name: Create secrets directory and files
         run: |
+          mkdir -p secrets
           echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}' > secrets/serviceAccountKey.json
-
-      - name: Create SerpAPI key file
-        run: |
           echo '${{ secrets.SERPAPI_KEY }}' > secrets/SerpAPI-Key
 
       - name: Run Signal Monitor
@@ -100,8 +98,9 @@ jobs:
           npm install firebase-admin playwright
           npx playwright install chromium
 
-      - name: Create service account file
+      - name: Create secrets directory and service account file
         run: |
+          mkdir -p secrets
           echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}' > secrets/serviceAccountKey.json
 
       - name: Run Profile Extractor
