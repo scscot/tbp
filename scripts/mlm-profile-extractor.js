@@ -409,17 +409,19 @@ async function runExtractor(options = {}) {
     try {
       const contact = await extractProfile(page, profile.url);
 
-      if (contact && (contact.emails.length > 0 || contact.phones.length > 0)) {
+      // Save contact if we have ANY useful info (name, email, or phone)
+      // Contacts without emails can be enriched later via SerpAPI search
+      if (contact && (contact.emails.length > 0 || contact.phones.length > 0 || contact.name)) {
         const { firstName, lastName } = parseName(contact.name);
         const email = contact.emails[0] || null;
         const phone = contact.phones[0] || null;
 
         console.log(`  ✓ Name: ${contact.name || 'N/A'}`);
-        console.log(`    Email: ${email || 'N/A'}`);
+        console.log(`    Email: ${email || 'N/A'}${!email && contact.name ? ' (can enrich via SerpAPI)' : ''}`);
         console.log(`    Company: ${contact.company || 'N/A'}`);
 
-        if (!options.dryRun && email) {
-          // Save to contacts collection
+        // Save contact if we have a name (email can be found via enrichment)
+        if (!options.dryRun && (email || contact.name)) {
           const contactId = generateContactId(profile.url);
           await db.collection(CONFIG.CONTACTS_COLLECTION).doc(contactId).set({
             firstName: firstName,
@@ -431,7 +433,8 @@ async function runExtractor(options = {}) {
             profileUrl: profile.url,
             source: 'mlm_signal_monitor',
             sent: false,
-            status: 'pending',
+            status: email ? 'pending' : 'needs_enrichment',
+            emailEnriched: email ? true : false, // Mark if email already found
             randomIndex: Math.random(),
             createdAt: admin.firestore.FieldValue.serverTimestamp(),
           }, { merge: true });

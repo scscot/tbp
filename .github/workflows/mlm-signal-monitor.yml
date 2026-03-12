@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       source:
-        description: 'Signal source (google, reddit, youtube, facebook, twitter, tiktok, instagram, threads, or all)'
+        description: 'Signal source (google, reddit, youtube, facebook, twitter, tiktok, instagram, threads, directory, or all)'
         required: false
         default: 'all'
       dry_run:
@@ -116,3 +116,44 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "- **Time**: $(date -u)" >> $GITHUB_STEP_SUMMARY
           echo "- **Max profiles**: 25" >> $GITHUB_STEP_SUMMARY
+
+  enrich-emails:
+    runs-on: ubuntu-latest
+    needs: extract-profiles
+    if: github.event.inputs.dry_run != 'true'
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: |
+          cd scripts
+          npm install firebase-admin axios
+
+      - name: Create secrets directory and files
+        run: |
+          mkdir -p secrets
+          echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}' > secrets/serviceAccountKey.json
+          echo '${{ secrets.SERPAPI_KEY }}' > secrets/SerpAPI-Key
+
+      - name: Run Email Enrichment
+        run: |
+          node scripts/mlm-email-enrichment.js --enrich --max=25
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: secrets/serviceAccountKey.json
+
+      - name: Generate Summary
+        if: always()
+        run: |
+          echo "## MLM Email Enrichment Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Time**: $(date -u)" >> $GITHUB_STEP_SUMMARY
+          echo "- **Max searches**: 25" >> $GITHUB_STEP_SUMMARY
+          echo "- **Purpose**: Find emails for contacts with name+company via SerpAPI" >> $GITHUB_STEP_SUMMARY

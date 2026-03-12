@@ -270,10 +270,23 @@ const CONFIG = {
 
   // Profile URL patterns to extract from signals
   PROFILE_PATTERNS: [
-    // Generic MLM patterns
-    /https?:\/\/[a-z0-9-]+\.(myshopify\.com|wixsite\.com|wordpress\.com)[^\s"')]+/gi,
+    // HIGH VALUE: Directory sites known to expose emails
+    /https?:\/\/(?:www\.|[a-z]+\.)?findsalesrep\.com\/users\/[0-9]+/gi,
+    /https?:\/\/businessforhome\.org\/[a-z0-9-]+/gi,
 
-    // Company-specific patterns
+    // HIGH VALUE: Company finder pages that expose contact info
+    /https?:\/\/[a-z0-9-]+\.scentsy\.com[^\s"')]+/gi,
+    /https?:\/\/(?:www\.)?scentsy\.com\/[a-z-]+\/[a-z]+\/consultant\/[^\s"')]+/gi,
+    /https?:\/\/paparazzi\.com\/join\/[0-9]+/gi,
+    /https?:\/\/(?:www\.)?paparazziaccessories\.com\/[^\s"')]+/gi,
+    /https?:\/\/(?:www\.)?pruvit\.com[^\s"')?]*\?(?:ref|r)=[^\s"'&]+/gi,
+    /https?:\/\/[a-z0-9-]+\.myrandf\.com[^\s"')]+/gi,
+    /https?:\/\/[a-z0-9]+\.zinzino\.com[^\s"')]+/gi,
+    /https?:\/\/[a-z0-9-]+\.colorstreet\.com[^\s"')]+/gi,
+    /https?:\/\/[a-z0-9-]+\.myfarmasi\.com[^\s"')]+/gi,
+    /https?:\/\/[a-z0-9-]+\.threeinternational\.com[^\s"')]+/gi,
+
+    // Company-specific profile patterns (may have contact info)
     /https?:\/\/[a-z0-9-]+\.myamway\.com[^\s"')]+/gi,
     /https?:\/\/[a-z0-9-]+\.myherbalife\.com[^\s"')]+/gi,
     /https?:\/\/[a-z0-9-]+\.youngliving\.com[^\s"')]+/gi,
@@ -281,13 +294,78 @@ const CONFIG = {
     /https?:\/\/[a-z0-9-]+\.mymonat\.com[^\s"')]+/gi,
     /https?:\/\/[a-z0-9-]+\.arbonne\.com[^\s"')]+/gi,
     /https?:\/\/[a-z0-9-]+\.plexusworldwide\.com[^\s"')]+/gi,
-    /https?:\/\/www\.findsalesrep\.com\/users\/[0-9]+/gi,
-    /https?:\/\/businessforhome\.org\/[a-z0-9-]+/gi,
+    /https?:\/\/[a-z0-9-]+\.nuskinusa\.com[^\s"')]+/gi,
+    /https?:\/\/[a-z0-9-]+\.myitworks\.com[^\s"')]+/gi,
+    /https?:\/\/[a-z0-9-]+\.shakleeusa\.com[^\s"')]+/gi,
+    /https?:\/\/[a-z0-9-]+\.isagenix\.com[^\s"')]+/gi,
+    /https?:\/\/[a-z0-9-]+\.juiceplus\.com[^\s"')]+/gi,
+    /https?:\/\/[a-z0-9-]+\.origamiowl\.com[^\s"')]+/gi,
+    /https?:\/\/[a-z0-9-]+\.mythirtyone\.com[^\s"')]+/gi,
+    /https?:\/\/[a-z0-9-]+\.youniqueproducts\.com[^\s"')]+/gi,
+    /https?:\/\/[a-z0-9-]+\.pureromance\.com[^\s"')]+/gi,
+    /https?:\/\/[a-z0-9-]+\.pamperedchef\.com[^\s"')]+/gi,
+    /https?:\/\/[a-z0-9-]+\.stelladot\.com[^\s"')]+/gi,
+    /https?:\/\/[a-z0-9-]+\.neora\.com[^\s"')]+/gi,
 
-    // Social media profiles (potential leads)
+    // Generic MLM patterns
+    /https?:\/\/[a-z0-9-]+\.(myshopify\.com|wixsite\.com|wordpress\.com)[^\s"')]+/gi,
+
+    // Social media profiles (lower value - rarely expose emails)
     /https?:\/\/(?:www\.)?facebook\.com\/[a-zA-Z0-9.]+/gi,
     /https?:\/\/(?:www\.)?instagram\.com\/[a-zA-Z0-9._]+/gi,
     /https?:\/\/(?:www\.)?linkedin\.com\/in\/[a-zA-Z0-9-]+/gi,
+  ],
+
+  // Directory discovery queries - HIGH VALUE sites that expose contact info
+  DIRECTORY_DISCOVERY_QUERIES: [
+    // FindSalesRep - public directory with emails
+    'site:findsalesrep.com "independent consultant"',
+    'site:findsalesrep.com "distributor" OR "representative"',
+    'site:findsalesrep.com Amway OR Herbalife OR "Young Living"',
+    'site:findsalesrep.com Monat OR Arbonne OR "It Works"',
+    'site:findsalesrep.com Scentsy OR Paparazzi OR "Color Street"',
+
+    // BusinessForHome - MLM leaders with emails
+    'site:businessforhome.org "distributor" OR "consultant"',
+    'site:businessforhome.org "top earner" OR "leader"',
+    'site:businessforhome.org Amway OR Herbalife OR doTERRA',
+
+    // Scentsy finder - exposed contact info
+    'site:scentsy.com "consultant" "contact"',
+    '"scentsy consultant" "email" OR "contact me"',
+    '"scentsy consultant finder"',
+
+    // Paparazzi - known email exposure
+    'site:paparazzi.com "join" OR "consultant"',
+    '"paparazzi accessories" consultant "email"',
+    '"paparazzi consultant" "contact me"',
+
+    // Color Street - stylist finder
+    'site:colorstreet.com "stylist" OR "consultant"',
+    '"color street stylist" "contact" OR "email"',
+
+    // Rodan + Fields - consultant profiles
+    'site:myrandf.com consultant',
+    '"rodan and fields" consultant "email" OR "contact"',
+
+    // Pruvit - referral pages with contact
+    '"pruvit" "promoter" "email" OR "contact"',
+    '"pruvit" "join my team" "reach out"',
+
+    // Zinzino - partner pages
+    'site:zinzino.com partner OR distributor',
+    '"zinzino partner" "contact"',
+
+    // General MLM directory searches
+    '"direct sales consultant" email "contact me"',
+    '"network marketing" distributor email site:*.com',
+    '"independent distributor" "contact information"',
+    '"join my team" "email me" OR "contact me at"',
+
+    // Company finder pages
+    '"find a consultant" "direct sales" email',
+    '"find a distributor" network marketing contact',
+    '"consultant locator" OR "rep finder" MLM',
   ],
 
   // Email extraction pattern
@@ -1312,6 +1390,134 @@ async function threadsAgent(options = {}) {
   return { signals, profiles: Array.from(profiles) };
 }
 
+/**
+ * Directory Discovery Agent - HIGH VALUE targets known to expose emails
+ *
+ * Unlike social media agents that find promotional content, this agent
+ * specifically targets directory sites and company finder pages that
+ * actually expose distributor contact information.
+ */
+async function directoryDiscoveryAgent(options = {}) {
+  if (!SERPAPI_KEY) {
+    console.log('SerpAPI key not found - skipping Directory Discovery');
+    return { signals: [], profiles: [] };
+  }
+
+  const signals = [];
+  const profiles = new Set();
+  const queries = CONFIG.DIRECTORY_DISCOVERY_QUERIES;
+  const maxQueries = options.maxQueries || 20; // Run more queries - these are high value
+
+  console.log(`\n=== Directory Discovery Agent (HIGH VALUE) ===`);
+  console.log(`Searching ${Math.min(maxQueries, queries.length)} targeted directory queries...`);
+  console.log(`Time filter: ${options.noTimeFilter ? 'OFF (all time)' : 'ON (past week)'}`);
+
+  // Shuffle and select queries
+  const selectedQueries = queries.sort(() => Math.random() - 0.5).slice(0, maxQueries);
+
+  for (let i = 0; i < selectedQueries.length; i++) {
+    const query = selectedQueries[i];
+    console.log(`\n[${i + 1}/${selectedQueries.length}] "${query.substring(0, 50)}..."`);
+
+    try {
+      const params = {
+        api_key: SERPAPI_KEY,
+        engine: 'google',
+        q: query,
+        num: 30, // Get more results since these are high-value targets
+        gl: 'us',
+        hl: 'en',
+      };
+
+      // Use week filter instead of day - directory pages don't change as often
+      // Skip filter on first run to build initial database
+      if (!options.noTimeFilter) {
+        params.tbs = 'qdr:w'; // Past week instead of past day
+      }
+
+      const response = await axios.get(CONFIG.SERPAPI_URL, {
+        params,
+        timeout: 30000,
+      });
+
+      const results = response.data.organic_results || [];
+      console.log(`  Found ${results.length} results`);
+
+      let profileCount = 0;
+      for (const result of results) {
+        const content = `${result.title || ''} ${result.snippet || ''} ${result.link || ''}`;
+        const company = detectCompany(content);
+        const extractedUrls = extractUrls(content);
+        const extractedEmails = extractEmails(content);
+
+        // Always add the result URL if it matches high-value patterns
+        const url = result.link || '';
+        const isHighValueUrl =
+          url.includes('findsalesrep.com/users/') ||
+          url.includes('businessforhome.org/') ||
+          url.includes('.scentsy.com') ||
+          url.includes('paparazzi.com') ||
+          url.includes('.myrandf.com') ||
+          url.includes('.zinzino.com') ||
+          url.includes('colorstreet.com') ||
+          url.includes('pruvit.com') ||
+          url.includes('.myfarmasi.com') ||
+          url.includes('.threeinternational.com') ||
+          url.includes('.myamway.com') ||
+          url.includes('.myherbalife.com') ||
+          url.includes('.mymonat.com') ||
+          url.includes('.arbonne.com') ||
+          url.includes('.myitworks.com') ||
+          url.includes('.nuskinusa.com') ||
+          url.includes('.shakleeusa.com') ||
+          url.includes('.isagenix.com') ||
+          url.includes('.origamiowl.com') ||
+          url.includes('.mythirtyone.com') ||
+          url.includes('.youniqueproducts.com') ||
+          url.includes('.pureromance.com') ||
+          url.includes('.pamperedchef.com');
+
+        if (isHighValueUrl) {
+          profiles.add(url);
+          profileCount++;
+        }
+
+        // Also add any extracted URLs from content
+        extractedUrls.forEach(u => profiles.add(u));
+
+        // Save signal if it has any useful data
+        if (extractedUrls.length > 0 || extractedEmails.length > 0 || company || isHighValueUrl) {
+          const signalId = generateSignalId('directory', url);
+
+          signals.push({
+            id: signalId,
+            source: 'directory',
+            query: query,
+            title: result.title,
+            snippet: result.snippet,
+            sourceUrl: url,
+            detectedCompany: company,
+            extractedUrls: extractedUrls,
+            extractedEmails: extractedEmails,
+            isHighValueUrl: isHighValueUrl,
+            discoveredAt: admin.firestore.FieldValue.serverTimestamp(),
+          });
+        }
+      }
+      console.log(`  High-value profiles: ${profileCount}`);
+    } catch (error) {
+      console.error(`  Error: ${error.message}`);
+    }
+
+    if (i < selectedQueries.length - 1) {
+      await sleep(addJitter(CONFIG.SERPAPI_DELAY));
+    }
+  }
+
+  console.log(`\nDirectory Discovery Agent: ${signals.length} signals, ${profiles.size} profiles`);
+  return { signals, profiles: Array.from(profiles) };
+}
+
 // ============================================================================
 // STORAGE FUNCTIONS
 // ============================================================================
@@ -1458,6 +1664,13 @@ async function runMonitor(options = {}) {
     threadsResults.profiles.forEach(p => allProfiles.add(p));
   }
 
+  // Directory Discovery Agent - HIGH VALUE (run when source is 'all' or 'directory')
+  if (!source || source === 'directory') {
+    const directoryResults = await directoryDiscoveryAgent(options);
+    allSignals.push(...directoryResults.signals);
+    directoryResults.profiles.forEach(p => allProfiles.add(p));
+  }
+
   // Save results
   console.log('\n' + '='.repeat(60));
   console.log('SAVING RESULTS');
@@ -1505,12 +1718,14 @@ async function showStats() {
   console.log(`  Total: ${signalsSnap.data().count}`);
 
   // Count by source
-  const sources = ['google', 'reddit', 'youtube'];
+  const sources = ['google', 'reddit', 'youtube', 'facebook', 'twitter', 'tiktok', 'instagram', 'threads', 'directory'];
   for (const source of sources) {
     const count = await db.collection(CONFIG.SIGNALS_COLLECTION)
       .where('source', '==', source)
       .count().get();
-    console.log(`  - ${source}: ${count.data().count}`);
+    if (count.data().count > 0) {
+      console.log(`  - ${source}: ${count.data().count}`);
+    }
   }
 
   // Profiles collection
