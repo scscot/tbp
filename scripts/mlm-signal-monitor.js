@@ -66,25 +66,88 @@ const CONFIG = {
     '"looking for motivated" network marketing',
     '"business opportunity" MLM -scam -pyramid',
     '"work from home" "direct sales" hiring',
+    '"ground floor opportunity" network marketing',
+    '"team leader" "looking for" direct sales',
+    '"expanding my team" MLM OR "network marketing"',
 
     // Product promotion signals
     '"independent consultant" OR "independent distributor"',
     '"earn extra income" "health and wellness"',
     '"be your own boss" network marketing',
-
-    // Company-specific signals (high-activity companies)
-    'Amway IBO recruiting',
-    'Herbalife distributor opportunity',
-    'Young Living essential oils business',
-    'doTERRA wellness advocate',
-    'Monat VIP opportunity',
-    'Arbonne consultant signup',
-    'Plexus ambassador',
+    '"side hustle" direct sales opportunity',
+    '"financial freedom" network marketing',
 
     // Social proof signals
     '"changed my life" MLM OR "direct sales"',
     '"quit my job" network marketing',
     '"top earner" direct sales',
+    '"rank advancement" network marketing',
+    '"hit diamond" OR "hit platinum" direct sales',
+  ],
+
+  // Company-specific search queries (rotated through during monitoring)
+  COMPANY_SIGNAL_QUERIES: [
+    // Top tier companies (highest activity)
+    'Amway IBO recruiting "join my team"',
+    'Herbalife distributor opportunity "looking for"',
+    'Young Living essential oils "business opportunity"',
+    'doTERRA wellness advocate recruiting',
+    'Monat VIP "join my team" OR "looking for"',
+    'Arbonne consultant "ground floor" OR recruiting',
+    'Plexus ambassador "join my team"',
+    'Pruvit promoter "business opportunity"',
+    'It Works distributor recruiting',
+    'Scentsy consultant "join my team"',
+    'Mary Kay consultant recruiting opportunity',
+    'Avon representative "join my team"',
+    'Tupperware consultant "business opportunity"',
+    'Pampered Chef consultant recruiting',
+    'Color Street stylist "join my team"',
+    'Paparazzi accessories consultant recruiting',
+    'LuLaRoe retailer "looking for"',
+    'Younique presenter "join my team"',
+    'Rodan and Fields consultant recruiting',
+    'Pure Romance consultant "business opportunity"',
+    'Beachbody coach recruiting "join my team"',
+    'Optavia coach "health coach" recruiting',
+    'Shaklee distributor "join my team"',
+    'USANA associate recruiting opportunity',
+    'Nu Skin distributor "business opportunity"',
+    'Melaleuca "wellness company" recruiting',
+    'Isagenix associate "join my team"',
+    'Forever Living distributor recruiting',
+    'Juice Plus distributor "looking for"',
+    'Modere social marketer recruiting',
+    'Le-Vel Thrive promoter "join my team"',
+    'LifeVantage distributor recruiting',
+    'Neora brand partner "business opportunity"',
+    'Tranont associate recruiting',
+    'Zilis ambassador "join my team"',
+    'ACN representative recruiting opportunity',
+    'LegalShield associate "business opportunity"',
+    'Primerica representative recruiting',
+    'World Financial Group agent recruiting',
+    'PHP Agency agent "looking for"',
+    'Cutco sales representative recruiting',
+    'Kirby vacuum distributor opportunity',
+    'Norwex consultant "join my team"',
+    'Stella and Dot stylist recruiting',
+    'Origami Owl designer "business opportunity"',
+    'Thirty-One consultant recruiting',
+    'Jeunesse distributor "join my team"',
+    'Organo distributor recruiting opportunity',
+    'Zinzino partner "business opportunity"',
+    'LiveGood affiliate recruiting',
+    'Farmasi beauty influencer "join my team"',
+    'Valentus distributor recruiting',
+    'Rain International distributor opportunity',
+    'ASEA associate recruiting',
+    'Healy World distributor "join my team"',
+    'LifeWave distributor recruiting',
+    'Atomy member "business opportunity"',
+    'DXN distributor recruiting',
+    'Oriflame consultant "join my team"',
+    'FM World distributor recruiting',
   ],
 
   // Reddit subreddits to monitor
@@ -100,14 +163,20 @@ const CONFIG = {
 
   // Reddit signal keywords (in post titles/content)
   REDDIT_KEYWORDS: [
-    'network marketing',
-    'direct sales',
-    'MLM',
-    'downline',
-    'upline',
-    'team building',
-    'home business',
-    'wellness company',
+    // Generic MLM terms
+    'network marketing', 'direct sales', 'MLM', 'downline', 'upline',
+    'team building', 'home business', 'wellness company', 'multi-level',
+    'independent consultant', 'independent distributor', 'side hustle opportunity',
+
+    // Top 50 company names for Reddit monitoring
+    'amway', 'herbalife', 'avon', 'mary kay', 'tupperware', 'young living', 'doterra',
+    'monat', 'arbonne', 'plexus', 'usana', 'isagenix', 'nu skin', 'melaleuca', 'shaklee',
+    'primerica', 'beachbody', 'it works', 'scentsy', 'pampered chef', 'rodan and fields',
+    'younique', 'origami owl', 'thirty-one', 'paparazzi', 'lularoe', 'color street',
+    'pure romance', 'pruvit', 'modere', 'juice plus', 'advocare', 'optavia', 'tranont',
+    'lifevantage', 'neora', 'zilis', 'enagic', 'worldventures', 'acn', 'legalshield',
+    'forever living', 'organo', 'jeunesse', 'zinzino', 'farmasi', 'norwex', 'cutco',
+    'livegood', 'valentus', 'thrive', 'le-vel',
   ],
 
   // Profile URL patterns to extract from signals
@@ -142,17 +211,162 @@ const CONFIG = {
     'linkedin.com', 'youtube.com', 'google.com',
   ],
 
-  // Known MLM companies for classification
+  // Comprehensive list of MLM/Direct Sales/Network Marketing companies
+  // Source: BusinessForHome.org/companies/ (500+ companies)
   MLM_COMPANIES: [
-    'amway', 'herbalife', 'avon', 'mary kay', 'tupperware',
-    'young living', 'doterra', 'monat', 'arbonne', 'plexus',
-    'usana', 'isagenix', 'nu skin', 'melaleuca', 'shaklee',
-    'primerica', 'beachbody', 'it works', 'scentsy', 'pampered chef',
-    'rodan and fields', 'younique', 'origami owl', 'thirty-one',
-    'paparazzi', 'lularoe', 'color street', 'pure romance',
-    'pruvit', 'modere', 'juice plus', 'advocare', 'optavia',
-    'tranont', 'lifevantage', 'nerium', 'neora', 'zilis',
-    'enagic', 'worldventures', 'acn', 'legalshield',
+    // Top 50 most recognized companies (high priority for signal detection)
+    'amway', 'herbalife', 'avon', 'mary kay', 'tupperware', 'young living', 'doterra',
+    'monat', 'arbonne', 'plexus', 'usana', 'isagenix', 'nu skin', 'melaleuca', 'shaklee',
+    'primerica', 'beachbody', 'it works', 'scentsy', 'pampered chef', 'rodan and fields',
+    'younique', 'origami owl', 'thirty-one', 'paparazzi', 'lularoe', 'color street',
+    'pure romance', 'pruvit', 'modere', 'juice plus', 'advocare', 'optavia', 'tranont',
+    'lifevantage', 'neora', 'zilis', 'enagic', 'worldventures', 'acn', 'legalshield',
+    'forever living', 'organo', 'jeunesse', 'zinzino', 'kyani', 'immunotec', 'mannatech',
+    'market america', 'reliv', 'xyngular',
+
+    // A-B companies
+    '4life', '7k metals', 'acti-labs', 'activz', 'adornable.u', 'aerus', 'agoa home',
+    'agravitae', 'akmos', 'akuna', 'aleonn', 'alliance in motion', 'allysian', 'aloette',
+    'alovea', 'alphay', 'aluva', 'amakha paris', 'amare', 'ambit energy', 'ameriplan',
+    'amore pacific', 'ann summers', 'anovite', 'aplgo', 'aquasource', 'ardyss', 'arego life',
+    'arieyl', 'aromatic 89', 'arsoa', 'arvea nature', 'ascira', 'asclepius wellness', 'asea',
+    'asili global', 'atomy', 'audere', 'australiana life', 'auvoria prime', 'avena originals',
+    'awakend', 'axxa global', 'ayucell', 'azenka', 'azuli skye', 'b-epic', 'bepic',
+    'barefoot books', 'be club', 'be live', 'beauty society', 'because cosmetics', 'belcorp',
+    'bella grace', 'bella modi', 'bellame', 'beneve', 'best world', 'bestlife worldwide',
+    'betterware', 'beyond slim', 'beyuna', 'bf suma', 'bhip global', 'bio4', 'bioheal',
+    'bioreigns', 'biotonus', 'bioulife', 'bitles', 'blen', 'blezi', 'bode pro', 'body wise',
+    'bodylogic', 'bofrost', 'boisset wine', 'bomb party', 'bonvera', 'bravenly', 'breathless wines',
+    'bryte lyfe', 'bydzyne',
+
+    // C-D companies
+    'cabi', 'calerie', 'cambridge diet', 'cannaglobe', 'captain tortue', 'carico', 'celadon road',
+    'celebrating home', 'celframe', 'cellagon', 'cellements', 'cellis health', 'cerule', 'cevitalis',
+    'chalk couture', 'chalky and company', 'chandeal', 'charle corp', 'chogan', 'cili', 'clearunited',
+    'close to my heart', 'cognoa', 'color me beautiful', 'colway', 'compelling creations', 'conklin',
+    'coral club', 'corvive', 'cosway', 'coway', 'creative memories', 'ctfo', 'culbeans', 'cutco',
+    'daisy blue naturals', 'damsel in defense', 'dbm global', 'deesse', 'delta digital', 'destander',
+    'diana co', 'dignity organic', 'dr juchheim', 'dreamtrips', 'dub nutrition', 'dudley products',
+    'duolife', 'dvlop', 'dxn', 'dyna maxx',
+
+    // E-F companies
+    'e excel', 'epic trading', 'eaconomy', 'eazyways', 'edmark', 'el recetario', 'elevitea', 'elken',
+    'ellie md', 'elomir', 'eminence organic', 'energetix', 'energymax', 'eniva', 'enzacta', 'eqology',
+    'essante organics', 'essens', 'essential bodywear', 'eternal spirit beauty', 'ev international',
+    'evergreen life', 'evo global', 'evolution network', 'evomel', 'exialoe', 'exp realty', 'faberlic',
+    'fair network', 'family first life', 'farmasi', 'fifth avenue collection', 'fireflies',
+    'firstfitness nutrition', 'fitteam', 'flavon', 'fm world', 'for days', 'for you', 'freeko',
+    'frequense', 'ftr global', 'fumee perfume', 'fun stampers journey', 'future global vision',
+    'futures luume', 'fuxion',
+
+    // G-H companies
+    'gano excel', 'gelmoment', 'genistar', 'genlife', 'giffarine', 'glaze trading', 'global domains',
+    'globallee', 'gng', 'gofinity', 'gold canyon', 'golden days', 'govvi', 'gracewear', 'greatlife',
+    'green compass', 'greenchoyce', 'greenway global', 'h2o at home', 'ha-ra', 'hai-o', 'haka kunz',
+    'hawaii balsamics', 'hb naturals', 'hc wellness', 'healthgarde', 'healthsync', 'healthyhome',
+    'healy world', 'hegemon group', 'hgi', 'heim and haus', 'hempmate', 'hibody', 'hinode', 'homm bitkisel',
+    'hph', 'hte usa', 'hugh and grace', 'hulsa', 'hy cite',
+
+    // I-J companies
+    'i9life', 'iam worldwide', 'ibuumerang', 'idlife', 'ievolution', 'igenius', 'ihealth global',
+    'ihub global', 'illuminent', 'imc', 'impact global', 'imuni', 'in8 network', 'inbs', 'incruises',
+    'inetwork2u', 'infinitus', 'initial outfitters', 'inkavida', 'innov8tive nutrition', 'innova',
+    'inqten', 'inspiranza designs', 'inspire', 'inuka fragrances', 'ion savings', 'ipro network',
+    'ismerely', 'j hilburn', 'japanlife', 'java momma', 'jbloom designs', 'jerelia', 'jewel pads',
+    'jewelry in candles', 'jifu', 'jordan essentials', 'joy main', 'jr watkins', 'juara skincare',
+    'jump to health', 'just international', 'juuva',
+
+    // K-L companies
+    'kalaia', 'kangmei', 'kangzen', 'kannaway', 'kara vita', 'kirby company', 'kitchen fair',
+    'kk assuran', 'kleo kolor', 'koyo-sha', 'kuailian', 'kz1', 'l bri', 'lavylites', 'le-vel',
+    'thrive', 'legacy global', 'lemongrass spa', 'levarti', 'lg household', 'life abundance',
+    'life activated', 'life leadership', 'life plus', 'life wise', 'lifepharm', 'liferegen',
+    'lifewave', 'lilla rose', 'limelife', 'liv labs', 'livegood', 'livelite', 'livepure', 'longrich',
+    'lorde and belle', 'lorraine lea', 'lovebiome', 'lovewinx', 'lovvare', 'lr health and beauty',
+    'lumivitae', 'lunamd', 'lurralife', 'lux international',
+
+    // M-N companies
+    'magnabilities', 'magnessa', 'magnetix wellness', 'make wellness', 'mango and moose', 'marketplace global',
+    'mpg', 'maruko', 'mavie global', 'max international', 'maxener wellness', 'measure and made',
+    'mediterranean luxury', 'metalstacks', 'metrin', 'mi lifestyle', 'miessence', 'miglio', 'miki corp',
+    'mined', 'miraburst', 'mkx network', 'modicare', 'momentum business', 'monevis', 'mons pura',
+    'muscari', 'musthave global', 'mwr life', 'my lifestyle', 'mydailychoice', 'myecon', 'mytravelventures',
+    'n8 essentials', 'nafis network', 'naris cosmetics', 'national wealth center', 'natura', 'natura vitalis',
+    'natural glow', 'naturally plus', 'naturday', 'natures sunshine', 'nefful', 'nelo life', 'neofin',
+    'neolife', 'netsurf', 'neumi', 'neutroway', 'nevetica', 'new earth', 'new era health', 'new hope global',
+    'new image', 'new u life', 'newgen direct', 'nexarise', 'next international', 'nexus rewards',
+    'nht global', 'nikken', 'nippon menard', 'noevir', 'nomades collection', 'noonday collection',
+    'northestar', 'norwex', 'novae', 'novalya', 'nowsite', 'nucleogenex', 'nudrate', 'nui social',
+    'nuspira', 'nutonic', 'nutrimetics', 'nuvo olive oil', 'nuyugen', 'nvu', 'nyr organic',
+
+    // O-P companies
+    'o boticario', 'oben nutrition', 'odecent', 'ohho', 'olbali', 'olive tree people', 'olixfit',
+    'omnilife', 'one more international', 'onehope wine', 'onikha', 'optidee', 'opulence global',
+    'opulenza designs', 'oriflame', 'oxo global', 'panberes', 'parinam health', 'park lane jewelry',
+    'pars newshanik', 'partner.co', 'partylite', 'pawtree', 'pelle naturale', 'perfect china',
+    'perfectly posh', 'php agency', 'phytoscience', 'pieroth wein', 'pink zebra', 'plannet marketing',
+    'playcare health', 'plennia wellness', 'plunder design', 'pm-international', 'pola', 'polishop',
+    'pomifera', 'powur', 'premier designs', 'premier financial', 'prife international', 'primemybody',
+    'princess house', 'pro financial group', 'proceller8', 'prowin', 'pur attitude', 'pure heaven',
+    'pure natures design', 'purium',
+
+    // Q-R companies
+    'qn europe', 'qnet', 'qsciences', 'quanjian', 'quiari', 'qyral', 'racco cosmeticos', 'radiantly you',
+    'rain international', 'ramissio', 'rbc life sciences', 'rcm marketing', 'reach solar', 'real brokerage',
+    'real time pain relief', 'reature organics', 'red aspen', 'regal ware', 'regenalife', 'reico vital',
+    'revital u', 'revv naturals', 'rexair', 'riman', 'ringana', 'risen live', 'riseoo', 'rmcl universe',
+    'root wellness', 'royale business club', 'ruby ribbon', 'rut essentials',
+
+    // S companies
+    'saba', 'sabika', 'saladmaster', 'sami direct', 'sanki global', 'santemorr', 'sarso biznet',
+    'save club', 'savings highway', 'savvi', 'scent team', 'scout and cellar', 'seacret direct',
+    'send out cards', 'senegence', 'sevinity', 'sf suite', 'shine cosmetics', 'shoply', 'shopping nation',
+    'shopwithme', 'siberian health', 'sibu beauty', 'signature homestyles', 'silk oil of morocco',
+    'silver icing', 'simply naturals', 'simply said', 'simplyfun', 'simplyhealth24', 'sinergify world',
+    'sisel', 'skypex', 'smart plus', 'snep international', 'sol people', 'soluni', 'solvasa beauty',
+    'somnvie', 'sonrich asia', 'sorgenta', 'soteria', 'soul purpose', 'southwestern advantage', 'souvre',
+    'spx nutrition', 'stampin up', 'steeped tea', 'stella and dot', 'stemtech', 'style dots', 'successmore',
+    'sunhope', 'sunrider', 'sunrun', 'superlife world', 'surge 365', 'swag ou', 'swissjust', 'synergy worldwide',
+
+    // T-U companies
+    'taksoo', 'talk fusion', 'tastefully simple', 'tava lifestyle', 'tealightful', 'teleson', 'tenlead biotech',
+    'teoma', 'thanks ai', 'the coastal shopping club', 'the code', 'the happy co', 'the maira co',
+    'the pink millionaire club', 'the spellbound co', 'the strange apothecary', 'the super patch company',
+    'three international', 'thrive life', 'tiande', 'tiens', 'tmc the members club', 'tocara', 'top balance',
+    'toptime', 'toribelle cosmetics', 'total life changes', 'tlc', 'touchstone crystal', 'touchstone essentials',
+    'traveling vineyard', 'travorium', 'tre venti global', 'trevo', 'trinti communications', 'trivita',
+    'true nordic', 'truiq global', 'truu', 'truvy', 'trvl ventures', 'tts international', 'u-numera',
+    'ultrra', 'unicity', 'univera', 'unrivaled candles', 'up essencia', 'upshoot', 'ur worth it',
+    'usborne books', 'utility warehouse', 'uzesta',
+
+    // V-Z companies
+    'va-life', 'vabo-n', 'valentus', 'vegas cosmetics', 'velovita', 'vertera', 'vestige marketing', 'vfinity',
+    'viable', 'viaveta', 'vic beauty', 'victoria benelux', 'vida divina', 'vidafy', 'vieroots wellness',
+    'viiva', 'vip international', 'visi', 'vital health global', 'vitamist', 'viv', 'viviane skincare',
+    'vivint smart home', 'vivri', 'vorwerk', 'voxx life', 'vyvo', 'wakaya perfection', 'we now global',
+    'wellness biosciences', 'wellnesspro', 'wellstar', 'welltures global', 'wewe global', 'wildtree',
+    'win worldwide', 'wineshop at home', 'winlife global', 'world book', 'world financial group', 'wfg',
+    'xcelerate', 'xelliss', 'xendurance', 'xooma worldwide', 'xosialx', 'xpirient', 'xyngenta',
+    'yanbal', 'yanoli', 'yes global', 'yoli', 'yolllo', 'yor health', 'youngevity', 'zermat', 'zeta group',
+    'zhulian', 'zurvita',
+  ],
+
+  // High-priority companies for dedicated search queries (top 100 most active)
+  HIGH_PRIORITY_COMPANIES: [
+    'amway', 'herbalife', 'avon', 'mary kay', 'tupperware', 'young living', 'doterra', 'monat',
+    'arbonne', 'plexus', 'usana', 'isagenix', 'nu skin', 'melaleuca', 'shaklee', 'primerica',
+    'beachbody', 'it works', 'scentsy', 'pampered chef', 'rodan and fields', 'younique',
+    'origami owl', 'thirty-one', 'paparazzi', 'lularoe', 'color street', 'pure romance', 'pruvit',
+    'modere', 'juice plus', 'advocare', 'optavia', 'tranont', 'lifevantage', 'neora', 'zilis',
+    'enagic', 'worldventures', 'acn', 'legalshield', 'forever living', 'organo', 'jeunesse',
+    'zinzino', 'kyani', 'immunotec', 'mannatech', 'market america', 'reliv', 'xyngular',
+    'le-vel', 'thrive', 'farmasi', 'norwex', 'stella and dot', 'partylite', 'cutco', 'kirby',
+    'world financial group', 'php agency', 'family first life', 'exp realty', 'keller williams',
+    'livegood', 'myecon', 'sendoutcards', 'nerium', 'kannaway', 'hempworx', 'mydailychoice',
+    'valentus', 'total life changes', 'rain international', 'asea', 'lifepharm', 'neolife',
+    'nikken', 'sunrider', 'natures sunshine', 'unicity', 'atomy', 'dxn', 'qnet', 'oriflame',
+    'natura', 'belcorp', 'yanbal', 'hinode', 'omnilife', 'betterware', 'fuxion', 'duolife',
+    'fm world', 'lr health', 'pm-international', 'ringana', 'healy world', 'lifewave',
   ],
 };
 
@@ -235,11 +449,24 @@ async function googleSearchAgent(options = {}) {
 
   const signals = [];
   const profiles = new Set();
-  const maxQueries = options.maxQueries || CONFIG.MLM_SIGNAL_QUERIES.length;
-  const queries = CONFIG.MLM_SIGNAL_QUERIES.slice(0, maxQueries);
+
+  // Combine general MLM queries with company-specific queries
+  // Use 70% general queries, 30% company-specific for variety
+  const maxQueries = options.maxQueries || 15;
+  const generalQueryCount = Math.ceil(maxQueries * 0.7);
+  const companyQueryCount = maxQueries - generalQueryCount;
+
+  // Shuffle and select from each pool
+  const shuffledGeneral = [...CONFIG.MLM_SIGNAL_QUERIES].sort(() => Math.random() - 0.5);
+  const shuffledCompany = [...CONFIG.COMPANY_SIGNAL_QUERIES].sort(() => Math.random() - 0.5);
+
+  const queries = [
+    ...shuffledGeneral.slice(0, generalQueryCount),
+    ...shuffledCompany.slice(0, companyQueryCount),
+  ];
 
   console.log(`\n=== Google Search Agent ===`);
-  console.log(`Processing ${queries.length} queries...`);
+  console.log(`Processing ${queries.length} queries (${generalQueryCount} general, ${companyQueryCount} company-specific)...`);
 
   for (let i = 0; i < queries.length; i++) {
     const query = queries[i];
@@ -389,7 +616,8 @@ async function youtubeAgent(options = {}) {
   const signals = [];
   const profiles = new Set();
 
-  const youtubeQueries = [
+  // General MLM YouTube queries
+  const generalQueries = [
     'network marketing success tips 2026',
     'MLM recruiting strategies',
     'direct sales business opportunity',
@@ -397,8 +625,17 @@ async function youtubeAgent(options = {}) {
     'work from home direct sales',
   ];
 
+  // Company-specific YouTube queries (rotate through high-priority companies)
+  const companyQueries = CONFIG.HIGH_PRIORITY_COMPANIES
+    .slice(0, 10)
+    .sort(() => Math.random() - 0.5)
+    .slice(0, 3)
+    .map(company => `${company} distributor success story 2026`);
+
+  const youtubeQueries = [...generalQueries, ...companyQueries];
+
   console.log(`\n=== YouTube Agent ===`);
-  console.log(`Searching ${youtubeQueries.length} queries...`);
+  console.log(`Searching ${youtubeQueries.length} queries (${generalQueries.length} general, ${companyQueries.length} company-specific)...`);
 
   for (let i = 0; i < youtubeQueries.length; i++) {
     const query = youtubeQueries[i];
