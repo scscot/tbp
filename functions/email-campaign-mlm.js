@@ -54,67 +54,55 @@ const FROM_ADDRESS = 'Stephen Scott <stephen@news.teambuildpro.com>';
 const SEND_DELAY_MS = 1000;
 
 // =============================================================================
-// CORPORATE EMAIL FILTERING
+// PERSONAL EMAIL WHITELIST (Only allow known personal email domains)
 // =============================================================================
 
 /**
- * Corporate/generic email prefixes to exclude
+ * Whitelist of personal email domains - ONLY these domains are allowed
+ * This is more conservative than a blacklist approach
  */
-const EXCLUDED_EMAIL_PREFIXES = [
-  'support', 'help', 'helpdesk', 'customerservice', 'customer-service',
-  'info', 'information', 'contact', 'contactus', 'hello', 'hi',
-  'sales', 'marketing', 'promotions', 'promo', 'advertising', 'press',
-  'admin', 'administrator', 'webmaster', 'postmaster', 'hostmaster',
-  'hr', 'humanresources', 'careers', 'jobs', 'recruiting', 'talent',
-  'billing', 'finance', 'accounting', 'accounts', 'payments',
-  'legal', 'compliance', 'privacy', 'privacyofficer', 'abuse', 'dmca', 'copyright',
-  'noreply', 'no-reply', 'donotreply', 'notifications', 'alerts',
-  'news', 'newsletter', 'updates', 'team', 'office', 'general',
-  'orders', 'shipping', 'returns', 'refunds', 'feedback', 'complaints',
-  '48hrs_reply', 'service'
+const PERSONAL_EMAIL_DOMAINS = [
+  // Major free email providers
+  'gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', 'msn.com', 'live.com',
+  'aol.com', 'icloud.com', 'me.com', 'mac.com', 'protonmail.com', 'proton.me',
+  'mail.com', 'gmx.com', 'gmx.net', 'ymail.com', 'rocketmail.com', 'zoho.com',
+  // Canadian ISPs
+  'rogers.com', 'shaw.ca', 'telus.net', 'bell.net', 'sympatico.ca', 'cogeco.ca',
+  // US ISPs
+  'comcast.net', 'verizon.net', 'att.net', 'sbcglobal.net', 'cox.net', 'charter.net',
+  'earthlink.net', 'optonline.net', 'frontier.com', 'windstream.net',
+  // UK ISPs
+  'btinternet.com', 'sky.com', 'virginmedia.com', 'talktalk.net', 'ntlworld.com',
+  // German providers
+  'web.de', 'freenet.de', 't-online.de', 'gmx.de', 'arcor.de', '1und1.de',
+  // French providers
+  'orange.fr', 'free.fr', 'sfr.fr', 'wanadoo.fr', 'laposte.net',
+  // Italian providers
+  'libero.it', 'virgilio.it', 'alice.it', 'tin.it', 'tiscali.it',
+  // Spanish providers
+  'telefonica.net', 'movistar.es', 'ya.com', 'terra.es',
+  // Brazilian providers
+  'terra.com.br', 'uol.com.br', 'bol.com.br', 'globo.com', 'ig.com.br',
+  // Other international
+  'mail.ru', 'yandex.ru', 'yandex.com', 'qq.com', '163.com', '126.com',
+  'naver.com', 'daum.net', 'hanmail.net',
 ];
 
 /**
- * Corporate/MLM company domains to exclude (emails that would bounce or be ignored)
- */
-const EXCLUDED_EMAIL_DOMAINS = [
-  // MLM company domains
-  'nuskin.com', 'colorstreet.com', 'scentsy.com', 'herbalife.com', 'avon.com',
-  'amway.com', 'marykay.com', 'doterra.com', 'youngliving.com', 'arbonne.com',
-  'rodanandfields.com', 'myrandf.com', 'monat.com', 'tupperware.com', 'beachbody.com',
-  'pruvit.com', 'isagenix.com', 'plexus.com', 'itworks.com', 'neora.com',
-  'younique.com', 'paparazzi.com', 'shaklee.com', 'melaleuca.com', 'usana.com',
-  'advocare.com', 'lularoe.com', 'modere.com', 'lifevantage.com', 'zinzino.com',
-  // Payment/service providers
-  'hyperwallet.com', 'payoneer.com', 'paypal.com'
-];
-
-/**
- * Check if email should be excluded (corporate/generic)
+ * Check if email is a personal email (whitelist approach)
+ * Returns true if email should be EXCLUDED (not personal)
  */
 function isExcludedEmail(email) {
   if (!email) return true;
 
   const emailLower = email.toLowerCase();
-  const [localPart, domain] = emailLower.split('@');
+  const atIndex = emailLower.indexOf('@');
+  if (atIndex === -1) return true;
 
-  // Check excluded domains
-  if (EXCLUDED_EMAIL_DOMAINS.some(d => domain === d || domain.endsWith(`.${d}`))) {
-    return true;
-  }
+  const domain = emailLower.substring(atIndex + 1);
 
-  // Check excluded prefixes
-  if (EXCLUDED_EMAIL_PREFIXES.some(prefix => localPart === prefix || localPart.startsWith(`${prefix}_`) || localPart.startsWith(`${prefix}-`))) {
-    return true;
-  }
-
-  // Check prefixes with trailing numbers (e.g., support1, info2)
-  const basePrefix = localPart.replace(/[0-9]+$/, '');
-  if (EXCLUDED_EMAIL_PREFIXES.includes(basePrefix)) {
-    return true;
-  }
-
-  return false;
+  // Only allow emails from known personal domains
+  return !PERSONAL_EMAIL_DOMAINS.includes(domain);
 }
 
 // =============================================================================
