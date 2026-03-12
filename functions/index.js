@@ -218,6 +218,13 @@ const {
 } = require('./email-campaign-three');
 
 // ==============================
+// Import Email Campaign for MLM Contacts (Signal Monitor Pipeline)
+// ==============================
+const {
+  sendHourlyMlmCampaign,
+} = require('./email-campaign-mlm');
+
+// ==============================
 // Import Email Tracking Functions (SMTP Migration)
 // ==============================
 const {
@@ -505,6 +512,9 @@ module.exports = {
 
   // Email campaign for THREE contacts (scheduled)
   sendHourlyThreeCampaign,
+
+  // Email campaign for MLM contacts (scheduled) - Signal Monitor Pipeline
+  sendHourlyMlmCampaign,
 
   // Email tracking endpoints (SMTP migration)
   trackEmailOpen,

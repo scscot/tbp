@@ -77,6 +77,11 @@
         "collection": "spanish_contacts",
         "firestoreField": "spanishBatchSize",
         "enabled": true
+      },
+      "mlm": {
+        "collection": "mlm_contacts",
+        "firestoreField": "batchSizeMlm",
+        "enabled": true
       }
     }
   }
