@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       source:
-        description: 'Signal source (google, reddit, youtube, or all)'
+        description: 'Signal source (google, reddit, youtube, facebook, twitter, tiktok, instagram, threads, or all)'
         required: false
         default: 'all'
       dry_run:

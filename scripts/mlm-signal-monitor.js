@@ -12,12 +12,22 @@
  *   1. SerpAPI Google Search - Real-time web mentions
  *   2. Reddit API - MLM/direct sales subreddits
  *   3. YouTube Search - Promoter videos with links in descriptions
+ *   4. Facebook - Posts/pages via Google site: search
+ *   5. Twitter/X - Tweets via Google site: search
+ *   6. TikTok - Videos via Google site: search
+ *   7. Instagram - Posts/profiles via Google site: search
+ *   8. Threads - Posts via Google site: search
  *
  * Usage:
- *   node scripts/mlm-signal-monitor.js --monitor              # Run full monitoring cycle
+ *   node scripts/mlm-signal-monitor.js --monitor              # Run full monitoring cycle (all 8 sources)
  *   node scripts/mlm-signal-monitor.js --monitor --source=google   # Google only
  *   node scripts/mlm-signal-monitor.js --monitor --source=reddit   # Reddit only
  *   node scripts/mlm-signal-monitor.js --monitor --source=youtube  # YouTube only
+ *   node scripts/mlm-signal-monitor.js --monitor --source=facebook # Facebook only
+ *   node scripts/mlm-signal-monitor.js --monitor --source=twitter  # Twitter/X only
+ *   node scripts/mlm-signal-monitor.js --monitor --source=tiktok   # TikTok only
+ *   node scripts/mlm-signal-monitor.js --monitor --source=instagram # Instagram only
+ *   node scripts/mlm-signal-monitor.js --monitor --source=threads  # Threads only
  *   node scripts/mlm-signal-monitor.js --stats                # Show collection stats
  *   node scripts/mlm-signal-monitor.js --dry-run              # Preview only
  *   node scripts/mlm-signal-monitor.js --reset                # Reset monitor state
@@ -69,6 +79,9 @@ const CONFIG = {
     '"ground floor opportunity" network marketing',
     '"team leader" "looking for" direct sales',
     '"expanding my team" MLM OR "network marketing"',
+    '"home based business" opportunity',
+    '"home based business" recruiting',
+    '"home business" "join my team"',
 
     // Product promotion signals
     '"independent consultant" OR "independent distributor"',
@@ -76,6 +89,7 @@ const CONFIG = {
     '"be your own boss" network marketing',
     '"side hustle" direct sales opportunity',
     '"financial freedom" network marketing',
+    '"home based business" "extra income"',
 
     // Social proof signals
     '"changed my life" MLM OR "direct sales"',
@@ -83,6 +97,7 @@ const CONFIG = {
     '"top earner" direct sales',
     '"rank advancement" network marketing',
     '"hit diamond" OR "hit platinum" direct sales',
+    '"home based business" success story',
   ],
 
   // Company-specific search queries (rotated through during monitoring)
@@ -165,8 +180,8 @@ const CONFIG = {
   REDDIT_KEYWORDS: [
     // Generic MLM terms
     'network marketing', 'direct sales', 'MLM', 'downline', 'upline',
-    'team building', 'home business', 'wellness company', 'multi-level',
-    'independent consultant', 'independent distributor', 'side hustle opportunity',
+    'team building', 'home business', 'home based business', 'wellness company', 'multi-level',
+    'independent consultant', 'independent distributor', 'side hustle opportunity', 'work from home opportunity',
 
     // Top 50 company names for Reddit monitoring
     'amway', 'herbalife', 'avon', 'mary kay', 'tupperware', 'young living', 'doterra',
@@ -178,6 +193,79 @@ const CONFIG = {
     'forever living', 'organo', 'jeunesse', 'zinzino', 'farmasi', 'norwex', 'cutco',
     'livegood', 'valentus', 'thrive', 'le-vel',
   ],
+
+  // Social media platform queries (used with site: operator)
+  SOCIAL_MEDIA_QUERIES: {
+    // Facebook-specific queries
+    facebook: [
+      '"join my team" network marketing',
+      '"looking for" direct sales opportunity',
+      '"business opportunity" MLM wellness',
+      '"independent consultant" recruiting',
+      '"work from home" "direct sales"',
+      '"home based business" opportunity',
+      '"home based business" recruiting',
+      'Amway IBO "join my team"',
+      'Herbalife distributor recruiting',
+      'Young Living essential oils opportunity',
+      'doTERRA wellness advocate',
+      'Monat VIP "looking for"',
+      '"ground floor" network marketing',
+      '"team building" direct sales',
+    ],
+    // Twitter/X-specific queries
+    twitter: [
+      'network marketing opportunity',
+      'MLM recruiting "join my team"',
+      'direct sales "looking for"',
+      '#NetworkMarketing #JoinMyTeam',
+      '#MLM #BusinessOpportunity',
+      '#DirectSales #WorkFromHome',
+      '#HomeBasedBusiness opportunity',
+      'home based business recruiting',
+      'Amway opportunity',
+      'Herbalife business',
+      'doTERRA wellness',
+      'Young Living oils business',
+    ],
+    // TikTok-specific queries
+    tiktok: [
+      'network marketing tips',
+      'MLM success story',
+      'direct sales day in the life',
+      'side hustle opportunity',
+      'home based business opportunity',
+      '#networkmarketing #mlm',
+      '#directsales #bossbabe',
+      '#homebasedbusiness',
+      'Herbalife transformation',
+      'Monat hair journey',
+      'doTERRA oils routine',
+    ],
+    // Instagram-specific queries
+    instagram: [
+      '"link in bio" network marketing',
+      '"DM me" direct sales',
+      '#BossBabe #NetworkMarketing',
+      '#MLMSuccess #DirectSales',
+      '#HomeBasedBusiness #Opportunity',
+      '"join my team" wellness',
+      '"home based business" opportunity',
+      'Arbonne consultant',
+      'Rodan Fields consultant',
+      'BeachBody coach',
+      'ItWorks distributor',
+    ],
+    // Threads-specific queries
+    threads: [
+      'network marketing opportunity',
+      'direct sales recruiting',
+      'MLM business opportunity',
+      'home based business opportunity',
+      'wellness company "join"',
+      'work from home direct sales',
+    ],
+  },
 
   // Profile URL patterns to extract from signals
   PROFILE_PATTERNS: [
@@ -688,6 +776,430 @@ async function youtubeAgent(options = {}) {
   return { signals, profiles: Array.from(profiles) };
 }
 
+/**
+ * Facebook Agent - Uses SerpAPI Google search with site:facebook.com
+ */
+async function facebookAgent(options = {}) {
+  if (!SERPAPI_KEY) {
+    console.log('SerpAPI key not found - skipping Facebook search');
+    return { signals: [], profiles: [] };
+  }
+
+  const signals = [];
+  const profiles = new Set();
+  const queries = CONFIG.SOCIAL_MEDIA_QUERIES.facebook;
+  const maxQueries = options.maxQueries || 5;
+
+  console.log(`\n=== Facebook Agent ===`);
+  console.log(`Searching ${Math.min(maxQueries, queries.length)} queries via Google site:facebook.com...`);
+
+  const selectedQueries = queries.sort(() => Math.random() - 0.5).slice(0, maxQueries);
+
+  for (let i = 0; i < selectedQueries.length; i++) {
+    const baseQuery = selectedQueries[i];
+    const query = `site:facebook.com ${baseQuery}`;
+    console.log(`\n[${i + 1}/${selectedQueries.length}] "${baseQuery.substring(0, 40)}..."`);
+
+    try {
+      const response = await axios.get(CONFIG.SERPAPI_URL, {
+        params: {
+          api_key: SERPAPI_KEY,
+          engine: 'google',
+          q: query,
+          num: 20,
+          gl: 'us',
+          hl: 'en',
+        },
+        timeout: 30000,
+      });
+
+      const results = response.data.organic_results || [];
+      console.log(`  Found ${results.length} results`);
+
+      for (const result of results) {
+        const content = `${result.title || ''} ${result.snippet || ''} ${result.link || ''}`;
+        const company = detectCompany(content);
+        const extractedUrls = extractUrls(content);
+        const extractedEmails = extractEmails(content);
+
+        // Extract Facebook profile/page URLs
+        const fbProfileMatch = result.link?.match(/facebook\.com\/([a-zA-Z0-9.]+)/);
+        if (fbProfileMatch) {
+          profiles.add(result.link);
+        }
+
+        if (extractedUrls.length > 0 || extractedEmails.length > 0 || company || fbProfileMatch) {
+          const signalId = generateSignalId('facebook', result.link);
+
+          signals.push({
+            id: signalId,
+            source: 'facebook',
+            platform: 'facebook',
+            query: baseQuery,
+            title: result.title,
+            snippet: result.snippet,
+            sourceUrl: result.link,
+            detectedCompany: company,
+            extractedUrls: extractedUrls,
+            extractedEmails: extractedEmails,
+            discoveredAt: admin.firestore.FieldValue.serverTimestamp(),
+          });
+
+          extractedUrls.forEach(url => profiles.add(url));
+        }
+      }
+    } catch (error) {
+      console.error(`  Error: ${error.message}`);
+    }
+
+    if (i < selectedQueries.length - 1) {
+      await sleep(addJitter(CONFIG.SERPAPI_DELAY));
+    }
+  }
+
+  console.log(`\nFacebook Agent: ${signals.length} signals, ${profiles.size} profiles`);
+  return { signals, profiles: Array.from(profiles) };
+}
+
+/**
+ * Twitter/X Agent - Uses SerpAPI Google search with site:twitter.com OR site:x.com
+ */
+async function twitterAgent(options = {}) {
+  if (!SERPAPI_KEY) {
+    console.log('SerpAPI key not found - skipping Twitter search');
+    return { signals: [], profiles: [] };
+  }
+
+  const signals = [];
+  const profiles = new Set();
+  const queries = CONFIG.SOCIAL_MEDIA_QUERIES.twitter;
+  const maxQueries = options.maxQueries || 5;
+
+  console.log(`\n=== Twitter/X Agent ===`);
+  console.log(`Searching ${Math.min(maxQueries, queries.length)} queries via Google site:twitter.com...`);
+
+  const selectedQueries = queries.sort(() => Math.random() - 0.5).slice(0, maxQueries);
+
+  for (let i = 0; i < selectedQueries.length; i++) {
+    const baseQuery = selectedQueries[i];
+    // Search both twitter.com and x.com
+    const query = `(site:twitter.com OR site:x.com) ${baseQuery}`;
+    console.log(`\n[${i + 1}/${selectedQueries.length}] "${baseQuery.substring(0, 40)}..."`);
+
+    try {
+      const response = await axios.get(CONFIG.SERPAPI_URL, {
+        params: {
+          api_key: SERPAPI_KEY,
+          engine: 'google',
+          q: query,
+          num: 20,
+          gl: 'us',
+          hl: 'en',
+        },
+        timeout: 30000,
+      });
+
+      const results = response.data.organic_results || [];
+      console.log(`  Found ${results.length} results`);
+
+      for (const result of results) {
+        const content = `${result.title || ''} ${result.snippet || ''} ${result.link || ''}`;
+        const company = detectCompany(content);
+        const extractedUrls = extractUrls(content);
+        const extractedEmails = extractEmails(content);
+
+        // Extract Twitter/X profile URLs
+        const twitterMatch = result.link?.match(/(?:twitter|x)\.com\/([a-zA-Z0-9_]+)/);
+        if (twitterMatch && !['search', 'hashtag', 'i', 'intent'].includes(twitterMatch[1])) {
+          profiles.add(result.link);
+        }
+
+        if (extractedUrls.length > 0 || extractedEmails.length > 0 || company || twitterMatch) {
+          const signalId = generateSignalId('twitter', result.link);
+
+          signals.push({
+            id: signalId,
+            source: 'twitter',
+            platform: 'twitter',
+            query: baseQuery,
+            title: result.title,
+            snippet: result.snippet,
+            sourceUrl: result.link,
+            twitterHandle: twitterMatch ? twitterMatch[1] : null,
+            detectedCompany: company,
+            extractedUrls: extractedUrls,
+            extractedEmails: extractedEmails,
+            discoveredAt: admin.firestore.FieldValue.serverTimestamp(),
+          });
+
+          extractedUrls.forEach(url => profiles.add(url));
+        }
+      }
+    } catch (error) {
+      console.error(`  Error: ${error.message}`);
+    }
+
+    if (i < selectedQueries.length - 1) {
+      await sleep(addJitter(CONFIG.SERPAPI_DELAY));
+    }
+  }
+
+  console.log(`\nTwitter/X Agent: ${signals.length} signals, ${profiles.size} profiles`);
+  return { signals, profiles: Array.from(profiles) };
+}
+
+/**
+ * TikTok Agent - Uses SerpAPI Google search with site:tiktok.com
+ */
+async function tiktokAgent(options = {}) {
+  if (!SERPAPI_KEY) {
+    console.log('SerpAPI key not found - skipping TikTok search');
+    return { signals: [], profiles: [] };
+  }
+
+  const signals = [];
+  const profiles = new Set();
+  const queries = CONFIG.SOCIAL_MEDIA_QUERIES.tiktok;
+  const maxQueries = options.maxQueries || 5;
+
+  console.log(`\n=== TikTok Agent ===`);
+  console.log(`Searching ${Math.min(maxQueries, queries.length)} queries via Google site:tiktok.com...`);
+
+  const selectedQueries = queries.sort(() => Math.random() - 0.5).slice(0, maxQueries);
+
+  for (let i = 0; i < selectedQueries.length; i++) {
+    const baseQuery = selectedQueries[i];
+    const query = `site:tiktok.com ${baseQuery}`;
+    console.log(`\n[${i + 1}/${selectedQueries.length}] "${baseQuery.substring(0, 40)}..."`);
+
+    try {
+      const response = await axios.get(CONFIG.SERPAPI_URL, {
+        params: {
+          api_key: SERPAPI_KEY,
+          engine: 'google',
+          q: query,
+          num: 20,
+          gl: 'us',
+          hl: 'en',
+        },
+        timeout: 30000,
+      });
+
+      const results = response.data.organic_results || [];
+      console.log(`  Found ${results.length} results`);
+
+      for (const result of results) {
+        const content = `${result.title || ''} ${result.snippet || ''} ${result.link || ''}`;
+        const company = detectCompany(content);
+        const extractedUrls = extractUrls(content);
+
+        // Extract TikTok profile URLs (format: tiktok.com/@username)
+        const tiktokMatch = result.link?.match(/tiktok\.com\/@([a-zA-Z0-9_.]+)/);
+        if (tiktokMatch) {
+          profiles.add(result.link);
+        }
+
+        if (extractedUrls.length > 0 || company || tiktokMatch) {
+          const signalId = generateSignalId('tiktok', result.link);
+
+          signals.push({
+            id: signalId,
+            source: 'tiktok',
+            platform: 'tiktok',
+            query: baseQuery,
+            title: result.title,
+            snippet: result.snippet,
+            sourceUrl: result.link,
+            tiktokHandle: tiktokMatch ? tiktokMatch[1] : null,
+            detectedCompany: company,
+            extractedUrls: extractedUrls,
+            discoveredAt: admin.firestore.FieldValue.serverTimestamp(),
+          });
+
+          extractedUrls.forEach(url => profiles.add(url));
+        }
+      }
+    } catch (error) {
+      console.error(`  Error: ${error.message}`);
+    }
+
+    if (i < selectedQueries.length - 1) {
+      await sleep(addJitter(CONFIG.SERPAPI_DELAY));
+    }
+  }
+
+  console.log(`\nTikTok Agent: ${signals.length} signals, ${profiles.size} profiles`);
+  return { signals, profiles: Array.from(profiles) };
+}
+
+/**
+ * Instagram Agent - Uses SerpAPI Google search with site:instagram.com
+ */
+async function instagramAgent(options = {}) {
+  if (!SERPAPI_KEY) {
+    console.log('SerpAPI key not found - skipping Instagram search');
+    return { signals: [], profiles: [] };
+  }
+
+  const signals = [];
+  const profiles = new Set();
+  const queries = CONFIG.SOCIAL_MEDIA_QUERIES.instagram;
+  const maxQueries = options.maxQueries || 5;
+
+  console.log(`\n=== Instagram Agent ===`);
+  console.log(`Searching ${Math.min(maxQueries, queries.length)} queries via Google site:instagram.com...`);
+
+  const selectedQueries = queries.sort(() => Math.random() - 0.5).slice(0, maxQueries);
+
+  for (let i = 0; i < selectedQueries.length; i++) {
+    const baseQuery = selectedQueries[i];
+    const query = `site:instagram.com ${baseQuery}`;
+    console.log(`\n[${i + 1}/${selectedQueries.length}] "${baseQuery.substring(0, 40)}..."`);
+
+    try {
+      const response = await axios.get(CONFIG.SERPAPI_URL, {
+        params: {
+          api_key: SERPAPI_KEY,
+          engine: 'google',
+          q: query,
+          num: 20,
+          gl: 'us',
+          hl: 'en',
+        },
+        timeout: 30000,
+      });
+
+      const results = response.data.organic_results || [];
+      console.log(`  Found ${results.length} results`);
+
+      for (const result of results) {
+        const content = `${result.title || ''} ${result.snippet || ''} ${result.link || ''}`;
+        const company = detectCompany(content);
+        const extractedUrls = extractUrls(content);
+
+        // Extract Instagram profile URLs
+        const instaMatch = result.link?.match(/instagram\.com\/([a-zA-Z0-9_.]+)/);
+        if (instaMatch && !['p', 'explore', 'reel', 'stories', 'accounts'].includes(instaMatch[1])) {
+          profiles.add(result.link);
+        }
+
+        if (extractedUrls.length > 0 || company || instaMatch) {
+          const signalId = generateSignalId('instagram', result.link);
+
+          signals.push({
+            id: signalId,
+            source: 'instagram',
+            platform: 'instagram',
+            query: baseQuery,
+            title: result.title,
+            snippet: result.snippet,
+            sourceUrl: result.link,
+            instagramHandle: instaMatch ? instaMatch[1] : null,
+            detectedCompany: company,
+            extractedUrls: extractedUrls,
+            discoveredAt: admin.firestore.FieldValue.serverTimestamp(),
+          });
+
+          extractedUrls.forEach(url => profiles.add(url));
+        }
+      }
+    } catch (error) {
+      console.error(`  Error: ${error.message}`);
+    }
+
+    if (i < selectedQueries.length - 1) {
+      await sleep(addJitter(CONFIG.SERPAPI_DELAY));
+    }
+  }
+
+  console.log(`\nInstagram Agent: ${signals.length} signals, ${profiles.size} profiles`);
+  return { signals, profiles: Array.from(profiles) };
+}
+
+/**
+ * Threads Agent - Uses SerpAPI Google search with site:threads.net
+ */
+async function threadsAgent(options = {}) {
+  if (!SERPAPI_KEY) {
+    console.log('SerpAPI key not found - skipping Threads search');
+    return { signals: [], profiles: [] };
+  }
+
+  const signals = [];
+  const profiles = new Set();
+  const queries = CONFIG.SOCIAL_MEDIA_QUERIES.threads;
+  const maxQueries = options.maxQueries || 3;
+
+  console.log(`\n=== Threads Agent ===`);
+  console.log(`Searching ${Math.min(maxQueries, queries.length)} queries via Google site:threads.net...`);
+
+  const selectedQueries = queries.sort(() => Math.random() - 0.5).slice(0, maxQueries);
+
+  for (let i = 0; i < selectedQueries.length; i++) {
+    const baseQuery = selectedQueries[i];
+    const query = `site:threads.net ${baseQuery}`;
+    console.log(`\n[${i + 1}/${selectedQueries.length}] "${baseQuery.substring(0, 40)}..."`);
+
+    try {
+      const response = await axios.get(CONFIG.SERPAPI_URL, {
+        params: {
+          api_key: SERPAPI_KEY,
+          engine: 'google',
+          q: query,
+          num: 20,
+          gl: 'us',
+          hl: 'en',
+        },
+        timeout: 30000,
+      });
+
+      const results = response.data.organic_results || [];
+      console.log(`  Found ${results.length} results`);
+
+      for (const result of results) {
+        const content = `${result.title || ''} ${result.snippet || ''} ${result.link || ''}`;
+        const company = detectCompany(content);
+        const extractedUrls = extractUrls(content);
+
+        // Extract Threads profile URLs (format: threads.net/@username)
+        const threadsMatch = result.link?.match(/threads\.net\/@([a-zA-Z0-9_.]+)/);
+        if (threadsMatch) {
+          profiles.add(result.link);
+        }
+
+        if (extractedUrls.length > 0 || company || threadsMatch) {
+          const signalId = generateSignalId('threads', result.link);
+
+          signals.push({
+            id: signalId,
+            source: 'threads',
+            platform: 'threads',
+            query: baseQuery,
+            title: result.title,
+            snippet: result.snippet,
+            sourceUrl: result.link,
+            threadsHandle: threadsMatch ? threadsMatch[1] : null,
+            detectedCompany: company,
+            extractedUrls: extractedUrls,
+            discoveredAt: admin.firestore.FieldValue.serverTimestamp(),
+          });
+
+          extractedUrls.forEach(url => profiles.add(url));
+        }
+      }
+    } catch (error) {
+      console.error(`  Error: ${error.message}`);
+    }
+
+    if (i < selectedQueries.length - 1) {
+      await sleep(addJitter(CONFIG.SERPAPI_DELAY));
+    }
+  }
+
+  console.log(`\nThreads Agent: ${signals.length} signals, ${profiles.size} profiles`);
+  return { signals, profiles: Array.from(profiles) };
+}
+
 // ============================================================================
 // STORAGE FUNCTIONS
 // ============================================================================
@@ -801,6 +1313,36 @@ async function runMonitor(options = {}) {
     const youtubeResults = await youtubeAgent(options);
     allSignals.push(...youtubeResults.signals);
     youtubeResults.profiles.forEach(p => allProfiles.add(p));
+  }
+
+  if (!source || source === 'facebook') {
+    const facebookResults = await facebookAgent(options);
+    allSignals.push(...facebookResults.signals);
+    facebookResults.profiles.forEach(p => allProfiles.add(p));
+  }
+
+  if (!source || source === 'twitter') {
+    const twitterResults = await twitterAgent(options);
+    allSignals.push(...twitterResults.signals);
+    twitterResults.profiles.forEach(p => allProfiles.add(p));
+  }
+
+  if (!source || source === 'tiktok') {
+    const tiktokResults = await tiktokAgent(options);
+    allSignals.push(...tiktokResults.signals);
+    tiktokResults.profiles.forEach(p => allProfiles.add(p));
+  }
+
+  if (!source || source === 'instagram') {
+    const instagramResults = await instagramAgent(options);
+    allSignals.push(...instagramResults.signals);
+    instagramResults.profiles.forEach(p => allProfiles.add(p));
+  }
+
+  if (!source || source === 'threads') {
+    const threadsResults = await threadsAgent(options);
+    allSignals.push(...threadsResults.signals);
+    threadsResults.profiles.forEach(p => allProfiles.add(p));
   }
 
   // Save results
