@@ -300,6 +300,35 @@ const CONFIG = {
     'linkedin.com', 'youtube.com', 'google.com',
   ],
 
+  // Non-personal email prefixes to exclude (corporate/generic addresses)
+  EXCLUDED_EMAIL_PREFIXES: [
+    // Support/help
+    'support', 'help', 'helpdesk', 'assistance', 'customerservice', 'customer-service',
+    'customercare', 'customer-care', 'service', 'services',
+    // Info/contact
+    'info', 'information', 'contact', 'contactus', 'contact-us', 'hello', 'hi',
+    'enquiry', 'enquiries', 'inquiry', 'inquiries', 'questions',
+    // Sales/marketing
+    'sales', 'marketing', 'promotions', 'promo', 'advertising', 'ads', 'media',
+    'press', 'pr', 'partnerships', 'partner', 'partners', 'affiliate', 'affiliates',
+    // Admin/operations
+    'admin', 'administrator', 'webmaster', 'postmaster', 'hostmaster', 'root',
+    'sysadmin', 'it', 'tech', 'technical', 'operations', 'ops',
+    // HR/jobs
+    'hr', 'humanresources', 'human-resources', 'careers', 'jobs', 'recruiting',
+    'recruitment', 'talent', 'hiring', 'employment',
+    // Finance/billing
+    'billing', 'finance', 'accounting', 'accounts', 'payments', 'invoices', 'invoicing',
+    // Legal/compliance
+    'legal', 'compliance', 'privacy', 'abuse', 'dmca', 'copyright',
+    // Generic catch-alls
+    'noreply', 'no-reply', 'donotreply', 'do-not-reply', 'notifications', 'alerts',
+    'news', 'newsletter', 'updates', 'team', 'office', 'general', 'mail', 'email',
+    // Department-style
+    'orders', 'shipping', 'returns', 'refunds', 'feedback', 'suggestions',
+    'complaints', 'dispute', 'disputes', 'warranty', 'registrar',
+  ],
+
   // Comprehensive list of MLM/Direct Sales/Network Marketing companies
   // Source: BusinessForHome.org/companies/ (500+ companies)
   MLM_COMPANIES: [
@@ -502,8 +531,25 @@ function extractUrls(text) {
 function extractEmails(text) {
   const matches = text.match(CONFIG.EMAIL_REGEX) || [];
   return matches.filter(email => {
-    const domain = email.split('@')[1].toLowerCase();
-    return !CONFIG.EXCLUDED_EMAIL_DOMAINS.includes(domain);
+    const [localPart, domain] = email.toLowerCase().split('@');
+
+    // Exclude known non-useful domains
+    if (CONFIG.EXCLUDED_EMAIL_DOMAINS.includes(domain)) {
+      return false;
+    }
+
+    // Exclude corporate/non-personal email prefixes
+    if (CONFIG.EXCLUDED_EMAIL_PREFIXES.includes(localPart)) {
+      return false;
+    }
+
+    // Also exclude prefixes that start with common patterns (e.g., "support1", "info2")
+    const basePrefix = localPart.replace(/[0-9]+$/, ''); // Remove trailing numbers
+    if (CONFIG.EXCLUDED_EMAIL_PREFIXES.includes(basePrefix)) {
+      return false;
+    }
+
+    return true;
   });
 }
 
