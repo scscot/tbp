@@ -78,6 +78,19 @@ const CONFIG = {
     'video', 'photo', 'post', 'story', 'reel', 'shorts',
     'hello partner!', 'what is required', 'what does an independent',
     'selling and buying', 'urban retreat', 'log in or sign up',
+    // Business/organization indicators
+    'network', 'lounge', 'group', 'team', 'club', 'academy', 'center', 'centre',
+    'studio', 'shop', 'store', 'boutique', 'llc', 'inc', 'corp', 'ltd',
+    'wellness', 'advocate', 'consultant', 'distributor', 'representative',
+    // Error page patterns
+    "page isn't available", 'page not available', 'content not found',
+    'this page', 'unavailable', 'private account',
+    // Business/group page names
+    'entrepreneurs', 'mompreneurs', 'professionals', 'business owners',
+    'help wanted', 'everything', 'rules', 'profil', 'pylon',
+    'travel agent', 'real estate', 'insurance agent',
+    // Single words that aren't names
+    'haven', 'retreat', 'basics', 'essentials',
   ],
 
   // Patterns that indicate page titles, not names
@@ -94,7 +107,64 @@ const CONFIG = {
     /\/\s*x$/i,          // "/ X" at end
     /https?:\/\//,       // Contains URL
     /\.(com|org|net)/i,  // Contains domain
+    // Organization/business patterns
+    /^the\s+\w+\s+\w+/i,     // "The Something Something" (business names)
+    /\bvip'?s?\b/i,          // Contains "VIP" or "VIP's"
+    /\bnetwork\b/i,          // Contains "network"
+    /\blounge\b/i,           // Contains "lounge"
+    /\bcareer\b/i,           // Contains "career"
+    /\bfor\s+foreigners?\b/i, // "for foreigners"
+    /\bwellness\s+advocate\b/i, // "wellness advocate"
+    /\bindependent\s+\w+\b/i,   // "independent distributor", etc.
+    /\b(distributor|consultant|representative|associate)\b/i, // MLM role titles
+    /\b(llc|inc|corp|ltd|co\.?)\b/i, // Business suffixes
+    /\b(group|team|club|academy|studio)\b/i, // Organization words
+    /\bisn'?t\s+available\b/i, // "isn't available"
+    /^\w+esse$/i,          // Names ending in "esse" (brand pattern like "HealthEsse")
+    // Additional patterns for page/business names
+    /\bwith\s+\w+$/i,          // "My Monat with Megan" - "with Name" at end
+    /^my\s+\w+\s+with\b/i,     // "My Brand with..."
+    /\b(entrepreneurs?|mompreneurs?)\b/i,  // Entrepreneur groups
+    /\bhelp\s+wanted\b/i,      // Job listings
+    /\bwomen\s+\w+$/i,         // "Women Entrepreneurs", etc.
+    /\beverything$/i,          // "City Everything" pages
+    /\brules$/i,               // "Partner Rules" pages
+    /\bhaven$/i,               // "Soaper's Haven"
+    /^travel\s+agent$/i,       // Role descriptions
+    /^real\s+estate$/i,
+    /\s+&\s+/,                 // Names with ampersand are usually groups
+    /\b[A-Z]{2}\s+help\b/i,    // "NE Help Wanted" (state abbreviation patterns)
+    /\bprofil\b/i,             // Non-English "profile"
+    /^basic\s+\w+$/i,          // "Basic Partner Rules"
+    /\bchristian\s+\w+$/i,     // "Christian Entrepreneurs"
   ],
+
+  // Common first names for validation (subset - most common)
+  COMMON_FIRST_NAMES: new Set([
+    'james', 'john', 'robert', 'michael', 'david', 'william', 'richard', 'joseph', 'thomas', 'charles',
+    'christopher', 'daniel', 'matthew', 'anthony', 'mark', 'donald', 'steven', 'paul', 'andrew', 'joshua',
+    'kenneth', 'kevin', 'brian', 'george', 'timothy', 'ronald', 'edward', 'jason', 'jeffrey', 'ryan',
+    'jacob', 'gary', 'nicholas', 'eric', 'jonathan', 'stephen', 'larry', 'justin', 'scott', 'brandon',
+    'benjamin', 'samuel', 'raymond', 'gregory', 'frank', 'alexander', 'patrick', 'jack', 'dennis', 'jerry',
+    'mary', 'patricia', 'jennifer', 'linda', 'barbara', 'elizabeth', 'susan', 'jessica', 'sarah', 'karen',
+    'lisa', 'nancy', 'betty', 'margaret', 'sandra', 'ashley', 'kimberly', 'emily', 'donna', 'michelle',
+    'dorothy', 'carol', 'amanda', 'melissa', 'deborah', 'stephanie', 'rebecca', 'sharon', 'laura', 'cynthia',
+    'kathleen', 'amy', 'angela', 'shirley', 'anna', 'brenda', 'pamela', 'emma', 'nicole', 'helen',
+    'samantha', 'katherine', 'christine', 'debra', 'rachel', 'carolyn', 'janet', 'catherine', 'maria', 'heather',
+    'diane', 'ruth', 'julie', 'olivia', 'joyce', 'virginia', 'victoria', 'kelly', 'lauren', 'christina',
+    'joan', 'evelyn', 'judith', 'megan', 'andrea', 'cheryl', 'hannah', 'jacqueline', 'martha', 'gloria',
+    'teresa', 'ann', 'sara', 'madison', 'frances', 'kathryn', 'janice', 'jean', 'abigail', 'alice',
+    'judy', 'sophia', 'grace', 'denise', 'amber', 'doris', 'marilyn', 'danielle', 'beverly', 'isabella',
+    'theresa', 'diana', 'natalie', 'brittany', 'charlotte', 'marie', 'kayla', 'alexis', 'lori', 'joe',
+    'sue', 'kim', 'chris', 'mike', 'dan', 'tom', 'jim', 'bob', 'bill', 'dave', 'steve', 'jeff', 'matt',
+    'jen', 'jenn', 'kate', 'katie', 'beth', 'meg', 'liz', 'anne', 'ann', 'amy', 'tina', 'sandy', 'cindy',
+    // Spanish/Latin names
+    'jose', 'juan', 'carlos', 'miguel', 'luis', 'jorge', 'pedro', 'francisco', 'antonio', 'manuel',
+    'maria', 'carmen', 'rosa', 'ana', 'lucia', 'elena', 'laura', 'paula', 'sofia', 'claudia',
+    // German names
+    'hans', 'peter', 'klaus', 'wolfgang', 'thomas', 'stefan', 'andreas', 'michael', 'markus', 'frank',
+    'anna', 'maria', 'sabine', 'monika', 'petra', 'brigitte', 'ursula', 'renate', 'helga', 'karin',
+  ]),
 
   // Company detection patterns
   COMPANY_PATTERNS: {
@@ -223,7 +293,7 @@ function isValidName(name) {
   const cleaned = name.trim().toLowerCase();
 
   // Too short or too long
-  if (cleaned.length < 3 || cleaned.length > 80) return false;
+  if (cleaned.length < 3 || cleaned.length > 50) return false;
 
   // Check against invalid names list
   if (CONFIG.INVALID_NAMES.some(invalid => cleaned === invalid || cleaned.includes(invalid))) {
@@ -244,6 +314,23 @@ function isValidName(name) {
   // Shouldn't contain too many special chars or pipes
   const specialCount = (name.match(/[|\/\\<>{}[\]]/g) || []).length;
   if (specialCount > 1) return false;
+
+  // Name should have 1-4 words (first + optional middle + last)
+  const words = name.trim().split(/\s+/);
+  if (words.length > 5) return false;
+
+  // First word should look like a first name
+  const firstName = words[0].toLowerCase().replace(/[^a-z]/g, '');
+
+  // If we have common first names list, validate first name loosely
+  // Only reject if it looks like a business/brand name pattern
+  if (firstName.length < 2) return false;
+
+  // Check for brand name patterns (CamelCase single word, all caps abbreviations)
+  if (words.length === 1 && name.length > 6) {
+    // Single word with mixed case internal caps (like "HealthEsse") - likely brand
+    if (/[a-z][A-Z]/.test(name)) return false;
+  }
 
   return true;
 }
