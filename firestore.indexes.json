@@ -473,6 +473,30 @@
       ]
     },
     {
+      "collectionGroup": "colorstreet_contacts",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "sent", "order": "ASCENDING" },
+        { "fieldPath": "randomIndex", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "colorstreet_contacts",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "sent", "order": "ASCENDING" },
+        { "fieldPath": "sentTimestamp", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "colorstreet_contacts",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "sent", "order": "ASCENDING" },
+        { "fieldPath": "sentTimestamp", "order": "ASCENDING" }
+      ]
+    },
+    {
       "collectionGroup": "users",
       "queryScope": "COLLECTION",
       "fields": [

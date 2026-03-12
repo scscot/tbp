@@ -58,6 +58,11 @@
         "firestoreField": "scentsyBatchSize",
         "enabled": true
       },
+      "colorstreet": {
+        "collection": "colorstreet_contacts",
+        "firestoreField": "batchSizeColorstreet",
+        "enabled": true
+      },
       "mpg": {
         "collection": "mpg_contacts",
         "firestoreField": "batchSizeMpg",

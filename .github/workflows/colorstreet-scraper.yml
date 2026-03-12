@@ -1,0 +1,105 @@
+name: Color Street Scraper
+
+on:
+  schedule:
+    # Run 4x daily at 6am, 12pm, 6pm, 12am PT
+    - cron: '0 14,20,2,8 * * *'
+
+  # Allow manual trigger for testing
+  workflow_dispatch:
+    inputs:
+      max_searches:
+        description: 'Maximum searches per run'
+        required: false
+        default: '10'
+        type: string
+      dry_run:
+        description: 'Dry run (preview only, no Firestore writes)'
+        required: false
+        default: false
+        type: boolean
+      reset_position:
+        description: 'Reset search position to start'
+        required: false
+        default: false
+        type: boolean
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: 'scripts/package.json'
+
+      - name: Install dependencies
+        run: |
+          cd scripts && npm ci && cd ..
+          echo "Dependencies installed"
+
+      - name: Install Playwright browsers
+        run: |
+          cd scripts && npx playwright install chromium && cd ..
+          echo "Playwright browsers installed"
+
+      - name: Setup Firebase credentials
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          mkdir -p secrets
+          echo "$FIREBASE_SERVICE_ACCOUNT" > secrets/serviceAccountKey.json
+          echo "Firebase credentials configured"
+
+      - name: Reset search position (if requested)
+        if: ${{ github.event.inputs.reset_position == 'true' }}
+        run: |
+          echo "Resetting search position..."
+          node scripts/colorstreet-scraper.js --reset
+          echo "Search position reset complete"
+
+      - name: Show current stats
+        run: |
+          echo "Current scraper stats:"
+          node scripts/colorstreet-scraper.js --stats
+
+      - name: Run Color Street scraper
+        env:
+          MAX_SEARCHES: ${{ github.event.inputs.max_searches || '10' }}
+          DRY_RUN: ${{ github.event.inputs.dry_run }}
+        run: |
+          echo "Starting Color Street Scraper..."
+          echo "Max searches: $MAX_SEARCHES"
+
+          ARGS="--scrape --max=$MAX_SEARCHES"
+
+          if [ "$DRY_RUN" = "true" ]; then
+            echo "Mode: DRY RUN"
+            ARGS="$ARGS --dry-run"
+          else
+            echo "Mode: LIVE"
+          fi
+
+          node scripts/colorstreet-scraper.js $ARGS
+
+      - name: Show final stats
+        if: always()
+        run: |
+          echo "Final stats:"
+          node scripts/colorstreet-scraper.js --stats || true
+
+      - name: Cleanup
+        if: always()
+        run: |
+          rm -rf secrets/
+          echo "Cleanup complete"
