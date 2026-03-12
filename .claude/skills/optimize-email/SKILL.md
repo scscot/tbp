@@ -18,9 +18,13 @@ Analyze and optimize Team Build Pro email campaigns across all 9 active campaign
 | Zinzino | zinzino_contacts | batchSizeZinzino | Active |
 | FSR | fsr_contacts | batchSizeFsr | Active |
 | Paparazzi | paparazzi_contacts | batchSizePaparazzi | Active |
-| Pruvit | pruvit_contacts | batchSizePruvit | Active |
+| Pruvit | pruvit_contacts | batchSizePruvit | Disabled |
 | Scentsy | scentsy_contacts | scentsyBatchSize | Active |
+| MPG | mpg_contacts | batchSizeMpg | Active |
+| Three | three_contacts | batchSizeThree | Active |
 | Farmasius | farmasius_contacts | batchSizeFarmasius | Active |
+| Spanish | spanish_contacts | spanishBatchSize | Active |
+| Rodanfields | rodanfields_contacts | batchSizeRodanfields | Active |
 
 ## Analysis Modes
 

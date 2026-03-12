@@ -1,6 +1,6 @@
 # Team Build Pro - Comprehensive Knowledge Base
 
-**Last Updated**: 2026-03-10
+**Last Updated**: 2026-03-11
 **Purpose**: Persistent knowledge base for AI assistants across sessions
 
 ---
@@ -99,8 +99,8 @@ The Team Build Pro ecosystem is a comprehensive, interconnected network of digit
 - Each post includes app download CTAs
 
 **6. Email Campaign Integration**
-- Three campaigns: Main (reduced, underperforming), Purchased (1.3K, primary focus), BFH (776, primary focus)
-- Main Campaign reduced to 2/batch due to low click-through; focus shifted to BFH and Purchased campaigns
+- 13 campaigns total: Main (disabled), Purchased, BFH, Zinzino, FSR, Paparazzi, Pruvit (disabled), Scentsy, MPG, Three, Farmasius (blocked), Spanish, Rodanfields
+- V18 A/B/C template testing with 33% distribution per variant across all campaigns
 - Mailgun API via news.teambuildpro.com with Firestore send tracking
 - Click tracking via GA4 UTM parameters (direct landing page URLs); open tracking disabled for deliverability
 - Drives traffic to landing page → app downloads
@@ -359,7 +359,7 @@ All four main sites have identical structure:
 - Homepage with hero animation
 - FAQ page (8 questions)
 - Books landing page with localized covers
-- Blog index with 29 translated posts
+- Blog index with 31 translated posts
 - Privacy policy
 - Terms of service
 - Contact form
@@ -806,6 +806,42 @@ The email campaign system consists of multiple parallel campaigns targeting diff
 - **Supported Countries**: 27+ Farmasi domains including US, UK, Spain, Germany, Portugal, and others
 - **Status**: Blocked - scraper disabled due to 403 bot protection on all Farmasi domains (Mar 9)
 
+### Spanish Campaign (Mailgun API - Automated)
+- **Function**: `sendHourlySpanishCampaign` in `functions/email-campaign-spanish.js`
+- **Tags**: `spanish_campaign`, `tracked`
+- **Schedule**: 10:30am, 1:30pm, 4:30pm, 7:30pm PT (4 runs/day)
+- **Data Source**: Firestore `spanish_contacts` collection (scraped from Omnilife and other Spanish-speaking MLM companies)
+- **Control Variable**: SPANISH_CAMPAIGN_ENABLED
+- **Batch Size**: Dynamic via Firestore `config/emailCampaign.spanishBatchSize`
+- **V18 A/B/C Testing** (33% distribution each, multilingual EN/ES/PT):
+  - V18-A: "What if your next recruit joined with 12 people?" (Curiosity Hook) - `spanish_v18_a_{lang}`
+  - V18-B: "75% of your recruits will quit this year (here's why)" (Pain Point Hook) - `spanish_v18_b_{lang}`
+  - V18-C: "Give your prospects an AI recruiting coach" (Direct Value Hook) - `spanish_v18_c_{lang}`
+- **Query**: `sent == false`, ordered by randomIndex
+- **Template Variables**: `first_name`, `tracked_cta_url`, `unsubscribe_url`
+- **Language Selection**: From contact.language field (en/es/pt supported)
+- **Target Companies**: Omnilife (Mexico), Belcorp, FuXion, Yanbal, Vivri, Exialoe
+
+### Rodan+Fields Campaign (Mailgun API - Automated)
+- **Function**: `sendHourlyRodanfieldsCampaign` in `functions/email-campaign-rodanfields.js`
+- **Tags**: `rodanfields_campaign`, `tracked`
+- **Schedule**: 11am, 2pm, 5pm, 8pm PT (4 runs/day, staggered from other campaigns)
+- **Data Source**: Firestore `rodanfields_contacts` collection (scraped from R+F consultant finder)
+- **Control Variable**: RODANFIELDS_CAMPAIGN_ENABLED
+- **Batch Size**: Dynamic via Firestore `config/emailCampaign.batchSizeRodanfields`
+- **V18 A/B/C Testing** (33% distribution each, English only):
+  - V18-A: "What if your next recruit joined with 12 people?" (Curiosity Hook) - `rodanfields_v18_a`
+  - V18-B: "75% of your recruits will quit this year (here's why)" (Pain Point Hook) - `rodanfields_v18_b`
+  - V18-C: "Give your prospects an AI recruiting coach" (Direct Value Hook) - `rodanfields_v18_c`
+- **Query**: `status == 'pending' && sent == false`, ordered by randomIndex
+- **Template Variables**: `first_name`, `tracked_cta_url`, `unsubscribe_url`
+- **Note**: R+F abandoned their MLM model in Sept 2024, but former consultants likely moved to other MLM companies
+- **Discovery Pipeline**:
+  - `scripts/rodanfields-discovery.js` - Discover consultants via name search (40 common US names)
+  - `scripts/rodanfields-scraper.js` - Extract emails from profile pages (~11% exposure rate)
+  - `.github/workflows/rodanfields-discovery.yml` - Run every 4 hours, 100 pages/run
+  - `.github/workflows/rodanfields-scraper.yml` - Run hourly, 50/run
+
 - **FSR Two-Script Architecture** (Feb 2026):
   - `scripts/fsr-id-harvester.js` - Fast ID harvester (no CAPTCHA, 12x daily, 50 pages/run)
   - `scripts/fsr-scraper.js` - Contact scraper with 2Captcha reCAPTCHA solver (4x daily, 75/run)
@@ -841,6 +877,8 @@ The email campaign system consists of multiple parallel campaigns targeting diff
   | THREE | `three_contacts` | `batchSizeThree` | Active |
   | MPG | `mpg_contacts` | `batchSizeMpg` | Active |
   | Farmasius | `farmasius_contacts` | `batchSizeFarmasius` | Blocked |
+  | Spanish | `spanish_contacts` | `spanishBatchSize` | Active |
+  | Rodanfields | `rodanfields_contacts` | `batchSizeRodanfields` | Active |
 - **Benefits**:
   - Self-balancing: campaigns with more contacts automatically get higher batch sizes
   - Auto-adjusts as scrapers add contacts or queues deplete
@@ -1055,7 +1093,7 @@ Automated 4-stage pipeline that discovers direct sales distributor URLs, scrapes
   sent: boolean,
   sentTimestamp: timestamp,
   status: string,              // 'sent', 'failed'
-  subjectTag: string,          // 'bfh_v16_en', 'bfh_v16_es', 'bfh_v16_de', etc.
+  subjectTag: string,          // 'bfh_v18_a_en', 'bfh_v18_b_es', 'bfh_v18_c_de', etc.
   templateVariant: string,
   sendStrategy: string,        // 'standard_template', 'personalized_template', 'raw_html'
   sentLanguage: string,        // Language used for send (en/es/pt/de)
@@ -1102,9 +1140,9 @@ Automated 4-stage pipeline that discovers direct sales distributor URLs, scrapes
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │  email-campaign-bfh.js:                                                     │
-│  ├─ English → Standard V9/V10 template                                     │
-│  ├─ Non-English + personalizedHtml → Raw HTML via Mailgun                  │
-│  └─ All campaigns now use V9/V10 (V11/V12 deprecated)                      │
+│  ├─ V18 A/B/C template with 33% distribution per variant                   │
+│  ├─ Multilingual: EN/ES/PT/DE (12 subject tag variants total)              │
+│  └─ All campaigns now use V18 A/B/C (legacy V9-V16 deprecated)             │
 │                                                                             │
 │  Language-specific CTA domains:                                             │
 │  ├─ en → teambuildpro.com                                                  │
@@ -1141,7 +1179,7 @@ Automated 4-stage pipeline that discovers direct sales distributor URLs, scrapes
                               ▼
               FSR Campaign (email-campaign-fsr.js)
               Schedule: 10am, 1pm, 4pm, 7pm PT
-              V16 template (English only)
+              V18 A/B/C template (English only)
 ```
 
 ### FSR Priority States (Top 25 by Population)
@@ -1224,7 +1262,7 @@ Discovers Pruvit referral codes from the web and scrapes contact information fro
                               ▼
               Pruvit Campaign (email-campaign-pruvit.js)
               Schedule: 11:30am, 2:30pm, 5:30pm, 8:30pm PT
-              V16 template with language variants (EN/ES/DE)
+              V18 A/B/C template with language variants (EN/ES/DE)
 ```
 
 **SerpAPI Search Strategy**: Google doesn't index query parameters (`?ref=xyz`), so the discovery script searches for referral links shared on *external* sites using queries like:
@@ -1308,7 +1346,7 @@ Discovers THREE International representative subdomains and scrapes contact info
                               ▼
               THREE Campaign (email-campaign-three.js)
               Schedule: 12:00pm, 3:00pm, 6:00pm, 9:00pm PT
-              V16 template (English only)
+              V19 A/B/C template (English only, generic greeting)
 ```
 
 ### THREE Collection Schemas
@@ -1362,6 +1400,123 @@ Discovers THREE International representative subdomains and scrapes contact info
 | `three-url-discovery.yml` | Every 6 hours | Discover subdomains (Common Crawl + Wayback + SerpAPI) |
 | `three-scraper.yml` | Every 4 hours | Scrape contacts, 50/run |
 
+### Spanish MLM Companies Data Pipeline
+
+Targets Spanish-speaking MLM markets (Latin America, Spain). Currently supports **Omnilife** (working) and documents **FuXion** (blocked).
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│  Stage 1: URL Discovery                                             │
+│  scripts/spanish-url-discovery.js                                   │
+│  Sources: Common Crawl + Wayback Machine + SerpAPI                 │
+│  Schedule: Manual trigger (via GitHub Actions)                      │
+│  Discovers distributor URLs for: Omnilife, FuXion, Vivri, etc.     │
+│  Output: spanish_discovered_urls collection                         │
+├─────────────────────────────────────────────────────────────────────┤
+│  Stage 2: Contact Scraping                                          │
+│  scripts/omnilife-scraper.js (Puppeteer - WORKING)                 │
+│  scripts/fuxion-scraper.js (Playwright - BLOCKED by bot detection) │
+│  Output: spanish_contacts collection (unified)                      │
+├─────────────────────────────────────────────────────────────────────┤
+│  FUXION STATUS: PERMANENTLY DISABLED (Mar 11, 2026)                │
+│  - Website has enterprise-grade bot detection                       │
+│  - Blocks Puppeteer, Playwright, headed/headless modes             │
+│  - Distributor IDs are usernames, not real names                   │
+│  - SerpAPI yield: 10% (mostly generic emails)                       │
+│  - 752 URLs discovered but effectively unscrapeble                 │
+└─────────────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+              Spanish Campaign (email-campaign-spanish.js)
+              Schedule: TBD (pending sufficient contacts)
+              V18 A/B/C template (Spanish only)
+```
+
+### Spanish Collection Schemas
+
+**`spanish_discovered_urls`** - Discovered distributor URLs
+```javascript
+{
+  distributorId: string,      // e.g., 'CarlosTorres' or 'viviarevalo'
+  profileUrl: string,         // Full URL to profile page
+  company: string,            // 'omnilife' | 'fuxion' | 'vivri'
+  source: string,             // 'common_crawl' | 'wayback' | 'serpapi'
+  discoveredAt: timestamp,
+  scraped: boolean,
+  scrapedAt: timestamp | null,
+  scrapeSuccess: boolean,
+  scrapeReason: string | null,
+  // For FuXion SerpAPI fallback
+  emailSearched: boolean,
+  emailSearchedAt: timestamp,
+  emailFound: boolean,
+  email: string | null
+}
+```
+
+**`spanish_contacts`** - Unified contacts from all Spanish MLM companies
+```javascript
+{
+  firstName: string,
+  lastName: string,
+  fullName: string,
+  email: string,
+  distributorId: string,
+  distributorCode: string | null,  // Omnilife: emp number
+  language: 'es',
+  profileUrl: string,
+  enrollmentUrl: string | null,    // FuXion enrollment page URL
+  company: string,                 // 'Omnilife' | 'FuXion'
+  source: string,                  // 'omnilife_scraper' | 'fuxion_scraper' | 'fuxion_serpapi'
+  sent: boolean,
+  sentTimestamp: timestamp | null,
+  status: string,                  // 'pending' | 'sent' | 'failed'
+  createdAt: timestamp,
+  updatedAt: timestamp
+}
+```
+
+### Spanish MLM Scripts
+
+| Script | Purpose | Status |
+|--------|---------|--------|
+| `spanish-url-discovery.js` | Discover distributor URLs via web indexes | Working |
+| `omnilife-scraper.js` | Scrape Omnilife contacts (Puppeteer) | **Working** |
+| `fuxion-scraper.js` | Scrape FuXion contacts (Playwright) | **Blocked** - bot detection |
+| `fuxion-email-search.js` | SerpAPI email search fallback | Low yield (~10%) |
+
+### Spanish MLM GitHub Actions Workflows
+
+| Workflow | Schedule | Status |
+|----------|----------|--------|
+| `spanish-url-discovery.yml` | Manual | Working |
+| `omnilife-scraper.yml` | 4x daily | **Active** |
+| `fuxion-scraper.yml` | Disabled | Bot detection blocks all access |
+
+### FuXion Scraping Post-Mortem (Mar 11, 2026)
+
+**Attempted approaches (all failed):**
+1. Puppeteer with axios/cheerio - Content is JS-rendered
+2. Puppeteer headless - Bot detection
+3. Puppeteer + Stealth plugin - Bot detection
+4. Playwright Chromium headless - Bot detection
+5. Playwright Firefox headless - Bot detection
+6. Playwright Firefox headed - Bot detection
+7. Session warming + cookie acceptance - Bot detection
+8. User flow simulation (homepage → click → enrollment) - Bot detection
+
+**Root causes:**
+- Enterprise-grade bot protection (likely Cloudflare/PerimeterX)
+- Distributor IDs are usernames (`bienxtar`, `viviarevalo`), not real names
+- Manual browser access works; all automation detected and blocked
+
+**SerpAPI fallback results:**
+- 10 searches = 1 email found (10% yield)
+- Email found was generic (`fuxionmexico@outlook.com`)
+- Not cost-effective given ~50 credits = ~5 contacts
+
+**Decision:** Focus on Omnilife (working) and other companies instead.
+
 ### Purchased Leads Data Pipeline
 
 The `purchased_leads` collection consolidates contacts from multiple sources for email campaigns. This collection uses the existing campaign infrastructure (`sendHourlyPurchasedLeadsCampaign`).
@@ -1391,7 +1546,7 @@ The `purchased_leads` collection consolidates contacts from multiple sources for
                               ▼
               Purchased Leads Campaign (email-campaign-purchased.js)
               Schedule: 9:30am, 12:30pm, 3:30pm, 6:30pm PT
-              V16 template (English only)
+              V18 A/B/C template (English only)
 ```
 
 ### Purchased Leads Collection Schema: `purchased_leads`
@@ -1417,7 +1572,7 @@ The `purchased_leads` collection consolidates contacts from multiple sources for
   sent: boolean,
   sentTimestamp: timestamp,
   status: string,              // 'pending', 'sent', 'failed'
-  subjectTag: string,          // 'purchased_v16', etc.
+  subjectTag: string,          // 'purchased_v18_a', 'purchased_v18_b', etc.
   randomIndex: number,         // For variant distribution
   clickedAt: timestamp,
 
@@ -1604,11 +1759,11 @@ Corporate email domains are excluded from all contact collections using a **blac
   - Outputs refresh token for GMAIL_OAUTH_TOKEN secret
   - Requires GMAIL_OAUTH_CREDENTIALS secret (OAuth client JSON)
 - `spam-monitor.js` - Email spam detection and auto-disable system
-  - Sends test email directly via Mailgun API using V16 template
-  - Tests single subject line: "Build your downline with AI"
+  - Sends test emails directly via Mailgun API using V18 A/B/C templates
+  - Tests 3 subject line variants: V18-A (Curiosity), V18-B (Pain Point), V18-C (Direct Value)
   - Waits 2 minutes for Gmail delivery, then checks inbox vs spam placement
-  - Auto-disables **ALL 8 campaigns** if spam detected:
-    - `batchSize`, `batchSizePurchased`, `batchSizeBfh`, `batchSizePaparazzi`, `batchSizeFsr`, `batchSizeZinzino`, `batchSizePruvit`, `scentsyBatchSize`
+  - Auto-disables **ALL 13 campaigns** if spam detected:
+    - `batchSize`, `batchSizePurchased`, `batchSizeBfh`, `batchSizePaparazzi`, `batchSizeFsr`, `batchSizeZinzino`, `batchSizePruvit`, `scentsyBatchSize`, `batchSizeMpg`, `batchSizeFarmasius`, `batchSizeThree`, `spanishBatchSize`, `batchSizeRodanfields`
   - Sends alert email via Mailgun on spam detection
   - Stores previous batch size values for recovery
   - Schedule: 5x daily (6am, 9am, 12pm, 3pm, 6pm PT) via `.github/workflows/spam-monitor.yml`
@@ -1704,6 +1859,13 @@ Corporate email domains are excluded from all contact collections using a **blac
   - Integration with GA4 for click tracking analysis
 
 **Email Campaign Infrastructure**
+- ✅ **V18 A/B/C Full Rollout** (Mar 11, 2026): All campaigns migrated to V18 A/B/C template testing
+  - 3 subject line variants: V18-A (Curiosity Hook), V18-B (Pain Point Hook), V18-C (Direct Value Hook)
+  - 33% distribution per variant for statistically valid A/B/C testing
+  - 13 total campaigns: Main (disabled), Purchased, BFH, Zinzino, FSR, Paparazzi, Pruvit (disabled), Scentsy, MPG, Three (V19), Farmasius (blocked), Spanish, Rodanfields
+  - Multilingual support: BFH/Farmasius (EN/ES/PT/DE), Scentsy/Zinzino (EN/ES/DE)
+  - Subject tags: `{campaign}_v18_a`, `{campaign}_v18_b`, `{campaign}_v18_c` (or `{campaign}_v18_a_{lang}` for multilingual)
+  - THREE uses V19 A/B/C (generic greeting for subdomain-based contacts)
 - ✅ **Subject Line Update to Imperative Form** (Mar 10, 2026): Changed to "Build your downline with AI"
   - All 11 email campaign functions updated with imperative form (more action-oriented)
   - Uses MLM-specific "downline" terminology (validated as inbox-safe)
@@ -1713,7 +1875,7 @@ Corporate email domains are excluded from all contact collections using a **blac
   - A/B testing discontinued - standardized on V16 for consistency
   - Language variants: v16 (EN), v16-es (ES), v16-de (DE), v16-pt (PT) - all fully localized
   - Subject tags: `{campaign}_v16` for English, `{campaign}_v16_{lang}` for multilingual
-  - Legacy v9/v10/v11/v12/v14 tags retained in dashboard for historical data
+  - Legacy v9/v10/v11/v12/v14/v16 tags retained in dashboard for historical data
 - ✅ **Email Campaigns via Mailgun API**: All campaigns use Mailgun API with template versioning
   - Sending domain: `news.teambuildpro.com` with 10/10 mail-tester.com score (SPF/DKIM/DMARC configured)
   - Open tracking disabled for deliverability; click tracking via GA4 UTM parameters
@@ -2030,7 +2192,7 @@ Corporate email domains are excluded from all contact collections using a **blac
   - Reminders unnecessary and potentially confusing for auto-renewing subscriptions
   - Users don't need to take action - billing happens automatically
 
-### Current System Status (Mar 10, 2026)
+### Current System Status (Mar 11, 2026)
 
 **PROJECT STATUS: V18 A/B/C FULL ROLLOUT**
 Main Campaign disabled. ALL active campaigns use V18 A/B/C testing (33% distribution per variant). Multilingual support: BFH/Farmasius (EN/ES/PT/DE), Scentsy/Zinzino (EN/ES/DE). Dynamic batch sizing auto-adjusts based on queue sizes with 4-week warming schedule (40%→60%→80%→100%).
@@ -2047,6 +2209,8 @@ Main Campaign disabled. ALL active campaigns use V18 A/B/C testing (33% distribu
 | Scentsy Campaign | **V18 A/B/C** | Dynamic batch sizing · EN/ES/DE |
 | Farmasius Campaign | Blocked | 403 bot protection · EN/ES/PT/DE |
 | MPG Campaign | **V18 A/B/C** | Dynamic batch sizing · EN only |
+| Spanish Campaign | **V18 A/B/C** | Dynamic batch sizing · EN/ES/PT (Omnilife targets) |
+| Rodanfields Campaign | **V18 A/B/C** | Dynamic batch sizing · EN only (former R+F consultants) |
 | Domain Warming | **Daily** | 6am PT · 4-week schedule (40%→60%→80%→100%) |
 | Contacts Campaign | Complete | 826 contacts (cleaned Feb 15) |
 | Email Sending | Mailgun API | Via Mailgun, news.teambuildpro.com |

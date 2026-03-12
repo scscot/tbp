@@ -638,10 +638,35 @@
             gap: 0;
             margin-bottom: 30px;
             border-bottom: 2px solid #e1e5e9;
+            overflow-x: auto;
+            overflow-y: hidden;
+            flex-wrap: nowrap;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+            scrollbar-color: #ccc #f0f0f0;
+            padding-bottom: 2px;
+        }
+
+        .campaign-tabs::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .campaign-tabs::-webkit-scrollbar-track {
+            background: #f0f0f0;
+            border-radius: 3px;
+        }
+
+        .campaign-tabs::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 3px;
+        }
+
+        .campaign-tabs::-webkit-scrollbar-thumb:hover {
+            background: #aaa;
         }
 
         .campaign-tab {
-            padding: 15px 30px;
+            padding: 12px 18px;
             background: #f8f9fa;
             border: 2px solid #e1e5e9;
             border-bottom: none;
@@ -651,6 +676,8 @@
             color: #666;
             transition: all 0.2s;
             margin-bottom: -2px;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
 
         .campaign-tab:hover {
@@ -769,6 +796,11 @@
         .campaign-label.farmasius {
             background: #ecfeff;
             color: #0891b2;
+        }
+
+        .campaign-label.spanish {
+            background: #fff3e0;
+            color: #e65100;
         }
 
         .campaign-label.rodanfields {
@@ -1905,6 +1937,9 @@
                     <div class="campaign-tab" onclick="switchEmailTab('farmasius')">
                         Farmasius <span class="tab-badge" id="emailFarmasiusTabBadge">-</span>
                     </div>
+                    <div class="campaign-tab" onclick="switchEmailTab('spanish')">
+                        Spanish <span class="tab-badge" id="emailSpanishTabBadge">-</span>
+                    </div>
                     <div class="campaign-tab" onclick="switchEmailTab('rodanfields')">
                         R+F <span class="tab-badge" id="emailRodanfieldsTabBadge">-</span>
                     </div>
@@ -2656,6 +2691,74 @@
                     </div>
                 </div>
 
+                <!-- Spanish (Omnilife) Campaign Sub-Tab Content -->
+                <div id="emailSpanishTab" class="campaign-content">
+                    <!-- Campaign Progress -->
+                    <h2 class="section-title">Campaign Progress <span class="campaign-label spanish">Spanish</span></h2>
+                    <div class="section-card" style="margin-bottom: 30px;">
+                        <h3>Overall Send Progress</h3>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar" id="emailSpanishProgressBar" style="width: 0%;">0%</div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+                            <span><strong id="emailSpanishTotalSent">0</strong> sent</span>
+                            <span><strong id="emailSpanishTotalRemaining">0</strong> remaining</span>
+                            <span><strong id="emailSpanishTotalContacts">0</strong> total</span>
+                        </div>
+                    </div>
+
+                    <div class="section-card">
+                        <h3>Send Statistics</h3>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-value" id="emailSpanishTotal">-</div>
+                                <div class="stat-label">Total Contacts</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value green" id="emailSpanishSent">-</div>
+                                <div class="stat-label">Sent</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value blue" id="emailSpanishRemaining">-</div>
+                                <div class="stat-label">Remaining</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="emailSpanishSent24h">-</div>
+                                <div class="stat-label">Last 24 Hours</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value red" id="emailSpanishFailed">-</div>
+                                <div class="stat-label">Failed</div>
+                            </div>
+                        </div>
+                        <!-- Click Performance - Now tracked via GA4 -->
+                        <div style="margin-top: 15px; padding: 12px; background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 8px; border-left: 4px solid #0ea5e9;">
+                            <div style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem;">
+                                <span>&#128202;</span>
+                                <span><strong>Click Tracking via GA4</strong> - See Website tab, filter by medium = email</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-card" style="margin-top: 30px;">
+                        <h3>Recent Sends</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Time (PT)</th>
+                                    <th>Email</th>
+                                    <th>Name</th>
+                                    <th>Variant</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="emailSpanishRecentSendsBody">
+                                <tr><td colspan="5" class="no-data-message">Loading...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
                 <!-- Rodan + Fields Campaign Sub-Tab Content -->
                 <div id="emailRodanfieldsTab" class="campaign-content">
                     <!-- Campaign Progress -->
@@ -2879,6 +2982,16 @@
             'farmasius_v18_a_de': 'V18-A DE: "Was wenn Ihr nächster Rekrut mit 12 Leuten kommt?"',
             'farmasius_v18_b_de': 'V18-B DE: "75% Ihrer Rekruten werden aufhören..."',
             'farmasius_v18_c_de': 'V18-C DE: "Geben Sie Ihren Interessenten einen KI-Coach"',
+            // Spanish (Omnilife) campaign (V18 A/B/C - Spanish only, targets Spanish-speaking MLM distributors)
+            'spanish_v18_a': 'V18-A: "What if your next recruit joined with 12 people?"',
+            'spanish_v18_b': 'V18-B: "75% of your recruits will quit this year..."',
+            'spanish_v18_c': 'V18-C: "Give your prospects an AI recruiting coach"',
+            'spanish_v18_a_es': 'V18-A ES: "¿Y si tu próximo recluta llegara con 12 personas?"',
+            'spanish_v18_b_es': 'V18-B ES: "El 75% de tus reclutas renunciarán..."',
+            'spanish_v18_c_es': 'V18-C ES: "Dale a tus prospectos un coach de IA"',
+            'spanish_v18_a_pt': 'V18-A PT: "E se o seu próximo recruta chegasse com 12 pessoas?"',
+            'spanish_v18_b_pt': 'V18-B PT: "75% dos seus recrutas vão desistir..."',
+            'spanish_v18_c_pt': 'V18-C PT: "Dê aos seus prospectos um coach de IA"',
             // Rodan + Fields campaign (V18 A/B/C - English only)
             'rodanfields_v18_a': 'V18-A: "What if your next recruit joined with 12 people?"',
             'rodanfields_v18_b': 'V18-B: "75% of your recruits will quit this year..."',
@@ -2987,6 +3100,7 @@
             { id: 'mpg', name: 'MPG CAMPAIGN', color: '#3730a3' },
             { id: 'three', name: 'THREE CAMPAIGN', color: '#be185d' },
             { id: 'farmasius', name: 'FARMASIUS CAMPAIGN', color: '#0891b2' },
+            { id: 'spanish', name: 'SPANISH CAMPAIGN', color: '#e65100' },
             { id: 'rodanfields', name: 'R+F CAMPAIGN', color: '#c2185b' }
         ];
 
@@ -3527,7 +3641,7 @@
 
         function displayEmailData() {
             if (!emailStatsData) {
-                // No email stats data available
+                // No email stats data available - reset all tab badges
                 document.getElementById('emailMainTabBadge').textContent = '-';
                 document.getElementById('emailPurchasedTabBadge').textContent = '-';
                 document.getElementById('emailBfhTabBadge').textContent = '-';
@@ -3535,6 +3649,11 @@
                 document.getElementById('emailFsrTabBadge').textContent = '-';
                 document.getElementById('emailPaparazziTabBadge').textContent = '-';
                 document.getElementById('emailPruvitTabBadge').textContent = '-';
+                document.getElementById('emailScentsyTabBadge').textContent = '-';
+                document.getElementById('emailMpgTabBadge').textContent = '-';
+                document.getElementById('emailThreeTabBadge').textContent = '-';
+                document.getElementById('emailFarmasiusTabBadge').textContent = '-';
+                document.getElementById('emailSpanishTabBadge').textContent = '-';
                 document.getElementById('emailRodanfieldsTabBadge').textContent = '-';
                 return;
             }
@@ -4124,6 +4243,58 @@
 
                 // Update tab badge
                 document.getElementById('emailFarmasiusTabBadge').textContent = formatNumber(farmasiusSent) + ' sent';
+            }
+
+            // ==================== SPANISH (OMNILIFE) CAMPAIGN ====================
+            if (emailStatsData.spanishCampaign) {
+                const spanish = emailStatsData.spanishCampaign;
+
+                // Progress bar
+                const spanishTotal = spanish.campaign?.total || 1;
+                const spanishSent = spanish.campaign?.sent || 0;
+                const spanishProgress = (spanishSent / spanishTotal * 100);
+
+                document.getElementById('emailSpanishProgressBar').style.width = spanishProgress + '%';
+                document.getElementById('emailSpanishProgressBar').textContent = spanishProgress.toFixed(1) + '%';
+                document.getElementById('emailSpanishTotalSent').textContent = formatNumber(spanishSent);
+                document.getElementById('emailSpanishTotalRemaining').textContent = formatNumber(spanish.campaign?.remaining || 0);
+                document.getElementById('emailSpanishTotalContacts').textContent = formatNumber(spanish.campaign?.total || 0);
+
+                // Stats cards
+                document.getElementById('emailSpanishTotal').textContent = formatNumber(spanish.campaign?.total || 0);
+                document.getElementById('emailSpanishSent').textContent = formatNumber(spanishSent);
+                document.getElementById('emailSpanishRemaining').textContent = formatNumber(spanish.campaign?.remaining || 0);
+                document.getElementById('emailSpanishSent24h').textContent = formatNumber(spanish.last24h?.sent || 0);
+
+                // Failed count (clicks tracked via GA4)
+                if (spanish.tracking) {
+                    document.getElementById('emailSpanishFailed').textContent = formatNumber(spanish.tracking.failed || 0);
+                }
+
+                // Recent sends
+                const spanishTbody = document.getElementById('emailSpanishRecentSendsBody');
+                if (spanish.recentSends && spanish.recentSends.length > 0) {
+                    spanishTbody.innerHTML = spanish.recentSends.map(send => {
+                        const variantBadge = getVariantBadge(send.subjectTag);
+                        const statusBadge = send.clicked
+                            ? '<span class="badge badge-clicked">Clicked</span>'
+                            : '<span class="badge badge-sent">Sent</span>';
+                        return `
+                            <tr>
+                                <td>${escapeHtml(send.time || '')}</td>
+                                <td>${escapeHtml(send.email || '')}</td>
+                                <td>${escapeHtml(send.name || '')}</td>
+                                <td>${variantBadge}</td>
+                                <td>${statusBadge}</td>
+                            </tr>
+                        `;
+                    }).join('');
+                } else {
+                    spanishTbody.innerHTML = '<tr><td colspan="5" class="no-data-message">No recent sends</td></tr>';
+                }
+
+                // Update tab badge
+                document.getElementById('emailSpanishTabBadge').textContent = formatNumber(spanishSent) + ' sent';
             }
 
             // ==================== RODAN + FIELDS CAMPAIGN ====================

@@ -25,6 +25,7 @@ const SCENTSY_CAMPAIGN_COLLECTION = 'scentsy_contacts';
 const MPG_CAMPAIGN_COLLECTION = 'mpg_contacts';
 const THREE_CAMPAIGN_COLLECTION = 'three_contacts';
 const FARMASIUS_CAMPAIGN_COLLECTION = 'farmasius_contacts';
+const SPANISH_CAMPAIGN_COLLECTION = 'spanish_contacts';
 const RODANFIELDS_CAMPAIGN_COLLECTION = 'rodanfields_contacts';
 const MONITORING_PASSWORD = process.env.MONITORING_PASSWORD || 'TeamBuildPro2024!';
 const GA4_PROPERTY_ID = '485651473';
@@ -480,7 +481,7 @@ const getEmailCampaignStats = onRequest({
     const startOfTodayUTC = new Date(startOfTodayPT.getTime() - (ptOffset + now.getTimezoneOffset()) * 60 * 1000);
 
     // Fetch stats for all campaigns in parallel
-    const [mainCampaignStats, contactsCampaignStats, purchasedCampaignStats, bfhCampaignStats, zinzinoCampaignStats, fsrCampaignStats, paparazziCampaignStats, pruvitCampaignStats, scentsyCampaignStats, mpgCampaignStats, threeCampaignStats, farmasiusCampaignStats, rodanfieldsCampaignStats] = await Promise.all([
+    const [mainCampaignStats, contactsCampaignStats, purchasedCampaignStats, bfhCampaignStats, zinzinoCampaignStats, fsrCampaignStats, paparazziCampaignStats, pruvitCampaignStats, scentsyCampaignStats, mpgCampaignStats, threeCampaignStats, farmasiusCampaignStats, spanishCampaignStats, rodanfieldsCampaignStats] = await Promise.all([
       fetchCampaignStats(MAIN_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC),
       fetchCampaignStats(CONTACTS_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC, { isContactsCampaign: true }),
       fetchCampaignStats(PURCHASED_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC),
@@ -493,6 +494,7 @@ const getEmailCampaignStats = onRequest({
       fetchCampaignStats(MPG_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC),
       fetchCampaignStats(THREE_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC),
       fetchCampaignStats(FARMASIUS_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC, { isFarmasiusCampaign: true }),
+      fetchCampaignStats(SPANISH_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC),
       fetchCampaignStats(RODANFIELDS_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC)
     ]);
 
@@ -538,6 +540,7 @@ const getEmailCampaignStats = onRequest({
     injectClickData(mpgCampaignStats, 'mpg');
     injectClickData(threeCampaignStats, 'three');
     injectClickData(farmasiusCampaignStats, 'farmasius');
+    injectClickData(spanishCampaignStats, 'spanish');
     injectClickData(rodanfieldsCampaignStats, 'rodanfields');
 
     // Build response - maintain backward compatibility with existing dashboard
@@ -664,6 +667,16 @@ const getEmailCampaignStats = onRequest({
         subjectLines: farmasiusCampaignStats.subjectLines,
         recentSends: farmasiusCampaignStats.recentSends,
         languageBreakdown: farmasiusCampaignStats.languageBreakdown
+      },
+
+      // Spanish (Omnilife) campaign data
+      spanishCampaign: {
+        campaign: spanishCampaignStats.campaign,
+        last24h: spanishCampaignStats.last24h,
+        today: spanishCampaignStats.today,
+        tracking: spanishCampaignStats.tracking,
+        subjectLines: spanishCampaignStats.subjectLines,
+        recentSends: spanishCampaignStats.recentSends
       },
 
       // Rodan + Fields campaign data

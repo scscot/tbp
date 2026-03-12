@@ -76,8 +76,22 @@ const V18_TEMPLATES = [
   }
 ];
 
-// All campaigns to disable if junk detected
-const ALL_BATCH_SIZE_FIELDS = ['batchSize', 'batchSizePurchased', 'batchSizeBfh', 'batchSizePaparazzi', 'batchSizeFsr', 'batchSizeZinzino', 'batchSizePruvit', 'scentsyBatchSize', 'batchSizeMpg'];
+// All campaigns to disable if junk detected (13 campaigns total)
+const ALL_BATCH_SIZE_FIELDS = [
+  'batchSize',           // Main
+  'batchSizePurchased',  // Purchased
+  'batchSizeBfh',        // BFH
+  'batchSizePaparazzi',  // Paparazzi
+  'batchSizeFsr',        // FSR
+  'batchSizeZinzino',    // Zinzino
+  'batchSizePruvit',     // Pruvit
+  'scentsyBatchSize',    // Scentsy
+  'batchSizeMpg',        // MPG
+  'batchSizeFarmasius',  // Farmasius
+  'batchSizeThree',      // Three
+  'spanishBatchSize',    // Spanish
+  'batchSizeRodanfields' // Rodan+Fields
+];
 
 // =============================================================================
 // GMAIL API CLIENT
