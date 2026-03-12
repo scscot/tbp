@@ -15,6 +15,11 @@ on:
         required: false
         type: boolean
         default: false
+      no_time_filter:
+        description: 'First run - disable time filtering to build initial database'
+        required: false
+        type: boolean
+        default: false
 
 jobs:
   monitor-signals:
@@ -55,7 +60,12 @@ jobs:
             DRY_RUN_ARG="--dry-run"
           fi
 
-          node scripts/mlm-signal-monitor.js --monitor $SOURCE_ARG $DRY_RUN_ARG
+          NO_TIME_FILTER_ARG=""
+          if [ "${{ github.event.inputs.no_time_filter }}" == "true" ]; then
+            NO_TIME_FILTER_ARG="--no-time-filter"
+          fi
+
+          node scripts/mlm-signal-monitor.js --monitor $SOURCE_ARG $DRY_RUN_ARG $NO_TIME_FILTER_ARG
         env:
           GOOGLE_APPLICATION_CREDENTIALS: secrets/serviceAccountKey.json
 
@@ -67,6 +77,7 @@ jobs:
           echo "- **Time**: $(date -u)" >> $GITHUB_STEP_SUMMARY
           echo "- **Source**: ${{ github.event.inputs.source || 'all' }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Mode**: ${{ github.event.inputs.dry_run == 'true' && 'DRY RUN' || 'LIVE' }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Time Filter**: ${{ github.event.inputs.no_time_filter == 'true' && 'DISABLED (initial build)' || 'ENABLED (past 24h only)' }}" >> $GITHUB_STEP_SUMMARY
 
   extract-profiles:
     runs-on: ubuntu-latest
