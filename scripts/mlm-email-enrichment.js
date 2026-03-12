@@ -134,6 +134,28 @@ function isValidEmail(email) {
   return true;
 }
 
+/**
+ * Check if an email already exists in the contacts collection
+ * Used for deduplication to ensure unique emails
+ */
+async function emailExists(email, excludeDocId = null) {
+  if (!email) return false;
+
+  const snapshot = await db.collection(CONFIG.CONTACTS_COLLECTION)
+    .where('email', '==', email.toLowerCase())
+    .limit(2) // Get 2 to check if it's the same doc or different
+    .get();
+
+  if (snapshot.empty) return false;
+
+  // If excluding a doc ID (the current doc being enriched), check if match is different doc
+  if (excludeDocId) {
+    return snapshot.docs.some(doc => doc.id !== excludeDocId);
+  }
+
+  return true;
+}
+
 function extractEmailsFromText(text) {
   if (!text) return [];
 
@@ -370,17 +392,32 @@ async function processContacts(docs, dryRun) {
     const result = await findEmailForContact(data);
 
     if (result.email) {
-      console.log(`  ✓ Found: ${result.email} (score: ${result.score})`);
-      found++;
+      // Check if this email already exists on a different contact
+      const isDuplicate = await emailExists(result.email, doc.id);
+      if (isDuplicate) {
+        console.log(`  ⚠ Found: ${result.email} but SKIPPED (duplicate email in collection)`);
+        failed++;
 
-      if (!dryRun) {
-        await doc.ref.update({
-          email: result.email,
-          emailSource: result.source,
-          emailScore: result.score,
-          emailEnriched: true,
-          emailEnrichedAt: admin.firestore.FieldValue.serverTimestamp(),
-        });
+        if (!dryRun) {
+          await doc.ref.update({
+            emailEnriched: true,
+            emailEnrichedAt: admin.firestore.FieldValue.serverTimestamp(),
+            emailEnrichmentResult: 'duplicate_email',
+          });
+        }
+      } else {
+        console.log(`  ✓ Found: ${result.email} (score: ${result.score})`);
+        found++;
+
+        if (!dryRun) {
+          await doc.ref.update({
+            email: result.email,
+            emailSource: result.source,
+            emailScore: result.score,
+            emailEnriched: true,
+            emailEnrichedAt: admin.firestore.FieldValue.serverTimestamp(),
+          });
+        }
       }
     } else {
       console.log(`  ✗ No email found (${result.reason || 'unknown'})`);

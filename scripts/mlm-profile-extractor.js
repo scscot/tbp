@@ -279,6 +279,20 @@ function generateContactId(url) {
   return crypto.createHash('md5').update(url).digest('hex').substring(0, 16);
 }
 
+/**
+ * Check if an email already exists in the contacts collection
+ */
+async function emailExists(email) {
+  if (!email) return false;
+
+  const snapshot = await db.collection(CONFIG.CONTACTS_COLLECTION)
+    .where('email', '==', email.toLowerCase())
+    .limit(1)
+    .get();
+
+  return !snapshot.empty;
+}
+
 // ============================================================================
 // EXTRACTION FUNCTIONS
 // ============================================================================
@@ -658,23 +672,28 @@ async function runExtractor(options = {}) {
 
         // Save contact if we have a name (email can be found via enrichment)
         if (!options.dryRun && (email || contact.name)) {
-          const contactId = generateContactId(profile.url);
-          await db.collection(CONFIG.CONTACTS_COLLECTION).doc(contactId).set({
-            firstName: firstName,
-            lastName: lastName,
-            fullName: contact.name,
-            email: email,
-            phone: phone,
-            company: contact.company,
-            profileUrl: profile.url,
-            source: 'mlm_signal_monitor',
-            sent: false,
-            status: email ? 'pending' : 'needs_enrichment',
-            emailEnriched: email ? true : false, // Mark if email already found
-            randomIndex: Math.random(),
-            createdAt: admin.firestore.FieldValue.serverTimestamp(),
-          }, { merge: true });
-          contactsSaved++;
+          // Check for duplicate email before saving
+          if (email && await emailExists(email)) {
+            console.log(`    ⚠ Skipped: Email already exists in collection`);
+          } else {
+            const contactId = generateContactId(profile.url);
+            await db.collection(CONFIG.CONTACTS_COLLECTION).doc(contactId).set({
+              firstName: firstName,
+              lastName: lastName,
+              fullName: contact.name,
+              email: email,
+              phone: phone,
+              company: contact.company,
+              profileUrl: profile.url,
+              source: 'mlm_signal_monitor',
+              sent: false,
+              status: email ? 'pending' : 'needs_enrichment',
+              emailEnriched: email ? true : false, // Mark if email already found
+              randomIndex: Math.random(),
+              createdAt: admin.firestore.FieldValue.serverTimestamp(),
+            }, { merge: true });
+            contactsSaved++;
+          }
         }
       } else {
         console.log(`  - No contact info found`);
