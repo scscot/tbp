@@ -31,6 +31,7 @@
  *   node scripts/mlm-signal-monitor.js --stats                # Show collection stats
  *   node scripts/mlm-signal-monitor.js --dry-run              # Preview only
  *   node scripts/mlm-signal-monitor.js --reset                # Reset monitor state
+ *   node scripts/mlm-signal-monitor.js --monitor --no-time-filter  # First run (no time filter)
  *
  * Output:
  *   - mlm_signals collection: Raw signals with source URLs
@@ -555,21 +556,31 @@ async function googleSearchAgent(options = {}) {
 
   console.log(`\n=== Google Search Agent ===`);
   console.log(`Processing ${queries.length} queries (${generalQueryCount} general, ${companyQueryCount} company-specific)...`);
+  console.log(`Time filter: ${options.noTimeFilter ? 'OFF (first run)' : 'ON (past 24 hours)'}`);
 
   for (let i = 0; i < queries.length; i++) {
     const query = queries[i];
     console.log(`\n[${i + 1}/${queries.length}] "${query.substring(0, 50)}..."`);
 
     try {
+      // Build params with optional time filter
+      const params = {
+        api_key: SERPAPI_KEY,
+        engine: 'google',
+        q: query,
+        num: 20,
+        gl: 'us',
+        hl: 'en',
+      };
+
+      // Add time filter for recent results (past 24 hours)
+      // Skip on first run (--no-time-filter) to build initial database
+      if (!options.noTimeFilter) {
+        params.tbs = 'qdr:d'; // qdr:d = past 24 hours
+      }
+
       const response = await axios.get(CONFIG.SERPAPI_URL, {
-        params: {
-          api_key: SERPAPI_KEY,
-          engine: 'google',
-          q: query,
-          num: 20,
-          gl: 'us',
-          hl: 'en',
-        },
+        params,
         timeout: 30000,
       });
 
@@ -622,8 +633,12 @@ async function redditAgent(options = {}) {
   const profiles = new Set();
   const subreddits = options.subreddits || CONFIG.REDDIT_SUBREDDITS;
 
+  // Calculate cutoff time (6 hours ago) for filtering
+  const sixHoursAgo = Math.floor(Date.now() / 1000) - (6 * 60 * 60);
+
   console.log(`\n=== Reddit Agent ===`);
   console.log(`Monitoring ${subreddits.length} subreddits...`);
+  console.log(`Time filter: ${options.noTimeFilter ? 'OFF' : 'ON (past 6 hours)'}`);
 
   for (let i = 0; i < subreddits.length; i++) {
     const subreddit = subreddits[i];
@@ -644,8 +659,16 @@ async function redditAgent(options = {}) {
       console.log(`  Found ${posts.length} posts`);
 
       let relevantCount = 0;
+      let skippedOld = 0;
       for (const post of posts) {
         const data = post.data;
+
+        // Skip posts older than 6 hours (unless noTimeFilter is set)
+        if (!options.noTimeFilter && data.created_utc < sixHoursAgo) {
+          skippedOld++;
+          continue;
+        }
+
         const content = `${data.title || ''} ${data.selftext || ''}`.toLowerCase();
 
         // Check if post contains MLM keywords
@@ -678,7 +701,7 @@ async function redditAgent(options = {}) {
 
         extractedUrls.forEach(url => profiles.add(url));
       }
-      console.log(`  Relevant posts: ${relevantCount}`);
+      console.log(`  Relevant posts: ${relevantCount}${skippedOld > 0 ? ` (${skippedOld} skipped - too old)` : ''}`);
     } catch (error) {
       console.error(`  Error: ${error.message}`);
     }
@@ -724,23 +747,31 @@ async function youtubeAgent(options = {}) {
 
   console.log(`\n=== YouTube Agent ===`);
   console.log(`Searching ${youtubeQueries.length} queries (${generalQueries.length} general, ${companyQueries.length} company-specific)...`);
+  console.log(`Time filter: ${options.noTimeFilter ? 'OFF' : 'ON (past 24 hours)'}`);
 
   for (let i = 0; i < youtubeQueries.length; i++) {
     const query = youtubeQueries[i];
     console.log(`\n[${i + 1}/${youtubeQueries.length}] "${query}"`);
 
     try {
+      const params = {
+        api_key: SERPAPI_KEY,
+        engine: 'youtube',
+        search_query: query,
+      };
+
+      // Add upload date filter (Today) - sp=EgQIAxAB
+      if (!options.noTimeFilter) {
+        params.sp = 'EgQIAxAB'; // Filter to videos uploaded today
+      }
+
       const response = await axios.get(CONFIG.SERPAPI_URL, {
-        params: {
-          api_key: SERPAPI_KEY,
-          engine: 'youtube',
-          search_query: query,
-        },
+        params,
         timeout: 30000,
       });
 
       const videos = response.data.video_results || [];
-      console.log(`  Found ${videos.length} videos`);
+      console.log(`  Found ${videos.length} videos${!options.noTimeFilter ? ' (today)' : ''}`);
 
       for (const video of videos) {
         const content = `${video.title || ''} ${video.description || ''} ${video.channel?.name || ''}`;
@@ -792,6 +823,7 @@ async function facebookAgent(options = {}) {
 
   console.log(`\n=== Facebook Agent ===`);
   console.log(`Searching ${Math.min(maxQueries, queries.length)} queries via Google site:facebook.com...`);
+  console.log(`Time filter: ${options.noTimeFilter ? 'OFF' : 'ON (past 24 hours)'}`);
 
   const selectedQueries = queries.sort(() => Math.random() - 0.5).slice(0, maxQueries);
 
@@ -801,15 +833,21 @@ async function facebookAgent(options = {}) {
     console.log(`\n[${i + 1}/${selectedQueries.length}] "${baseQuery.substring(0, 40)}..."`);
 
     try {
+      const params = {
+        api_key: SERPAPI_KEY,
+        engine: 'google',
+        q: query,
+        num: 20,
+        gl: 'us',
+        hl: 'en',
+      };
+
+      if (!options.noTimeFilter) {
+        params.tbs = 'qdr:d';
+      }
+
       const response = await axios.get(CONFIG.SERPAPI_URL, {
-        params: {
-          api_key: SERPAPI_KEY,
-          engine: 'google',
-          q: query,
-          num: 20,
-          gl: 'us',
-          hl: 'en',
-        },
+        params,
         timeout: 30000,
       });
 
@@ -877,6 +915,7 @@ async function twitterAgent(options = {}) {
 
   console.log(`\n=== Twitter/X Agent ===`);
   console.log(`Searching ${Math.min(maxQueries, queries.length)} queries via Google site:twitter.com...`);
+  console.log(`Time filter: ${options.noTimeFilter ? 'OFF' : 'ON (past 24 hours)'}`);
 
   const selectedQueries = queries.sort(() => Math.random() - 0.5).slice(0, maxQueries);
 
@@ -887,15 +926,21 @@ async function twitterAgent(options = {}) {
     console.log(`\n[${i + 1}/${selectedQueries.length}] "${baseQuery.substring(0, 40)}..."`);
 
     try {
+      const params = {
+        api_key: SERPAPI_KEY,
+        engine: 'google',
+        q: query,
+        num: 20,
+        gl: 'us',
+        hl: 'en',
+      };
+
+      if (!options.noTimeFilter) {
+        params.tbs = 'qdr:d';
+      }
+
       const response = await axios.get(CONFIG.SERPAPI_URL, {
-        params: {
-          api_key: SERPAPI_KEY,
-          engine: 'google',
-          q: query,
-          num: 20,
-          gl: 'us',
-          hl: 'en',
-        },
+        params,
         timeout: 30000,
       });
 
@@ -964,6 +1009,7 @@ async function tiktokAgent(options = {}) {
 
   console.log(`\n=== TikTok Agent ===`);
   console.log(`Searching ${Math.min(maxQueries, queries.length)} queries via Google site:tiktok.com...`);
+  console.log(`Time filter: ${options.noTimeFilter ? 'OFF' : 'ON (past 24 hours)'}`);
 
   const selectedQueries = queries.sort(() => Math.random() - 0.5).slice(0, maxQueries);
 
@@ -973,15 +1019,21 @@ async function tiktokAgent(options = {}) {
     console.log(`\n[${i + 1}/${selectedQueries.length}] "${baseQuery.substring(0, 40)}..."`);
 
     try {
+      const params = {
+        api_key: SERPAPI_KEY,
+        engine: 'google',
+        q: query,
+        num: 20,
+        gl: 'us',
+        hl: 'en',
+      };
+
+      if (!options.noTimeFilter) {
+        params.tbs = 'qdr:d';
+      }
+
       const response = await axios.get(CONFIG.SERPAPI_URL, {
-        params: {
-          api_key: SERPAPI_KEY,
-          engine: 'google',
-          q: query,
-          num: 20,
-          gl: 'us',
-          hl: 'en',
-        },
+        params,
         timeout: 30000,
       });
 
@@ -1048,6 +1100,7 @@ async function instagramAgent(options = {}) {
 
   console.log(`\n=== Instagram Agent ===`);
   console.log(`Searching ${Math.min(maxQueries, queries.length)} queries via Google site:instagram.com...`);
+  console.log(`Time filter: ${options.noTimeFilter ? 'OFF' : 'ON (past 24 hours)'}`);
 
   const selectedQueries = queries.sort(() => Math.random() - 0.5).slice(0, maxQueries);
 
@@ -1057,15 +1110,21 @@ async function instagramAgent(options = {}) {
     console.log(`\n[${i + 1}/${selectedQueries.length}] "${baseQuery.substring(0, 40)}..."`);
 
     try {
+      const params = {
+        api_key: SERPAPI_KEY,
+        engine: 'google',
+        q: query,
+        num: 20,
+        gl: 'us',
+        hl: 'en',
+      };
+
+      if (!options.noTimeFilter) {
+        params.tbs = 'qdr:d';
+      }
+
       const response = await axios.get(CONFIG.SERPAPI_URL, {
-        params: {
-          api_key: SERPAPI_KEY,
-          engine: 'google',
-          q: query,
-          num: 20,
-          gl: 'us',
-          hl: 'en',
-        },
+        params,
         timeout: 30000,
       });
 
@@ -1132,6 +1191,7 @@ async function threadsAgent(options = {}) {
 
   console.log(`\n=== Threads Agent ===`);
   console.log(`Searching ${Math.min(maxQueries, queries.length)} queries via Google site:threads.net...`);
+  console.log(`Time filter: ${options.noTimeFilter ? 'OFF' : 'ON (past 24 hours)'}`);
 
   const selectedQueries = queries.sort(() => Math.random() - 0.5).slice(0, maxQueries);
 
@@ -1141,15 +1201,21 @@ async function threadsAgent(options = {}) {
     console.log(`\n[${i + 1}/${selectedQueries.length}] "${baseQuery.substring(0, 40)}..."`);
 
     try {
+      const params = {
+        api_key: SERPAPI_KEY,
+        engine: 'google',
+        q: query,
+        num: 20,
+        gl: 'us',
+        hl: 'en',
+      };
+
+      if (!options.noTimeFilter) {
+        params.tbs = 'qdr:d';
+      }
+
       const response = await axios.get(CONFIG.SERPAPI_URL, {
-        params: {
-          api_key: SERPAPI_KEY,
-          engine: 'google',
-          q: query,
-          num: 20,
-          gl: 'us',
-          hl: 'en',
-        },
+        params,
         timeout: 30000,
       });
 
@@ -1290,6 +1356,7 @@ async function runMonitor(options = {}) {
   console.log(`Time: ${new Date().toISOString()}`);
   console.log(`Mode: ${options.dryRun ? 'DRY RUN' : 'LIVE'}`);
   console.log(`Source: ${options.source || 'all'}`);
+  console.log(`Time Filter: ${options.noTimeFilter ? 'OFF (first run)' : 'ON (recent content only)'}`);
 
   const allSignals = [];
   const allProfiles = new Set();
@@ -1439,6 +1506,7 @@ async function main() {
     dryRun: args.includes('--dry-run'),
     source: args.find(a => a.startsWith('--source='))?.split('=')[1],
     maxQueries: parseInt(args.find(a => a.startsWith('--max='))?.split('=')[1]) || undefined,
+    noTimeFilter: args.includes('--no-time-filter'), // For first run to build initial database
   };
 
   initFirebase();
@@ -1454,14 +1522,25 @@ async function main() {
 MLM Signal Monitor - Agent-Based Lead Discovery
 
 Usage:
-  node scripts/mlm-signal-monitor.js --monitor              # Run full monitoring
+  node scripts/mlm-signal-monitor.js --monitor              # Run full monitoring (past 24h filter)
+  node scripts/mlm-signal-monitor.js --monitor --no-time-filter  # First run (no time filter)
   node scripts/mlm-signal-monitor.js --monitor --source=google   # Google only
   node scripts/mlm-signal-monitor.js --monitor --source=reddit   # Reddit only
   node scripts/mlm-signal-monitor.js --monitor --source=youtube  # YouTube only
+  node scripts/mlm-signal-monitor.js --monitor --source=facebook # Facebook only
+  node scripts/mlm-signal-monitor.js --monitor --source=twitter  # Twitter/X only
+  node scripts/mlm-signal-monitor.js --monitor --source=tiktok   # TikTok only
+  node scripts/mlm-signal-monitor.js --monitor --source=instagram # Instagram only
+  node scripts/mlm-signal-monitor.js --monitor --source=threads  # Threads only
   node scripts/mlm-signal-monitor.js --monitor --max=5      # Limit queries
   node scripts/mlm-signal-monitor.js --dry-run --monitor    # Preview mode
   node scripts/mlm-signal-monitor.js --stats                # Show stats
   node scripts/mlm-signal-monitor.js --reset                # Reset state
+
+Time Filtering:
+  By default, all agents filter to recent content (past 24h for Google/social,
+  past 6h for Reddit, today for YouTube). Use --no-time-filter on first run
+  to build initial database without time restrictions.
     `);
   }
 }
