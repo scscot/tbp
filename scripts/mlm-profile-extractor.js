@@ -69,6 +69,33 @@ const CONFIG = {
     'meta[property="og:title"]',
   ],
 
+  // Generic page titles to filter out (not real names)
+  INVALID_NAMES: [
+    'profile / x', 'profile', 'x', 'twitter', 'thread', 'threads', 'instagram',
+    'facebook', 'linkedin', 'tiktok', 'youtube', 'log in', 'sign up', 'login',
+    'sign in', 'home', 'feed', 'explore', 'search', 'reels', 'watch',
+    'not found', '404', 'error', 'page not found', 'access denied',
+    'video', 'photo', 'post', 'story', 'reel', 'shorts',
+    'hello partner!', 'what is required', 'what does an independent',
+    'selling and buying', 'urban retreat', 'log in or sign up',
+  ],
+
+  // Patterns that indicate page titles, not names
+  INVALID_NAME_PATTERNS: [
+    /^profile\s*\/?\s*x$/i,
+    /on\s+x:/i,          // "Name on X:" patterns
+    /\|\s*x$/i,          // "Name | X" patterns
+    /\|\s*facebook$/i,
+    /\|\s*instagram$/i,
+    /\|\s*linkedin$/i,
+    /\|\s*tiktok$/i,
+    /^\(@?\w+\)$/,       // Just (@username)
+    /^@\w+$/,            // Just @username (we want display name, not handle)
+    /\/\s*x$/i,          // "/ X" at end
+    /https?:\/\//,       // Contains URL
+    /\.(com|org|net)/i,  // Contains domain
+  ],
+
   // Company detection patterns
   COMPANY_PATTERNS: {
     'amway': ['amway', 'myamway'],
@@ -105,8 +132,14 @@ const CONFIG = {
   PLATFORM_HANDLERS: {
     'findsalesrep.com': 'extractFindSalesRep',
     'businessforhome.org': 'extractBusinessForHome',
-    'facebook.com': 'extractFacebook',
-    'linkedin.com': 'extractLinkedIn',
+    'facebook.com': 'extractSocialMedia',
+    'linkedin.com': 'extractSocialMedia',
+    'twitter.com': 'extractSocialMedia',
+    'x.com': 'extractSocialMedia',
+    'instagram.com': 'extractSocialMedia',
+    'tiktok.com': 'extractSocialMedia',
+    'threads.net': 'extractSocialMedia',
+    'youtube.com': 'extractSocialMedia',
   },
 };
 
@@ -181,6 +214,66 @@ function parseName(fullName) {
   };
 }
 
+/**
+ * Validates if a string is a real person's name (not a page title)
+ */
+function isValidName(name) {
+  if (!name || typeof name !== 'string') return false;
+
+  const cleaned = name.trim().toLowerCase();
+
+  // Too short or too long
+  if (cleaned.length < 3 || cleaned.length > 80) return false;
+
+  // Check against invalid names list
+  if (CONFIG.INVALID_NAMES.some(invalid => cleaned === invalid || cleaned.includes(invalid))) {
+    return false;
+  }
+
+  // Check against invalid patterns
+  if (CONFIG.INVALID_NAME_PATTERNS.some(pattern => pattern.test(name))) {
+    return false;
+  }
+
+  // Should contain at least one letter
+  if (!/[a-zA-Z]/.test(name)) return false;
+
+  // Shouldn't be all caps unless short (initials)
+  if (name === name.toUpperCase() && name.length > 5) return false;
+
+  // Shouldn't contain too many special chars or pipes
+  const specialCount = (name.match(/[|\/\\<>{}[\]]/g) || []).length;
+  if (specialCount > 1) return false;
+
+  return true;
+}
+
+/**
+ * Cleans and normalizes a name string
+ */
+function cleanName(name) {
+  if (!name) return null;
+
+  let cleaned = name.trim();
+
+  // Remove common suffixes like "| X", "| Facebook", "/ X", "on X:", etc.
+  cleaned = cleaned
+    .replace(/\s*\|\s*(X|Facebook|Instagram|LinkedIn|TikTok|Twitter|Threads)$/i, '')
+    .replace(/\s*\/\s*(X|Twitter)$/i, '')
+    .replace(/\s+on\s+(X|Twitter|Instagram|Facebook):?.*$/i, '')
+    .replace(/\s*-\s*(X|Facebook|Instagram|LinkedIn|TikTok)$/i, '')
+    .replace(/\(@\w+\)\s*$/i, '') // Remove (@username) at end
+    .replace(/@\w+\s*$/, '')      // Remove trailing @username
+    .trim();
+
+  // Remove emoji at start/end
+  cleaned = cleaned.replace(/^[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\s]+/u, '')
+                   .replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\s]+$/u, '')
+                   .trim();
+
+  return cleaned;
+}
+
 function generateContactId(url) {
   const crypto = require('crypto');
   return crypto.createHash('md5').update(url).digest('hex').substring(0, 16);
@@ -213,16 +306,17 @@ async function extractGeneric(page, url) {
     // Try to extract name from common selectors
     for (const selector of CONFIG.NAME_SELECTORS) {
       try {
+        let rawName = null;
         if (selector.startsWith('meta')) {
-          const meta = await page.$eval(selector, el => el.content);
-          if (meta && meta.length < 100) {
-            contact.name = meta;
-            break;
-          }
+          rawName = await page.$eval(selector, el => el.content);
         } else {
-          const text = await page.$eval(selector, el => el.innerText?.trim());
-          if (text && text.length < 100 && text.length > 2) {
-            contact.name = text;
+          rawName = await page.$eval(selector, el => el.innerText?.trim());
+        }
+
+        if (rawName && rawName.length < 100 && rawName.length > 2) {
+          const cleaned = cleanName(rawName);
+          if (isValidName(cleaned)) {
+            contact.name = cleaned;
             break;
           }
         }
@@ -231,10 +325,14 @@ async function extractGeneric(page, url) {
       }
     }
 
-    // Try og:title as fallback
+    // Try og:title as fallback (with validation)
     if (!contact.name) {
       try {
-        contact.name = await page.$eval('meta[property="og:title"]', el => el.content);
+        const ogTitle = await page.$eval('meta[property="og:title"]', el => el.content);
+        const cleaned = cleanName(ogTitle);
+        if (isValidName(cleaned)) {
+          contact.name = cleaned;
+        }
       } catch (e) {}
     }
 
@@ -318,6 +416,133 @@ async function extractBusinessForHome(page, url) {
 }
 
 /**
+ * Social media platform extraction (Twitter/X, Instagram, TikTok, Facebook, etc.)
+ * These platforms rarely expose emails, so focus on extracting name + company for later enrichment
+ */
+async function extractSocialMedia(page, url) {
+  const contact = {
+    profileUrl: url,
+    company: detectCompanyFromUrl(url),
+    emails: [],
+    phones: [],
+    name: null,
+    username: null,
+  };
+
+  try {
+    const hostname = new URL(url).hostname;
+
+    // Try multiple meta tags for name (in priority order)
+    const metaSelectors = [
+      // Twitter/X specific
+      'meta[property="og:title"]',
+      'meta[name="twitter:title"]',
+      // General
+      'meta[property="profile:first_name"]',
+      'meta[property="profile:last_name"]',
+      'meta[name="author"]',
+    ];
+
+    let rawName = null;
+    for (const selector of metaSelectors) {
+      try {
+        const content = await page.$eval(selector, el => el.content);
+        if (content && content.length > 2 && content.length < 100) {
+          rawName = content;
+          break;
+        }
+      } catch (e) {}
+    }
+
+    // Platform-specific name extraction
+    if (hostname.includes('twitter.com') || hostname.includes('x.com')) {
+      // Twitter format: "Display Name (@username) / X"
+      try {
+        const title = await page.title();
+        const match = title.match(/^([^(@]+)/);
+        if (match && match[1]) {
+          rawName = match[1].trim();
+        }
+      } catch (e) {}
+    } else if (hostname.includes('instagram.com')) {
+      // Instagram format: "Name (@username) • Instagram photos and videos"
+      try {
+        const title = await page.title();
+        const match = title.match(/^([^•(@]+)/);
+        if (match && match[1]) {
+          rawName = match[1].trim();
+        }
+      } catch (e) {}
+      // Also try the h2 header on profile pages
+      try {
+        const h2Name = await page.$eval('header h2', el => el.innerText?.trim());
+        if (h2Name && !rawName) rawName = h2Name;
+      } catch (e) {}
+    } else if (hostname.includes('tiktok.com')) {
+      // TikTok format: "username (@handle) | TikTok"
+      try {
+        const title = await page.title();
+        const match = title.match(/^([^|(@]+)/);
+        if (match && match[1]) {
+          rawName = match[1].trim();
+        }
+      } catch (e) {}
+    } else if (hostname.includes('facebook.com')) {
+      // Facebook format: "Name - description | Facebook"
+      try {
+        const title = await page.title();
+        const match = title.match(/^([^-|]+)/);
+        if (match && match[1]) {
+          rawName = match[1].trim();
+        }
+      } catch (e) {}
+    } else if (hostname.includes('threads.net')) {
+      // Threads format: "@username on Threads" or just title
+      try {
+        const ogTitle = await page.$eval('meta[property="og:title"]', el => el.content);
+        // Extract name before "on Threads"
+        const match = ogTitle.match(/^(.+?)\s+on\s+Threads/i);
+        if (match && match[1]) {
+          rawName = match[1].replace(/^@/, '').trim();
+        }
+      } catch (e) {}
+    }
+
+    // Clean and validate the name
+    if (rawName) {
+      contact.name = cleanName(rawName);
+      if (!isValidName(contact.name)) {
+        contact.name = null;
+      }
+    }
+
+    // Extract emails from page (rare on social media, but worth trying)
+    const pageText = await page.evaluate(() => document.body.innerText);
+    contact.emails = extractEmailsFromText(pageText);
+    contact.phones = extractPhonesFromText(pageText);
+
+    // Try to extract company from bio text
+    if (!contact.company) {
+      const bioText = pageText.toLowerCase();
+      for (const [company, patterns] of Object.entries(CONFIG.COMPANY_PATTERNS)) {
+        for (const pattern of patterns) {
+          if (bioText.includes(pattern)) {
+            contact.company = company.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+            break;
+          }
+        }
+        if (contact.company) break;
+      }
+    }
+
+  } catch (error) {
+    console.error(`  Social media extraction error: ${error.message}`);
+  }
+
+  return contact;
+}
+
+/**
  * Main extraction coordinator
  */
 async function extractProfile(page, url) {
@@ -350,8 +575,19 @@ async function extractProfile(page, url) {
     case 'extractBusinessForHome':
       contact = await extractBusinessForHome(page, url);
       break;
+    case 'extractSocialMedia':
+      contact = await extractSocialMedia(page, url);
+      break;
     default:
       contact = await extractGeneric(page, url);
+  }
+
+  // Final validation: clean and validate the name
+  if (contact && contact.name) {
+    contact.name = cleanName(contact.name);
+    if (!isValidName(contact.name)) {
+      contact.name = null;
+    }
   }
 
   return contact;
