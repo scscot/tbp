@@ -1,0 +1,108 @@
+name: MLM Signal Monitor
+
+on:
+  schedule:
+    # Run every 6 hours: 6am, 12pm, 6pm, 12am PT
+    - cron: '0 14,20,2,8 * * *'
+  workflow_dispatch:
+    inputs:
+      source:
+        description: 'Signal source (google, reddit, youtube, or all)'
+        required: false
+        default: 'all'
+      dry_run:
+        description: 'Dry run (preview only)'
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  monitor-signals:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: |
+          cd scripts
+          npm install firebase-admin axios
+
+      - name: Create service account file
+        run: |
+          echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}' > secrets/serviceAccountKey.json
+
+      - name: Create SerpAPI key file
+        run: |
+          echo '${{ secrets.SERPAPI_KEY }}' > secrets/SerpAPI-Key
+
+      - name: Run Signal Monitor
+        run: |
+          SOURCE_ARG=""
+          if [ "${{ github.event.inputs.source }}" != "" ] && [ "${{ github.event.inputs.source }}" != "all" ]; then
+            SOURCE_ARG="--source=${{ github.event.inputs.source }}"
+          fi
+
+          DRY_RUN_ARG=""
+          if [ "${{ github.event.inputs.dry_run }}" == "true" ]; then
+            DRY_RUN_ARG="--dry-run"
+          fi
+
+          node scripts/mlm-signal-monitor.js --monitor $SOURCE_ARG $DRY_RUN_ARG
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: secrets/serviceAccountKey.json
+
+      - name: Generate Summary
+        if: always()
+        run: |
+          echo "## MLM Signal Monitor Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Time**: $(date -u)" >> $GITHUB_STEP_SUMMARY
+          echo "- **Source**: ${{ github.event.inputs.source || 'all' }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Mode**: ${{ github.event.inputs.dry_run == 'true' && 'DRY RUN' || 'LIVE' }}" >> $GITHUB_STEP_SUMMARY
+
+  extract-profiles:
+    runs-on: ubuntu-latest
+    needs: monitor-signals
+    if: github.event.inputs.dry_run != 'true'
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: |
+          cd scripts
+          npm install firebase-admin playwright
+          npx playwright install chromium
+
+      - name: Create service account file
+        run: |
+          echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}' > secrets/serviceAccountKey.json
+
+      - name: Run Profile Extractor
+        run: |
+          node scripts/mlm-profile-extractor.js --extract --max=25
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: secrets/serviceAccountKey.json
+
+      - name: Generate Summary
+        if: always()
+        run: |
+          echo "## MLM Profile Extractor Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Time**: $(date -u)" >> $GITHUB_STEP_SUMMARY
+          echo "- **Max profiles**: 25" >> $GITHUB_STEP_SUMMARY

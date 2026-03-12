@@ -1811,6 +1811,31 @@ Corporate email domains are excluded from all contact collections using a **blac
   - `--migrate-to-bfh` - Migrate contacts with emails to bfh_contacts
   - `--stats` - Show collection statistics
 
+**MLM Signal Monitor (Agent-Based Lead Discovery):**
+- `mlm-signal-monitor.js` - Multi-agent system for detecting MLM activity online
+  - **Google Agent**: SerpAPI searches for MLM recruitment signals
+  - **Reddit Agent**: Monitors r/MLM, r/antiMLM, r/Entrepreneur for activity
+  - **YouTube Agent**: Finds MLM promoter videos with SerpAPI YouTube search
+  - `--monitor` - Run full monitoring cycle (all sources)
+  - `--monitor --source=google` - Google search only
+  - `--monitor --source=reddit` - Reddit monitoring only
+  - `--monitor --source=youtube` - YouTube search only
+  - `--dry-run` - Preview mode (no Firestore writes)
+  - `--stats` - Show collection statistics
+  - Output: `mlm_signals` (raw signals), `mlm_discovered_profiles` (profile URLs)
+- `mlm-profile-extractor.js` - Contact extraction agent for discovered profiles
+  - Uses Playwright for browser-based scraping
+  - Platform-specific handlers (FindSalesRep, BusinessForHome, generic)
+  - `--extract` - Process unscraped profiles from queue
+  - `--extract --max=50` - Limit extractions
+  - `--test --url=URL` - Test single URL extraction
+  - `--stats` - Show extraction statistics
+  - Output: `mlm_contacts` collection (campaign-ready schema)
+- GitHub Actions: `.github/workflows/mlm-signal-monitor.yml`
+  - Schedule: Every 6 hours (4x daily)
+  - Runs signal monitor, then profile extractor
+  - 25 profiles extracted per run
+
 ---
 
 ## 🔄 Recent Changes & Milestones
@@ -1838,6 +1863,13 @@ Corporate email domains are excluded from all contact collections using a **blac
   - Integration with GA4 for click tracking analysis
 
 **Email Campaign Infrastructure**
+- ✅ **MLM Signal Monitor Created** (Mar 12, 2026): Agent-based lead discovery system
+  - Multi-agent architecture: Google Agent + Reddit Agent + YouTube Agent
+  - Monitors internet activity for MLM/direct sales professionals
+  - Detects recruitment signals, extracts profile URLs, saves contacts
+  - Profile extractor processes discovered URLs with Playwright
+  - Collections: `mlm_signals`, `mlm_discovered_profiles`, `mlm_contacts`
+  - GitHub Actions workflow: every 6 hours (4x daily)
 - ✅ **Rodanfields Campaign Removed** (Mar 11, 2026): Entire R+F funnel deleted due to non-viable email exposure rate
   - Only 2 emails found from 587 consultants scraped (0.34% exposure rate)
   - All consultant profiles only have contact forms, no direct email addresses
