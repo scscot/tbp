@@ -26,6 +26,8 @@ const MPG_CAMPAIGN_COLLECTION = 'mpg_contacts';
 const THREE_CAMPAIGN_COLLECTION = 'three_contacts';
 const FARMASIUS_CAMPAIGN_COLLECTION = 'farmasius_contacts';
 const SPANISH_CAMPAIGN_COLLECTION = 'spanish_contacts';
+const COLORSTREET_CAMPAIGN_COLLECTION = 'colorstreet_contacts';
+const MLM_CAMPAIGN_COLLECTION = 'mlm_contacts';
 const MONITORING_PASSWORD = process.env.MONITORING_PASSWORD || 'TeamBuildPro2024!';
 const GA4_PROPERTY_ID = '485651473';
 
@@ -202,20 +204,14 @@ async function fetchGA4Stats(serviceAccountJson) {
 
 /**
  * Fetch per-campaign GA4 sessions for accurate click tracking
- * Maps utm_campaign values back to TBP campaign names
  *
- * GA4 utm_campaign patterns used by TBP campaigns:
- * - main_v14, main_v9, etc. → Main campaign
- * - purchased_v14, purchased_apollo, purchased_serpapi → Purchased campaign
- * - bfh_v14_en, bfh_v14_es, etc. → BFH campaign
- * - scentsy_v14_en, scentsy_outreach_feb → Scentsy campaign
- * - zinzino_v14, etc. → Zinzino campaign
- * - fsr_v14, etc. → FSR campaign
- * - paparazzi_v14, etc. → Paparazzi campaign
- * - pruvit_v14, etc. → Pruvit campaign
- * - mpg_v14, etc. → MPG campaign
- * - three_v14, etc. → Three campaign
- * - farmasius_v14, etc. → Farmasius campaign
+ * IMPORTANT: utm_content contains the variant identifier (subjectTag like scentsy_v18_a_en)
+ * GA4 maps utm_content to sessionManualAdContent dimension
+ *
+ * utm_campaign is generic (e.g., "scentsy_outreach_feb") - NOT useful for variant tracking
+ * utm_content is specific (e.g., "scentsy_v18_a_en") - THIS is what we need
+ *
+ * Returns: { campaignTotals: {...}, variantClicks: {...} }
  */
 async function fetchPerCampaignGA4Sessions(serviceAccountJson) {
   try {
@@ -229,12 +225,13 @@ async function fetchPerCampaignGA4Sessions(serviceAccountJson) {
       projectId: credentials.project_id
     });
 
-    // Fetch last 30 days of email campaign traffic by campaign name
+    // Fetch last 30 days of email campaign traffic using sessionManualAdContent (utm_content)
+    // This contains the variant identifier (subjectTag) like "scentsy_v18_a_en"
     const [response] = await analyticsDataClient.runReport({
       property: `properties/${GA4_PROPERTY_ID}`,
       dateRanges: [{ startDate: '30daysAgo', endDate: 'today' }],
       dimensions: [
-        { name: 'sessionCampaignName' }
+        { name: 'sessionManualAdContent' }  // utm_content = subjectTag
       ],
       metrics: [
         { name: 'sessions' }
@@ -251,10 +248,10 @@ async function fetchPerCampaignGA4Sessions(serviceAccountJson) {
     });
 
     if (!response.rows || response.rows.length === 0) {
-      return {};
+      return { campaignTotals: {}, variantClicks: {} };
     }
 
-    // Map GA4 campaign names to TBP campaign identifiers
+    // Map GA4 utm_content values to TBP campaign identifiers
     const campaignSessions = {
       main: 0,
       purchased: 0,
@@ -268,48 +265,66 @@ async function fetchPerCampaignGA4Sessions(serviceAccountJson) {
       three: 0,
       farmasius: 0,
       contacts: 0,
+      colorstreet: 0,
+      mlm: 0,
+      spanish: 0,
       unknown: 0
     };
 
+    // Track variant-level clicks (utm_content values like "scentsy_v18_a_en")
+    const variantClicks = {};
+
     response.rows.forEach(row => {
-      const campaignName = (row.dimensionValues[0].value || '').toLowerCase();
+      // sessionManualAdContent = utm_content = subjectTag (e.g., "scentsy_v18_a_en")
+      const utmContent = (row.dimensionValues[0].value || '').toLowerCase();
       const sessions = parseInt(row.metricValues[0].value) || 0;
 
-      // Map to campaign based on prefix patterns
-      if (campaignName.startsWith('main_') || campaignName === 'tbp_campaign') {
+      // Store raw variant clicks (e.g., "scentsy_v18_a_en" -> 5)
+      if (utmContent && sessions > 0) {
+        variantClicks[utmContent] = (variantClicks[utmContent] || 0) + sessions;
+      }
+
+      // Map to campaign based on prefix patterns in subjectTag
+      if (utmContent.startsWith('main_') || utmContent === 'tbp_campaign') {
         campaignSessions.main += sessions;
-      } else if (campaignName.startsWith('purchased_') || campaignName.includes('purchased')) {
+      } else if (utmContent.startsWith('purchased_') || utmContent.includes('purchased') || utmContent.includes('apollo') || utmContent.includes('serpapi')) {
         campaignSessions.purchased += sessions;
-      } else if (campaignName.startsWith('bfh_') || campaignName.includes('bfh')) {
+      } else if (utmContent.startsWith('bfh_') || utmContent.includes('bfh')) {
         campaignSessions.bfh += sessions;
-      } else if (campaignName.startsWith('scentsy_') || campaignName.includes('scentsy')) {
+      } else if (utmContent.startsWith('scentsy_') || utmContent.includes('scentsy')) {
         campaignSessions.scentsy += sessions;
-      } else if (campaignName.startsWith('zinzino_') || campaignName.includes('zinzino')) {
+      } else if (utmContent.startsWith('zinzino_') || utmContent.includes('zinzino')) {
         campaignSessions.zinzino += sessions;
-      } else if (campaignName.startsWith('fsr_') || campaignName.includes('fsr')) {
+      } else if (utmContent.startsWith('fsr_') || utmContent.includes('fsr')) {
         campaignSessions.fsr += sessions;
-      } else if (campaignName.startsWith('paparazzi_') || campaignName.includes('paparazzi')) {
+      } else if (utmContent.startsWith('paparazzi_') || utmContent.includes('paparazzi')) {
         campaignSessions.paparazzi += sessions;
-      } else if (campaignName.startsWith('pruvit_') || campaignName.includes('pruvit')) {
+      } else if (utmContent.startsWith('pruvit_') || utmContent.includes('pruvit')) {
         campaignSessions.pruvit += sessions;
-      } else if (campaignName.startsWith('mpg_') || campaignName.includes('mpg')) {
+      } else if (utmContent.startsWith('mpg_') || utmContent.includes('mpg')) {
         campaignSessions.mpg += sessions;
-      } else if (campaignName.startsWith('three_') || campaignName.includes('three')) {
+      } else if (utmContent.startsWith('three_') || utmContent.includes('three')) {
         campaignSessions.three += sessions;
-      } else if (campaignName.startsWith('farmasius_') || campaignName.includes('farmasius')) {
+      } else if (utmContent.startsWith('farmasius_') || utmContent.includes('farmasius')) {
         campaignSessions.farmasius += sessions;
-      } else if (campaignName.startsWith('contacts_') || campaignName.includes('contacts')) {
+      } else if (utmContent.startsWith('contacts_') || utmContent.includes('contacts')) {
         campaignSessions.contacts += sessions;
+      } else if (utmContent.startsWith('colorstreet_') || utmContent.includes('colorstreet')) {
+        campaignSessions.colorstreet += sessions;
+      } else if (utmContent.startsWith('mlm_') || utmContent.includes('mlm')) {
+        campaignSessions.mlm += sessions;
+      } else if (utmContent.startsWith('spanish_') || utmContent.includes('spanish')) {
+        campaignSessions.spanish += sessions;
       } else {
         campaignSessions.unknown += sessions;
       }
     });
 
-    return campaignSessions;
+    return { campaignTotals: campaignSessions, variantClicks };
 
   } catch (error) {
     console.error('Error fetching per-campaign GA4 sessions:', error.message);
-    return {};
+    return { campaignTotals: {}, variantClicks: {} };
   }
 }
 
@@ -480,7 +495,7 @@ const getEmailCampaignStats = onRequest({
     const startOfTodayUTC = new Date(startOfTodayPT.getTime() - (ptOffset + now.getTimezoneOffset()) * 60 * 1000);
 
     // Fetch stats for all campaigns in parallel
-    const [mainCampaignStats, contactsCampaignStats, purchasedCampaignStats, bfhCampaignStats, zinzinoCampaignStats, fsrCampaignStats, paparazziCampaignStats, pruvitCampaignStats, scentsyCampaignStats, mpgCampaignStats, threeCampaignStats, farmasiusCampaignStats, spanishCampaignStats] = await Promise.all([
+    const [mainCampaignStats, contactsCampaignStats, purchasedCampaignStats, bfhCampaignStats, zinzinoCampaignStats, fsrCampaignStats, paparazziCampaignStats, pruvitCampaignStats, scentsyCampaignStats, mpgCampaignStats, threeCampaignStats, farmasiusCampaignStats, spanishCampaignStats, colorstreetCampaignStats, mlmCampaignStats] = await Promise.all([
       fetchCampaignStats(MAIN_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC),
       fetchCampaignStats(CONTACTS_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC, { isContactsCampaign: true }),
       fetchCampaignStats(PURCHASED_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC),
@@ -493,28 +508,32 @@ const getEmailCampaignStats = onRequest({
       fetchCampaignStats(MPG_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC),
       fetchCampaignStats(THREE_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC),
       fetchCampaignStats(FARMASIUS_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC, { isFarmasiusCampaign: true }),
-      fetchCampaignStats(SPANISH_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC)
+      fetchCampaignStats(SPANISH_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC),
+      fetchCampaignStats(COLORSTREET_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC),
+      fetchCampaignStats(MLM_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC)
     ]);
 
     // Get GA4 stats (shared across campaigns)
     let ga4Stats = null;
     let perCampaignClicks = {};
+    let variantClicks = {};
     try {
       const serviceAccountJson = ga4ServiceAccount.value();
       if (serviceAccountJson) {
         // Fetch both aggregate stats and per-campaign sessions in parallel
-        const [aggregateStats, campaignClicks] = await Promise.all([
+        const [aggregateStats, campaignData] = await Promise.all([
           fetchGA4Stats(serviceAccountJson),
           fetchPerCampaignGA4Sessions(serviceAccountJson)
         ]);
         ga4Stats = aggregateStats;
-        perCampaignClicks = campaignClicks;
+        perCampaignClicks = campaignData.campaignTotals || {};
+        variantClicks = campaignData.variantClicks || {};
       }
     } catch (ga4Error) {
       console.error('GA4 stats error:', ga4Error.message);
     }
 
-    // Helper to inject GA4 click data into campaign tracking stats
+    // Helper to inject GA4 click data into campaign tracking stats AND subjectLines
     const injectClickData = (stats, campaignKey) => {
       if (perCampaignClicks && perCampaignClicks[campaignKey] !== undefined) {
         const clicked = perCampaignClicks[campaignKey];
@@ -522,6 +541,21 @@ const getEmailCampaignStats = onRequest({
         stats.tracking.clicked = clicked;
         stats.tracking.clickRate = sent > 0 ? ((clicked / sent) * 100).toFixed(1) + '%' : '0%';
       }
+
+      // Also inject variant-level clicks into subjectLines and recalculate clickRate
+      if (stats.subjectLines && variantClicks) {
+        stats.subjectLines.forEach(subjectLine => {
+          const tag = (subjectLine.subjectTag || '').toLowerCase();
+          if (variantClicks[tag] !== undefined) {
+            subjectLine.clicked = variantClicks[tag];
+            // Recalculate clickRate based on GA4 data
+            const sent = subjectLine.sent || 0;
+            const clicked = subjectLine.clicked;
+            subjectLine.clickRate = sent > 0 ? ((clicked / sent) * 100).toFixed(1) + '%' : '0%';
+          }
+        });
+      }
+
       return stats;
     };
 
@@ -539,6 +573,8 @@ const getEmailCampaignStats = onRequest({
     injectClickData(threeCampaignStats, 'three');
     injectClickData(farmasiusCampaignStats, 'farmasius');
     injectClickData(spanishCampaignStats, 'spanish');
+    injectClickData(colorstreetCampaignStats, 'colorstreet');
+    injectClickData(mlmCampaignStats, 'mlm');
 
     // Build response - maintain backward compatibility with existing dashboard
     // while adding contacts campaign data
@@ -674,6 +710,26 @@ const getEmailCampaignStats = onRequest({
         tracking: spanishCampaignStats.tracking,
         subjectLines: spanishCampaignStats.subjectLines,
         recentSends: spanishCampaignStats.recentSends
+      },
+
+      // Color Street campaign data
+      colorstreetCampaign: {
+        campaign: colorstreetCampaignStats.campaign,
+        last24h: colorstreetCampaignStats.last24h,
+        today: colorstreetCampaignStats.today,
+        tracking: colorstreetCampaignStats.tracking,
+        subjectLines: colorstreetCampaignStats.subjectLines,
+        recentSends: colorstreetCampaignStats.recentSends
+      },
+
+      // MLM (Signal Monitor) campaign data
+      mlmCampaign: {
+        campaign: mlmCampaignStats.campaign,
+        last24h: mlmCampaignStats.last24h,
+        today: mlmCampaignStats.today,
+        tracking: mlmCampaignStats.tracking,
+        subjectLines: mlmCampaignStats.subjectLines,
+        recentSends: mlmCampaignStats.recentSends
       },
 
       // GA4 stats (shared)
