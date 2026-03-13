@@ -43,8 +43,8 @@ const {
  * Returns { valid: boolean, reason: string }
  */
 function validateSubscription(data) {
-    // Allow demo mode (not yet paid)
-    if (data.status === 'demo_ready' || data.status === 'pending' || data.status === 'analyzing' || data.status === 'researching' || data.status === 'generating_demo') {
+    // Allow demo mode (not yet paid) and pending payment (organic signup before checkout)
+    if (data.status === 'demo_ready' || data.status === 'pending' || data.status === 'pending_payment' || data.status === 'analyzing' || data.status === 'researching' || data.status === 'generating_demo') {
         return { valid: true, reason: 'demo_mode' };
     }
 

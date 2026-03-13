@@ -1,7 +1,7 @@
 # PreIntake.ai: Comprehensive Project Documentation
 
 **Last Updated**: 2026-03-13
-**Version**: 7.8 (14-Day Free Trial implementation)
+**Version**: 7.9 (validateSubscription fix for organic signup)
 
 ---
 
@@ -2327,6 +2327,20 @@ Email CTA → Homepage (?lead=) → create-account.html → Payment
 | `/preintake/index.html` | Free trial CTAs, removed Founder Section, added Security section |
 | `/preintake/new-account.html` | Free trial messaging throughout page |
 | `/preintake/create-account.html` | Free trial messaging, $0 today badge |
+
+### Phase 89: validateSubscription Fix for Organic Signup (2026-03-13)
+- [x] **Bug Fix** - Organic signup flow was broken (create-account.html showing "Could not load your account details")
+  - Root cause: `submitNewAccount` creates leads with `status: 'pending_payment'`
+  - `validateSubscription()` in `widget-functions.js` did NOT include `pending_payment` in allowed statuses
+  - `getWidgetConfig` returned 403 for newly created organic leads
+- [x] **Fix Applied** - Added `pending_payment` to allowed statuses in `validateSubscription()`
+  - Line 47: Added `data.status === 'pending_payment'` to the condition
+  - Organic signup flow now works: new-account.html → create-account.html loads successfully
+
+**Files Modified:**
+| File | Changes |
+|------|---------|
+| `functions/widget-functions.js` | Added `pending_payment` to `validateSubscription()` allowed statuses |
 
 ---
 
