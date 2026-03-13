@@ -1717,9 +1717,14 @@ const GA4_CAMPAIGN_TO_DASHBOARD_KEY = {
   'pruvit_outreach': 'pruvit',
   'fsr_outreach_feb': 'fsr',
   'fsr_outreach': 'fsr',
+  'fsr_campaign': 'fsr',
   'mpg_outreach': 'mpg',
   'three_outreach': 'three',
-  'farmasius_outreach': 'farmasius'
+  'farmasius_outreach': 'farmasius',
+  'spanish_mlm_outreach_mar': 'spanish',
+  'spanish_mlm_outreach': 'spanish',
+  'mlm_outreach': 'mlm',
+  'colorstreet_outreach': 'colorstreet'
 };
 
 /**
