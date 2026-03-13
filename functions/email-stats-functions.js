@@ -211,9 +211,11 @@ async function fetchGA4Stats(serviceAccountJson) {
  * utm_campaign is generic (e.g., "scentsy_outreach_feb") - NOT useful for variant tracking
  * utm_content is specific (e.g., "scentsy_v18_a_en") - THIS is what we need
  *
+ * @param {string} serviceAccountJson - GA4 service account credentials
+ * @param {boolean} realtimeMode - If true, query only today's data for near-real-time results
  * Returns: { campaignTotals: {...}, variantClicks: {...} }
  */
-async function fetchPerCampaignGA4Sessions(serviceAccountJson) {
+async function fetchPerCampaignGA4Sessions(serviceAccountJson, realtimeMode = false) {
   try {
     const credentials = JSON.parse(serviceAccountJson);
 
@@ -225,11 +227,17 @@ async function fetchPerCampaignGA4Sessions(serviceAccountJson) {
       projectId: credentials.project_id
     });
 
-    // Fetch last 30 days of email campaign traffic using sessionManualAdContent (utm_content)
+    // In realtime mode, fetch only today's data for near-real-time results
+    // Otherwise fetch last 30 days for comprehensive tracking
+    const dateRange = realtimeMode
+      ? { startDate: 'today', endDate: 'today' }
+      : { startDate: '30daysAgo', endDate: 'today' };
+
+    // Fetch email campaign traffic using sessionManualAdContent (utm_content)
     // This contains the variant identifier (subjectTag) like "scentsy_v18_a_en"
     const [response] = await analyticsDataClient.runReport({
       property: `properties/${GA4_PROPERTY_ID}`,
-      dateRanges: [{ startDate: '30daysAgo', endDate: 'today' }],
+      dateRanges: [dateRange],
       dimensions: [
         { name: 'sessionManualAdContent' }  // utm_content = subjectTag
       ],
@@ -478,11 +486,14 @@ const getEmailCampaignStats = onRequest({
 }, async (req, res) => {
   try {
     // Password validation
-    const { password } = req.query;
+    const { password, realtime } = req.query;
+    const isRealtimeMode = realtime === 'true';
 
     if (!password || password !== MONITORING_PASSWORD) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
+
+    console.log(`Fetching email campaign stats (realtime=${isRealtimeMode})`);
 
     const now = new Date();
     const twentyFourHoursAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
@@ -514,6 +525,7 @@ const getEmailCampaignStats = onRequest({
     ]);
 
     // Get GA4 stats (shared across campaigns)
+    // In realtime mode, fetch today's data only for near-real-time results
     let ga4Stats = null;
     let perCampaignClicks = {};
     let variantClicks = {};
@@ -523,7 +535,7 @@ const getEmailCampaignStats = onRequest({
         // Fetch both aggregate stats and per-campaign sessions in parallel
         const [aggregateStats, campaignData] = await Promise.all([
           fetchGA4Stats(serviceAccountJson),
-          fetchPerCampaignGA4Sessions(serviceAccountJson)
+          fetchPerCampaignGA4Sessions(serviceAccountJson, isRealtimeMode)
         ]);
         ga4Stats = aggregateStats;
         perCampaignClicks = campaignData.campaignTotals || {};
@@ -579,6 +591,9 @@ const getEmailCampaignStats = onRequest({
     // Build response - maintain backward compatibility with existing dashboard
     // while adding contacts campaign data
     const response = {
+      // Real-time mode indicator
+      isRealtimeMode: isRealtimeMode,
+      dataAge: isRealtimeMode ? 'Today (near-real-time)' : 'Last 30 days',
       // Main campaign data (for backward compatibility)
       campaign: mainCampaignStats.campaign,
       last24h: mainCampaignStats.last24h,

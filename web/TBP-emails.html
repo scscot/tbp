@@ -344,6 +344,94 @@
             margin-top: 24px;
         }
 
+        /* Real-time toggle */
+        .realtime-toggle {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .realtime-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background: #f0f0f0;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .realtime-btn:hover {
+            background: #e8e8e8;
+        }
+
+        .realtime-btn.active {
+            background: #28a745;
+            border-color: #28a745;
+            color: white;
+            animation: pulse 2s infinite;
+        }
+
+        .realtime-btn .live-dot {
+            width: 8px;
+            height: 8px;
+            background: #86868b;
+            border-radius: 50%;
+            transition: background 0.2s;
+        }
+
+        .realtime-btn.active .live-dot {
+            background: #fff;
+            animation: blink 1s infinite;
+        }
+
+        .realtime-indicator {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .realtime-indicator.active {
+            color: #28a745;
+            font-weight: 500;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.4); }
+            50% { box-shadow: 0 0 0 8px rgba(40, 167, 69, 0); }
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        /* Live indicator for data */
+        .live-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: #dcfce7;
+            color: #166534;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        .live-badge::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: #22c55e;
+            border-radius: 50%;
+            animation: blink 1s infinite;
+        }
+
         /* Info banner */
         .info-banner {
             background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
@@ -393,6 +481,14 @@
             <div class="header">
                 <h1>Email Campaign Dashboard</h1>
                 <div class="header-controls">
+                    <div class="realtime-toggle">
+                        <button id="realtimeBtn" class="realtime-btn" onclick="toggleRealtimeMode()"
+                                title="Live data from today with auto-refresh every 30 seconds">
+                            <span class="live-dot"></span>
+                            Real-Time
+                        </button>
+                        <span id="realtimeIndicator" class="realtime-indicator">Auto-refresh: OFF</span>
+                    </div>
                     <button class="refresh-btn" onclick="loadData()">Refresh</button>
                     <button class="logout-btn" onclick="logout()">Logout</button>
                 </div>
@@ -448,7 +544,49 @@
         let currentPassword = '';
         let emailStatsData = null;
         let currentTimeframe = '30day';
+        let isRealtimeMode = false;
+        let realtimeRefreshInterval = null;
+        const REALTIME_REFRESH_MS = 30000; // 30 seconds
         const EMAIL_STATS_URL = 'https://us-central1-teambuilder-plus-fe74d.cloudfunctions.net/getEmailCampaignStats';
+
+        // Real-time mode toggle
+        async function toggleRealtimeMode() {
+            isRealtimeMode = !isRealtimeMode;
+            const btn = document.getElementById('realtimeBtn');
+            const indicator = document.getElementById('realtimeIndicator');
+
+            if (isRealtimeMode) {
+                btn.classList.add('active');
+                indicator.textContent = 'Auto-refresh: ON (30s)';
+                indicator.classList.add('active');
+
+                // Load immediately
+                await loadData();
+
+                // Start auto-refresh
+                realtimeRefreshInterval = setInterval(async () => {
+                    await loadData();
+                }, REALTIME_REFRESH_MS);
+            } else {
+                disableRealtimeMode();
+                await loadData();
+            }
+        }
+
+        function disableRealtimeMode() {
+            isRealtimeMode = false;
+            const btn = document.getElementById('realtimeBtn');
+            const indicator = document.getElementById('realtimeIndicator');
+
+            btn.classList.remove('active');
+            indicator.textContent = 'Auto-refresh: OFF';
+            indicator.classList.remove('active');
+
+            if (realtimeRefreshInterval) {
+                clearInterval(realtimeRefreshInterval);
+                realtimeRefreshInterval = null;
+            }
+        }
 
         // Campaign definitions
         const CAMPAIGNS = [
@@ -534,6 +672,7 @@
         function logout() {
             currentPassword = '';
             emailStatsData = null;
+            disableRealtimeMode();
             document.getElementById('loginSection').style.display = 'flex';
             document.getElementById('dashboard').style.display = 'none';
             document.getElementById('passwordInput').value = '';
@@ -543,7 +682,8 @@
             if (!currentPassword) return false;
 
             try {
-                const response = await fetch(`${EMAIL_STATS_URL}?password=${encodeURIComponent(currentPassword)}`);
+                const realtimeParam = isRealtimeMode ? '&realtime=true' : '';
+                const response = await fetch(`${EMAIL_STATS_URL}?password=${encodeURIComponent(currentPassword)}${realtimeParam}`);
 
                 if (!response.ok) {
                     if (response.status === 401) throw new Error('Invalid password');
@@ -554,8 +694,11 @@
                 displayCampaignProgress();
                 displayVariantPerformance();
 
-                document.getElementById('lastUpdate').textContent =
-                    'Last updated: ' + new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }) + ' PT';
+                const timestamp = new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' });
+                const dataAgeText = emailStatsData.dataAge || (isRealtimeMode ? "Today (near-real-time)" : "Last 30 days");
+                const liveBadge = isRealtimeMode ? '<span class="live-badge">LIVE</span>' : '';
+                document.getElementById('lastUpdate').innerHTML =
+                    'Last updated: ' + timestamp + ' PT' + liveBadge + ' | Data: ' + dataAgeText;
                 document.getElementById('errorMessage').style.display = 'none';
 
                 return true;

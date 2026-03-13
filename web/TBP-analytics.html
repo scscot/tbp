@@ -598,6 +598,74 @@
             color: white;
         }
 
+        /* Real-Time Toggle Styles */
+        .realtime-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-left: 20px;
+            padding-left: 20px;
+            border-left: 2px solid #e1e5e9;
+        }
+
+        .realtime-btn {
+            padding: 8px 16px;
+            background: #f8f9fa;
+            border: 2px solid #e1e5e9;
+            border-radius: 20px;
+            color: #666;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .realtime-btn:hover {
+            border-color: #28a745;
+            color: #28a745;
+        }
+
+        .realtime-btn.active {
+            background: #28a745;
+            border-color: #28a745;
+            color: white;
+            animation: pulse 2s infinite;
+        }
+
+        .realtime-btn .live-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        .realtime-btn.active .live-dot {
+            background: #fff;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.4); }
+            50% { box-shadow: 0 0 0 8px rgba(40, 167, 69, 0); }
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .realtime-indicator {
+            font-size: 0.8rem;
+            color: #28a745;
+            font-weight: 500;
+        }
+
+        .realtime-indicator.inactive {
+            color: #666;
+        }
+
         /* Email Campaign Styles */
         .campaign-card {
             background: #f8f9fa;
@@ -1515,6 +1583,15 @@
                     <button class="date-range-btn" onclick="selectDateRange('7day', this)">7 Days</button>
                     <button class="date-range-btn" onclick="selectDateRange('yesterday', this)">Yesterday</button>
                     <button class="date-range-btn" onclick="selectDateRange('today', this)" title="Today's data is near-real-time but may be incomplete for the current hour">Today *</button>
+
+                    <!-- Real-Time Toggle -->
+                    <div class="realtime-toggle">
+                        <button id="realtimeBtn" class="realtime-btn" onclick="toggleRealtimeMode()" title="Live data from the last 30 minutes with auto-refresh every 30 seconds">
+                            <span class="live-dot"></span>
+                            Real-Time
+                        </button>
+                        <span id="realtimeIndicator" class="realtime-indicator inactive">Auto-refresh: OFF</span>
+                    </div>
                 </div>
 
                 <!-- Key Metrics -->
@@ -2831,9 +2908,12 @@
     <script>
         let currentPassword = '';
         let autoRefreshInterval = null;
+        let realtimeRefreshInterval = null;
         let analyticsData = null;
         let emailStatsData = null;
         let currentDateRange = '30day';
+        let isRealtimeMode = false;
+        const REALTIME_REFRESH_MS = 30000; // 30 seconds
         const FUNCTION_URL = 'https://us-central1-teambuilder-plus-fe74d.cloudfunctions.net/getTBPAnalytics';
         const EMAIL_STATS_URL = 'https://us-central1-teambuilder-plus-fe74d.cloudfunctions.net/getEmailCampaignStats';
 
@@ -3106,10 +3186,13 @@
             document.getElementById('error').style.display = 'none';
 
             try {
+                // Build URL with realtime parameter if in realtime mode
+                const realtimeParam = isRealtimeMode ? '&realtime=true' : '';
+
                 // Fetch both endpoints in parallel
                 const [analyticsResponse, emailResponse] = await Promise.all([
-                    fetch(`${FUNCTION_URL}?password=${encodeURIComponent(currentPassword)}`),
-                    fetch(`${EMAIL_STATS_URL}?password=${encodeURIComponent(currentPassword)}`)
+                    fetch(`${FUNCTION_URL}?password=${encodeURIComponent(currentPassword)}${realtimeParam}`),
+                    fetch(`${EMAIL_STATS_URL}?password=${encodeURIComponent(currentPassword)}${realtimeParam}`)
                 ]);
 
                 if (!analyticsResponse.ok) {
@@ -3176,7 +3259,60 @@
             currentDateRange = range;
             document.querySelectorAll('.date-range-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
+
+            // Turn off realtime mode when selecting a date range
+            if (isRealtimeMode) {
+                disableRealtimeMode();
+            }
+
             displayWebsiteData();
+        }
+
+        // Real-Time Mode Toggle
+        async function toggleRealtimeMode() {
+            isRealtimeMode = !isRealtimeMode;
+            const btn = document.getElementById('realtimeBtn');
+            const indicator = document.getElementById('realtimeIndicator');
+
+            if (isRealtimeMode) {
+                // Enable real-time mode
+                btn.classList.add('active');
+                indicator.textContent = 'Auto-refresh: ON (30s)';
+                indicator.classList.remove('inactive');
+
+                // Deselect date range buttons
+                document.querySelectorAll('.date-range-btn').forEach(b => b.classList.remove('active'));
+
+                // Load data in realtime mode
+                await loadData();
+
+                // Start auto-refresh
+                realtimeRefreshInterval = setInterval(async () => {
+                    console.log('Real-time refresh...');
+                    await loadData();
+                }, REALTIME_REFRESH_MS);
+            } else {
+                disableRealtimeMode();
+                // Revert to 30-day view
+                currentDateRange = '30day';
+                document.querySelector('.date-range-btn').classList.add('active');
+                await loadData();
+            }
+        }
+
+        function disableRealtimeMode() {
+            isRealtimeMode = false;
+            const btn = document.getElementById('realtimeBtn');
+            const indicator = document.getElementById('realtimeIndicator');
+
+            btn.classList.remove('active');
+            indicator.textContent = 'Auto-refresh: OFF';
+            indicator.classList.add('inactive');
+
+            if (realtimeRefreshInterval) {
+                clearInterval(realtimeRefreshInterval);
+                realtimeRefreshInterval = null;
+            }
         }
 
         // Display Functions
@@ -3212,7 +3348,14 @@
             if (!analyticsData || !analyticsData.website) return;
 
             let data;
-            if (currentDateRange === '30day') {
+            let realtimeData = null;
+
+            // Check if we're in realtime mode and have realtime data
+            if (isRealtimeMode && analyticsData.website.realtime && !analyticsData.website.realtime.error) {
+                realtimeData = analyticsData.website.realtime;
+                // Use today's data for tables that need standard GA4 format
+                data = analyticsData.website.today;
+            } else if (currentDateRange === '30day') {
                 data = analyticsData.website.thirtyDay;
             } else if (currentDateRange === '7day') {
                 data = analyticsData.website.sevenDay;
@@ -3220,6 +3363,80 @@
                 data = analyticsData.website.yesterday;
             } else if (currentDateRange === 'today') {
                 data = analyticsData.website.today;
+            }
+
+            // Display realtime overview metrics if in realtime mode
+            if (realtimeData) {
+                const overview = realtimeData.overview || {};
+                document.getElementById('ga4TotalUsers').textContent = formatNumber(overview.activeUsers || 0);
+                document.getElementById('ga4TotalUsers').parentElement.querySelector('h3').textContent = 'Active Users (Live)';
+                document.getElementById('ga4NewUsers').textContent = '-';
+                document.getElementById('ga4Sessions').textContent = '-';
+                document.getElementById('ga4BounceRate').textContent = '-';
+                document.getElementById('ga4EngagementRate').textContent = '-';
+                document.getElementById('ga4AvgDuration').textContent = '-';
+                document.getElementById('ga4PageViews').textContent = formatNumber(overview.pageViews || 0);
+                document.getElementById('ga4SessionsPerUser').textContent = '-';
+                document.getElementById('ga4PagesPerSession').textContent = '-';
+
+                // Clear comparison indicators for realtime mode
+                ['ga4TotalUsersChange', 'ga4NewUsersChange', 'ga4SessionsChange', 'ga4BounceRateChange', 'ga4EngagementRateChange', 'ga4AvgDurationChange', 'ga4PageViewsChange'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.innerHTML = '<span style="color: #28a745;">● LIVE</span>';
+                });
+
+                // Display realtime top pages
+                const pagesTable = document.getElementById('topPagesTable');
+                const realtimePages = realtimeData.topPages?.data || [];
+                if (realtimePages.length > 0) {
+                    pagesTable.innerHTML = realtimePages.slice(0, 10).map(p => `
+                        <tr>
+                            <td>${escapeHtml(p.unifiedScreenName || '(not set)')}</td>
+                            <td>${formatNumber(p.screenPageViews || 0)}</td>
+                            <td>${formatNumber(p.activeUsers || 0)}</td>
+                            <td><span style="color: #28a745;">● LIVE</span></td>
+                        </tr>
+                    `).join('');
+                } else {
+                    pagesTable.innerHTML = '<tr><td colspan="4" class="no-data-message">No active pages</td></tr>';
+                }
+
+                // Display realtime countries
+                const countriesTable = document.getElementById('topCountriesTable');
+                const realtimeCountries = realtimeData.topCountries?.data || [];
+                if (realtimeCountries.length > 0) {
+                    countriesTable.innerHTML = realtimeCountries.slice(0, 10).map(c => `
+                        <tr>
+                            <td>${escapeHtml(c.country || 'Unknown')}</td>
+                            <td>${formatNumber(c.activeUsers || 0)}</td>
+                            <td>-</td>
+                            <td><span style="color: #28a745;">● LIVE</span></td>
+                        </tr>
+                    `).join('');
+                } else {
+                    countriesTable.innerHTML = '<tr><td colspan="4" class="no-data-message">No active countries</td></tr>';
+                }
+
+                // Display realtime devices
+                const deviceDiv = document.getElementById('deviceBreakdown');
+                const realtimeDevices = realtimeData.deviceBreakdown?.data || [];
+                if (realtimeDevices.length > 0) {
+                    deviceDiv.innerHTML = `
+                        <div class="device-breakdown-row">
+                            ${realtimeDevices.map(d => `
+                                <div class="device-item">
+                                    <span class="device-icon">${d.deviceCategory === 'mobile' ? '📱' : d.deviceCategory === 'tablet' ? '📟' : '💻'}</span>
+                                    <span class="device-name">${escapeHtml(capitalize(d.deviceCategory || 'unknown'))}</span>
+                                    <span class="device-users">${formatNumber(d.activeUsers || 0)} active</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <p style="font-size: 0.8rem; color: #28a745; margin-top: 10px;">● Live data - last 30 minutes</p>
+                    `;
+                }
+
+                // For other sections, use today's data (traffic sources, domain breakdown, events, email traffic)
+                // These need the standard GA4 data format
             }
 
             if (!data || data.error) {

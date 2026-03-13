@@ -29,6 +29,187 @@ const GA4_PROPERTY_ID = '485651473';
 // Countries to exclude from GA4 analytics (suspected bot/VPN traffic)
 const EXCLUDED_COUNTRIES = ['China', 'Singapore'];
 
+// ==============================
+// GA4 Real-Time API Functions
+// ==============================
+
+/**
+ * Fetch GA4 real-time analytics data
+ * Uses runRealtimeReport for live data (last 30 minutes, ~1-2 min lag)
+ *
+ * Limitations: Real-time API doesn't support UTM parameters (sessionCampaignName, sessionManualAdContent)
+ * For email campaign tracking, use standard runReport with startDate='today'
+ *
+ * @param {string} serviceAccountJson - GA4 service account credentials JSON
+ */
+async function fetchGA4Realtime(serviceAccountJson) {
+  const client = getGA4Client(serviceAccountJson);
+  const propertyId = GA4_PROPERTY_ID;
+
+  try {
+    // Fetch multiple real-time reports in parallel
+    const [
+      overviewResponse,
+      topPagesResponse,
+      deviceResponse,
+      countryResponse,
+      eventsResponse
+    ] = await Promise.all([
+      // Real-time overview: active users right now
+      client.runRealtimeReport({
+        property: `properties/${propertyId}`,
+        metrics: [
+          { name: 'activeUsers' },
+          { name: 'screenPageViews' },
+          { name: 'eventCount' },
+          { name: 'conversions' }
+        ]
+      }),
+      // Real-time top pages
+      client.runRealtimeReport({
+        property: `properties/${propertyId}`,
+        dimensions: [{ name: 'unifiedScreenName' }],
+        metrics: [
+          { name: 'activeUsers' },
+          { name: 'screenPageViews' }
+        ],
+        limit: 10
+      }),
+      // Real-time device breakdown
+      client.runRealtimeReport({
+        property: `properties/${propertyId}`,
+        dimensions: [{ name: 'deviceCategory' }],
+        metrics: [
+          { name: 'activeUsers' }
+        ]
+      }),
+      // Real-time country breakdown (excluding bot countries)
+      client.runRealtimeReport({
+        property: `properties/${propertyId}`,
+        dimensions: [{ name: 'country' }],
+        metrics: [
+          { name: 'activeUsers' }
+        ],
+        dimensionFilter: {
+          notExpression: {
+            filter: {
+              fieldName: 'country',
+              inListFilter: {
+                values: EXCLUDED_COUNTRIES
+              }
+            }
+          }
+        },
+        limit: 15
+      }),
+      // Real-time events
+      client.runRealtimeReport({
+        property: `properties/${propertyId}`,
+        dimensions: [{ name: 'eventName' }],
+        metrics: [
+          { name: 'eventCount' }
+        ],
+        limit: 15
+      })
+    ]);
+
+    // Format overview
+    const overview = formatRealtimeOverview(overviewResponse[0]);
+
+    // Format reports with dimensions
+    const topPages = formatRealtimeReport(topPagesResponse[0]);
+    const deviceBreakdown = formatRealtimeReport(deviceResponse[0]);
+    const topCountries = formatRealtimeReport(countryResponse[0]);
+    const topEvents = formatRealtimeReport(eventsResponse[0]);
+
+    return {
+      isRealtime: true,
+      dataAge: 'Last 30 minutes (~1-2 min lag)',
+      fetchedAt: new Date().toISOString(),
+      overview,
+      topPages,
+      deviceBreakdown,
+      topCountries,
+      topEvents
+    };
+
+  } catch (error) {
+    logger.error('Error fetching GA4 real-time data:', {
+      message: error.message,
+      code: error.code
+    });
+    return {
+      isRealtime: true,
+      error: true,
+      message: error.message,
+      code: error.code || 'UNKNOWN'
+    };
+  }
+}
+
+/**
+ * Format GA4 real-time overview response
+ */
+function formatRealtimeOverview(response) {
+  if (!response.rows || response.rows.length === 0) {
+    return {
+      activeUsers: 0,
+      pageViews: 0,
+      eventCount: 0,
+      conversions: 0
+    };
+  }
+
+  const row = response.rows[0];
+  const metricHeaders = response.metricHeaders.map(h => h.name);
+
+  const metrics = {};
+  row.metricValues.forEach((val, i) => {
+    metrics[metricHeaders[i]] = parseInt(val.value) || 0;
+  });
+
+  return {
+    activeUsers: metrics.activeUsers || 0,
+    pageViews: metrics.screenPageViews || 0,
+    eventCount: metrics.eventCount || 0,
+    conversions: metrics.conversions || 0
+  };
+}
+
+/**
+ * Format GA4 real-time report with dimensions
+ */
+function formatRealtimeReport(response) {
+  if (!response.rows || response.rows.length === 0) {
+    return { data: [], totals: {} };
+  }
+
+  const dimensionHeaders = response.dimensionHeaders.map(h => h.name);
+  const metricHeaders = response.metricHeaders.map(h => h.name);
+
+  const data = response.rows.map(row => {
+    const item = {};
+
+    row.dimensionValues.forEach((dim, i) => {
+      item[dimensionHeaders[i]] = dim.value;
+    });
+
+    row.metricValues.forEach((metric, i) => {
+      item[metricHeaders[i]] = parseInt(metric.value) || 0;
+    });
+
+    return item;
+  });
+
+  // Calculate totals
+  const totals = {};
+  metricHeaders.forEach(metric => {
+    totals[metric] = data.reduce((sum, row) => sum + (row[metric] || 0), 0);
+  });
+
+  return { data, totals };
+}
+
 /**
  * Build GA4 dimension filter to exclude specified countries
  * Uses notExpression wrapping inListFilter (GA4 API doesn't have notInListFilter)
@@ -2147,14 +2328,15 @@ const getTBPAnalytics = onRequest({
 }, async (req, res) => {
   try {
     // Password authentication
-    const { password, dateRange } = req.query;
+    const { password, dateRange, realtime } = req.query;
     const MONITORING_PASSWORD = process.env.MONITORING_PASSWORD || 'TeamBuildPro2024!';
+    const isRealtimeMode = realtime === 'true';
 
     if (!password || password !== MONITORING_PASSWORD) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    logger.info('Fetching TBP Analytics Dashboard data...');
+    logger.info(`Fetching TBP Analytics Dashboard data... (realtime=${isRealtimeMode})`);
 
     // Determine date ranges
     const _ga4DateRange = dateRange === '7days' ? '7daysAgo' : '30daysAgo';
@@ -2191,41 +2373,60 @@ const getTBPAnalytics = onRequest({
       fetchPurchasedLeadsROI()
     ]);
 
-    // Fetch GA4 data sequentially to stay within concurrent request quota
-    const ga4Data30 = await fetchGA4Analytics('30daysAgo', ga4Credentials);
-    const ga4Data7 = await fetchGA4Analytics('7daysAgo', ga4Credentials);
-    const ga4DataYesterday = await fetchGA4Analytics('yesterday', ga4Credentials);
-    const ga4DataToday = await fetchGA4Analytics('today', ga4Credentials);
+    // Fetch GA4 data
+    // In real-time mode: fetch real-time + today data (skip heavier historical queries)
+    // In standard mode: fetch all date ranges
+    let ga4Data30 = null, ga4Data7 = null, ga4DataYesterday = null, ga4DataToday = null, ga4Realtime = null;
 
-    // Inject per-campaign GA4 click data into campaign stats
-    // Uses 30-day data to match the benchmark period for sent counts
-    injectPerCampaignClickData(allCampaignStats, ga4Data30);
-
-    // Build executive summary using benchmark-filtered data, conversion funnel using 7-day data
-    const executiveSummary = buildExecutiveSummary(ga4Data7, iosData, androidData, allCampaignStats);
-    const conversionFunnel = buildConversionFunnel(emailStats7Day, ga4Data7, iosData, androidData);
-
-    // Generate AI observations for GA4 data (use 30-day data for more comprehensive analysis)
-    let ga4Observations = null;
-    try {
-      ga4Observations = await generateGA4Observations(ga4Data30, anthropicApiKey.value());
-      logger.info('GA4 AI observations generated successfully');
-    } catch (obsError) {
-      logger.warn('Failed to generate GA4 observations:', obsError.message);
+    if (isRealtimeMode) {
+      // Real-time mode: prioritize speed with live + today data
+      [ga4Realtime, ga4DataToday] = await Promise.all([
+        fetchGA4Realtime(ga4Credentials),
+        fetchGA4Analytics('today', ga4Credentials)
+      ]);
+      logger.info('Real-time GA4 data fetched');
+    } else {
+      // Standard mode: fetch all date ranges sequentially to stay within concurrent request quota
+      ga4Data30 = await fetchGA4Analytics('30daysAgo', ga4Credentials);
+      ga4Data7 = await fetchGA4Analytics('7daysAgo', ga4Credentials);
+      ga4DataYesterday = await fetchGA4Analytics('yesterday', ga4Credentials);
+      ga4DataToday = await fetchGA4Analytics('today', ga4Credentials);
     }
 
-    // Generate strategic insights combining all data
+    // Inject per-campaign GA4 click data into campaign stats
+    // Uses 30-day data to match the benchmark period for sent counts (or today's data in realtime mode)
+    injectPerCampaignClickData(allCampaignStats, isRealtimeMode ? ga4DataToday : ga4Data30);
+
+    // Build executive summary using benchmark-filtered data, conversion funnel using 7-day data
+    // In realtime mode, use today's data for executive summary
+    const executiveSummary = buildExecutiveSummary(isRealtimeMode ? ga4DataToday : ga4Data7, iosData, androidData, allCampaignStats);
+    const conversionFunnel = isRealtimeMode ? null : buildConversionFunnel(emailStats7Day, ga4Data7, iosData, androidData);
+
+    // Generate AI observations for GA4 data (skip in realtime mode for speed)
+    let ga4Observations = null;
     let strategicInsights = null;
-    try {
-      strategicInsights = await generateStrategicInsights({
-        executiveSummary,
-        conversionFunnel,
-        allCampaignStats,
-        purchasedLeadsROI: purchasedROI
-      }, anthropicApiKey.value());
-      logger.info('Strategic AI insights generated successfully');
-    } catch (insightsError) {
-      logger.warn('Failed to generate strategic insights:', insightsError.message);
+
+    if (!isRealtimeMode) {
+      // Use 30-day data for more comprehensive analysis
+      try {
+        ga4Observations = await generateGA4Observations(ga4Data30, anthropicApiKey.value());
+        logger.info('GA4 AI observations generated successfully');
+      } catch (obsError) {
+        logger.warn('Failed to generate GA4 observations:', obsError.message);
+      }
+
+      // Generate strategic insights combining all data
+      try {
+        strategicInsights = await generateStrategicInsights({
+          executiveSummary,
+          conversionFunnel,
+          allCampaignStats,
+          purchasedLeadsROI: purchasedROI
+        }, anthropicApiKey.value());
+        logger.info('Strategic AI insights generated successfully');
+      } catch (insightsError) {
+        logger.warn('Failed to generate strategic insights:', insightsError.message);
+      }
     }
 
     // Augment emailCampaigns.totals with GA4-based click data from executive summary
@@ -2239,13 +2440,21 @@ const getTBPAnalytics = onRequest({
       // Benchmark date for filtering (null = show all data)
       benchmarkDate: benchmarkDate,
       benchmarkActive: !!benchmarkDate,
+      // Real-time mode indicator
+      isRealtimeMode: isRealtimeMode,
       // NEW: Executive summary at top level
       executiveSummary,
-      // NEW: Conversion funnel visualization data
+      // NEW: Conversion funnel visualization data (null in realtime mode)
       conversionFunnel,
-      // NEW: Strategic AI insights
+      // NEW: Strategic AI insights (null in realtime mode)
       strategicInsights,
-      website: {
+      website: isRealtimeMode ? {
+        // Real-time mode: include live data + today
+        realtime: ga4Realtime,
+        today: ga4DataToday,
+        observations: null  // Skip AI observations in realtime mode
+      } : {
+        // Standard mode: all date ranges
         thirtyDay: ga4Data30,
         sevenDay: ga4Data7,
         yesterday: ga4DataYesterday,

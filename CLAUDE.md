@@ -1,6 +1,6 @@
 # Team Build Pro - Comprehensive Knowledge Base
 
-**Last Updated**: 2026-03-11
+**Last Updated**: 2026-03-12
 **Purpose**: Persistent knowledge base for AI assistants across sessions
 
 ---
@@ -508,22 +508,31 @@ All four main sites have identical structure:
 - Three tabs: Website (GA4), iOS App Store, Android Play Store
 - **Website tab**: GA4 metrics (users, sessions, engagement, traffic sources, top pages, top countries, device/domain breakdown)
 - **Date range selector**: Today, Yesterday, 7 Days, 30 Days options
+- **Real-Time Mode**: Toggle button enables live GA4 data with 30-second auto-refresh
+  - Uses GA4 Real-Time API (`runRealtimeReport`) for last 30 minutes of data (~1-2 min lag)
+  - Displays live active users, page views, top pages, devices, countries
+  - Hybrid approach: Real-time API for live metrics, standard API with 'today' for UTM/campaign data
 - **Email Campaign section**: Six campaign cards (Main/Purchased/BFH/Paparazzi/FSR/Zinzino) showing sent/remaining
   - Removed Contacts Campaign from dashboard (Feb 14, 2026 - campaign complete)
   - Each campaign card shows Firestore send stats; click tracking moved to GA4
   - Clicks tracked via GA4 UTM parameters in direct landing page URLs
 - **iOS tab**: App Store Connect metrics (downloads, impressions, reviews, versions)
 - **Android tab**: Google Play metrics from GCS bucket + CSV import fallback
-- AI-generated observations via OpenAI
+- AI-generated observations via OpenAI (skipped in real-time mode for speed)
 - Backend: `getTBPAnalytics` Cloud Function combining GA4, App Store Connect, Google Play, and Firestore data
+  - Accepts `?realtime=true` parameter for real-time mode
 
-**Email Stats Dashboard** (`web/email-stats.html` + `functions/email-stats-functions.js`)
-- Password-protected dashboard at `/email-stats.html`
+**Email Stats Dashboard** (`web/TBP-emails.html` + `functions/email-stats-functions.js`)
+- Password-protected dashboard at `/TBP-emails.html`
 - **Data sources**: Firestore (send tracking) + GA4 (click tracking via `sessionMedium: 'email'`)
 - **Tracking**: Sends tracked via Firestore; clicks tracked via GA4 UTM parameters; open tracking disabled
+- **Real-Time Mode**: Toggle button enables today's data with 30-second auto-refresh
+  - In real-time mode, queries only today's GA4 data instead of 30 days
+  - Live indicator badge shows when real-time mode is active
 - **Metrics**: Campaign progress (sent/remaining/failed), subject tag breakdown
 - **Subject tags**: All campaigns use V18 A/B/C template tags (e.g., `main_v18_a`, `bfh_v18_b_en`); legacy v9/v10/v14/v16 tags retained for historical data
 - Backend: `getEmailCampaignStats` Cloud Function
+  - Accepts `?realtime=true` parameter for real-time mode
 
 ### Core Analytics Scripts
 
@@ -2076,6 +2085,22 @@ Corporate email domains are excluded from all contact collections using a **blac
 - ✅ **All Scraper-fed Campaigns Active**: Purchased, BFH, Zinzino, FSR, Paparazzi, Pruvit, Scentsy
   - Batch sizes auto-adjust as scrapers add contacts
 
+**Real-Time Analytics Dashboard (Mar 12, 2026)**
+- ✅ **GA4 Real-Time API Integration**: Added `fetchGA4Realtime()` function using `runRealtimeReport`
+  - Returns live data from last 30 minutes with ~1-2 minute lag
+  - Metrics: activeUsers, screenPageViews, eventCount, conversions
+  - Dimensions: top pages, devices, countries, events
+- ✅ **TBP Analytics Dashboard**: Real-time toggle button with 30-second auto-refresh
+  - Hybrid approach: Real-time API for live metrics, standard API with 'today' for UTM/campaign tracking
+  - Displays "LIVE" badges and pulse animation when active
+  - Skips AI observations in real-time mode for faster response
+- ✅ **Email Stats Dashboard**: Real-time toggle button with 30-second auto-refresh
+  - Queries only today's GA4 data instead of 30 days when active
+  - Shows data age indicator (Today vs Last 30 days)
+- ✅ **Backend Changes**: Both endpoints accept `?realtime=true` parameter
+  - `getTBPAnalytics`: Returns `website.realtime` data in realtime mode
+  - `getEmailCampaignStats`: Returns `isRealtimeMode` and `dataAge` fields
+
 **V18 A/B/C Testing Full Rollout (Mar 10, 2026)**
 - ✅ **ALL 9 Campaigns Migrated**: Complete V18 A/B/C rollout across all TBP email campaigns
   - V18-A: "What if your next recruit joined with 12 people?" (Curiosity Hook)
@@ -2235,7 +2260,7 @@ Main Campaign disabled. ALL active campaigns use V18 A/B/C testing (33% distribu
 | Android Campaign | Removed | Function and all references deleted |
 | Subscription Reminders | Disabled | Auto-renewal handled by app stores (Feb 19) |
 | Email Tracking | GA4 | Clicks via UTM parameters; opens disabled |
-| Analytics Dashboard | Enhanced | 6 campaign cards, GA4 click tracking, A/B testing removed (Feb 25) |
+| Analytics Dashboard | **Real-Time** | GA4 Real-Time API + 30s auto-refresh (Mar 12, 2026) |
 | Push Notifications | Working | profile_reminder, trial_expired verified |
 | Blog Automation | Running | Mon/Thu schedule, 4 languages (31/31/31/31 posts) |
 | Sitemap Pings | Active | Google + Bing pinged after each blog deploy |
