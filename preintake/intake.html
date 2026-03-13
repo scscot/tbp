@@ -2428,6 +2428,66 @@
             return messageDiv;
         }
 
+        function showButtons(buttons) {
+            // Show buttons returned directly from API (not detected from text)
+            if (!buttons || buttons.length === 0) return;
+
+            document.querySelector('.chat-input-area').style.display = 'none';
+
+            // Find the last assistant message
+            const messages = document.querySelectorAll('.message.assistant');
+            const lastMessage = messages[messages.length - 1];
+            if (!lastMessage) return;
+
+            const messageContent = lastMessage.querySelector('.message-content');
+            if (!messageContent) return;
+
+            // Check if it's multi-select format
+            const isMultiSelect = buttons.multiSelect === true;
+            const buttonList = isMultiSelect ? buttons.buttons :
+                (Array.isArray(buttons) ? buttons : [buttons]);
+
+            const optionsDiv = document.createElement('div');
+            optionsDiv.className = 'response-options';
+
+            if (isMultiSelect) {
+                optionsDiv.dataset.multiSelect = 'true';
+                const selectedValues = new Set();
+
+                buttonList.forEach(option => {
+                    const button = document.createElement('button');
+                    button.className = 'response-button multi-select-btn';
+                    button.textContent = option.label || option;
+                    button.dataset.value = option.value || option;
+                    button.onclick = () => handleMultiSelectClick(button,
+                        { label: option.label || option, value: option.value || option },
+                        optionsDiv, selectedValues);
+                    optionsDiv.appendChild(button);
+                });
+
+                const doneBtn = document.createElement('button');
+                doneBtn.className = 'response-button done-button';
+                doneBtn.textContent = 'Done';
+                doneBtn.disabled = true;
+                doneBtn.style.opacity = '0.5';
+                doneBtn.style.marginTop = '10px';
+                doneBtn.style.backgroundColor = 'var(--accent-gold)';
+                doneBtn.onclick = () => handleMultiSelectDone(optionsDiv, selectedValues);
+                optionsDiv.appendChild(doneBtn);
+            } else {
+                buttonList.forEach(option => {
+                    const button = document.createElement('button');
+                    button.className = 'response-button';
+                    button.textContent = option.label || option;
+                    button.onclick = () => selectOption(button, option.value || option);
+                    optionsDiv.appendChild(button);
+                });
+            }
+
+            messageContent.appendChild(optionsDiv);
+            messagesContainer.scrollTo({ top: messagesContainer.scrollHeight, behavior: 'smooth' });
+        }
+
         function handleMultiSelectClick(button, option, optionsDiv, selectedValues) {
             if (isProcessing) return;
 
