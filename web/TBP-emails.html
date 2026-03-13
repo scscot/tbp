@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TBP Email Dashboard</title>
+    <meta name="robots" content="noindex, nofollow">
+    <style>
+        :root {
+            --primary: #007AFF;
+            --success: #34C759;
+            --warning: #FF9500;
+            --danger: #FF3B30;
+            --bg: #f5f5f7;
+            --card-bg: #ffffff;
+            --text: #1d1d1f;
+            --text-secondary: #86868b;
+            --border: #d2d2d7;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Login Section */
+        .login-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 80vh;
+        }
+
+        .login-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .login-card h1 {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+        }
+
+        .login-card p {
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+        }
+
+        .login-card input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 16px;
+            margin-bottom: 16px;
+        }
+
+        .login-card input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0,122,255,0.1);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .login-btn:hover {
+            background: #0056b3;
+        }
+
+        .login-btn:disabled {
+            background: var(--text-secondary);
+            cursor: not-allowed;
+        }
+
+        .login-error {
+            color: var(--danger);
+            margin-top: 12px;
+            font-size: 14px;
+            display: none;
+        }
+
+        /* Dashboard Section */
+        .dashboard {
+            display: none;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .header h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+        }
+
+        .header-controls {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .refresh-btn, .logout-btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+
+        .refresh-btn {
+            background: var(--primary);
+            color: white;
+        }
+
+        .refresh-btn:hover {
+            background: #0056b3;
+        }
+
+        .logout-btn {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+        }
+
+        .logout-btn:hover {
+            background: #f0f0f0;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        .card h2 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Tables */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        .data-table th {
+            text-align: left;
+            padding: 12px 16px;
+            background: #f8f8fa;
+            font-weight: 600;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap;
+        }
+
+        .data-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .data-table tr:hover td {
+            background: #fafafa;
+        }
+
+        .data-table .number {
+            font-family: 'SF Mono', Monaco, monospace;
+            font-weight: 500;
+        }
+
+        .data-table .clickrate {
+            font-weight: 600;
+        }
+
+        .data-table .clickrate.good {
+            color: var(--success);
+        }
+
+        .data-table .clickrate.low {
+            color: var(--warning);
+        }
+
+        /* Variant badge */
+        .variant-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            background: #e8e8ed;
+            color: var(--text);
+        }
+
+        .variant-badge.v18-a { background: #dbeafe; color: #1d4ed8; }
+        .variant-badge.v18-b { background: #fef3c7; color: #b45309; }
+        .variant-badge.v18-c { background: #dcfce7; color: #15803d; }
+        .variant-badge.v19-a { background: #fce7f3; color: #be185d; }
+        .variant-badge.v19-b { background: #cffafe; color: #0891b2; }
+        .variant-badge.v19-c { background: #fef9c3; color: #a16207; }
+        .variant-badge.v16 { background: #f3e8ff; color: #7c3aed; }
+        .variant-badge.v14 { background: #e0e7ff; color: #3730a3; }
+
+        /* Campaign label */
+        .campaign-label {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .campaign-label.main { background: #dbeafe; color: #1d4ed8; }
+        .campaign-label.purchased { background: #ffedd5; color: #c2410c; }
+        .campaign-label.bfh { background: #f3e8ff; color: #7c3aed; }
+        .campaign-label.zinzino { background: #fce7f3; color: #be185d; }
+        .campaign-label.fsr { background: #ccfbf1; color: #0d9488; }
+        .campaign-label.paparazzi { background: #fef9c3; color: #a16207; }
+        .campaign-label.pruvit { background: #ede9fe; color: #7c3aed; }
+        .campaign-label.scentsy { background: #dcfce7; color: #166534; }
+        .campaign-label.mpg { background: #e0e7ff; color: #3730a3; }
+        .campaign-label.three { background: #fce7f3; color: #be185d; }
+        .campaign-label.farmasius { background: #cffafe; color: #0891b2; }
+        .campaign-label.spanish { background: #ffedd5; color: #c2410c; }
+        .campaign-label.colorstreet { background: #fecaca; color: #dc2626; }
+        .campaign-label.mlm { background: #e5e7eb; color: #374151; }
+
+        /* Progress bar */
+        .progress-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .progress-bar-bg {
+            flex: 1;
+            height: 8px;
+            background: #e8e8ed;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: var(--primary);
+            border-radius: 4px;
+            transition: width 0.3s;
+        }
+
+        .progress-percent {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            min-width: 45px;
+            text-align: right;
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-secondary);
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border: 3px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-bottom: 12px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Error */
+        .error-message {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #dc2626;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            display: none;
+        }
+
+        /* Timestamp */
+        .timestamp {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 13px;
+            margin-top: 24px;
+        }
+
+        /* Info banner */
+        .info-banner {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border-left: 4px solid #0ea5e9;
+            padding: 14px 18px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 16px;
+            font-size: 14px;
+        }
+
+        .info-banner strong {
+            color: #0369a1;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .data-table {
+                font-size: 13px;
+            }
+
+            .data-table th, .data-table td {
+                padding: 10px 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Login Section -->
+        <div id="loginSection" class="login-section">
+            <div class="login-card">
+                <h1>TBP Email Dashboard</h1>
+                <p>Enter password to access email campaign analytics</p>
+                <input type="password" id="passwordInput" placeholder="Password" autocomplete="current-password">
+                <button class="login-btn" onclick="authenticate()">Access Dashboard</button>
+                <div id="loginError" class="login-error"></div>
+            </div>
+        </div>
+
+        <!-- Dashboard Section -->
+        <div id="dashboard" class="dashboard">
+            <div class="header">
+                <h1>Email Campaign Dashboard</h1>
+                <div class="header-controls">
+                    <button class="refresh-btn" onclick="loadData()">Refresh</button>
+                    <button class="logout-btn" onclick="logout()">Logout</button>
+                </div>
+            </div>
+
+            <div id="errorMessage" class="error-message"></div>
+
+            <!-- Campaign Progress Table -->
+            <div class="card">
+                <h2>&#128202; Campaign Progress</h2>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Campaign</th>
+                            <th>Total Contacts</th>
+                            <th>Sent</th>
+                            <th>Remaining</th>
+                            <th>Progress</th>
+                        </tr>
+                    </thead>
+                    <tbody id="campaignProgressBody">
+                        <tr><td colspan="5" class="loading"><div class="spinner"></div><br>Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Variant Performance Table -->
+            <div class="card">
+                <h2>&#128200; Variant Performance</h2>
+                <div class="info-banner">
+                    <strong>Click Tracking via GA4</strong> — Clicks are tracked via UTM parameters in landing page URLs (sessionMedium = email)
+                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Variant</th>
+                            <th>Sent</th>
+                            <th>Clicks (GA4)</th>
+                            <th>Click Rate</th>
+                        </tr>
+                    </thead>
+                    <tbody id="variantPerformanceBody">
+                        <tr><td colspan="4" class="loading"><div class="spinner"></div><br>Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="timestamp" id="lastUpdate"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentPassword = '';
+        let emailStatsData = null;
+        let currentTimeframe = '30day';
+        const EMAIL_STATS_URL = 'https://us-central1-teambuilder-plus-fe74d.cloudfunctions.net/getEmailCampaignStats';
+
+        // Campaign definitions
+        const CAMPAIGNS = [
+            { id: 'main', name: 'Main', key: 'campaign' },
+            { id: 'purchased', name: 'Purchased', key: 'purchasedCampaign' },
+            { id: 'bfh', name: 'BFH', key: 'bfhCampaign' },
+            { id: 'zinzino', name: 'Zinzino', key: 'zinzinoCampaign' },
+            { id: 'fsr', name: 'FSR', key: 'fsrCampaign' },
+            { id: 'paparazzi', name: 'Paparazzi', key: 'paparazziCampaign' },
+            { id: 'pruvit', name: 'Pruvit', key: 'pruvitCampaign' },
+            { id: 'scentsy', name: 'Scentsy', key: 'scentsyCampaign' },
+            { id: 'mpg', name: 'MPG', key: 'mpgCampaign' },
+            { id: 'three', name: 'Three', key: 'threeCampaign' },
+            { id: 'farmasius', name: 'Farmasius', key: 'farmasiusCampaign' },
+            { id: 'spanish', name: 'Spanish', key: 'spanishCampaign' },
+            { id: 'colorstreet', name: 'Color Street', key: 'colorstreetCampaign' },
+            { id: 'mlm', name: 'MLM', key: 'mlmCampaign' }
+        ];
+
+        // Variant label mapping
+        const VARIANT_LABELS = {
+            // V19 A/B/C variants (latest)
+            'main_v19_a': 'V19-A',
+            'main_v19_b': 'V19-B',
+            'main_v19_c': 'V19-C',
+            'purchased_v19_a': 'V19-A',
+            'purchased_v19_b': 'V19-B',
+            'purchased_v19_c': 'V19-C',
+            'bfh_v19_a_en': 'V19-A EN',
+            'bfh_v19_b_en': 'V19-B EN',
+            'bfh_v19_c_en': 'V19-C EN',
+            // V18 A/B/C variants
+            'main_v18_a': 'V18-A',
+            'main_v18_b': 'V18-B',
+            'main_v18_c': 'V18-C',
+            'purchased_v18_a': 'V18-A',
+            'purchased_v18_b': 'V18-B',
+            'purchased_v18_c': 'V18-C',
+            'bfh_v18_a_en': 'V18-A EN',
+            'bfh_v18_b_en': 'V18-B EN',
+            'bfh_v18_c_en': 'V18-C EN',
+            'bfh_v18_a_es': 'V18-A ES',
+            'bfh_v18_b_es': 'V18-B ES',
+            'bfh_v18_c_es': 'V18-C ES',
+            'bfh_v18_a_pt': 'V18-A PT',
+            'bfh_v18_b_pt': 'V18-B PT',
+            'bfh_v18_c_pt': 'V18-C PT',
+            'bfh_v18_a_de': 'V18-A DE',
+            'bfh_v18_b_de': 'V18-B DE',
+            'bfh_v18_c_de': 'V18-C DE'
+        };
+
+        function authenticate() {
+            const password = document.getElementById('passwordInput').value;
+            if (!password) {
+                showLoginError('Please enter a password');
+                return;
+            }
+
+            const btn = document.querySelector('.login-btn');
+            btn.disabled = true;
+            btn.textContent = 'Connecting...';
+
+            currentPassword = password;
+            loadData().then(success => {
+                if (success) {
+                    document.getElementById('loginSection').style.display = 'none';
+                    document.getElementById('dashboard').style.display = 'block';
+                } else {
+                    showLoginError('Invalid password or server error');
+                    btn.disabled = false;
+                    btn.textContent = 'Access Dashboard';
+                }
+            });
+        }
+
+        function showLoginError(message) {
+            const errorEl = document.getElementById('loginError');
+            errorEl.textContent = message;
+            errorEl.style.display = 'block';
+        }
+
+        function logout() {
+            currentPassword = '';
+            emailStatsData = null;
+            document.getElementById('loginSection').style.display = 'flex';
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('passwordInput').value = '';
+        }
+
+        async function loadData() {
+            if (!currentPassword) return false;
+
+            try {
+                const response = await fetch(`${EMAIL_STATS_URL}?password=${encodeURIComponent(currentPassword)}`);
+
+                if (!response.ok) {
+                    if (response.status === 401) throw new Error('Invalid password');
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                emailStatsData = await response.json();
+                displayCampaignProgress();
+                displayVariantPerformance();
+
+                document.getElementById('lastUpdate').textContent =
+                    'Last updated: ' + new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }) + ' PT';
+                document.getElementById('errorMessage').style.display = 'none';
+
+                return true;
+            } catch (error) {
+                console.error('Error loading data:', error);
+                document.getElementById('errorMessage').textContent = 'Error: ' + error.message;
+                document.getElementById('errorMessage').style.display = 'block';
+                return false;
+            }
+        }
+
+        function formatNumber(num) {
+            if (num === undefined || num === null) return '-';
+            return num.toLocaleString();
+        }
+
+        function displayCampaignProgress() {
+            const tbody = document.getElementById('campaignProgressBody');
+
+            if (!emailStatsData) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#86868b;">No data available</td></tr>';
+                return;
+            }
+
+            let rows = [];
+
+            CAMPAIGNS.forEach(campaign => {
+                let data;
+                if (campaign.key === 'campaign') {
+                    // Main campaign is at root level
+                    data = emailStatsData.campaign;
+                } else {
+                    data = emailStatsData[campaign.key]?.campaign;
+                }
+
+                if (!data) return;
+
+                const total = data.total || 0;
+                const sent = data.sent || 0;
+                const remaining = data.remaining || 0;
+                const progress = total > 0 ? ((sent / total) * 100) : 0;
+
+                rows.push(`
+                    <tr>
+                        <td><span class="campaign-label ${campaign.id}">${campaign.name}</span></td>
+                        <td class="number">${formatNumber(total)}</td>
+                        <td class="number">${formatNumber(sent)}</td>
+                        <td class="number">${formatNumber(remaining)}</td>
+                        <td>
+                            <div class="progress-container">
+                                <div class="progress-bar-bg">
+                                    <div class="progress-bar-fill" style="width: ${progress}%"></div>
+                                </div>
+                                <span class="progress-percent">${progress.toFixed(1)}%</span>
+                            </div>
+                        </td>
+                    </tr>
+                `);
+            });
+
+            tbody.innerHTML = rows.length > 0 ? rows.join('') :
+                '<tr><td colspan="5" style="text-align:center;color:#86868b;">No campaign data</td></tr>';
+        }
+
+        function setTimeframe(timeframe) {
+            currentTimeframe = timeframe;
+            document.querySelectorAll('.timeframe-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.textContent.toLowerCase().replace(' ', '') === timeframe);
+            });
+            displayVariantPerformance();
+        }
+
+        function displayVariantPerformance() {
+            const tbody = document.getElementById('variantPerformanceBody');
+
+            if (!emailStatsData) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#86868b;">No data available</td></tr>';
+                return;
+            }
+
+            // Collect all variants from all campaigns
+            const allVariants = {};
+
+            // Helper to add variants from a campaign
+            const addVariants = (campaignData, campaignPrefix) => {
+                if (!campaignData?.subjectLines) return;
+                campaignData.subjectLines.forEach(v => {
+                    const key = v.subjectTag;
+                    if (!allVariants[key]) {
+                        allVariants[key] = { sent: 0, clicked: 0 };
+                    }
+                    allVariants[key].sent += v.sent || 0;
+                    allVariants[key].clicked += v.clicked || 0;
+                });
+            };
+
+            // Add from main campaign (at root level)
+            if (emailStatsData.subjectLines) {
+                emailStatsData.subjectLines.forEach(v => {
+                    const key = v.subjectTag;
+                    if (!allVariants[key]) {
+                        allVariants[key] = { sent: 0, clicked: 0 };
+                    }
+                    allVariants[key].sent += v.sent || 0;
+                    allVariants[key].clicked += v.clicked || 0;
+                });
+            }
+
+            // Add from other campaigns
+            CAMPAIGNS.forEach(campaign => {
+                if (campaign.key !== 'campaign' && emailStatsData[campaign.key]) {
+                    addVariants(emailStatsData[campaign.key], campaign.id);
+                }
+            });
+
+            // Filter to V18 and V19 variants only, sort by sent count descending
+            const sortedVariants = Object.entries(allVariants)
+                .filter(([key, data]) => data.sent > 0 && (key.includes('v18') || key.includes('v19')))
+                .sort((a, b) => b[1].sent - a[1].sent);
+
+            if (sortedVariants.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#86868b;">No variant data</td></tr>';
+                return;
+            }
+
+            let rows = sortedVariants.map(([tag, data]) => {
+                const label = VARIANT_LABELS[tag] || tag;
+                const clickRate = data.sent > 0 ? ((data.clicked / data.sent) * 100) : 0;
+                const rateClass = clickRate >= 3 ? 'good' : clickRate >= 1 ? '' : 'low';
+
+                // Determine variant type for badge styling
+                let badgeClass = '';
+                if (tag.includes('v19_a')) badgeClass = 'v19-a';
+                else if (tag.includes('v19_b')) badgeClass = 'v19-b';
+                else if (tag.includes('v19_c')) badgeClass = 'v19-c';
+                else if (tag.includes('v18_a')) badgeClass = 'v18-a';
+                else if (tag.includes('v18_b')) badgeClass = 'v18-b';
+                else if (tag.includes('v18_c')) badgeClass = 'v18-c';
+                else if (tag.includes('v16')) badgeClass = 'v16';
+                else if (tag.includes('v14')) badgeClass = 'v14';
+
+                return `
+                    <tr>
+                        <td><span class="variant-badge ${badgeClass}">${escapeHtml(label)}</span></td>
+                        <td class="number">${formatNumber(data.sent)}</td>
+                        <td class="number">${formatNumber(data.clicked)}</td>
+                        <td class="number clickrate ${rateClass}">${clickRate.toFixed(2)}%</td>
+                    </tr>
+                `;
+            });
+
+            tbody.innerHTML = rows.join('');
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Enter key handler for login
+        document.getElementById('passwordInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') authenticate();
+        });
+
+        // Focus password input on load
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('passwordInput').focus();
+        });
+    </script>
+</body>
+</html>
