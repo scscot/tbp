@@ -51,11 +51,6 @@
             "priceValidUntil": "2026-12-31",
             "availability": "https://schema.org/InStock"
         },
-        "aggregateRating": {
-            "@type": "AggregateRating",
-            "ratingValue": "4.9",
-            "ratingCount": "47"
-        },
         "provider": {
             "@type": "Organization",
             "name": "PreIntake.ai",
@@ -112,7 +107,7 @@
 
             <!-- Default Hero CTA (shown for non-campaign visitors) -->
             <a href="new-account.html" class="hero-cta" id="default-hero-cta">
-                Get Started
+                Start Free Trial
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
@@ -202,7 +197,51 @@
     
         </div>
     </section>
-    
+
+    <!-- Security & Compliance Section -->
+    <section class="section section-dark">
+        <div class="container">
+            <div class="section-header">
+                <h2>Enterprise-Grade Security</h2>
+            </div>
+            <div class="trust-grid">
+                <div class="trust-card">
+                    <div class="trust-card-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4" />
+                        </svg>
+                    </div>
+                    <h3>Bank-Level Encryption</h3>
+                    <p>All data transmitted via 256-bit AES encryption over TLS 1.3. The same security standard used by major financial institutions.</p>
+                </div>
+                <div class="trust-card">
+                    <div class="trust-card-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <h3>US-Based Infrastructure</h3>
+                    <p>All processing occurs on US-based Google Cloud servers. Your client data never leaves the country, meeting state bar data residency expectations.</p>
+                </div>
+                <div class="trust-card">
+                    <div class="trust-card-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                        </svg>
+                    </div>
+                    <h3>HIPAA-Ready Architecture</h3>
+                    <p>Built with healthcare-adjacent practices in mind. Zero data retention means no PHI storage liability for personal injury, med-mal, or disability practices.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Every Inquiry Includes Section -->
     <section class="section every-inquiry-section">
         <div class="container">
@@ -889,6 +928,7 @@
             </div>
             <div class="pricing-grid" style="display: flex; justify-content: center;">
                 <div class="pricing-card featured" style="max-width: 400px; width: 100%;">
+                    <div class="pricing-badge" style="background: linear-gradient(135deg, #c9a962, #e8d5a3); color: #0a1628; font-weight: 600; padding: 0.5rem 1rem; border-radius: 50px; font-size: 0.85rem; margin-bottom: 1rem; display: inline-block;">14-Day Free Trial</div>
                     <div class="pricing-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -896,9 +936,10 @@
                     </div>
                     <div class="pricing-label">Monthly Subscription</div>
                     <div class="pricing-amount">$99<span>/mo</span></div>
+                    <div class="pricing-trial-note" style="color: rgba(255,255,255,0.7); font-size: 0.9rem; margin-top: -0.5rem; margin-bottom: 1rem;">after your 14-day free trial</div>
                     <div class="pricing-desc">Custom AI intake tailored to your firm's practice areas and branding. Unlimited intake reviews with real-time delivery via email or CRM.</div>
                     <a href="new-account.html" class="hero-cta" id="pricing-hero-cta" style="margin-top: 1.5rem;">
-                        Get Started
+                        Start Free Trial
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                         </svg>
@@ -909,7 +950,7 @@
             <!-- Get Started CTA (shown for ?demo= visitors) -->
             <div class="pricing-cta-container" id="pricing-cta-container" style="display: none;">
                 <a href="#" class="pricing-get-started-btn" id="pricing-get-started-btn">
-                    Get Started
+                    Start Free Trial
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                     </svg>
@@ -2762,7 +2803,7 @@
     </script>
 
     <!-- Sticky CTA Button -->
-    <a href="new-account.html" class="sticky-cta" id="sticky-cta">Get Started →</a>
+    <a href="new-account.html" class="sticky-cta" id="sticky-cta">Start Free Trial →</a>
     <script>
         (function() {
             const stickyCta = document.getElementById('sticky-cta');

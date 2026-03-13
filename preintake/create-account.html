@@ -11,7 +11,7 @@
       gtag('js', new Date());
       gtag('config', 'G-V5DR80KWBP');
     </script>
-    <title>Activate Your Account - PreIntake.ai</title>
+    <title>Start Your Free Trial - PreIntake.ai</title>
     <meta name="robots" content="noindex, nofollow">
     <meta name="description" content="Activate your PreIntake.ai account to start using AI-powered legal intake on your website.">
     <link rel="icon" type="image/svg+xml" href="/images/icon.svg">
@@ -398,8 +398,8 @@
 
             <div id="content" style="display: none;">
                 <div class="card-header">
-                    <h1>Activate Your Account</h1>
-                    <p id="account-subtitle">Start using AI-powered intake today</p>
+                    <h1>Start Your 14-Day Free Trial</h1>
+                    <p id="account-subtitle">Try AI-powered intake risk-free</p>
                 </div>
 
                 <div class="firm-info">
@@ -453,13 +453,17 @@
 
                     <div class="pricing-box">
                         <div class="pricing-row total">
-                            <span class="label">Monthly Subscription</span>
-                            <span class="value">$99/mo</span>
+                            <span class="label">14-Day Free Trial</span>
+                            <span class="value" style="color: var(--success);">$0 today</span>
+                        </div>
+                        <div class="pricing-row" style="padding-top: 0.5rem;">
+                            <span class="label">Then</span>
+                            <span class="value" style="font-size: 0.95rem;">$99/mo</span>
                         </div>
                     </div>
 
                     <p style="text-align: center; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1.25rem;">
-                        Month-to-month subscription. Cancel anytime — no long-term commitment.
+                        Cancel anytime during trial — you won't be charged.
                     </p>
 
                     <button type="submit" class="btn-primary" id="submit-btn">
@@ -467,7 +471,7 @@
                             <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
                             <line x1="1" y1="10" x2="23" y2="10"></line>
                         </svg>
-                        Continue to Payment
+                        Start Free Trial
                     </button>
                 </form>
 
@@ -566,9 +570,9 @@
                 const hasWebsite = firmData.website || firmData.hasWebsite;
                 if (subtitleEl) {
                     if (hasWebsite) {
-                        subtitleEl.textContent = 'Start using AI-powered intake on your website today';
+                        subtitleEl.textContent = 'Try AI-powered intake on your website — risk-free for 14 days';
                     } else {
-                        subtitleEl.textContent = 'Start using AI-powered intake today';
+                        subtitleEl.textContent = 'Try AI-powered intake risk-free for 14 days';
                     }
                 }
 
@@ -685,7 +689,7 @@
                         <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
                         <line x1="1" y1="10" x2="23" y2="10"></line>
                     </svg>
-                    Continue to Payment
+                    Start Free Trial
                 `;
             }
         });

@@ -107,6 +107,7 @@ const createCheckoutSession = onRequest(
                     firmName: firmName || '',
                 },
                 subscription_data: {
+                    trial_period_days: 14, // 14-day free trial
                     metadata: {
                         firmId: firmId,
                         firmName: firmName || '',
