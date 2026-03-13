@@ -2432,6 +2432,7 @@
             // Show buttons returned directly from API (not detected from text)
             if (!buttons || buttons.length === 0) return;
 
+            const messagesContainer = document.getElementById('chat-messages');
             document.querySelector('.chat-input-area').style.display = 'none';
 
             // Find the last assistant message
