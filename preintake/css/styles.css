@@ -2686,11 +2686,13 @@ footer a:hover {
     margin-top: 0.25rem;
 }
 
-/* 3 Simple Steps */
+/* 2 Simple Steps */
 .steps-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 2rem;
+    max-width: 800px;
+    margin: 0 auto;
 }
 
 @media (max-width: 768px) {
@@ -2740,6 +2742,20 @@ footer a:hover {
     color: #64748b;
     font-size: 0.95rem;
     line-height: 1.6;
+}
+
+/* Experience Live Demo Link */
+.demo-text-link {
+    color: var(--accent-gold);
+    font-size: 1.25rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.demo-text-link:hover {
+    color: var(--accent-gold-light);
+    text-decoration: underline;
 }
 
 /* Responsive */

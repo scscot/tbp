@@ -1,7 +1,7 @@
 # PreIntake.ai: Comprehensive Project Documentation
 
-**Last Updated**: 2026-03-08
-**Version**: 7.6 (Re-enabled demo link for campaign visitors)
+**Last Updated**: 2026-03-13
+**Version**: 7.7 (Organic visitor demo experience + scraper audit)
 
 ---
 
@@ -18,7 +18,7 @@ After 15+ demo flow iterations with 0% completion rate, pivoting to direct landi
 - ✅ Personalized welcome banner for campaign visitors
 - ✅ Direct path: Landing page → Create Account → Stripe checkout
 - ✅ Demo still available via "View Demo" button for interested users
-- ✅ 8 active bar scrapers continuously adding attorney contacts
+- ✅ 5 active bar scrapers continuously adding attorney contacts (calbar, flbar, ohbar, ncbar, wsba)
 - ✅ Email campaign runs 4x daily Mon-Fri (domain warming complete)
 - ✅ Analytics dashboard operational (GA4 + Firestore)
 
@@ -36,7 +36,7 @@ After 15+ demo flow iterations with 0% completion rate, pivoting to direct landi
 | Landing page visit rate | Weekly | Drops below 5% sustained |
 | Create account click rate | Weekly | 0% over 100+ visits |
 | Stripe checkout completion | Weekly | High abandonment rate |
-| Scraper failures (8 active) | Weekly (GitHub Actions) | Multiple consecutive failures |
+| Scraper failures (5 active) | Weekly (GitHub Actions) | Multiple consecutive failures |
 | First paying customer | Passive | 🎉 Celebrate |
 
 **Note on Conversion Metrics:** The important engagement metrics are now:
@@ -1084,14 +1084,17 @@ When you're spending $300-500 per lead, even small conversion improvements mean 
   - Validates hardcoded practice area categories against live search results before scraping
   - Valid/invalid results cached in Firestore progress documents
   - Safety valve: if ALL categories return 0 results, falls back to using all categories
-- [x] **Disabled Complete Scrapers** - Workflows renamed to `.yml.disabled`
-  - Mississippi (`msbar-scraper.yml.disabled`) - 20/20 categories, 283 attorneys
+- [x] **Disabled Complete Scrapers** - Workflows renamed to `.yml.disabled` (10 total)
   - Georgia (`gabar-scraper.yml.disabled`) - fully complete
+  - Illinois (`ilbar-scraper.yml.disabled`) - fully complete
   - Indiana (`inbar-scraper.yml.disabled`) - fully complete
-  - Illinois (`ilbar-scraper.yml.disabled`) - fully complete (was re-enabled after rewrite, now complete)
+  - Kentucky (`kybar-scraper.yml.disabled`) - fully complete
   - Michigan (`mibar-scraper.yml.disabled`) - fully complete
+  - Mississippi (`msbar-scraper.yml.disabled`) - 20/20 categories, 283 attorneys
   - Missouri (`mobar-scraper.yml.disabled`) - fully complete
+  - Nebraska (`nebar-scraper.yml.disabled`) - fully complete
   - Nebraska State Bar Association (`nsba-scraper.yml.disabled`) - fully complete
+  - Oklahoma (`okbar-scraper.yml.disabled`) - fully complete
 - [x] **New Utility Scripts** - `scripts/fetch-bar-categories.js` and `scripts/fetch-bar-categories-2.js`
   - Fetch and validate practice area categories from ReliaGuide and other bar association websites
   - Used for verifying hardcoded category IDs match live data
@@ -2261,6 +2264,33 @@ Email CTA → Homepage (?lead=) → create-account.html → Payment
 | `.github/workflows/preintake-spam-monitor.yml` | Uses `PREINTAKE_LAW_MAILGUN_API_KEY` |
 | `.github/workflows/preintake-email-campaign.yml` | Uses `PREINTAKE_LEGAL_MAILGUN_API_KEY` |
 
+### Phase 87: Organic Visitor Demo Experience & Scraper Audit (2026-03-13)
+- [x] **"Experience Live Demo" Link** - Added text link for organic visitors to access demo
+  - New link below hero CTA: "Experience Live Demo →" with 1.25rem font size
+  - Uses `showDemoSection(event)` to scroll to and reveal demo section
+  - Demo CTA Section conditionally shown (not permanently hidden)
+- [x] **Section Background Styling** - Improved visual contrast between sections
+  - Steps section (`#steps-section`): Grey background with `section-dark` class
+  - Pricing section: White background (no dark class)
+  - Consistent alternating pattern across landing page
+- [x] **"2 Simple Steps" Section** - Updated from previous "3 Simple Steps"
+  - Step 1: Choose Your Practice Areas
+  - Step 2: Create Your Account
+- [x] **Scraper Audit** - Verified active vs disabled bar scrapers
+  - **5 Active scrapers**: calbar, flbar, ohbar, ncbar, wsba
+  - **10 Disabled scrapers**: gabar, mibar, nebar, inbar, msbar, mobar, nsba, okbar, ilbar, kybar
+  - Updated documentation to reflect accurate counts (was incorrectly listed as 8 active)
+- [x] **Deprecated Script Notice** - Scripts scheduled for March 1, 2026 deletion still exist
+  - `regenerate-preintake-demos.js` - Still present (no longer used, can be deleted)
+  - `regenerate-bar-profile-demos.js` - Still present (no longer used, can be deleted)
+  - These are no longer needed since demos are served dynamically via `/intake.html?demo={leadId}`
+
+**Files Modified:**
+| File | Changes |
+|------|---------|
+| `/preintake/index.html` | Demo text link, section backgrounds, 2 Simple Steps |
+| `/preintake/CLAUDE.md` | Version 7.7, scraper counts, Phase 87 documentation |
+
 ---
 
 ## Architecture
@@ -2325,8 +2355,8 @@ pending → analyzing → researching → generating_demo → demo_ready
     └── demo-config.js               # LEGACY - Demo config template
 
 /scripts/
-├── regenerate-preintake-demos.js    # DEPRECATED - Scheduled for deletion March 1, 2026
-├── regenerate-bar-profile-demos.js  # DEPRECATED - Scheduled for deletion March 1, 2026
+├── send-preintake-campaign.js       # Email campaign sender (main, legal.preintake.ai)
+├── send-preintake-campaign-gmail.js # Gmail-specific campaign using law.preintake.ai
 ├── analyze-click-rate.js            # Email click rate analysis
 ├── send-preintake-campaign.js       # Email campaign sender
 ├── scrape-calbar-attorneys.js       # California Bar attorney scraper (CSS email obfuscation)

@@ -155,6 +155,54 @@
         </div>
     </section>
 
+    <!-- Trust & Privacy Section -->
+    <section class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Your Data, Your Control</h2>
+            </div>
+            <div class="trust-grid">
+                <div class="trust-card">
+                    <div class="trust-card-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                        </svg>
+                    </div>
+                    <h3>Zero Data Retention</h3>
+                    <p>We never store client intake data. Inquiries are processed in real-time, delivered to you, then
+                        immediately discarded. Your clients' information never sits on our servers.</p>
+                </div>
+                <div class="trust-card">
+                    <div class="trust-card-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                    </div>
+                    <h3>Real-Time Delivery</h3>
+                    <p>All reviewed inquiries arrive in your inbox or CRM within seconds of intake completion. No batching,
+                        no delays—immediate action on hot inquiries.</p>
+                </div>
+                <div class="trust-card">
+                    <div class="trust-card-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                        </svg>
+                    </div>
+                    <h3>Your Branded Experience</h3>
+                    <p>The intake widget embeds seamlessly on your website with your branding. Clients see your firm, not
+                        ours. You control the look and feel.</p>
+                </div>
+            </div>
+    
+        </div>
+    </section>
+    
     <!-- Every Inquiry Includes Section -->
     <section class="section every-inquiry-section">
         <div class="container">
@@ -175,6 +223,12 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                     </svg>
                 </button>
+            </div>
+            <!-- Experience Live Demo Link (shown for organic visitors) -->
+            <div class="demo-link-container" id="demo-link-container" style="display: none; text-align: center; margin-top: 1.5rem;">
+                <a href="#demo" class="demo-text-link" id="demo-text-link" onclick="showDemoSection(event)">
+                    Experience Live Demo →
+                </a>
             </div>
             <!-- Collapsible Examples Container -->
             <div class="examples-container" id="examples-container" style="display: none;">
@@ -799,78 +853,24 @@
     </section>
     -->
 
-    <!-- CRM Integration Note (HIDDEN)
-    <div class="crm-note">
-        <div class="container">
-            <p>Already use Lawmatics, Clio, or Filevine? PreIntake.ai integrates seamlessly—reviewed inquiries flow directly into your existing system.</p>
-        </div>
-    </div>
-    -->
+    
 
-    <!-- Trust & Privacy Section -->
-    <section class="section">
+    <!-- 2 Simple Steps Section -->
+    <section id="steps-section" class="section section-dark">
         <div class="container">
             <div class="section-header">
-                <h2>Your Data, Your Control</h2>
-                <p>Unlike competitors who store everything, PreIntake.ai is built with privacy at its core.</p>
-            </div>
-            <div class="trust-grid">
-                <div class="trust-card">
-                    <div class="trust-card-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                        </svg>
-                    </div>
-                    <h3>Zero Data Retention</h3>
-                    <p>We never store client intake data. Inquiries are processed in real-time, delivered to you, then immediately discarded. Your clients' information never sits on our servers.</p>
-                </div>
-                <div class="trust-card">
-                    <div class="trust-card-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                        </svg>
-                    </div>
-                    <h3>Real-Time Delivery</h3>
-                    <p>All reviewed inquiries arrive in your inbox or CRM within seconds of intake completion. No batching, no delays—immediate action on hot inquiries.</p>
-                </div>
-                <div class="trust-card">
-                    <div class="trust-card-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                        </svg>
-                    </div>
-                    <h3>Your Branded Experience</h3>
-                    <p>The intake widget embeds seamlessly on your website with your branding. Clients see your firm, not ours. You control the look and feel.</p>
-                </div>
-            </div>
-
-        </div>
-    </section>
-
-    <!-- 3 Simple Steps Section -->
-    <section class="section">
-        <div class="container">
-            <div class="section-header">
-                <h2>Get Started in 3 Simple Steps</h2>
-                <p>From demo to live intake in minutes, not weeks.</p>
+                <h2>Get Started in 2 Simple Steps</h2>
             </div>
             <div class="steps-grid">
                 <div class="step-card">
                     <div class="step-number">1</div>
-                    <div class="step-content">
-                        <h3>Request Your Custom Demo</h3>
-                        <p>Enter your website URL or firm details. We build a personalized AI intake demo—free, in under 5 minutes.</p>
-                    </div>
-                </div>
-                <div class="step-card">
-                    <div class="step-number">2</div>
                     <div class="step-content">
                         <h3>Create Your Account</h3>
                         <p>Love what you see? Activate your account and we'll finalize your custom intake configuration for production use.</p>
                     </div>
                 </div>
                 <div class="step-card">
-                    <div class="step-number">3</div>
+                    <div class="step-number">2</div>
                     <div class="step-content">
                         <h3>Go Live Instantly</h3>
                         <p>Add one line of code to your website—or use our hosted link for email signatures and social profiles. Either way, you're live in minutes.</p>
@@ -881,7 +881,7 @@
     </section>
 
     <!-- Pricing Section -->
-    <section class="section section-dark" id="pricing">
+    <section class="section" id="pricing">
         <div class="container">
             <div class="section-header">
                 <h2>Simple, Transparent Pricing</h2>
@@ -897,11 +897,15 @@
                     <div class="pricing-label">Monthly Subscription</div>
                     <div class="pricing-amount">$99<span>/mo</span></div>
                     <div class="pricing-desc">Custom AI intake tailored to your firm's practice areas and branding. Unlimited intake reviews with real-time delivery via email or CRM.</div>
+                    <a href="new-account.html" class="hero-cta" id="pricing-hero-cta" style="margin-top: 1.5rem;">
+                        Get Started
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                        </svg>
+                    </a>
                 </div>
             </div>
-            <p style="text-align: center; margin-top: 2rem; color: #64748b; font-size: 0.95rem; max-width: 500px; margin-left: auto; margin-right: auto;">
-                Expert-level review tailored to your practice area. Every inquiry arrives in your inbox with a complete assessment. Cancel anytime—no long-term contracts.
-            </p>
+            
             <!-- Get Started CTA (shown for ?demo= visitors) -->
             <div class="pricing-cta-container" id="pricing-cta-container" style="display: none;">
                 <a href="#" class="pricing-get-started-btn" id="pricing-get-started-btn">
@@ -1501,6 +1505,16 @@
                 container.style.display = 'none';
                 btn.classList.remove('expanded');
                 text.textContent = 'See Full Intake Examples';
+            }
+        }
+
+        // Show Demo CTA Section when "Experience Live Demo" link is clicked
+        function showDemoSection(event) {
+            event.preventDefault();
+            const demoCTASection = document.getElementById('demo');
+            if (demoCTASection) {
+                demoCTASection.style.display = 'block';
+                demoCTASection.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
         }
 
@@ -2412,6 +2426,12 @@
                     demoSection.style.display = 'none';
                 }
 
+                // Hide 2 Simple Steps section (not relevant for campaign visitors)
+                const stepsSection = document.getElementById('steps-section');
+                if (stepsSection) {
+                    stepsSection.style.display = 'none';
+                }
+
                 // Hide sticky CTA
                 const stickyCta = document.getElementById('sticky-cta');
                 if (stickyCta) {
@@ -2599,7 +2619,17 @@
                 checkFirmParameter();
                 checkVerificationToken();
             } else {
-                // No special parameters - check verification token
+                // No special parameters - organic visitor
+                // Hide Demo CTA Section, show "Experience Live Demo" link
+                const demoCTASection = document.getElementById('demo');
+                if (demoCTASection) {
+                    demoCTASection.style.display = 'none';
+                }
+                const demoLinkContainer = document.getElementById('demo-link-container');
+                if (demoLinkContainer) {
+                    demoLinkContainer.style.display = 'block';
+                }
+
                 checkVerificationToken();
 
                 // Check if user has previously viewed a demo in this session
