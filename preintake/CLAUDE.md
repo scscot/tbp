@@ -2410,7 +2410,8 @@ pending → analyzing → researching → generating_demo → demo_ready
 ├── demo/
 │   └── index.html          # Dedicated demo page (welcome screen, iframe, exit modal)
 ├── js/
-│   └── components.js       # Shared header/footer/welcome banner/floating buttons
+│   ├── components.js       # Shared header/footer/welcome banner/floating buttons
+│   └── postmessage-utils.js # Cross-frame postMessage origin validation
 └── images/
     ├── icon.svg            # Site icon/favicon (gold #c9a962)
     ├── icon.png            # PNG version of site icon
@@ -2479,6 +2480,18 @@ pending → analyzing → researching → generating_demo → demo_ready
 ---
 
 ## Security Features
+
+### HTTP Headers (firebase.json)
+- Content Security Policy (CSP) headers restricting script/style sources
+- X-Content-Type-Options: nosniff
+- X-Frame-Options: SAMEORIGIN
+- X-XSS-Protection: 1; mode=block
+
+### Cross-Frame Communication (`/preintake/js/postmessage-utils.js`)
+- Origin validation for postMessage events
+- Allowed origins: preintake.ai, Cloud Functions domain
+- Localhost origins for development
+- `createSecureHandler()` wrapper for message handlers
 
 ### Landing Page (`/preintake/index.html`)
 - Honeypot field (hidden input that bots fill)
