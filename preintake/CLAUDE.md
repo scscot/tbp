@@ -1,7 +1,7 @@
 # PreIntake.ai: Comprehensive Project Documentation
 
 **Last Updated**: 2026-03-14
-**Version**: 8.1 (multi-practice area selection for intake)
+**Version**: 8.2 (11 specialized practice area prompts)
 
 ---
 
@@ -375,7 +375,7 @@ When visitors arrive with `?lead=` parameter:
 
 ### Practice Areas with Specialized Screening
 
-These areas have deep, practice-specific question flows and qualification criteria:
+These 11 practice areas have deep, practice-specific question flows and qualification criteria:
 
 | Practice Area | Key Screening Criteria |
 |---------------|----------------------|
@@ -386,9 +386,10 @@ These areas have deep, practice-specific question flows and qualification criter
 | **Criminal Defense** | Charges, court dates, bail status, existing representation |
 | **Tax/IRS** | Tax type, amount at stake, procedural posture |
 | **Estate Planning** | Asset complexity, family dynamics, urgency |
-| **Employment Law** | Discrimination type, timeline, documentation |
-| **Workers' Compensation** | Injury type, employer response, medical treatment |
-| **Real Estate** | Transaction type, timeline, disputes |
+| **Employment & Labor Law** | Discrimination type, EEOC filing, employer size, documentation |
+| **Workers' Compensation** | WC claim status, employer reporting, benefits, light duty |
+| **Medical Malpractice** | Provider type, severity, medical records, second opinion |
+| **Social Security Disability** | Claim stage, appeal deadlines, medical conditions, work history |
 
 ### Other Practice Areas
 
@@ -607,7 +608,10 @@ When you're spending $300-500 per lead, even small conversion improvements mean 
 - [x] Bankruptcy (specialized - system prompt + button detection)
 - [x] Criminal Defense (specialized - system prompt + button detection)
 - [x] Estate Planning (specialized - system prompt + button detection)
-- [x] Employment Law, Workers' Comp, Real Estate (specialized detection)
+- [x] Workers' Compensation (specialized - WC claim status, employer reporting, benefits)
+- [x] Employment & Labor Law (specialized - discrimination type, EEOC, employer size)
+- [x] Medical Malpractice (specialized - provider type, severity, medical records)
+- [x] Social Security Disability (specialized - claim stage, appeal deadlines, work history)
 - [x] Generic Template (`getGenericPrompt`) - handles ANY other practice area dynamically
 
 ### Phase 7: Dynamic Practice Area Selection
