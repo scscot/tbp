@@ -287,11 +287,11 @@ ${tbpFacts.privacyPolicy ? tbpFacts.privacyPolicy.substring(0, 2000) + '...' : '
 CRITICAL VALIDATION RULES:
 - Only reference features documented in the sources above
 - Never invent new features, buttons, or capabilities
-- Use exact statistics (75% quit rate, 17 messages, 4 languages, etc.)
+- Use exact statistics (75% quit rate, 16 messages, 4 languages, etc.)
 - Do not claim security features not documented (no E2E encryption, no biometric auth)
 - App works with ANY direct sales company (company-agnostic)
 - Available worldwide wherever App Store and Google Play operate
-- Core features: 17 pre-written messages, AI Coach, downline tracking, 30-day free trial, $6.99/month
+- Core features: 16 pre-written messages, AI Coach, downline tracking, 30-day free trial, $6.99/month
 
 === END TEAM BUILD PRO FACTS ===
 
@@ -629,6 +629,7 @@ function updateBlogIndex(blogIndexPath, translatedBlogPost, lang) {
 function updateSitemap(sitemapPath, blogPost, lang) {
   const baseUrl = lang === 'en' ? 'https://teambuildpro.com'
                 : lang === 'es' ? 'https://es.teambuildpro.com'
+                : lang === 'de' ? 'https://de.teambuildpro.com'
                 : 'https://pt.teambuildpro.com';
 
   const today = getTodayDate();
@@ -1655,7 +1656,7 @@ KEY FEATURES TO REFERENCE IN BLOG TOPICS:
 ${tbpFacts.claudeMd.statistics || ''}
 
 IMPORTANT: When recommending blog topics, ensure they align with Team Build Pro's actual capabilities:
-- 17 pre-written messages (8 for recruiting + 9 for partners)
+- 16 pre-written messages (8 for recruiting + 8 for partners)
 - AI Coach for 24/7 recruiting guidance
 - Downline tracking and qualification milestones
 - Works with ANY direct sales company (company-agnostic)
@@ -1689,7 +1690,7 @@ TEAM BUILD PRO POSITIONING:
 - Unique value: Helps prospects pre-build their teams BEFORE joining a business opportunity
 - Focus: Practical, field-level advice (not corporate/vendor perspective)
 - Target audience: Direct sales professionals and network marketers
-- Differentiator: 30-day pre-qualification approach, 17 pre-written messages, AI Coach
+- Differentiator: 30-day pre-qualification approach, 16 pre-written messages, AI Coach
 
 EXISTING BLOG POSTS (DO NOT DUPLICATE):
 The following blogs have already been published. Do NOT recommend topics that are too similar unless you're proposing an explicit "update" or "2025/2026 edition":
@@ -1856,7 +1857,7 @@ async function deployToFirebase() {
   console.log(`${colors.cyan}Deploying to Firebase Hosting...${colors.reset}`);
 
   try {
-    execSync('firebase deploy --only hosting:main,hosting:es,hosting:pt --project teambuilder-plus-fe74d', {
+    execSync('firebase deploy --only hosting:main,hosting:es,hosting:pt,hosting:de --project teambuilder-plus-fe74d', {
       cwd: path.join(__dirname, '..'),
       stdio: 'inherit',
       timeout: 300000
