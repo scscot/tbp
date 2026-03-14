@@ -21,6 +21,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/styles.css">
     <script src="/js/components.js"></script>
+    <script src="/js/postmessage-utils.js"></script>
     <style>
         /* Demo page specific styles */
         :root {
@@ -1022,6 +1023,10 @@
         // POSTMESSAGE HANDLER
         // =========================================================================
         function handlePostMessage(e) {
+            // Validate origin for security
+            if (!window.PreIntakePostMessage || !window.PreIntakePostMessage.isValidOrigin(e)) {
+                return;
+            }
             if (!e.data || !e.data.type) return;
 
             switch (e.data.type) {

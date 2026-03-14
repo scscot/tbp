@@ -40,6 +40,19 @@ const STRIPE_PUBLISHABLE_KEY = 'pk_live_51SjNi9JBdoLMDposKpLCGI1NRg0cDPmKwRhDQfZ
 
 /**
  * Create a Stripe Checkout session for subscription
+ *
+ * @description Creates a Stripe Checkout session for new subscriber sign-up.
+ * Handles customer creation/lookup, password hashing, and session generation.
+ *
+ * @route POST /createCheckoutSession
+ * @param {Object} req.body - Request body
+ * @param {string} req.body.firmId - Unique identifier for the law firm (lead document ID)
+ * @param {string} req.body.email - Customer email address
+ * @param {string} req.body.firmName - Name of the law firm
+ * @param {string} req.body.password - Password (min 8 characters, will be hashed with bcrypt)
+ * @returns {Object} JSON response with sessionId and publishableKey, or error
+ * @throws {400} Missing firmId, email, or invalid password
+ * @throws {500} Stripe API error
  */
 const createCheckoutSession = onRequest(
     {
@@ -145,7 +158,13 @@ const createCheckoutSession = onRequest(
 );
 
 /**
- * Get Stripe publishable key (for frontend)
+ * Get Stripe configuration for frontend
+ *
+ * @description Returns Stripe publishable key and pricing information
+ * for initializing Stripe.js on the client side.
+ *
+ * @route GET /getStripeConfig
+ * @returns {Object} JSON response with publishableKey, subscriptionPriceId, and subscriptionAmount
  */
 const getStripeConfig = onRequest(
     {
@@ -163,6 +182,22 @@ const getStripeConfig = onRequest(
 
 /**
  * Handle Stripe webhook events
+ *
+ * @description Receives and processes Stripe webhook events for subscription lifecycle.
+ * Handles checkout completion, subscription updates, and payment events.
+ * Signature verification ensures requests are authentic from Stripe.
+ *
+ * @route POST /stripeWebhook
+ * @param {Buffer} req.rawBody - Raw request body for signature verification
+ * @param {string} req.headers['stripe-signature'] - Stripe signature header
+ * @returns {Object} JSON response with received: true
+ *
+ * @event checkout.session.completed - New subscription checkout completed
+ * @event customer.subscription.created - Subscription created
+ * @event customer.subscription.updated - Subscription modified (cancel, reactivate, etc.)
+ * @event customer.subscription.deleted - Subscription ended
+ * @event invoice.payment_succeeded - Payment processed successfully
+ * @event invoice.payment_failed - Payment failed
  */
 const stripeWebhook = onRequest(
     {
@@ -248,6 +283,16 @@ const stripeWebhook = onRequest(
 
 /**
  * Send email via SMTP
+ *
+ * @description Internal helper to send transactional emails via Dreamhost SMTP.
+ * Used for activation emails, cancellation confirmations, and admin notifications.
+ *
+ * @param {string} to - Recipient email address
+ * @param {string} subject - Email subject line
+ * @param {string} htmlContent - HTML email body
+ * @returns {Promise<boolean>} True if sent successfully, false if SMTP not configured
+ * @throws {Error} If SMTP send fails
+ * @private
  */
 async function sendEmail(to, subject, htmlContent) {
     const user = smtpUser.value();
@@ -280,11 +325,17 @@ async function sendEmail(to, subject, htmlContent) {
 
 /**
  * Generate account activation email HTML for customer
+ *
+ * @description Creates branded HTML email with embed instructions (for website subscribers)
+ * or hosted intake URL (for subscribers without websites).
+ *
  * @param {string} firmName - The firm name
- * @param {string} firmId - The lead ID
- * @param {string} customerEmail - Customer's email
- * @param {boolean} hasWebsite - Whether the subscriber has a website
- * @param {string|null} hostedIntakeUrl - Hosted intake URL for website-less subscribers
+ * @param {string} firmId - The lead ID (used for embed code generation)
+ * @param {string} customerEmail - Customer's email (shown as delivery destination)
+ * @param {boolean} [hasWebsite=true] - Whether the subscriber has a website
+ * @param {string|null} [hostedIntakeUrl=null] - Hosted intake URL for website-less subscribers
+ * @returns {string} HTML email content
+ * @private
  */
 function generateActivationEmail(firmName, firmId, customerEmail, hasWebsite = true, hostedIntakeUrl = null) {
     // For subscribers WITH a website - show embed code options
@@ -405,6 +456,14 @@ ${pageEmbedCode.replace(/</g, '&lt;').replace(/>/g, '&gt;')}
 
 /**
  * Generate cancellation confirmation email for customer
+ *
+ * @description Creates HTML email confirming subscription cancellation with
+ * access end date and reactivation link.
+ *
+ * @param {string} firmName - The firm name
+ * @param {Date} periodEndDate - Date when access ends
+ * @returns {string} HTML email content
+ * @private
  */
 function generateCancellationEmail(firmName, periodEndDate) {
     const formattedDate = new Date(periodEndDate).toLocaleDateString('en-US', {
@@ -473,6 +532,15 @@ function generateCancellationEmail(firmName, periodEndDate) {
 
 /**
  * Generate notification email to Stephen for new activation
+ *
+ * @description Creates HTML email with new subscription details including
+ * firm info, customer email, and quick links to demo/Firestore/Stripe.
+ *
+ * @param {string} firmName - The firm name
+ * @param {string} customerEmail - Customer's email
+ * @param {string} firmId - The lead/account ID
+ * @returns {string} HTML email content
+ * @private
  */
 function generateActivationNotifyEmail(firmName, customerEmail, firmId) {
     return `
@@ -514,7 +582,18 @@ function generateActivationNotifyEmail(firmName, customerEmail, firmId) {
 }
 
 /**
- * Handle successful checkout
+ * Handle successful checkout completion
+ *
+ * @description Creates account in preintake_accounts collection, marks lead as converted,
+ * sends activation email to customer and notification to admin.
+ *
+ * @param {Object} session - Stripe checkout session object
+ * @param {string} session.metadata.firmId - Firm/lead ID
+ * @param {string} session.metadata.passwordHash - Bcrypt hashed password
+ * @param {string} session.customer - Stripe customer ID
+ * @param {string} session.subscription - Stripe subscription ID
+ * @returns {Promise<void>}
+ * @private
  */
 async function handleCheckoutComplete(session) {
     const firmId = session.metadata?.firmId;
@@ -634,7 +713,16 @@ async function handleCheckoutComplete(session) {
 }
 
 /**
- * Handle subscription created
+ * Handle subscription created event
+ *
+ * @description Updates account with subscription ID and period dates.
+ *
+ * @param {Object} subscription - Stripe subscription object
+ * @param {string} subscription.metadata.firmId - Firm ID
+ * @param {string} subscription.id - Subscription ID
+ * @param {string} subscription.status - Subscription status
+ * @returns {Promise<void>}
+ * @private
  */
 async function handleSubscriptionCreated(subscription) {
     const firmId = subscription.metadata?.firmId;
@@ -666,7 +754,17 @@ async function handleSubscriptionCreated(subscription) {
 }
 
 /**
- * Handle subscription updated
+ * Handle subscription updated event
+ *
+ * @description Updates subscription status, handles cancellation/reactivation,
+ * sends cancellation confirmation email when cancel_at_period_end is set.
+ *
+ * @param {Object} subscription - Stripe subscription object
+ * @param {string} subscription.metadata.firmId - Firm ID
+ * @param {string} subscription.status - Subscription status
+ * @param {boolean} subscription.cancel_at_period_end - Whether subscription will cancel at period end
+ * @returns {Promise<void>}
+ * @private
  */
 async function handleSubscriptionUpdated(subscription) {
     const firmId = subscription.metadata?.firmId;
@@ -748,7 +846,14 @@ async function handleSubscriptionUpdated(subscription) {
 }
 
 /**
- * Handle subscription deleted (cancelled)
+ * Handle subscription deleted (cancelled) event
+ *
+ * @description Updates account status to cancelled when subscription ends.
+ *
+ * @param {Object} subscription - Stripe subscription object
+ * @param {string} subscription.metadata.firmId - Firm ID
+ * @returns {Promise<void>}
+ * @private
  */
 async function handleSubscriptionDeleted(subscription) {
     const firmId = subscription.metadata?.firmId;
@@ -769,7 +874,15 @@ async function handleSubscriptionDeleted(subscription) {
 }
 
 /**
- * Handle successful payment
+ * Handle successful payment event
+ *
+ * @description Updates account with last payment timestamp and amount.
+ *
+ * @param {Object} invoice - Stripe invoice object
+ * @param {string} invoice.subscription - Subscription ID
+ * @param {number} invoice.amount_paid - Amount paid in cents
+ * @returns {Promise<void>}
+ * @private
  */
 async function handlePaymentSucceeded(invoice) {
     const subscriptionId = invoice.subscription;
@@ -798,7 +911,15 @@ async function handlePaymentSucceeded(invoice) {
 }
 
 /**
- * Handle failed payment
+ * Handle failed payment event
+ *
+ * @description Updates account with payment failure timestamp and sets
+ * subscription status to past_due.
+ *
+ * @param {Object} invoice - Stripe invoice object
+ * @param {string} invoice.subscription - Subscription ID
+ * @returns {Promise<void>}
+ * @private
  */
 async function handlePaymentFailed(invoice) {
     const subscriptionId = invoice.subscription;
@@ -828,6 +949,15 @@ async function handlePaymentFailed(invoice) {
 
 /**
  * Verify checkout session and get subscription status
+ *
+ * @description Retrieves checkout session details from Stripe to verify payment
+ * completion. Called by payment-success.html to confirm transaction.
+ *
+ * @route GET /verifyCheckoutSession
+ * @param {string} req.query.sessionId - Stripe Checkout session ID
+ * @returns {Object} JSON with status, paymentStatus, customerEmail, firmId, firmName
+ * @throws {400} Missing sessionId
+ * @throws {500} Stripe API error
  */
 const verifyCheckoutSession = onRequest(
     {
@@ -863,7 +993,17 @@ const verifyCheckoutSession = onRequest(
 
 /**
  * Resend activation email (admin endpoint)
- * GET /resendActivationEmail?leadId=xxx&secret=xxx
+ *
+ * @description Admin endpoint to resend activation email with embed code or
+ * hosted intake URL. Requires secret key for authorization.
+ *
+ * @route GET /resendActivationEmail
+ * @param {string} req.query.leadId - Account/lead ID to resend email for
+ * @param {string} req.query.secret - Admin secret (must match 'resend2026')
+ * @returns {Object} JSON with success, message, firmName, hasWebsite, hostedIntakeUrl
+ * @throws {403} Invalid or missing secret
+ * @throws {404} Account not found
+ * @throws {500} Email send failure
  */
 const resendActivationEmail = onRequest(
     {

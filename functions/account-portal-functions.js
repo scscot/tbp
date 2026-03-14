@@ -35,8 +35,21 @@ const TOKEN_TTL_MS = 60 * 60 * 1000; // 1 hour
 const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000; // 1 hour
 const RATE_LIMIT_MAX_REQUESTS = 3;
 
+// Login rate limiting (brute force protection)
+const LOGIN_RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000; // 15 minutes
+const LOGIN_MAX_FAILED_ATTEMPTS = 5;
+
 /**
  * Send email via SMTP
+ *
+ * @description Internal helper to send transactional emails via Dreamhost SMTP.
+ *
+ * @param {string} to - Recipient email address
+ * @param {string} subject - Email subject line
+ * @param {string} htmlContent - HTML email body
+ * @returns {Promise<boolean>} True if sent successfully, false if SMTP not configured
+ * @throws {Error} If SMTP send fails
+ * @private
  */
 async function sendEmail(to, subject, htmlContent) {
     const user = smtpUser.value();
@@ -69,6 +82,14 @@ async function sendEmail(to, subject, htmlContent) {
 
 /**
  * Generate magic link email HTML
+ *
+ * @description Creates branded HTML email content for magic link authentication.
+ * Includes PreIntake.ai branding, security notice, and styled CTA button.
+ *
+ * @param {string} firmName - Firm name to personalize the email
+ * @param {string} magicLinkUrl - Full URL with token for account access
+ * @returns {string} Complete HTML email content
+ * @private
  */
 function generateMagicLinkEmail(firmName, magicLinkUrl) {
     return `
@@ -124,6 +145,13 @@ function generateMagicLinkEmail(firmName, magicLinkUrl) {
 
 /**
  * Hash email for rate limiting (privacy-preserving)
+ *
+ * @description Creates SHA256 hash of normalized email for rate limit tracking.
+ * Preserves privacy by not storing actual email addresses in rate limit collection.
+ *
+ * @param {string} email - Email address to hash
+ * @returns {string} SHA256 hex digest of normalized email
+ * @private
  */
 function hashEmail(email) {
     return crypto.createHash('sha256').update(email.toLowerCase().trim()).digest('hex');
@@ -131,7 +159,14 @@ function hashEmail(email) {
 
 /**
  * Check rate limit for magic link requests
- * Returns true if request is allowed, false if rate limited
+ *
+ * @description Implements sliding window rate limiting for magic link requests.
+ * Allows RATE_LIMIT_MAX_REQUESTS (3) per RATE_LIMIT_WINDOW_MS (1 hour).
+ * Uses privacy-preserving email hashing for tracking.
+ *
+ * @param {string} email - Email address to check
+ * @returns {Promise<boolean>} True if request is allowed, false if rate limited
+ * @private
  */
 async function checkRateLimit(email) {
     const emailHash = hashEmail(email);
@@ -180,8 +215,120 @@ async function checkRateLimit(email) {
 }
 
 /**
+ * Check login rate limit for password authentication
+ *
+ * @description Implements brute force protection for password login.
+ * Allows LOGIN_MAX_FAILED_ATTEMPTS (5) per LOGIN_RATE_LIMIT_WINDOW_MS (15 minutes).
+ * After lockout, user must wait for window to expire before retrying.
+ *
+ * @param {string} email - Email address to check
+ * @returns {Promise<Object>} Rate limit status object
+ * @returns {boolean} returns.allowed - Whether login attempt is allowed
+ * @returns {number} [returns.remainingAttempts] - Attempts remaining (if allowed)
+ * @returns {number} [returns.lockoutMinutes] - Minutes until lockout expires (if blocked)
+ * @private
+ */
+async function checkLoginRateLimit(email) {
+    const emailHash = hashEmail(email);
+    const now = Date.now();
+    const windowStart = now - LOGIN_RATE_LIMIT_WINDOW_MS;
+
+    const rateLimitRef = db.collection('login_rate_limits').doc(emailHash);
+    const doc = await rateLimitRef.get();
+
+    if (!doc.exists) {
+        return { allowed: true, remainingAttempts: LOGIN_MAX_FAILED_ATTEMPTS };
+    }
+
+    const data = doc.data();
+    const docWindowStart = data.windowStart?.toMillis() || 0;
+
+    // Window expired - allow and will reset on failure
+    if (docWindowStart < windowStart) {
+        return { allowed: true, remainingAttempts: LOGIN_MAX_FAILED_ATTEMPTS };
+    }
+
+    const failedAttempts = data.failedAttempts || 0;
+
+    if (failedAttempts >= LOGIN_MAX_FAILED_ATTEMPTS) {
+        const lockoutEndTime = docWindowStart + LOGIN_RATE_LIMIT_WINDOW_MS;
+        const lockoutMinutes = Math.ceil((lockoutEndTime - now) / 60000);
+        return { allowed: false, lockoutMinutes };
+    }
+
+    return { allowed: true, remainingAttempts: LOGIN_MAX_FAILED_ATTEMPTS - failedAttempts };
+}
+
+/**
+ * Record a failed login attempt
+ *
+ * @description Increments failed login counter for brute force protection.
+ * Creates or updates record in login_rate_limits collection.
+ * Resets window if previous window has expired.
+ *
+ * @param {string} email - Email address of failed attempt
+ * @returns {Promise<void>}
+ * @private
+ */
+async function recordFailedLogin(email) {
+    const emailHash = hashEmail(email);
+    const rateLimitRef = db.collection('login_rate_limits').doc(emailHash);
+    const doc = await rateLimitRef.get();
+    const now = Date.now();
+    const windowStart = now - LOGIN_RATE_LIMIT_WINDOW_MS;
+
+    if (!doc.exists || (doc.data().windowStart?.toMillis() || 0) < windowStart) {
+        // First failure or window expired - create/reset record
+        await rateLimitRef.set({
+            emailHash,
+            failedAttempts: 1,
+            windowStart: admin.firestore.FieldValue.serverTimestamp(),
+            lastFailedAt: admin.firestore.FieldValue.serverTimestamp()
+        });
+    } else {
+        // Increment failure count
+        await rateLimitRef.update({
+            failedAttempts: admin.firestore.FieldValue.increment(1),
+            lastFailedAt: admin.firestore.FieldValue.serverTimestamp()
+        });
+    }
+}
+
+/**
+ * Reset login attempts on successful login
+ *
+ * @description Clears failed login counter after successful authentication.
+ * Deletes the rate limit document to reset tracking.
+ *
+ * @param {string} email - Email address to reset
+ * @returns {Promise<void>}
+ * @private
+ */
+async function resetLoginAttempts(email) {
+    const emailHash = hashEmail(email);
+    const rateLimitRef = db.collection('login_rate_limits').doc(emailHash);
+    await rateLimitRef.delete();
+}
+
+/**
  * Send account access link (magic link)
- * POST { email }
+ *
+ * @description Generates and sends a secure magic link for passwordless authentication.
+ * Link expires in 1 hour and can only be used once. Rate limited to 3 requests/hour.
+ * Returns success message regardless of account existence to prevent email enumeration.
+ *
+ * @route POST /sendAccountAccessLink
+ * @param {Object} req.body - Request body
+ * @param {string} req.body.email - Email address to send link to
+ * @returns {Object} JSON response with success status and message
+ *
+ * @example
+ * // Request
+ * POST /sendAccountAccessLink
+ * { "email": "attorney@lawfirm.com" }
+ *
+ * // Response (always same message to prevent enumeration)
+ * { "success": true, "message": "If an account exists with this email, you will receive an access link." }
  */
 const sendAccountAccessLink = onRequest(
     {
@@ -288,7 +435,34 @@ const sendAccountAccessLink = onRequest(
 
 /**
  * Verify account token and return account data
- * GET ?token=ABC123
+ *
+ * @description Validates magic link or session token and returns full account data.
+ * Magic link tokens are single-use; session tokens (from password login) are reusable.
+ * Updates portal access timestamp and count for analytics.
+ *
+ * @route GET /verifyAccountToken
+ * @param {string} req.query.token - Magic link or session token
+ * @returns {Object} JSON response with account data and session token
+ * @returns {boolean} returns.success - Whether verification succeeded
+ * @returns {Object} returns.account - Account data (firmId, firmName, deliveryEmail, etc.)
+ * @returns {string} returns.sessionToken - Token for subsequent authenticated requests
+ *
+ * @example
+ * // Request
+ * GET /verifyAccountToken?token=abc123def456...
+ *
+ * // Response
+ * {
+ *   "success": true,
+ *   "account": {
+ *     "firmId": "abc123",
+ *     "firmName": "Smith Law Group",
+ *     "deliveryEmail": "intake@smithlaw.com",
+ *     "subscriptionStatus": "active",
+ *     "practiceAreas": ["Personal Injury", "Criminal Defense"]
+ *   },
+ *   "sessionToken": "abc123def456..."
+ * }
  */
 const verifyAccountToken = onRequest(
     {
@@ -394,7 +568,24 @@ const verifyAccountToken = onRequest(
 
 /**
  * Update account settings
- * POST { token, deliveryEmail?, practiceAreas?, primaryPracticeArea?, additionalPracticeAreas?, firstName?, lastName? }
+ *
+ * @description Updates subscriber account settings including delivery email,
+ * practice areas, and contact name. Requires valid session token.
+ * Practice area changes trigger demo regeneration.
+ *
+ * @route POST /updateAccountSettings
+ * @param {Object} req.body - Request body
+ * @param {string} req.body.token - Session token from login or magic link
+ * @param {string} [req.body.deliveryEmail] - New email for lead delivery
+ * @param {string} [req.body.primaryPracticeArea] - Primary practice area
+ * @param {string[]} [req.body.additionalPracticeAreas] - Additional practice areas
+ * @param {string[]} [req.body.practiceAreas] - Legacy: combined practice areas array
+ * @param {string} [req.body.firstName] - Contact first name
+ * @param {string} [req.body.lastName] - Contact last name
+ * @returns {Object} JSON response with updated account data
+ * @returns {boolean} returns.success - Whether update succeeded
+ * @returns {boolean} returns.regeneratingDemo - Whether practice area change triggered demo rebuild
+ * @returns {Object} returns.account - Updated account data
  */
 const updateAccountSettings = onRequest(
     {
@@ -554,7 +745,28 @@ const updateAccountSettings = onRequest(
 
 /**
  * Create Stripe billing portal session
- * POST { token }
+ *
+ * @description Creates a Stripe Customer Portal session for subscription management.
+ * Allows subscribers to update payment methods, view invoices, and cancel subscription.
+ * Returns URL that redirects back to account page after portal actions.
+ *
+ * @route POST /createBillingPortalSession
+ * @param {Object} req.body - Request body
+ * @param {string} req.body.token - Session token from login or magic link
+ * @returns {Object} JSON response with billing portal URL
+ * @returns {boolean} returns.success - Whether session creation succeeded
+ * @returns {string} returns.url - Stripe Customer Portal URL
+ *
+ * @example
+ * // Request
+ * POST /createBillingPortalSession
+ * { "token": "abc123..." }
+ *
+ * // Response
+ * {
+ *   "success": true,
+ *   "url": "https://billing.stripe.com/session/..."
+ * }
  */
 const createBillingPortalSession = onRequest(
     {
@@ -630,8 +842,37 @@ const createBillingPortalSession = onRequest(
 
 /**
  * Login with email and password
- * POST { email, password }
- * Returns session token valid for 7 days
+ *
+ * @description Authenticates user with email/password and returns session token.
+ * Session token valid for 7 days. Implements brute force protection with
+ * rate limiting (5 failed attempts triggers 15-minute lockout).
+ *
+ * @route POST /loginWithPassword
+ * @param {Object} req.body - Request body
+ * @param {string} req.body.email - Account email address
+ * @param {string} req.body.password - Account password
+ * @returns {Object} JSON response with session token
+ * @returns {boolean} returns.success - Whether login succeeded
+ * @returns {string} returns.sessionToken - 7-day session token for authenticated requests
+ * @returns {string} returns.firmName - Firm name for display
+ *
+ * @example
+ * // Request
+ * POST /loginWithPassword
+ * { "email": "attorney@lawfirm.com", "password": "securepass123" }
+ *
+ * // Success Response
+ * {
+ *   "success": true,
+ *   "sessionToken": "abc123def456...",
+ *   "firmName": "Smith Law Group"
+ * }
+ *
+ * // Rate Limited Response (429)
+ * {
+ *   "success": false,
+ *   "error": "Too many failed login attempts. Please try again in 12 minutes."
+ * }
  */
 const loginWithPassword = onRequest(
     {
@@ -651,6 +892,16 @@ const loginWithPassword = onRequest(
             }
 
             const normalizedEmail = email.toLowerCase().trim();
+
+            // Check rate limit before processing
+            const rateLimit = await checkLoginRateLimit(normalizedEmail);
+            if (!rateLimit.allowed) {
+                console.log(`Login rate limited for ${normalizedEmail}, lockout: ${rateLimit.lockoutMinutes} minutes`);
+                return res.status(429).json({
+                    success: false,
+                    error: `Too many failed login attempts. Please try again in ${rateLimit.lockoutMinutes} minutes.`
+                });
+            }
 
             // Find user by email in preintake_accounts (active subscribers)
             let userDoc = null;
@@ -679,7 +930,8 @@ const loginWithPassword = onRequest(
             }
 
             if (!userDoc) {
-                // Generic error to prevent email enumeration
+                // Record failed attempt and return generic error to prevent email enumeration
+                await recordFailedLogin(normalizedEmail);
                 return res.status(401).json({ success: false, error: 'Invalid email or password' });
             }
 
@@ -697,8 +949,12 @@ const loginWithPassword = onRequest(
             const validPassword = await bcrypt.compare(password, userData.passwordHash);
 
             if (!validPassword) {
+                await recordFailedLogin(normalizedEmail);
                 return res.status(401).json({ success: false, error: 'Invalid email or password' });
             }
+
+            // Successful login - reset rate limit counter
+            await resetLoginAttempts(normalizedEmail);
 
             // Generate session token (7 days validity)
             const sessionToken = crypto.randomBytes(32).toString('hex');
