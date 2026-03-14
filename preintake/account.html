@@ -580,6 +580,83 @@
             margin-top: 0.5rem;
         }
 
+        .practice-area-section select {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            font-family: inherit;
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23a0aec0' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            padding-right: 2.5rem;
+        }
+
+        .practice-area-section select:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 0 3px rgba(201, 169, 98, 0.1);
+        }
+
+        .practice-area-section select option {
+            background: var(--primary-dark);
+            color: var(--text-light);
+        }
+
+        .primary-practice-label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--text-light);
+        }
+
+        .other-practice-area {
+            margin-top: 0.75rem;
+        }
+
+        .other-practice-area label {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 0.4rem;
+        }
+
+        .other-practice-area input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            color: var(--text-light);
+            font-size: 0.85rem;
+            font-family: inherit;
+        }
+
+        .other-practice-area input:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 0 3px rgba(201, 169, 98, 0.1);
+        }
+
+        .other-practice-area input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .additional-areas-header {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-light);
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+
         @media (max-width: 768px) {
             .practice-area-grid {
                 grid-template-columns: repeat(2, 1fr);
@@ -621,7 +698,7 @@
                 <!-- State 1: Email Entry (visible by default) -->
                 <div id="email-entry">
                     <h1>Access Your Account</h1>
-                    <p class="subtitle">For active subscribers only. Enter the email address associated with your PreIntake.ai subscription and we'll send you a secure link to access your settings.</p>
+                    <p class="subtitle">Enter the email address associated with your PreIntake.ai subscription and we'll send you a secure link to access your settings.</p>
 
                     <div id="email-error" class="error-message" style="display: none;"></div>
                     <div id="email-success" class="success-message" style="display: none;"></div>
@@ -629,7 +706,7 @@
                     <form id="email-form" onsubmit="requestAccessLink(event)">
                         <div class="form-group">
                             <label for="email">Email Address</label>
-                            <input type="email" id="email" name="email" placeholder="you@yourfirm.com" required>
+                            <input type="email" id="email" name="email" required>
                         </div>
 
                         <button type="submit" class="btn-primary" id="send-link-btn">
@@ -640,6 +717,17 @@
                             Send Access Link
                         </button>
                     </form>
+
+                    <div class="divider">or</div>
+
+                    <a href="/login.html" class="magic-link-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+                            <polyline points="10 17 15 12 10 7"></polyline>
+                            <line x1="15" y1="12" x2="3" y2="12"></line>
+                        </svg>
+                        Log In with Password
+                    </a>
 
                     <p class="help-text">
                         Need help? Email <a href="mailto:support@preintake.ai">support@preintake.ai</a>
@@ -684,7 +772,7 @@
                     </div>
 
                     <div class="next-steps">
-                        <h3>Your Embed Code</h3>
+                        <h3>Your Website Embed Codes</h3>
 
                         <div class="embed-toggle">
                             <button class="embed-toggle-btn active" onclick="setEmbedType('button')" id="toggle-button">
@@ -723,12 +811,38 @@
                         </div>
                     </div>
 
+                    <div class="next-steps" id="sharable-link-section">
+                        <h3>Your Sharable Link</h3>
+                        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.75rem;">Share this link directly in emails, social media, or anywhere you connect with potential clients.</p>
+                        <div class="embed-code" id="sharable-link-code">https://preintake.ai/<span class="intake-code">LOADING...</span></div>
+                        <button class="copy-btn" onclick="copySharableLink()">Copy Link</button>
+                    </div>
+
                     <div class="practice-area-section">
                         <h3>Practice Areas</h3>
                         <p class="practice-area-hint">Select the practice areas your firm handles. This determines the screening questions used during intake.</p>
+
+                        <!-- Primary Practice Area -->
+                        <label class="primary-practice-label">Primary Practice Area</label>
+                        <select id="primaryPracticeArea" onchange="handlePrimaryPracticeAreaChange()">
+                            <option value="">Select your primary practice area...</option>
+                            <!-- Populated by JavaScript -->
+                        </select>
+                        <div class="other-practice-area" id="primary-other-container" style="display: none;">
+                            <label for="primaryOtherPracticeArea">Please specify your primary practice area:</label>
+                            <input type="text" id="primaryOtherPracticeArea" placeholder="e.g., Maritime Law, Aviation Law">
+                        </div>
+
+                        <!-- Additional Practice Areas -->
+                        <p class="additional-areas-header">Additional Practice Areas</p>
                         <div class="practice-area-grid" id="practice-area-grid">
                             <!-- Populated by JavaScript -->
                         </div>
+                        <div class="other-practice-area" id="other-practice-area-container" style="display: none;">
+                            <label for="otherPracticeArea">Please specify:</label>
+                            <input type="text" id="otherPracticeArea" placeholder="e.g., Maritime Law, Aviation Law">
+                        </div>
+
                         <button class="save-btn" id="save-practice-btn" onclick="savePracticeAreas()">Update Practice Areas</button>
                     </div>
 
@@ -805,7 +919,7 @@
         let accountData = null;
         let currentEmbedType = 'button';
 
-        // Standard practice areas (39 total)
+        // Standard practice areas (39 standard + General Practice + Other)
         const STANDARD_PRACTICE_AREAS = [
             'Administrative Law', 'Appellate Law', 'Bankruptcy', 'Business Law',
             'Civil Litigation', 'Civil Rights Law', 'Class Action Litigation',
@@ -819,24 +933,77 @@
             'Medical Malpractice', 'Mergers & Acquisitions', 'Personal Injury',
             'Probate & Trust Administration', 'Product Liability', 'Real Estate Law',
             'Securities Law', 'Social Security Disability', 'Sports Law',
-            'Tax Law', 'Workers\' Compensation'
+            'Tax Law', 'Workers\' Compensation',
+            'General Practice', 'Other (specify)'
         ];
 
         /**
-         * Initialize page based on URL parameters
+         * Initialize page based on URL parameters or existing session
          */
         async function init() {
             const urlParams = new URLSearchParams(window.location.search);
             const token = urlParams.get('token');
 
+            // First check for existing session in sessionStorage
+            const savedSession = sessionStorage.getItem('preintake_session');
+            if (savedSession) {
+                try {
+                    const session = JSON.parse(savedSession);
+                    if (session.account && session.token) {
+                        // Have a saved session - restore directly without backend call
+                        restoreFromSession(session);
+                        // Clear URL params if present
+                        if (window.location.search) {
+                            window.history.replaceState({}, document.title, window.location.pathname);
+                        }
+                        return;
+                    }
+                } catch (e) {
+                    // Invalid session data, clear it
+                    sessionStorage.removeItem('preintake_session');
+                }
+            }
+
             if (token) {
-                // Have a token - verify it
+                // Have a URL token - verify it
                 showLoading();
                 await verifyToken(token);
+                // Clear URL params after successful verification (handled in verifyToken success)
             } else {
-                // No token - show email entry
+                // No token and no session - show email entry
                 showEmailEntry();
             }
+        }
+
+        /**
+         * Restore dashboard from saved session (no backend call)
+         */
+        function restoreFromSession(session) {
+            currentToken = session.token;
+            accountData = session.account;
+
+            // Populate dashboard
+            document.getElementById('firm-name').textContent = accountData.firmName;
+            document.getElementById('delivery-email').value = accountData.deliveryEmail || '';
+            document.getElementById('contact-first-name').value = accountData.firstName || '';
+            document.getElementById('contact-last-name').value = accountData.lastName || '';
+
+            // Update subscription status
+            const statusEl = document.getElementById('subscription-status');
+            const status = accountData.subscriptionStatus || 'active';
+            statusEl.textContent = status.charAt(0).toUpperCase() + status.slice(1);
+            statusEl.style.color = status === 'active' ? 'var(--success)' : 'var(--error)';
+
+            // Update firm ID in embed codes
+            updateFirmIdCodes(accountData.firmId);
+
+            // Update intake code in sharable link
+            updateIntakeCode(accountData.intakeCode);
+
+            // Populate practice areas
+            renderPracticeAreas(accountData.primaryPracticeArea, accountData.additionalPracticeAreas || []);
+
+            showDashboard();
         }
 
         /**
@@ -965,6 +1132,17 @@
                     currentToken = data.sessionToken || token;
                     accountData = data.account;
 
+                    // Store full session in sessionStorage for cross-page auth and refresh persistence
+                    sessionStorage.setItem('preintake_session', JSON.stringify({
+                        token: currentToken,
+                        account: accountData
+                    }));
+
+                    // Clear URL params to prevent token re-verification on refresh
+                    if (window.location.search) {
+                        window.history.replaceState({}, document.title, window.location.pathname);
+                    }
+
                     // Populate dashboard
                     document.getElementById('firm-name').textContent = accountData.firmName;
                     document.getElementById('delivery-email').value = accountData.deliveryEmail || '';
@@ -980,8 +1158,11 @@
                     // Update firm ID in embed codes
                     updateFirmIdCodes(accountData.firmId);
 
+                    // Update intake code in sharable link
+                    updateIntakeCode(accountData.intakeCode);
+
                     // Populate practice areas
-                    renderPracticeAreas(accountData.practiceAreas);
+                    renderPracticeAreas(accountData.primaryPracticeArea, accountData.additionalPracticeAreas || []);
 
                     showDashboard();
                 } else {
@@ -1000,6 +1181,45 @@
         function updateFirmIdCodes(id) {
             document.querySelectorAll('.firm-id-code').forEach(el => {
                 el.textContent = id;
+            });
+        }
+
+        /**
+         * Update intake code in sharable link
+         */
+        function updateIntakeCode(code) {
+            document.querySelectorAll('.intake-code').forEach(el => {
+                el.textContent = code || 'N/A';
+            });
+            // Hide the sharable link section if no intake code
+            const section = document.getElementById('sharable-link-section');
+            if (section) {
+                section.style.display = code ? 'block' : 'none';
+            }
+        }
+
+        /**
+         * Copy sharable link to clipboard
+         */
+        function copySharableLink() {
+            const code = accountData?.intakeCode;
+            if (!code) {
+                alert('No sharable link available');
+                return;
+            }
+            const link = `https://preintake.ai/${code}`;
+            navigator.clipboard.writeText(link).then(() => {
+                const btn = document.querySelector('#sharable-link-section .copy-btn');
+                const originalText = btn.textContent;
+                btn.textContent = 'Copied!';
+                btn.classList.add('copied');
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.classList.remove('copied');
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                alert('Failed to copy link');
             });
         }
 
@@ -1137,20 +1357,115 @@
         }
 
         /**
-         * Render practice area checkboxes
+         * Render practice areas - primary dropdown and additional checkboxes
          */
-        function renderPracticeAreas(selectedAreas) {
+        function renderPracticeAreas(primaryArea, additionalAreas) {
+            const dropdown = document.getElementById('primaryPracticeArea');
             const grid = document.getElementById('practice-area-grid');
-            const selectedLower = (selectedAreas || []).map(a => a.toLowerCase().trim());
+            const additionalLower = (additionalAreas || []).map(a => a.toLowerCase().trim());
 
-            grid.innerHTML = STANDARD_PRACTICE_AREAS.map((area, i) => {
+            // Populate primary dropdown
+            dropdown.innerHTML = '<option value="">Select your primary practice area...</option>' +
+                STANDARD_PRACTICE_AREAS.map(area => {
+                    const selected = primaryArea && primaryArea.toLowerCase() === area.toLowerCase() ? 'selected' : '';
+                    return `<option value="${area}" ${selected}>${area}</option>`;
+                }).join('');
+
+            // Show/hide primary "Other" input
+            updatePrimaryOtherVisibility();
+
+            // Populate additional checkboxes (excluding "Other (specify)" - handled separately)
+            const checkboxAreas = STANDARD_PRACTICE_AREAS.filter(a => a !== 'Other (specify)');
+            grid.innerHTML = checkboxAreas.map((area, i) => {
                 const id = `pa-${i}`;
-                const checked = selectedLower.includes(area.toLowerCase()) ? 'checked' : '';
+                const checked = additionalLower.includes(area.toLowerCase()) ? 'checked' : '';
+                const disabled = primaryArea && primaryArea.toLowerCase() === area.toLowerCase() ? 'disabled' : '';
                 return `<div class="practice-area-item">
-                    <input type="checkbox" id="${id}" value="${area}" ${checked}>
+                    <input type="checkbox" id="${id}" value="${area}" ${checked} ${disabled} onchange="handleAdditionalCheckboxChange()">
                     <label for="${id}">${area}</label>
                 </div>`;
             }).join('');
+
+            // Add "Other" checkbox separately
+            const otherChecked = additionalLower.some(a =>
+                !checkboxAreas.map(ca => ca.toLowerCase()).includes(a.toLowerCase()) &&
+                a !== (primaryArea || '').toLowerCase()
+            ) ? 'checked' : '';
+            grid.innerHTML += `<div class="practice-area-item">
+                <input type="checkbox" id="pa-other" value="Other" ${otherChecked} onchange="handleAdditionalCheckboxChange()">
+                <label for="pa-other">Other (specify)</label>
+            </div>`;
+
+            // Show/hide additional "Other" input
+            updateAdditionalOtherVisibility();
+
+            // If there's a custom "other" value, populate it
+            if (additionalAreas) {
+                const customOther = additionalAreas.find(a =>
+                    !STANDARD_PRACTICE_AREAS.map(sa => sa.toLowerCase()).includes(a.toLowerCase()) &&
+                    a.toLowerCase() !== (primaryArea || '').toLowerCase()
+                );
+                if (customOther) {
+                    document.getElementById('otherPracticeArea').value = customOther;
+                }
+            }
+
+            // If primary is custom "other", populate it
+            if (primaryArea && !STANDARD_PRACTICE_AREAS.map(a => a.toLowerCase()).includes(primaryArea.toLowerCase())) {
+                document.getElementById('primaryPracticeArea').value = 'Other (specify)';
+                document.getElementById('primaryOtherPracticeArea').value = primaryArea;
+                updatePrimaryOtherVisibility();
+            }
+        }
+
+        /**
+         * Handle primary practice area dropdown change
+         */
+        function handlePrimaryPracticeAreaChange() {
+            updatePrimaryOtherVisibility();
+            updateCheckboxDisabledState();
+        }
+
+        /**
+         * Update primary "Other" input visibility
+         */
+        function updatePrimaryOtherVisibility() {
+            const dropdown = document.getElementById('primaryPracticeArea');
+            const container = document.getElementById('primary-other-container');
+            container.style.display = dropdown.value === 'Other (specify)' ? 'block' : 'none';
+        }
+
+        /**
+         * Update checkbox disabled state based on primary selection
+         */
+        function updateCheckboxDisabledState() {
+            const primaryValue = document.getElementById('primaryPracticeArea').value;
+            const checkboxes = document.querySelectorAll('#practice-area-grid input[type="checkbox"]');
+
+            checkboxes.forEach(cb => {
+                if (cb.value.toLowerCase() === primaryValue.toLowerCase()) {
+                    cb.checked = false;
+                    cb.disabled = true;
+                } else if (cb.id !== 'pa-other') {
+                    cb.disabled = false;
+                }
+            });
+        }
+
+        /**
+         * Handle additional checkbox change (for "Other" visibility)
+         */
+        function handleAdditionalCheckboxChange() {
+            updateAdditionalOtherVisibility();
+        }
+
+        /**
+         * Update additional "Other" input visibility
+         */
+        function updateAdditionalOtherVisibility() {
+            const otherCheckbox = document.getElementById('pa-other');
+            const container = document.getElementById('other-practice-area-container');
+            container.style.display = otherCheckbox && otherCheckbox.checked ? 'block' : 'none';
         }
 
         /**
@@ -1158,8 +1473,42 @@
          */
         async function savePracticeAreas() {
             const btn = document.getElementById('save-practice-btn');
+
+            // Get primary practice area
+            const primaryDropdown = document.getElementById('primaryPracticeArea');
+            let primaryPracticeArea = primaryDropdown.value;
+
+            // Handle "Other" custom value for primary
+            if (primaryPracticeArea === 'Other (specify)') {
+                const customPrimary = document.getElementById('primaryOtherPracticeArea').value.trim();
+                if (!customPrimary) {
+                    alert('Please specify your primary practice area.');
+                    return;
+                }
+                primaryPracticeArea = customPrimary;
+            }
+
+            // Validate primary practice area
+            if (!primaryPracticeArea) {
+                alert('Please select a primary practice area.');
+                return;
+            }
+
+            // Get additional practice areas (excluding the primary)
             const checkboxes = document.querySelectorAll('#practice-area-grid input[type="checkbox"]:checked');
-            const selected = Array.from(checkboxes).map(cb => cb.value);
+            let additionalPracticeAreas = Array.from(checkboxes).map(cb => cb.value);
+
+            // Handle "Other" custom value for additional
+            const otherIndex = additionalPracticeAreas.indexOf('Other (specify)');
+            if (otherIndex !== -1) {
+                const customOther = document.getElementById('otherPracticeArea').value.trim();
+                if (customOther) {
+                    additionalPracticeAreas[otherIndex] = customOther;
+                } else {
+                    // Remove empty "Other" from list
+                    additionalPracticeAreas.splice(otherIndex, 1);
+                }
+            }
 
             btn.disabled = true;
             btn.textContent = 'Saving...';
@@ -1168,13 +1517,18 @@
                 const response = await fetchWithTimeout(`${API_BASE}/updateAccountSettings`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ token: currentToken, practiceAreas: selected })
+                    body: JSON.stringify({
+                        token: currentToken,
+                        primaryPracticeArea: primaryPracticeArea,
+                        additionalPracticeAreas: additionalPracticeAreas
+                    })
                 });
 
                 const data = await response.json();
 
                 if (response.ok && data.success) {
-                    accountData.practiceAreas = data.account.practiceAreas;
+                    accountData.primaryPracticeArea = data.account.primaryPracticeArea;
+                    accountData.additionalPracticeAreas = data.account.additionalPracticeAreas;
 
                     if (data.regeneratingDemo) {
                         btn.textContent = 'Saved! Regenerating intake page...';
@@ -1280,6 +1634,8 @@ Thanks!`);
         function logout() {
             currentToken = null;
             accountData = null;
+            // Clear session storage
+            sessionStorage.removeItem('preintake_session');
             // Clear URL params
             window.history.replaceState({}, document.title, window.location.pathname);
             showEmailEntry();

@@ -369,6 +369,45 @@
             font-size: 0.9rem;
             margin-top: 0.25rem;
         }
+
+        /* What Happens Next Section */
+        .what-happens {
+            background: rgba(201, 169, 98, 0.08);
+            border: 1px solid rgba(201, 169, 98, 0.2);
+            border-radius: 12px;
+            padding: 1.25rem;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .what-happens h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--accent-gold);
+        }
+
+        .what-happens-list {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .what-happens-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            font-size: 0.85rem;
+            color: var(--text-light);
+            line-height: 1.4;
+        }
+
+        .what-happens-item svg {
+            width: 18px;
+            height: 18px;
+            color: var(--accent-gold);
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
     </style>
 </head>
 <body>
@@ -431,6 +470,33 @@
                     <div class="other-practice-area" id="other-practice-area-container" style="display: none;">
                         <label for="otherPracticeArea">Please specify:</label>
                         <input type="text" id="otherPracticeArea" name="otherPracticeArea" placeholder="e.g., Maritime Law, Aviation Law">
+                    </div>
+                </div>
+
+                <div class="what-happens">
+                    <h4>What Happens Next</h4>
+                    <div class="what-happens-list">
+                        <div class="what-happens-item">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                            </svg>
+                            <span>Your account activates instantly after payment</span>
+                        </div>
+                        <div class="what-happens-item">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="16 18 22 12 16 6"></polyline>
+                                <polyline points="8 6 2 12 8 18"></polyline>
+                            </svg>
+                            <span>You'll receive an embed code for your website and a shareable intake link</span>
+                        </div>
+                        <div class="what-happens-item">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                <polyline points="22,6 12,13 2,6"></polyline>
+                            </svg>
+                            <span>Qualified inquiries are delivered directly to your inbox</span>
+                        </div>
                     </div>
                 </div>
 
@@ -723,7 +789,7 @@
             const errorEl = document.getElementById('form-error');
             errorEl.innerHTML = `
                 You already have an active PreIntake.ai account.<br>
-                <a href="/account.html" style="color: var(--accent-gold); text-decoration: underline;">
+                <a href="/login.html" style="color: var(--accent-gold); text-decoration: underline;">
                     Go to My Account →
                 </a>
             `;

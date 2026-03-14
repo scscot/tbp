@@ -378,6 +378,7 @@ const {
   verifyAccountToken,
   updateAccountSettings,
   createBillingPortalSession,
+  loginWithPassword,
 } = require('./account-portal-functions');
 
 // ==============================
@@ -586,6 +587,7 @@ module.exports = {
   verifyAccountToken,
   updateAccountSettings,
   createBillingPortalSession,
+  loginWithPassword,
 };
 
 // ==============================

@@ -8,6 +8,7 @@ const { defineSecret, defineString } = require('firebase-functions/params');
 const admin = require('firebase-admin');
 const { getFirestore } = require('firebase-admin/firestore');
 const nodemailer = require('nodemailer');
+const bcrypt = require('bcrypt');
 
 // Ensure Firebase is initialized
 if (!admin.apps.length) {
@@ -52,7 +53,7 @@ const createCheckoutSession = onRequest(
         }
 
         try {
-            const { firmId, email, firmName } = req.body;
+            const { firmId, email, firmName, password } = req.body;
 
             if (!firmId) {
                 return res.status(400).json({ error: 'Missing firmId' });
@@ -61,6 +62,13 @@ const createCheckoutSession = onRequest(
             if (!email) {
                 return res.status(400).json({ error: 'Missing email' });
             }
+
+            if (!password || password.length < 8) {
+                return res.status(400).json({ error: 'Password must be at least 8 characters' });
+            }
+
+            // Hash the password
+            const passwordHash = await bcrypt.hash(password, 10);
 
             // Initialize Stripe with secret key
             const stripe = require('stripe')(stripeSecretKey.value());
@@ -105,6 +113,7 @@ const createCheckoutSession = onRequest(
                 metadata: {
                     firmId: firmId,
                     firmName: firmName || '',
+                    passwordHash: passwordHash,
                 },
                 subscription_data: {
                     trial_period_days: 14, // 14-day free trial
@@ -496,7 +505,7 @@ function generateActivationNotifyEmail(firmName, customerEmail, firmId) {
 
     <p>
         <a href="https://preintake.ai/demo/${firmId}" style="color: #c9a962;">View Demo</a> |
-        <a href="https://console.firebase.google.com/project/teambuilder-plus-fe74d/firestore/databases/preintake/data/~2Fpreintake_leads~2F${firmId}" style="color: #c9a962;">Firestore</a> |
+        <a href="https://console.firebase.google.com/project/teambuilder-plus-fe74d/firestore/databases/preintake/data/~2Fpreintake_accounts~2F${firmId}" style="color: #c9a962;">Firestore</a> |
         <a href="https://dashboard.stripe.com/customers" style="color: #c9a962;">Stripe</a>
     </p>
 </body>
@@ -509,6 +518,7 @@ function generateActivationNotifyEmail(firmName, customerEmail, firmId) {
  */
 async function handleCheckoutComplete(session) {
     const firmId = session.metadata?.firmId;
+    const passwordHash = session.metadata?.passwordHash;
     if (!firmId) {
         console.error('No firmId in checkout session metadata');
         return;
@@ -519,7 +529,7 @@ async function handleCheckoutComplete(session) {
         const leadDoc = await db.collection('preintake_leads').doc(firmId).get();
         const leadData = leadDoc.exists ? leadDoc.data() : {};
 
-        const firmName = leadData.analysis?.firmName || leadData.website || 'Your Firm';
+        const firmName = leadData.firmName || leadData.analysis?.firmName || leadData.website || 'Your Firm';
         const customerEmail = session.customer_details?.email || leadData.email;
 
         // Determine if subscriber has a website
@@ -531,25 +541,60 @@ async function handleCheckoutComplete(session) {
         const intakeCode = leadData.intakeCode || barNumber || firmId;
         const hostedIntakeUrl = `https://preintake.ai/${intakeCode}`;
 
-        // Build update object
-        const updateData = {
+        // Build account data for preintake_accounts collection
+        const accountData = {
+            // Copy relevant lead data
+            email: leadData.email || customerEmail,
+            firmName: firmName,
+            firstName: leadData.firstName || '',
+            lastName: leadData.lastName || '',
+            name: leadData.name || '',
+            website: leadData.website || '',
+            primaryPracticeArea: leadData.primaryPracticeArea || null,
+            additionalPracticeAreas: leadData.additionalPracticeAreas || [],
+            practiceAreas: leadData.practiceAreas || [],
+            confirmedPracticeAreas: leadData.confirmedPracticeAreas || null,
+            analysis: leadData.analysis || null,
+            deepResearch: leadData.deepResearch || null,
+            barNumber: barNumber,
+            source: leadData.source || 'organic_signup',
+
+            // Subscription data
             status: 'active',
             stripeCustomerId: session.customer,
             stripeSubscriptionId: session.subscription,
             subscriptionStatus: 'active',
-            deliveryEmail: customerEmail, // Default lead delivery to their email
+            deliveryEmail: customerEmail,
             hasWebsite: hasWebsite,
             deliveryMethod: hasWebsite ? 'embed' : 'hosted',
             intakeCode: intakeCode,
             hostedIntakeUrl: hostedIntakeUrl,
+
+            // Timestamps
+            createdAt: leadData.createdAt || admin.firestore.FieldValue.serverTimestamp(),
             activatedAt: admin.firestore.FieldValue.serverTimestamp(),
             updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+
+            // Reference to original lead
+            originalLeadId: firmId,
         };
 
-        // Update lead document with subscription info
-        await db.collection('preintake_leads').doc(firmId).update(updateData);
+        // Add passwordHash if provided (from checkout session metadata)
+        if (passwordHash) {
+            accountData.passwordHash = passwordHash;
+        }
 
-        console.log(`Checkout complete for firm ${firmId}`);
+        // Create document in preintake_accounts collection (same ID as lead for easy lookup)
+        await db.collection('preintake_accounts').doc(firmId).set(accountData);
+
+        // Also update the lead document to mark it as converted
+        await db.collection('preintake_leads').doc(firmId).update({
+            status: 'converted',
+            convertedToAccountAt: admin.firestore.FieldValue.serverTimestamp(),
+            updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+        });
+
+        console.log(`Checkout complete for firm ${firmId}, account created in preintake_accounts`);
 
         // Send activation email to customer
         try {
@@ -561,7 +606,7 @@ async function handleCheckoutComplete(session) {
                 'Your PreIntake.ai Account is Active!',
                 customerHtml
             );
-            await db.collection('preintake_leads').doc(firmId).update({
+            await db.collection('preintake_accounts').doc(firmId).update({
                 activationEmailSent: true,
                 activationEmailSentAt: admin.firestore.FieldValue.serverTimestamp()
             });
@@ -611,7 +656,8 @@ async function handleSubscriptionCreated(subscription) {
             updateData.currentPeriodEnd = new Date(subscription.current_period_end * 1000);
         }
 
-        await db.collection('preintake_leads').doc(firmId).update(updateData);
+        // Update preintake_accounts (where active subscribers are stored)
+        await db.collection('preintake_accounts').doc(firmId).update(updateData);
 
         console.log(`Subscription created for firm ${firmId}`);
     } catch (error) {
@@ -628,9 +674,9 @@ async function handleSubscriptionUpdated(subscription) {
 
     try {
         // Get current document to check if cancel_at_period_end changed
-        const leadDoc = await db.collection('preintake_leads').doc(firmId).get();
-        const leadData = leadDoc.exists ? leadDoc.data() : {};
-        const wasNotCancelling = !leadData.cancelAtPeriodEnd;
+        const accountDoc = await db.collection('preintake_accounts').doc(firmId).get();
+        const accountData = accountDoc.exists ? accountDoc.data() : {};
+        const wasNotCancelling = !accountData.cancelAtPeriodEnd;
         const isNowCancelling = subscription.cancel_at_period_end === true;
 
         // Build update object with required fields
@@ -648,15 +694,15 @@ async function handleSubscriptionUpdated(subscription) {
             updateData.currentPeriodEnd = new Date(subscription.current_period_end * 1000);
         }
 
-        // Update the document
-        await db.collection('preintake_leads').doc(firmId).update(updateData);
+        // Update the account document
+        await db.collection('preintake_accounts').doc(firmId).update(updateData);
 
         console.log(`Subscription updated for firm ${firmId}: ${subscription.status}, cancel_at_period_end: ${subscription.cancel_at_period_end}`);
 
         // Send cancellation email if user just cancelled (and we haven't sent one already)
-        if (wasNotCancelling && isNowCancelling && !leadData.cancellationEmailSent) {
-            const firmName = leadData.analysis?.firmName || leadData.website || 'Your Firm';
-            const customerEmail = leadData.deliveryEmail || leadData.email;
+        if (wasNotCancelling && isNowCancelling && !accountData.cancellationEmailSent) {
+            const firmName = accountData.firmName || accountData.analysis?.firmName || accountData.website || 'Your Firm';
+            const customerEmail = accountData.deliveryEmail || accountData.email;
             const periodEndDate = new Date(subscription.current_period_end * 1000);
 
             try {
@@ -668,7 +714,7 @@ async function handleSubscriptionUpdated(subscription) {
                 );
 
                 // Mark that we sent the cancellation email
-                await db.collection('preintake_leads').doc(firmId).update({
+                await db.collection('preintake_accounts').doc(firmId).update({
                     cancellationEmailSent: true,
                     cancellationEmailSentAt: admin.firestore.FieldValue.serverTimestamp(),
                 });
@@ -681,7 +727,7 @@ async function handleSubscriptionUpdated(subscription) {
                     `⚠️ Subscription Cancelled: ${firmName}`,
                     `<p>Subscription cancelled for <strong>${firmName}</strong> (${customerEmail}).</p>
                      <p>Access remains active until: ${periodEndDate.toLocaleDateString()}</p>
-                     <p><a href="https://console.firebase.google.com/project/teambuilder-plus-fe74d/firestore/databases/preintake/data/~2Fpreintake_leads~2F${firmId}">View in Firestore</a></p>`
+                     <p><a href="https://console.firebase.google.com/project/teambuilder-plus-fe74d/firestore/databases/preintake/data/~2Fpreintake_accounts~2F${firmId}">View in Firestore</a></p>`
                 );
             } catch (emailErr) {
                 console.error('Error sending cancellation email:', emailErr.message);
@@ -689,8 +735,8 @@ async function handleSubscriptionUpdated(subscription) {
         }
 
         // If user reactivated (was cancelling, now not cancelling), reset the flag
-        if (!isNowCancelling && leadData.cancelAtPeriodEnd === true) {
-            await db.collection('preintake_leads').doc(firmId).update({
+        if (!isNowCancelling && accountData.cancelAtPeriodEnd === true) {
+            await db.collection('preintake_accounts').doc(firmId).update({
                 cancellationEmailSent: false,
             });
             console.log(`Subscription reactivated for firm ${firmId}`);
@@ -709,7 +755,7 @@ async function handleSubscriptionDeleted(subscription) {
     if (!firmId) return;
 
     try {
-        await db.collection('preintake_leads').doc(firmId).update({
+        await db.collection('preintake_accounts').doc(firmId).update({
             status: 'cancelled',
             subscriptionStatus: 'cancelled',
             cancelledAt: admin.firestore.FieldValue.serverTimestamp(),
@@ -730,8 +776,8 @@ async function handlePaymentSucceeded(invoice) {
     if (!subscriptionId) return;
 
     try {
-        // Find firm by subscription ID
-        const snapshot = await db.collection('preintake_leads')
+        // Find account by subscription ID
+        const snapshot = await db.collection('preintake_accounts')
             .where('stripeSubscriptionId', '==', subscriptionId)
             .limit(1)
             .get();
@@ -759,8 +805,8 @@ async function handlePaymentFailed(invoice) {
     if (!subscriptionId) return;
 
     try {
-        // Find firm by subscription ID
-        const snapshot = await db.collection('preintake_leads')
+        // Find account by subscription ID
+        const snapshot = await db.collection('preintake_accounts')
             .where('stripeSubscriptionId', '==', subscriptionId)
             .limit(1)
             .get();
@@ -845,23 +891,23 @@ const resendActivationEmail = onRequest(
                 return res.status(400).json({ error: 'Missing leadId' });
             }
 
-            // Fetch lead data
-            const leadDoc = await db.collection('preintake_leads').doc(leadId).get();
-            if (!leadDoc.exists) {
-                return res.status(404).json({ error: 'Lead not found' });
+            // Fetch account data (accounts collection has active subscribers)
+            const accountDoc = await db.collection('preintake_accounts').doc(leadId).get();
+            if (!accountDoc.exists) {
+                return res.status(404).json({ error: 'Account not found' });
             }
 
-            const leadData = leadDoc.data();
-            const firmName = leadData.firmName || 'Your Firm';
-            const customerEmail = leadData.deliveryEmail || leadData.email;
-            const hasWebsite = leadData.hasWebsite !== false;
-            const hostedIntakeUrl = leadData.hostedIntakeUrl || null;
+            const accountData = accountDoc.data();
+            const firmName = accountData.firmName || 'Your Firm';
+            const customerEmail = accountData.deliveryEmail || accountData.email;
+            const hasWebsite = accountData.hasWebsite !== false;
+            const hostedIntakeUrl = accountData.hostedIntakeUrl || null;
 
             // Generate and send email
             const emailHtml = generateActivationEmail(firmName, leadId, customerEmail, hasWebsite, hostedIntakeUrl);
             await sendEmail(customerEmail, 'Your PreIntake.ai Account is Active!', emailHtml);
 
-            console.log(`Resent activation email to ${customerEmail} for lead ${leadId}`);
+            console.log(`Resent activation email to ${customerEmail} for account ${leadId}`);
 
             return res.json({
                 success: true,

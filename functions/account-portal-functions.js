@@ -9,6 +9,7 @@ const admin = require('firebase-admin');
 const { getFirestore } = require('firebase-admin/firestore');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
+const bcrypt = require('bcrypt');
 
 // Ensure Firebase is initialized
 if (!admin.apps.length) {
@@ -211,43 +212,41 @@ const sendAccountAccessLink = onRequest(
                 return res.json({ success: true, message: 'If an account exists with this email, you will receive an access link.' });
             }
 
-            // Find lead by email (check both email and deliveryEmail fields)
-            let leadDoc = null;
-            let leadId = null;
+            // Find account by email (check both email and deliveryEmail fields)
+            let accountDoc = null;
+            let accountId = null;
 
             // First try deliveryEmail (the active delivery address)
-            const deliverySnapshot = await db.collection('preintake_leads')
+            const deliverySnapshot = await db.collection('preintake_accounts')
                 .where('deliveryEmail', '==', normalizedEmail)
-                .where('subscriptionStatus', '==', 'active')
                 .limit(1)
                 .get();
 
             if (!deliverySnapshot.empty) {
-                leadDoc = deliverySnapshot.docs[0];
-                leadId = leadDoc.id;
+                accountDoc = deliverySnapshot.docs[0];
+                accountId = accountDoc.id;
             } else {
                 // Try the original signup email
-                const emailSnapshot = await db.collection('preintake_leads')
+                const emailSnapshot = await db.collection('preintake_accounts')
                     .where('email', '==', normalizedEmail)
-                    .where('subscriptionStatus', '==', 'active')
                     .limit(1)
                     .get();
 
                 if (!emailSnapshot.empty) {
-                    leadDoc = emailSnapshot.docs[0];
-                    leadId = leadDoc.id;
+                    accountDoc = emailSnapshot.docs[0];
+                    accountId = emailSnapshot.docs[0].id;
                 }
             }
 
-            if (!leadDoc) {
+            if (!accountDoc) {
                 console.log(`No active account found for: ${normalizedEmail}`);
                 return res.status(404).json({
                     error: 'The email you entered is not associated with an active account. If you have requested a demo, please check your email for instructions to activate your subscription.'
                 });
             }
 
-            const leadData = leadDoc.data();
-            const firmName = leadData.analysis?.firmName || leadData.firmDisplayName || 'Your Firm';
+            const accountData = accountDoc.data();
+            const firmName = accountData.firmName || accountData.analysis?.firmName || accountData.firmDisplayName || 'Your Firm';
 
             // Generate secure token
             const token = crypto.randomBytes(32).toString('hex');
@@ -257,7 +256,8 @@ const sendAccountAccessLink = onRequest(
             // Store token
             await db.collection('account_tokens').doc(token).set({
                 token,
-                leadId,
+                accountId,
+                leadId: accountId, // backward compatibility
                 email: normalizedEmail,
                 createdAt: admin.firestore.FieldValue.serverTimestamp(),
                 expiresAt,
@@ -275,7 +275,7 @@ const sendAccountAccessLink = onRequest(
                 emailHtml
             );
 
-            console.log(`Magic link sent to ${normalizedEmail} for firm ${leadId}`);
+            console.log(`Magic link sent to ${normalizedEmail} for account ${accountId}`);
 
             return res.json({ success: true, message: 'If an account exists with this email, you will receive an access link.' });
 
@@ -311,9 +311,10 @@ const verifyAccountToken = onRequest(
             }
 
             const tokenData = tokenDoc.data();
+            const isSessionToken = tokenData.type === 'session';
 
-            // Check if already used
-            if (tokenData.used) {
+            // Check if already used (only for magic link tokens, not session tokens)
+            if (!isSessionToken && tokenData.used) {
                 return res.status(401).json({ error: 'This link has already been used. Please request a new one.' });
             }
 
@@ -325,32 +326,35 @@ const verifyAccountToken = onRequest(
                 return res.status(401).json({ error: 'This link has expired. Please request a new one.' });
             }
 
-            // Mark token as used
-            await tokenDoc.ref.update({
-                used: true,
-                usedAt: admin.firestore.FieldValue.serverTimestamp()
-            });
+            // Mark token as used (only for magic link tokens, session tokens remain reusable)
+            if (!isSessionToken) {
+                await tokenDoc.ref.update({
+                    used: true,
+                    usedAt: admin.firestore.FieldValue.serverTimestamp()
+                });
+            }
 
-            // Get lead data
-            const leadDoc = await db.collection('preintake_leads').doc(tokenData.leadId).get();
+            // Get account data (support both accountId and legacy leadId)
+            const accountId = tokenData.accountId || tokenData.leadId;
+            const accountDoc = await db.collection('preintake_accounts').doc(accountId).get();
 
-            if (!leadDoc.exists) {
+            if (!accountDoc.exists) {
                 return res.status(404).json({ error: 'Account not found' });
             }
 
-            const leadData = leadDoc.data();
+            const accountData = accountDoc.data();
 
             // Update last portal access
-            await leadDoc.ref.update({
+            await accountDoc.ref.update({
                 lastPortalAccessAt: admin.firestore.FieldValue.serverTimestamp(),
                 portalAccessCount: admin.firestore.FieldValue.increment(1)
             });
 
-            // Resolve firstName/lastName (some leads store name as full string)
-            let firstName = leadData.firstName || '';
-            let lastName = leadData.lastName || '';
-            if (!firstName && leadData.name) {
-                const parts = leadData.name.trim().split(' ');
+            // Resolve firstName/lastName (some accounts store name as full string)
+            let firstName = accountData.firstName || '';
+            let lastName = accountData.lastName || '';
+            if (!firstName && accountData.name) {
+                const parts = accountData.name.trim().split(' ');
                 firstName = parts[0] || '';
                 lastName = parts.slice(1).join(' ') || '';
             }
@@ -359,19 +363,23 @@ const verifyAccountToken = onRequest(
             return res.json({
                 success: true,
                 account: {
-                    firmId: tokenData.leadId,
-                    firmName: leadData.analysis?.firmName || leadData.firmDisplayName || 'Your Firm',
+                    firmId: accountId,
+                    firmName: accountData.firmName || accountData.analysis?.firmName || accountData.firmDisplayName || 'Your Firm',
                     firstName,
                     lastName,
-                    deliveryEmail: leadData.deliveryEmail || leadData.email,
-                    subscriptionStatus: leadData.subscriptionStatus,
-                    currentPeriodEnd: leadData.currentPeriodEnd,
-                    practiceAreas: leadData.confirmedPracticeAreas?.areas
-                        || (Array.isArray(leadData.practiceAreas) ? leadData.practiceAreas : null)
-                        || leadData.analysis?.practiceAreas
+                    deliveryEmail: accountData.deliveryEmail || accountData.email,
+                    subscriptionStatus: accountData.subscriptionStatus || 'active', // preintake_accounts only has active subscribers
+                    currentPeriodEnd: accountData.currentPeriodEnd,
+                    primaryPracticeArea: accountData.primaryPracticeArea || null,
+                    additionalPracticeAreas: accountData.additionalPracticeAreas || [],
+                    practiceAreas: accountData.confirmedPracticeAreas?.areas
+                        || (Array.isArray(accountData.practiceAreas) ? accountData.practiceAreas : null)
+                        || accountData.analysis?.practiceAreas
                         || [],
-                    logo: leadData.analysis?.logo || null,
-                    primaryColor: leadData.analysis?.primaryColor || '#0c1f3f'
+                    logo: accountData.analysis?.logo || null,
+                    primaryColor: accountData.analysis?.primaryColor || '#0c1f3f',
+                    intakeCode: accountData.intakeCode || null,
+                    hostedIntakeUrl: accountData.hostedIntakeUrl || null
                 },
                 // Include token for subsequent requests (valid for this session)
                 sessionToken: token
@@ -386,7 +394,7 @@ const verifyAccountToken = onRequest(
 
 /**
  * Update account settings
- * POST { token, deliveryEmail?, practiceAreas?, firstName?, lastName? }
+ * POST { token, deliveryEmail?, practiceAreas?, primaryPracticeArea?, additionalPracticeAreas?, firstName?, lastName? }
  */
 const updateAccountSettings = onRequest(
     {
@@ -399,7 +407,7 @@ const updateAccountSettings = onRequest(
         }
 
         try {
-            const { token, deliveryEmail, practiceAreas, firstName, lastName } = req.body;
+            const { token, deliveryEmail, practiceAreas, primaryPracticeArea, additionalPracticeAreas, firstName, lastName } = req.body;
 
             if (!token) {
                 return res.status(400).json({ error: 'Token is required' });
@@ -430,10 +438,24 @@ const updateAccountSettings = onRequest(
                 }
             }
 
-            // Validate practiceAreas if provided
+            // Validate practiceAreas if provided (legacy support)
             if (practiceAreas !== undefined) {
                 if (!Array.isArray(practiceAreas)) {
                     return res.status(400).json({ error: 'Practice areas must be an array' });
+                }
+            }
+
+            // Validate primaryPracticeArea if provided
+            if (primaryPracticeArea !== undefined) {
+                if (typeof primaryPracticeArea !== 'string' || !primaryPracticeArea.trim()) {
+                    return res.status(400).json({ error: 'Primary practice area must be a non-empty string' });
+                }
+            }
+
+            // Validate additionalPracticeAreas if provided
+            if (additionalPracticeAreas !== undefined) {
+                if (!Array.isArray(additionalPracticeAreas)) {
+                    return res.status(400).json({ error: 'Additional practice areas must be an array' });
                 }
             }
 
@@ -453,6 +475,30 @@ const updateAccountSettings = onRequest(
                 updateData.regeneratingDemo = true;
             }
 
+            // Handle new primary + additional practice area structure
+            let practiceAreasChanged = false;
+            if (primaryPracticeArea !== undefined) {
+                updateData.primaryPracticeArea = primaryPracticeArea.trim();
+                practiceAreasChanged = true;
+            }
+
+            if (additionalPracticeAreas !== undefined) {
+                updateData.additionalPracticeAreas = additionalPracticeAreas;
+                practiceAreasChanged = true;
+            }
+
+            // Also update confirmedPracticeAreas.areas for backward compatibility
+            if (practiceAreasChanged && primaryPracticeArea !== undefined) {
+                const allAreas = [primaryPracticeArea.trim()];
+                if (additionalPracticeAreas && additionalPracticeAreas.length > 0) {
+                    allAreas.push(...additionalPracticeAreas);
+                }
+                updateData['confirmedPracticeAreas.areas'] = allAreas;
+                // Trigger demo regeneration so the intake page reflects the new practice areas
+                updateData.status = 'generating_demo';
+                updateData.regeneratingDemo = true;
+            }
+
             if (firstName !== undefined) {
                 updateData.firstName = firstName.trim();
             }
@@ -461,13 +507,15 @@ const updateAccountSettings = onRequest(
                 updateData.lastName = lastName.trim();
             }
 
-            await db.collection('preintake_leads').doc(tokenData.leadId).update(updateData);
+            // Support both accountId and legacy leadId
+            const accountId = tokenData.accountId || tokenData.leadId;
+            await db.collection('preintake_accounts').doc(accountId).update(updateData);
 
             // Get updated data
-            const updatedDoc = await db.collection('preintake_leads').doc(tokenData.leadId).get();
+            const updatedDoc = await db.collection('preintake_accounts').doc(accountId).get();
             const updatedData = updatedDoc.data();
 
-            console.log(`Account settings updated for ${tokenData.leadId}`);
+            console.log(`Account settings updated for ${accountId}`);
 
             // Resolve names from updated data
             let resolvedFirstName = updatedData.firstName || '';
@@ -480,14 +528,16 @@ const updateAccountSettings = onRequest(
 
             return res.json({
                 success: true,
-                regeneratingDemo: practiceAreas !== undefined,
+                regeneratingDemo: practiceAreas !== undefined || practiceAreasChanged,
                 account: {
-                    firmId: tokenData.leadId,
-                    firmName: updatedData.analysis?.firmName || updatedData.firmDisplayName || 'Your Firm',
+                    firmId: accountId,
+                    firmName: updatedData.firmName || updatedData.analysis?.firmName || updatedData.firmDisplayName || 'Your Firm',
                     firstName: resolvedFirstName,
                     lastName: resolvedLastName,
                     deliveryEmail: updatedData.deliveryEmail || updatedData.email,
-                    subscriptionStatus: updatedData.subscriptionStatus,
+                    subscriptionStatus: updatedData.subscriptionStatus || 'active',
+                    primaryPracticeArea: updatedData.primaryPracticeArea || null,
+                    additionalPracticeAreas: updatedData.additionalPracticeAreas || [],
                     practiceAreas: updatedData.confirmedPracticeAreas?.areas
                         || (Array.isArray(updatedData.practiceAreas) ? updatedData.practiceAreas : null)
                         || updatedData.analysis?.practiceAreas
@@ -541,15 +591,16 @@ const createBillingPortalSession = onRequest(
                 return res.status(401).json({ error: 'Session expired. Please request a new access link.' });
             }
 
-            // Get lead document for Stripe customer ID
-            const leadDoc = await db.collection('preintake_leads').doc(tokenData.leadId).get();
+            // Get account document for Stripe customer ID
+            const accountId = tokenData.accountId || tokenData.leadId;
+            const accountDoc = await db.collection('preintake_accounts').doc(accountId).get();
 
-            if (!leadDoc.exists) {
+            if (!accountDoc.exists) {
                 return res.status(404).json({ error: 'Account not found' });
             }
 
-            const leadData = leadDoc.data();
-            const stripeCustomerId = leadData.stripeCustomerId;
+            const accountData = accountDoc.data();
+            const stripeCustomerId = accountData.stripeCustomerId;
 
             if (!stripeCustomerId) {
                 return res.status(400).json({ error: 'Billing not set up for this account. Please contact support.' });
@@ -563,7 +614,7 @@ const createBillingPortalSession = onRequest(
                 return_url: `https://preintake.ai/account.html?token=${token}`,
             });
 
-            console.log(`Billing portal session created for ${tokenData.leadId}`);
+            console.log(`Billing portal session created for ${accountId}`);
 
             return res.json({
                 success: true,
@@ -577,9 +628,115 @@ const createBillingPortalSession = onRequest(
     }
 );
 
+/**
+ * Login with email and password
+ * POST { email, password }
+ * Returns session token valid for 7 days
+ */
+const loginWithPassword = onRequest(
+    {
+        cors: true,
+        region: 'us-west1',
+    },
+    async (req, res) => {
+        if (req.method !== 'POST') {
+            return res.status(405).json({ error: 'Method not allowed' });
+        }
+
+        try {
+            const { email, password } = req.body;
+
+            if (!email || !password) {
+                return res.status(400).json({ success: false, error: 'Email and password are required' });
+            }
+
+            const normalizedEmail = email.toLowerCase().trim();
+
+            // Find user by email in preintake_accounts (active subscribers)
+            let userDoc = null;
+            let accountId = null;
+
+            // First try deliveryEmail
+            const deliverySnapshot = await db.collection('preintake_accounts')
+                .where('deliveryEmail', '==', normalizedEmail)
+                .limit(1)
+                .get();
+
+            if (!deliverySnapshot.empty) {
+                userDoc = deliverySnapshot.docs[0];
+                accountId = userDoc.id;
+            } else {
+                // Try the original signup email
+                const emailSnapshot = await db.collection('preintake_accounts')
+                    .where('email', '==', normalizedEmail)
+                    .limit(1)
+                    .get();
+
+                if (!emailSnapshot.empty) {
+                    userDoc = emailSnapshot.docs[0];
+                    accountId = userDoc.id;
+                }
+            }
+
+            if (!userDoc) {
+                // Generic error to prevent email enumeration
+                return res.status(401).json({ success: false, error: 'Invalid email or password' });
+            }
+
+            const userData = userDoc.data();
+
+            // Check if user has a password set
+            if (!userData.passwordHash) {
+                return res.status(401).json({
+                    success: false,
+                    error: 'No password set for this account. Please use the magic link option.'
+                });
+            }
+
+            // Verify password
+            const validPassword = await bcrypt.compare(password, userData.passwordHash);
+
+            if (!validPassword) {
+                return res.status(401).json({ success: false, error: 'Invalid email or password' });
+            }
+
+            // Generate session token (7 days validity)
+            const sessionToken = crypto.randomBytes(32).toString('hex');
+            const SESSION_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
+            const expiresAt = new Date(Date.now() + SESSION_TTL_MS);
+
+            // Store session token
+            await db.collection('account_tokens').doc(sessionToken).set({
+                token: sessionToken,
+                accountId: accountId,
+                leadId: accountId, // Keep for backward compatibility
+                email: normalizedEmail,
+                createdAt: admin.firestore.FieldValue.serverTimestamp(),
+                expiresAt,
+                used: false,
+                usedAt: null,
+                type: 'session' // Distinguish from magic link tokens
+            });
+
+            console.log(`Password login successful for ${normalizedEmail} (${accountId})`);
+
+            return res.json({
+                success: true,
+                sessionToken,
+                firmName: userData.firmName || ''
+            });
+
+        } catch (error) {
+            console.error('loginWithPassword error:', error);
+            return res.status(500).json({ success: false, error: 'An error occurred. Please try again.' });
+        }
+    }
+);
+
 module.exports = {
     sendAccountAccessLink,
     verifyAccountToken,
     updateAccountSettings,
     createBillingPortalSession,
+    loginWithPassword,
 };

@@ -33,7 +33,7 @@
                         <a href="/about-us.html">About</a>
                         <a href="/faq.html">FAQs</a>
                         <a href="/contact-us.html">Contact</a>
-                        <a href="/account.html" class="nav-account">My Account</a>
+                        <a href="/login.html" class="nav-account">Log In</a>
                     </nav>
                 </div>
             </header>
@@ -57,6 +57,34 @@
             if (getStartedLink) {
                 getStartedLink.href = `/demo/?demo=${demoViewedId}`;
                 getStartedLink.textContent = 'View Demo';
+            }
+        }
+
+        // Check if user is logged in (has active session)
+        const sessionData = sessionStorage.getItem('preintake_session');
+        if (sessionData && accountBtn) {
+            try {
+                const session = JSON.parse(sessionData);
+                if (session.token) {
+                    // User is logged in - show Log Out button
+                    accountBtn.href = '#';
+                    accountBtn.textContent = 'Log Out';
+                    accountBtn.classList.remove('nav-get-started');
+                    accountBtn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        // Clear session data
+                        sessionStorage.removeItem('preintake_session');
+                        sessionStorage.removeItem('tbp_demo_viewed');
+                        sessionStorage.removeItem('tbp_demo_id');
+                        sessionStorage.removeItem('tbp_demo_firm');
+                        sessionStorage.removeItem('tbp_demo_email');
+                        // Redirect to home page
+                        window.location.href = '/';
+                    });
+                }
+            } catch (e) {
+                // Invalid session data, ignore
+                sessionStorage.removeItem('preintake_session');
             }
         }
 
