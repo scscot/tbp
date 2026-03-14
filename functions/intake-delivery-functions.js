@@ -585,6 +585,16 @@ function generateIntakeSummary(payload, _firmName) {
         </div>
         ` : ''}
 
+        <!-- Suggested Follow-Up Questions (YELLOW routing only) -->
+        ${routing === 'yellow' ? `
+        <div style="background: #fefce8; border-radius: 8px; padding: 20px; margin-bottom: 20px; border-left: 4px solid #ca8a04;">
+            <h3 style="color: #ca8a04; font-size: 12px; margin: 0 0 12px 0; text-transform: uppercase; letter-spacing: 0.5px;">Suggested Follow-Up Questions</h3>
+            <ul style="margin: 0; padding-left: 20px; color: #713f12;">
+                ${generateFollowUpQuestions(payload)}
+            </ul>
+        </div>
+        ` : ''}
+
         <!-- Additional Comments from Client -->
         ${payload.additional_comments ? `
         <div style="background: #f0f9ff; border-left: 4px solid #0ea5e9; padding: 15px 20px; margin-bottom: 20px; border-radius: 0 8px 8px 0;">
@@ -636,6 +646,79 @@ function formatRecommendation(action) {
         'refer_to_specialist': 'Refer to Specialist'
     };
     return labels[action] || action || 'N/A';
+}
+
+/**
+ * Generate suggested follow-up questions for YELLOW routing leads
+ * These help staff know what to clarify during their call
+ */
+function generateFollowUpQuestions(payload) {
+    const questions = [];
+    const caseInfo = payload.case_info || {};
+    const caseType = caseInfo.case_type?.toLowerCase() || '';
+
+    // Check for missing or vague date information
+    if (!caseInfo.date_occurred || caseInfo.date_occurred === 'N/A' ||
+        caseInfo.date_occurred.includes('approximate') || caseInfo.date_occurred.includes('around')) {
+        questions.push('Confirm the exact date of the incident for statute of limitations purposes');
+    }
+
+    // Check for missing documentation indicators
+    const transcript = (payload.transcript || '').toLowerCase();
+    if (!transcript.includes('police report') && !transcript.includes('accident report')) {
+        if (caseType.includes('injury') || caseType.includes('accident') || caseType.includes('car')) {
+            questions.push('Ask if a police or accident report was filed');
+        }
+    }
+
+    // Check for medical documentation
+    if (!transcript.includes('medical records') && !transcript.includes('doctor') &&
+        !transcript.includes('hospital') && !transcript.includes('treatment')) {
+        if (caseType.includes('injury') || payload.injuries) {
+            questions.push('Request medical records or treatment documentation');
+        }
+    }
+
+    // Check for representation status
+    if (!transcript.includes('attorney') && !transcript.includes('lawyer') &&
+        !transcript.includes('represent')) {
+        questions.push('Verify they are not currently represented by another attorney');
+    }
+
+    // Practice-area specific questions
+    if (caseType.includes('family') || caseType.includes('divorce') || caseType.includes('custody')) {
+        if (!transcript.includes('children') && !transcript.includes('minor')) {
+            questions.push('Clarify if minor children are involved');
+        }
+    }
+
+    if (caseType.includes('bankruptcy') || caseType.includes('debt')) {
+        if (!transcript.includes('income') && !transcript.includes('assets')) {
+            questions.push('Gather income and asset information for filing determination');
+        }
+    }
+
+    if (caseType.includes('immigration')) {
+        if (!transcript.includes('visa') && !transcript.includes('status')) {
+            questions.push('Confirm current immigration status and any deadlines');
+        }
+    }
+
+    if (caseType.includes('criminal')) {
+        if (!transcript.includes('court date') && !transcript.includes('arraignment')) {
+            questions.push('Determine if there are upcoming court dates');
+        }
+    }
+
+    // Add general follow-up if we have few specific questions
+    if (questions.length < 2) {
+        questions.push('Clarify any unclear details from the intake conversation');
+    }
+
+    // Cap at 4 questions to avoid overwhelming
+    const finalQuestions = questions.slice(0, 4);
+
+    return finalQuestions.map(q => `<li style="margin-bottom: 8px;">${q}</li>`).join('');
 }
 
 module.exports = {

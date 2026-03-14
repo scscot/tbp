@@ -2107,6 +2107,16 @@
         const MAX_RETRIES = 3;
         const INITIAL_RETRY_DELAY = 5000;
 
+        // Helper for human-like delays
+        const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+        // Calculate typing delay based on response length (more text = longer "thinking")
+        function calculateTypingDelay(responseLength) {
+            const baseDelay = 400 + Math.random() * 400; // 400-800ms base
+            const lengthDelay = Math.min(800, responseLength * 3); // Up to 800ms based on length
+            return Math.min(1500, baseDelay + lengthDelay); // Cap at 1.5 seconds
+        }
+
         // Session recovery
         function getSessionKey() {
             return `preintake_session_${CONFIG?.firmId || 'unknown'}`;
@@ -2764,6 +2774,11 @@
                 }
 
                 const data = await response.json();
+
+                // Add human-like typing delay based on response length
+                const typingDelay = calculateTypingDelay((data.content || '').length);
+                await sleep(typingDelay);
+
                 removeTypingIndicator();
                 await processResponse(data);
 
@@ -3080,19 +3095,21 @@
             const routingBadge = document.getElementById('routing-badge');
             const routingText = document.getElementById('routing-text');
 
+            const firmName = firmStatus.firmName || CONFIG.firmName || 'our team';
+
             if (assessment.routing === 'green') {
                 routingBadge.className = 'routing-badge green';
-                routingText.textContent = "We'd Like to Speak With You";
+                routingText.textContent = `Great news — ${firmName} can likely help`;
             } else if (assessment.routing === 'yellow') {
                 routingBadge.className = 'routing-badge yellow';
-                routingText.textContent = "We Need More Information";
+                routingText.textContent = `We've captured your information`;
             }
 
             const nextStepsText = document.getElementById('next-steps-text');
             if (assessment.routing === 'green') {
-                nextStepsText.textContent = "Based on the information you provided, we believe you may have a case worth discussing. A member of our team will contact you soon.";
+                nextStepsText.textContent = `Thanks for sharing your situation. Based on what you've told us, this looks like a matter ${firmName} can help with. Someone from the team will be in touch soon to discuss next steps.`;
             } else {
-                nextStepsText.textContent = "We'd like to learn more. Please gather any relevant documents. We'll reach out to discuss next steps.";
+                nextStepsText.textContent = `Thank you for taking the time to share your situation. ${firmName} will review the details and reach out to discuss your options.`;
             }
 
             const factorsList = document.getElementById('factors-list');
