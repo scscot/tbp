@@ -5,9 +5,9 @@
  * Analyzes App Store Connect metrics using a rolling 30-day window.
  * Compares impressions and downloads by territory, mapped to language versions.
  *
- * Rolling Window:
- *   - Before Period: 30-15 days ago
- *   - After Period: 15 days ago to today
+ * Rolling Window (accounts for ~10 day ASC data lag):
+ *   - Before Period: 39-25 days ago (15 days)
+ *   - After Period: 24-10 days ago (15 days)
  *
  * Usage:
  *   node scripts/analyze-aso-impact.js
@@ -300,22 +300,24 @@ async function runAnalysis() {
   const token = generateASCToken(credentials.keyId, credentials.issuerId, credentials.privateKey);
   console.log('  ✓ ASC token generated');
 
-  // Calculate date ranges using rolling 30-day window
-  // Before Period: 30-15 days ago
-  // After Period: 15 days ago to today
+  // Calculate date ranges accounting for ~10 day ASC data lag
+  // Before Period: 39-25 days ago (15 days)
+  // After Period: 24-10 days ago (15 days)
+  // This ensures both periods use complete data
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
   const beforeStart = new Date(today);
-  beforeStart.setDate(beforeStart.getDate() - 30);
+  beforeStart.setDate(beforeStart.getDate() - 39);
 
   const beforeEnd = new Date(today);
-  beforeEnd.setDate(beforeEnd.getDate() - 16); // 15 days ago minus 1
+  beforeEnd.setDate(beforeEnd.getDate() - 25);
 
   const afterStart = new Date(today);
-  afterStart.setDate(afterStart.getDate() - 15);
+  afterStart.setDate(afterStart.getDate() - 24);
 
   const afterEnd = new Date(today);
+  afterEnd.setDate(afterEnd.getDate() - 10);
 
   const formatDate = d => d.toISOString().split('T')[0];
 
@@ -325,8 +327,7 @@ async function runAnalysis() {
 
   // Note about data lag
   console.log('');
-  console.log('  Note: App Store Connect engagement data has ~10 day lag.');
-  console.log('  Recent data (last 10 days) may be incomplete.');
+  console.log('  Note: Date ranges exclude last 10 days (ASC data lag).');
 
   // Fetch analytics reports
   console.log('');
@@ -456,8 +457,8 @@ async function runAnalysis() {
   if (jsonOutput) {
     console.log(JSON.stringify({
       analysisType: 'rolling_30_day_window',
-      beforePeriod: { start: formatDate(beforeStart), end: formatDate(beforeEnd), description: '30-15 days ago' },
-      afterPeriod: { start: formatDate(afterStart), end: formatDate(afterEnd), description: '15 days ago to today' },
+      beforePeriod: { start: formatDate(beforeStart), end: formatDate(beforeEnd), description: '39-25 days ago' },
+      afterPeriod: { start: formatDate(afterStart), end: formatDate(afterEnd), description: '24-10 days ago' },
       byLanguage: results,
       totals: {
         before: totalBefore,
