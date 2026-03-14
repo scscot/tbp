@@ -1,0 +1,32 @@
+name: Weekly ASO Report
+
+on:
+  schedule:
+    # Every Sunday at 8pm PST (4am UTC Monday)
+    - cron: '0 4 * * 1'
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  send-report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: cd functions && npm install
+
+      - name: Run ASO analysis and send email
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_PRIVATE_KEY: ${{ secrets.ASC_PRIVATE_KEY }}
+          MAILGUN_API_KEY: ${{ secrets.TBP_MAILGUN_API_KEY }}
+        run: node scripts/analyze-aso-impact.js --email

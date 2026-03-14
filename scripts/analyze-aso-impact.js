@@ -12,10 +12,12 @@
  * Usage:
  *   node scripts/analyze-aso-impact.js
  *   node scripts/analyze-aso-impact.js --json     # Output as JSON
+ *   node scripts/analyze-aso-impact.js --email    # Send results via email
  *
  * Requires:
  *   - ASC_KEY_ID, ASC_ISSUER_ID, ASC_PRIVATE_KEY environment variables
  *   - Or secrets in /Users/sscott/tbp/secrets/asc-credentials.json
+ *   - MAILGUN_API_KEY for --email option
  */
 
 const axios = require('axios');
@@ -23,10 +25,18 @@ const jwt = require('jsonwebtoken');
 const zlib = require('zlib');
 const fs = require('fs');
 const path = require('path');
+const FormData = require('form-data');
 
 // Parse CLI arguments
 const args = process.argv.slice(2);
 const jsonOutput = args.includes('--json');
+const emailOutput = args.includes('--email');
+
+// Email configuration
+const MAILGUN_DOMAIN = 'news.teambuildpro.com';
+const FROM_ADDRESS = 'Stephen Scott <stephen@news.teambuildpro.com>';
+const TO_ADDRESS = 'Stephen Scott <scscot@gmail.com>';
+const EMAIL_SUBJECT = 'Weekly ASO Data';
 
 // Analysis uses rolling 30-day window split in half
 // Before Period: 30-15 days ago
@@ -280,6 +290,154 @@ function calcChange(before, after) {
   return (change >= 0 ? '+' : '') + change.toFixed(1) + '%';
 }
 
+// Generate HTML email content
+function generateEmailHtml(data) {
+  const { beforePeriod, afterPeriod, results, totalBefore, totalAfter, beforeConversion, afterConversion } = data;
+
+  const changeColor = (change) => {
+    if (change.startsWith('+') && change !== '+0%' && change !== '+0.0%') return '#22c55e'; // green
+    if (change.startsWith('-')) return '#ef4444'; // red
+    return '#6b7280'; // gray
+  };
+
+  const langNames = { EN: 'English', ES: 'Spanish', PT: 'Portuguese', DE: 'German' };
+
+  let languageRows = '';
+  ['EN', 'ES', 'PT', 'DE'].forEach(lang => {
+    const r = results[lang];
+    languageRows += `
+      <tr style="border-bottom: 1px solid #e5e7eb;">
+        <td style="padding: 12px; font-weight: 600;">${lang} (${langNames[lang]})</td>
+        <td style="padding: 12px; text-align: right;">${r.impressions.before.toLocaleString()} → ${r.impressions.after.toLocaleString()}</td>
+        <td style="padding: 12px; text-align: right; color: ${changeColor(r.impressions.change)}; font-weight: 600;">${r.impressions.change}</td>
+        <td style="padding: 12px; text-align: right;">${r.pageViews.before.toLocaleString()} → ${r.pageViews.after.toLocaleString()}</td>
+        <td style="padding: 12px; text-align: right; color: ${changeColor(r.pageViews.change)}; font-weight: 600;">${r.pageViews.change}</td>
+        <td style="padding: 12px; text-align: right;">${r.downloads.before.toLocaleString()} → ${r.downloads.after.toLocaleString()}</td>
+        <td style="padding: 12px; text-align: right; color: ${changeColor(r.downloads.change)}; font-weight: 600;">${r.downloads.change}</td>
+      </tr>`;
+  });
+
+  return `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #f3f4f6; margin: 0; padding: 20px;">
+  <div style="max-width: 800px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+
+    <!-- Header -->
+    <div style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); padding: 24px; border-radius: 8px 8px 0 0;">
+      <h1 style="color: #ffffff; margin: 0; font-size: 24px;">Weekly ASO Performance Report</h1>
+      <p style="color: #bfdbfe; margin: 8px 0 0 0; font-size: 14px;">Team Build Pro - App Store Connect Analytics</p>
+    </div>
+
+    <!-- Date Ranges -->
+    <div style="padding: 20px; background-color: #f8fafc; border-bottom: 1px solid #e5e7eb;">
+      <div style="display: flex; gap: 40px;">
+        <div>
+          <p style="margin: 0; color: #6b7280; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em;">Before Period</p>
+          <p style="margin: 4px 0 0 0; color: #1f2937; font-weight: 600;">${beforePeriod.start} to ${beforePeriod.end}</p>
+          <p style="margin: 2px 0 0 0; color: #6b7280; font-size: 12px;">(39-25 days ago)</p>
+        </div>
+        <div>
+          <p style="margin: 0; color: #6b7280; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em;">After Period</p>
+          <p style="margin: 4px 0 0 0; color: #1f2937; font-weight: 600;">${afterPeriod.start} to ${afterPeriod.end}</p>
+          <p style="margin: 2px 0 0 0; color: #6b7280; font-size: 12px;">(24-10 days ago)</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Summary Cards -->
+    <div style="padding: 20px; display: flex; gap: 16px; flex-wrap: wrap;">
+      <div style="flex: 1; min-width: 150px; background-color: #eff6ff; border-radius: 8px; padding: 16px;">
+        <p style="margin: 0; color: #3b82f6; font-size: 12px; text-transform: uppercase;">Impressions</p>
+        <p style="margin: 8px 0 4px 0; font-size: 24px; font-weight: 700; color: #1e40af;">${totalAfter.impressions.toLocaleString()}</p>
+        <p style="margin: 0; color: ${changeColor(calcChange(totalBefore.impressions, totalAfter.impressions))}; font-weight: 600;">${calcChange(totalBefore.impressions, totalAfter.impressions)} from ${totalBefore.impressions.toLocaleString()}</p>
+      </div>
+      <div style="flex: 1; min-width: 150px; background-color: #f0fdf4; border-radius: 8px; padding: 16px;">
+        <p style="margin: 0; color: #22c55e; font-size: 12px; text-transform: uppercase;">Page Views</p>
+        <p style="margin: 8px 0 4px 0; font-size: 24px; font-weight: 700; color: #166534;">${totalAfter.pageViews.toLocaleString()}</p>
+        <p style="margin: 0; color: ${changeColor(calcChange(totalBefore.pageViews, totalAfter.pageViews))}; font-weight: 600;">${calcChange(totalBefore.pageViews, totalAfter.pageViews)} from ${totalBefore.pageViews.toLocaleString()}</p>
+      </div>
+      <div style="flex: 1; min-width: 150px; background-color: #fef3c7; border-radius: 8px; padding: 16px;">
+        <p style="margin: 0; color: #d97706; font-size: 12px; text-transform: uppercase;">Downloads</p>
+        <p style="margin: 8px 0 4px 0; font-size: 24px; font-weight: 700; color: #92400e;">${totalAfter.downloads.toLocaleString()}</p>
+        <p style="margin: 0; color: ${changeColor(calcChange(totalBefore.downloads, totalAfter.downloads))}; font-weight: 600;">${calcChange(totalBefore.downloads, totalAfter.downloads)} from ${totalBefore.downloads.toLocaleString()}</p>
+      </div>
+      <div style="flex: 1; min-width: 150px; background-color: #faf5ff; border-radius: 8px; padding: 16px;">
+        <p style="margin: 0; color: #9333ea; font-size: 12px; text-transform: uppercase;">Conversion Rate</p>
+        <p style="margin: 8px 0 4px 0; font-size: 24px; font-weight: 700; color: #581c87;">${afterConversion}%</p>
+        <p style="margin: 0; color: #6b7280;">was ${beforeConversion}%</p>
+      </div>
+    </div>
+
+    <!-- Results by Language -->
+    <div style="padding: 0 20px 20px 20px;">
+      <h2 style="margin: 0 0 16px 0; font-size: 18px; color: #1f2937;">Results by Language</h2>
+      <div style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+          <thead>
+            <tr style="background-color: #f8fafc;">
+              <th style="padding: 12px; text-align: left; color: #6b7280; font-weight: 600;">Language</th>
+              <th style="padding: 12px; text-align: right; color: #6b7280; font-weight: 600;">Impressions</th>
+              <th style="padding: 12px; text-align: right; color: #6b7280; font-weight: 600;">Change</th>
+              <th style="padding: 12px; text-align: right; color: #6b7280; font-weight: 600;">Page Views</th>
+              <th style="padding: 12px; text-align: right; color: #6b7280; font-weight: 600;">Change</th>
+              <th style="padding: 12px; text-align: right; color: #6b7280; font-weight: 600;">Downloads</th>
+              <th style="padding: 12px; text-align: right; color: #6b7280; font-weight: 600;">Change</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${languageRows}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div style="padding: 16px 20px; background-color: #f8fafc; border-radius: 0 0 8px 8px; border-top: 1px solid #e5e7eb;">
+      <p style="margin: 0; color: #6b7280; font-size: 12px;">
+        Generated on ${new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })} at ${new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZoneName: 'short' })}
+      </p>
+      <p style="margin: 4px 0 0 0; color: #9ca3af; font-size: 11px;">
+        Note: Date ranges exclude last 10 days due to App Store Connect data lag.
+      </p>
+    </div>
+  </div>
+</body>
+</html>`;
+}
+
+// Send email via Mailgun
+async function sendEmail(html) {
+  const apiKey = process.env.MAILGUN_API_KEY || process.env.TBP_MAILGUN_API_KEY;
+  if (!apiKey) {
+    throw new Error('MAILGUN_API_KEY environment variable not set');
+  }
+
+  const form = new FormData();
+  form.append('from', FROM_ADDRESS);
+  form.append('to', TO_ADDRESS);
+  form.append('subject', EMAIL_SUBJECT);
+  form.append('html', html);
+  form.append('o:tag', 'aso_weekly_report');
+
+  await axios.post(
+    `https://api.mailgun.net/v3/${MAILGUN_DOMAIN}/messages`,
+    form,
+    {
+      headers: {
+        ...form.getHeaders(),
+        'Authorization': `Basic ${Buffer.from(`api:${apiKey}`).toString('base64')}`
+      }
+    }
+  );
+
+  console.log(`  ✓ Email sent to ${TO_ADDRESS}`);
+}
+
 // Main analysis function
 async function runAnalysis() {
   console.log('');
@@ -473,6 +631,22 @@ async function runAnalysis() {
       },
       conversionRate: { before: beforeConversion + '%', after: afterConversion + '%' }
     }, null, 2));
+  }
+
+  // Send email if requested
+  if (emailOutput) {
+    console.log('');
+    console.log('  Sending email report...');
+    const emailHtml = generateEmailHtml({
+      beforePeriod: { start: formatDate(beforeStart), end: formatDate(beforeEnd) },
+      afterPeriod: { start: formatDate(afterStart), end: formatDate(afterEnd) },
+      results,
+      totalBefore,
+      totalAfter,
+      beforeConversion,
+      afterConversion
+    });
+    await sendEmail(emailHtml);
   }
 }
 
