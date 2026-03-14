@@ -135,7 +135,7 @@ function generateASCToken(keyId, issuerId, privateKey) {
 }
 
 // Make authenticated request to App Store Connect API
-async function ascRequest(endpoint, token, params = {}) {
+async function ascRequest(endpoint, token, params = {}, silent = false) {
   const url = `${ASC_BASE_URL}${endpoint}`;
 
   try {
@@ -148,7 +148,7 @@ async function ascRequest(endpoint, token, params = {}) {
     });
     return response.data;
   } catch (error) {
-    if (error.response) {
+    if (error.response && !silent) {
       console.error(`ASC API Error: ${error.response.status} - ${JSON.stringify(error.response.data)}`);
     }
     throw error;
@@ -178,10 +178,12 @@ async function fetchReportData(reportId, token, startDate, endDate) {
 
     for (const instance of instances) {
       try {
+        // Use silent=true since some instances may have expired (404 is expected)
         const segmentsResponse = await ascRequest(
           `/analyticsReportInstances/${instance.id}/segments`,
           token,
-          { limit: 10 }
+          { limit: 10 },
+          true  // silent - don't log 404s for expired instances
         );
 
         if (segmentsResponse.data && segmentsResponse.data.length > 0) {
