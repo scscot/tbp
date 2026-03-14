@@ -1983,6 +1983,7 @@ ${errors.length > 0 ? `Errors: ${errors.join(', ')}` : ''}
     console.log(`  English:    https://teambuildpro.com/blog/${blogPost.slug}.html`);
     console.log(`  Spanish:    https://es.teambuildpro.com/blog/${blogPost.slug}.html`);
     console.log(`  Portuguese: https://pt.teambuildpro.com/blog/${blogPost.slug}.html`);
+    console.log(`  German:     https://de.teambuildpro.com/blog/${blogPost.slug}.html`);
   }
   console.log('');
 
