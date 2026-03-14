@@ -1,7 +1,7 @@
 # PreIntake.ai: Comprehensive Project Documentation
 
 **Last Updated**: 2026-03-14
-**Version**: 8.0 (audit fixes + analytics benchmark reset)
+**Version**: 8.1 (multi-practice area selection for intake)
 
 ---
 
@@ -2367,6 +2367,36 @@ Email CTA → Homepage (?lead=) → create-account.html → Payment
 | `/preintake/payment-success.html` | Fixed step 3→4, typo Inquires→Inquiries |
 | `/preintake/intake-page.js` | Added postMessage origin validation |
 | `/preintake/widget.js` | Removed unused `isMultiPractice` parameter |
+
+### Phase 91: Multi-Practice Area Selection for Intake (2026-03-14)
+- [x] **Practice Area Selection UI** - Dynamic buttons for multi-practice law firms
+  - After contact info collected, AI asks user to select their case type
+  - Shows buttons for each practice area from firm's self-reported breakdown
+  - Skip practice area question if firm only handles one area
+  - Frontend (`intake.html`) uses `awaitingPracticeAreaSelection` flag to pause API calls while user selects
+- [x] **Threshold-Based Button Display** - UX optimization for firms with many practice areas
+  - 2-8 practice areas: Show clickable buttons for selection
+  - 9+ practice areas: Free text input (no buttons) to avoid overwhelming UI
+  - Implemented in both frontend (`intake.html`) and backend (`generateSystemPrompt`)
+- [x] **Practice Area Fallback Chain** - Fixed data loading for campaign leads
+  - Root cause: `data.practiceAreas` was `null` for some leads (campaign-sourced)
+  - `intakeChat` function now checks: `data.practiceAreas?.breakdown` → `data.practiceAreas` (array) → `analysis.practiceAreas`
+  - Matches `getWidgetConfig` logic for consistency
+- [x] **Send Button Icon Update** - Changed from paper airplane to simple up arrow (chevron)
+  - SVG path changed from `M12 19l9 2-9-18-9 18 9-2zm0 0v-8` to `M5 15l7-7 7 7`
+
+**Threshold Behavior:**
+| Firm | Practice Areas | Selection UI |
+|------|----------------|--------------|
+| Scott Law Group | 2 (PI, Family Law) | Buttons displayed |
+| Claery & Hammond | 28 (Family Law specialties) | Free text input |
+
+**Files Modified:**
+| File | Changes |
+|------|---------|
+| `/preintake/intake.html` | Practice area selection UI, `awaitingPracticeAreaSelection` flag, threshold check, up arrow icon |
+| `functions/widget-functions.js` | Added `analysis.practiceAreas` fallback in `intakeChat`, consistent with `getWidgetConfig` |
+| `functions/demo-generator-functions.js` | Conditional `[OPTIONS: ...]` in system prompt based on practice area count |
 
 ---
 

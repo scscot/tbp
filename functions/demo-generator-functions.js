@@ -571,7 +571,9 @@ DO NOT list options in your prose text. ONLY use the [OPTIONS:] or [OPTIONS-MULT
 3. Ask for their email address (no options - free text)
 
 ### Phase 2: Practice Area Selection
-4. Ask what type of legal matter brings them here, with options: [OPTIONS: ${practiceAreasListStr.split(', ').join(' | ')}]
+${practiceAreasList.length <= 8
+    ? `4. Ask what type of legal matter brings them here, with options: [OPTIONS: ${practiceAreasListStr.split(', ').join(' | ')}]`
+    : `4. Ask what type of legal matter brings them here (no options - free text, since there are ${practiceAreasList.length} practice areas)`}
 
 ### Phase 3: Practice-Area-Specific Questions
 Based on the user's selection in Phase 2, follow the appropriate question flow:

@@ -1701,7 +1701,7 @@
                     <input type="text" id="chat-input" class="chat-input" placeholder="Type your response..." onkeypress="handleKeyPress(event)">
                     <button id="send-button" class="send-button" onclick="sendMessage()">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
                         </svg>
                     </button>
                 </div>
@@ -2101,6 +2101,8 @@
         let conversationStarted = false;
         let intakeCompleted = false;
         let pendingNavUrl = null;
+        let selectedPracticeArea = null; // Set when user selects practice area (multi-practice firms)
+        let awaitingPracticeAreaSelection = false; // True while waiting for user to select practice area
 
         const MAX_RETRIES = 3;
         const INITIAL_RETRY_DELAY = 5000;
@@ -2567,6 +2569,72 @@
             sendToAPI(conversationHistory);
         }
 
+        // Practice area selection for multi-practice firms
+        function showPracticeAreaSelection() {
+            awaitingPracticeAreaSelection = true; // Pause API calls until user selects
+            const messagesContainer = document.getElementById('chat-messages');
+            document.querySelector('.chat-input-area').style.display = 'none';
+
+            // Add the practice area selection message
+            const selectionMessage = "Thank you for sharing your contact information. To ensure we focus on your specific needs, please select the area of law that best fits your situation:";
+            addMessage(selectionMessage, 'assistant');
+
+            // Find the message we just added
+            const messages = document.querySelectorAll('.message.assistant');
+            const lastMessage = messages[messages.length - 1];
+            const messageContent = lastMessage.querySelector('.message-content');
+
+            // Create practice area buttons
+            const optionsDiv = document.createElement('div');
+            optionsDiv.className = 'response-options practice-area-options';
+
+            CONFIG.practiceAreas.forEach(areaName => {
+                const button = document.createElement('button');
+                button.className = 'response-button';
+                button.textContent = areaName;
+                button.onclick = () => handlePracticeAreaSelection(button, areaName, optionsDiv);
+                optionsDiv.appendChild(button);
+            });
+
+            // Add "I'm not sure" option
+            const unsureButton = document.createElement('button');
+            unsureButton.className = 'response-button unsure-option';
+            unsureButton.textContent = "I'm not sure which applies";
+            unsureButton.style.fontStyle = 'italic';
+            unsureButton.onclick = () => handlePracticeAreaSelection(unsureButton, "I'm not sure which applies", optionsDiv);
+            optionsDiv.appendChild(unsureButton);
+
+            messageContent.appendChild(optionsDiv);
+            messagesContainer.scrollTo({ top: messagesContainer.scrollHeight, behavior: 'smooth' });
+        }
+
+        function handlePracticeAreaSelection(button, areaName, optionsDiv) {
+            if (isProcessing) return;
+            awaitingPracticeAreaSelection = false; // Resume normal API flow
+
+            // Mark selected button
+            button.classList.add('selected');
+            optionsDiv.querySelectorAll('button').forEach(btn => {
+                btn.disabled = true;
+                if (btn !== button) btn.style.opacity = '0.4';
+            });
+
+            // Set the selected practice area (unless "I'm not sure")
+            if (areaName !== "I'm not sure which applies") {
+                selectedPracticeArea = areaName;
+            }
+
+            // Add user response to chat and history
+            addMessage(areaName, 'user');
+            conversationHistory.push({ role: "user", content: areaName });
+
+            // Re-enable input area
+            document.querySelector('.chat-input-area').style.display = 'flex';
+
+            // Continue the conversation with the practice area selection
+            sendToAPI(conversationHistory);
+        }
+
         function handleKeyPress(event) {
             if (event.key === 'Enter' && !event.shiftKey) {
                 event.preventDefault();
@@ -2667,13 +2735,18 @@
 
             try {
                 // Use intakeChat endpoint which handles prompts server-side
+                const requestBody = {
+                    firmId: CONFIG.firmId,
+                    messages: messages
+                };
+                // Include selected practice area if user has chosen one (multi-practice firms)
+                if (selectedPracticeArea) {
+                    requestBody.selectedPracticeArea = selectedPracticeArea;
+                }
                 const response = await fetch(CONFIG.proxyUrl, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        firmId: CONFIG.firmId,
-                        messages: messages
-                    })
+                    body: JSON.stringify(requestBody)
                 });
 
                 const isRetryable = response.status === 429 || response.status >= 500;
@@ -2772,6 +2845,10 @@
 
                 if (toolResults.length > 0) {
                     conversationHistory.push({ role: "user", content: toolResults });
+                    // If awaiting practice area selection, don't call API - wait for user to select
+                    if (awaitingPracticeAreaSelection) {
+                        return;
+                    }
                     await sendToAPI(conversationHistory);
                 }
             }
@@ -2785,6 +2862,13 @@
                     collectedData.contact = input;
                     if (currentStep === 1) { currentStep = 2; updateProgressSteps(); }
                     saveSession();
+
+                    // For multi-practice firms, show practice area selection before continuing
+                    // Show practice area selection for 2-8 areas; skip if 1 (single-practice) or 9+ (likely sub-areas)
+                    if (CONFIG.practiceAreas && CONFIG.practiceAreas.length > 1 && CONFIG.practiceAreas.length <= 8 && !selectedPracticeArea) {
+                        showPracticeAreaSelection();
+                        return "Contact information collected. Awaiting practice area selection.";
+                    }
                     return "Contact information collected.";
 
                 case 'collect_case_info':

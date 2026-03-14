@@ -111,9 +111,10 @@ const getWidgetConfig = onRequest(
             const _deepResearch = data.deepResearch || {};
 
             // Build practice areas list
-            // Handle both formats:
+            // Handle multiple formats:
             // - Website-based: data.practiceAreas?.breakdown is an object { "PI": 50, "Family": 50 }
             // - Hosted leads: data.practiceAreas is an array ["Personal Injury", "Family Law"]
+            // - Campaign leads: analysis.practiceAreas is an array (fallback when data.practiceAreas is null)
             let practiceAreasList = [];
             if (data.practiceAreas?.breakdown && typeof data.practiceAreas.breakdown === 'object') {
                 // Website-based leads use breakdown object
@@ -125,6 +126,13 @@ const getWidgetConfig = onRequest(
                 // Convert to the expected format with equal percentages
                 const percentage = Math.floor(100 / data.practiceAreas.length);
                 practiceAreasList = data.practiceAreas.map(name => ({
+                    name: name,
+                    percentage: percentage
+                }));
+            } else if (Array.isArray(analysis.practiceAreas) && analysis.practiceAreas.length > 0) {
+                // Fallback: Campaign leads may have practice areas in analysis (from website scraping)
+                const percentage = Math.floor(100 / analysis.practiceAreas.length);
+                practiceAreasList = analysis.practiceAreas.map(name => ({
                     name: name,
                     percentage: percentage
                 }));
@@ -303,7 +311,7 @@ const intakeChat = onRequest(
         }
 
         try {
-            const { firmId, sessionId: _sessionId, messages } = req.body;
+            const { firmId, sessionId: _sessionId, messages, selectedPracticeArea } = req.body;
 
             if (!firmId) {
                 return res.status(400).json({ error: 'Missing firmId' });
@@ -338,21 +346,47 @@ const intakeChat = onRequest(
             const deepResearch = data.deepResearch || {};
 
             // Build practice areas configuration
-            const practiceBreakdown = data.practiceAreas?.breakdown || {};
-            const otherPracticeAreaName = data.practiceAreas?.otherName || null;
-            const practiceAreasList = buildPracticeAreasList(practiceBreakdown, otherPracticeAreaName);
-            const isMultiPractice = practiceAreasList.length > 1;
+            // Match getWidgetConfig logic: check breakdown, then array, then analysis.practiceAreas
+            let practiceAreasList = [];
+            if (data.practiceAreas?.breakdown && typeof data.practiceAreas.breakdown === 'object') {
+                // Website-based: data.practiceAreas.breakdown is { "PI": 50, "Family": 50 }
+                const otherPracticeAreaName = data.practiceAreas?.otherName || null;
+                practiceAreasList = buildPracticeAreasList(data.practiceAreas.breakdown, otherPracticeAreaName);
+            } else if (Array.isArray(data.practiceAreas) && data.practiceAreas.length > 0) {
+                // Hosted leads: data.practiceAreas is an array ["Personal Injury", "Family Law"]
+                const percentage = Math.floor(100 / data.practiceAreas.length);
+                practiceAreasList = data.practiceAreas.map(name => ({
+                    name: name,
+                    percentage: percentage
+                }));
+            } else if (Array.isArray(analysis.practiceAreas) && analysis.practiceAreas.length > 0) {
+                // Campaign leads: analysis.practiceAreas from website scraping
+                const percentage = Math.floor(100 / analysis.practiceAreas.length);
+                practiceAreasList = analysis.practiceAreas.map(name => ({
+                    name: name,
+                    percentage: percentage
+                }));
+            }
 
-            // Determine primary practice area
+            // Determine practice area to use
+            // If client has selected a practice area, use that (gates AI to specific flow)
+            // Otherwise, use the primary (highest percentage) area
             let primaryPracticeArea = 'Personal Injury';
-            if (practiceAreasList.length > 0) {
-                // Sort by percentage and get the highest
+            let isMultiPractice = practiceAreasList.length > 1;
+
+            if (selectedPracticeArea) {
+                // Client explicitly selected a practice area - use it and disable multi-practice prompt
+                // This focuses the AI on the selected practice area only
+                primaryPracticeArea = selectedPracticeArea;
+                isMultiPractice = false; // Use focused single-practice prompt
+            } else if (practiceAreasList.length > 0) {
+                // No selection yet - use highest percentage area
                 const sorted = [...practiceAreasList].sort((a, b) => b.percentage - a.percentage);
                 primaryPracticeArea = sorted[0].name;
             }
 
             // Generate system prompt (SERVER-SIDE ONLY - never exposed to client)
-            // Note: generateSystemPrompt signature is (firmName, practiceArea, state, analysis, deepResearch, practiceAreasList, isMultiPractice)
+            // When selectedPracticeArea is set, isMultiPractice=false generates focused prompt
             const systemPrompt = generateSystemPrompt(
                 analysis.firmName || data.name || 'Law Firm',
                 primaryPracticeArea,
@@ -363,7 +397,7 @@ const intakeChat = onRequest(
                 isMultiPractice
             );
 
-            // Generate tools (SERVER-SIDE ONLY - never exposed to client)
+            // Generate tools for the selected/primary practice area
             const tools = generateTools(primaryPracticeArea);
 
             // Initialize Anthropic client
