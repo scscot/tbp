@@ -1,6 +1,6 @@
 # Team Build Pro - Comprehensive Knowledge Base
 
-**Last Updated**: 2026-03-12
+**Last Updated**: 2026-03-14
 **Purpose**: Persistent knowledge base for AI assistants across sessions
 
 ---
@@ -190,9 +190,10 @@ The world's first AI-powered platform that lets **prospects pre-build their team
 ├── scripts/               # Automation scripts
 │   ├── generate-ai-blog.js  # AI blog generation (Claude CLI)
 │   └── generate-blog.js     # Legacy blog generation
-├── .github/workflows/     # GitHub Actions automation (25 workflows)
+├── .github/workflows/     # GitHub Actions automation (26 workflows)
 │   ├── weekly-blog.yml              # Twice-weekly blog automation (Mon/Thu 10am PST) + sitemap pings
 │   ├── weekly-sscott-blog.yml       # Stephen Scott blog automation
+│   ├── weekly-aso-report.yml        # Weekly ASO email report (Sunday 8pm PST)
 │   ├── domain-warming-update.yml    # TBP/PreIntake domain warming batch sizes
 │   ├── url-discovery.yml            # URL pattern discovery (DISABLED - pool exhausted Mar 6, 2026)
 │   ├── contacts-scraper.yml         # Contact scraping (hourly, 400 URLs/batch)
@@ -1710,6 +1711,19 @@ Corporate email domains are excluded from all contact collections using a **blac
   - Generates 4 language versions: English, Spanish, Portuguese, German
   - Terminology balance: Rotates between "MLM", "Direct Sales", and "Network Marketing" in titles and content for SEO diversity
 - `generate-blog.js` - Legacy blog generation (static template approach)
+- `analyze-aso-impact.js` - App Store Connect performance analysis
+  - Compares metrics using rolling 30-day window (accounts for 10-day ASC data lag)
+  - Before Period: 39-25 days ago, After Period: 24-10 days ago
+  - `node scripts/analyze-aso-impact.js` - Console output
+  - `node scripts/analyze-aso-impact.js --json` - JSON output
+  - `node scripts/analyze-aso-impact.js --email` - Send formatted HTML report via Mailgun
+  - Weekly automated email: Sunday 8pm PST via `weekly-aso-report.yml`
+- `add-blog-company-links.js` - Add internal links from blog posts to company pages
+  - Scans blog posts for company name mentions (e.g., "Young Living", "doTERRA")
+  - Adds hyperlinks to corresponding `/companies/ai-recruiting-{slug}.html` pages
+  - `node scripts/add-blog-company-links.js` - Process English blog
+  - `node scripts/add-blog-company-links.js --lang=es` - Process Spanish blog
+  - Supports: en, es, pt, de
 - `set-analytics-benchmark.js` - Set/clear analytics benchmark date in Firestore
   - `node scripts/set-analytics-benchmark.js` - Set to today
   - `node scripts/set-analytics-benchmark.js 2026-02-25` - Set to specific date
@@ -2084,6 +2098,24 @@ Corporate email domains are excluded from all contact collections using a **blac
 - ✅ **Main Campaign Disabled**: Underperforming; batch size set to 0 via `enabled: false`
 - ✅ **All Scraper-fed Campaigns Active**: Purchased, BFH, Zinzino, FSR, Paparazzi, Pruvit, Scentsy
   - Batch sizes auto-adjust as scrapers add contacts
+
+**Weekly ASO Report Automation (Mar 14, 2026)**
+- ✅ **analyze-aso-impact.js Enhanced**: Added `--email` flag for HTML report delivery
+  - Rolling 30-day window comparison (accounts for 10-day ASC data lag)
+  - Before Period: 39-25 days ago, After Period: 24-10 days ago
+  - Formatted HTML email with summary cards, language breakdown, conversion rates
+- ✅ **weekly-aso-report.yml Workflow**: Automated email every Sunday 8pm PST
+  - Sends to "Stephen Scott <scscot@gmail.com>"
+  - Subject: "Weekly ASO Data"
+  - Uses Mailgun via news.teambuildpro.com
+
+**Internal Blog Linking for SEO (Mar 14, 2026)**
+- ✅ **add-blog-company-links.js**: Automated internal link insertion
+  - Scans blog posts for company name mentions (Young Living, doTERRA, Amway, etc.)
+  - Adds hyperlinks to corresponding company landing pages
+  - Case-sensitive matching to avoid false positives ("It Works!" vs "how it works")
+  - Supports all 4 languages via `--lang` flag
+  - Applied 43 links across 28 blog posts
 
 **Real-Time Analytics Dashboard (Mar 12, 2026)**
 - ✅ **GA4 Real-Time API Integration**: Added `fetchGA4Realtime()` function using `runRealtimeReport`
