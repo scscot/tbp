@@ -1,13 +1,16 @@
 #!/usr/bin/env node
 /**
- * ASO Impact Analysis Script
+ * App Store Performance Analysis Script
  *
- * Analyzes App Store Connect metrics before/after the Feb 16, 2026 description optimization.
+ * Analyzes App Store Connect metrics using a rolling 30-day window.
  * Compares impressions and downloads by territory, mapped to language versions.
+ *
+ * Rolling Window:
+ *   - Before Period: 30-15 days ago
+ *   - After Period: 15 days ago to today
  *
  * Usage:
  *   node scripts/analyze-aso-impact.js
- *   node scripts/analyze-aso-impact.js --days=14  # Custom analysis window
  *   node scripts/analyze-aso-impact.js --json     # Output as JSON
  *
  * Requires:
@@ -23,12 +26,11 @@ const path = require('path');
 
 // Parse CLI arguments
 const args = process.argv.slice(2);
-const daysArg = args.find(a => a.startsWith('--days='));
 const jsonOutput = args.includes('--json');
-const ANALYSIS_DAYS = daysArg ? parseInt(daysArg.split('=')[1]) : 14;
 
-// ASO Change date
-const ASO_CHANGE_DATE = '2026-02-16';
+// Analysis uses rolling 30-day window split in half
+// Before Period: 30-15 days ago
+// After Period: 15 days ago to today
 
 // App Store Connect config
 const ASC_APP_ID = '6751211622';
@@ -280,11 +282,8 @@ function calcChange(before, after) {
 async function runAnalysis() {
   console.log('');
   console.log('═══════════════════════════════════════════════════════════════════════════');
-  console.log('  App Store Optimization Impact Analysis');
+  console.log('  App Store Performance Analysis (Rolling 30-Day Window)');
   console.log('═══════════════════════════════════════════════════════════════════════════');
-  console.log('');
-  console.log(`  ASO Change Date: ${ASO_CHANGE_DATE}`);
-  console.log(`  Analysis Window: ${ANALYSIS_DAYS} days before/after`);
   console.log('');
 
   // Load credentials
@@ -301,17 +300,22 @@ async function runAnalysis() {
   const token = generateASCToken(credentials.keyId, credentials.issuerId, credentials.privateKey);
   console.log('  ✓ ASC token generated');
 
-  // Calculate date ranges
-  const changeDate = new Date(ASO_CHANGE_DATE);
+  // Calculate date ranges using rolling 30-day window
+  // Before Period: 30-15 days ago
+  // After Period: 15 days ago to today
   const today = new Date();
+  today.setHours(0, 0, 0, 0);
 
-  const beforeEnd = new Date(changeDate);
-  beforeEnd.setDate(beforeEnd.getDate() - 1);
-  const beforeStart = new Date(beforeEnd);
-  beforeStart.setDate(beforeStart.getDate() - ANALYSIS_DAYS + 1);
+  const beforeStart = new Date(today);
+  beforeStart.setDate(beforeStart.getDate() - 30);
 
-  const afterStart = new Date(changeDate);
-  const afterEnd = new Date(Math.min(today.getTime(), afterStart.getTime() + (ANALYSIS_DAYS - 1) * 24 * 60 * 60 * 1000));
+  const beforeEnd = new Date(today);
+  beforeEnd.setDate(beforeEnd.getDate() - 16); // 15 days ago minus 1
+
+  const afterStart = new Date(today);
+  afterStart.setDate(afterStart.getDate() - 15);
+
+  const afterEnd = new Date(today);
 
   const formatDate = d => d.toISOString().split('T')[0];
 
@@ -319,14 +323,10 @@ async function runAnalysis() {
   console.log(`  Before Period: ${formatDate(beforeStart)} to ${formatDate(beforeEnd)}`);
   console.log(`  After Period:  ${formatDate(afterStart)} to ${formatDate(afterEnd)}`);
 
-  // Check if we have enough post-change data
-  const daysAfter = Math.floor((today - afterStart) / (24 * 60 * 60 * 1000));
-  if (daysAfter < 10) {
-    console.log('');
-    console.log('  ⚠️  WARNING: App Store Connect engagement data has ~10 day lag.');
-    console.log(`     Only ${daysAfter} days since ASO change. Data may be incomplete.`);
-    console.log('     Re-run this analysis after Feb 26, 2026 for accurate results.');
-  }
+  // Note about data lag
+  console.log('');
+  console.log('  Note: App Store Connect engagement data has ~10 day lag.');
+  console.log('  Recent data (last 10 days) may be incomplete.');
 
   // Fetch analytics reports
   console.log('');
@@ -455,10 +455,9 @@ async function runAnalysis() {
 
   if (jsonOutput) {
     console.log(JSON.stringify({
-      asoChangeDate: ASO_CHANGE_DATE,
-      analysisWindow: ANALYSIS_DAYS,
-      beforePeriod: { start: formatDate(beforeStart), end: formatDate(beforeEnd) },
-      afterPeriod: { start: formatDate(afterStart), end: formatDate(afterEnd) },
+      analysisType: 'rolling_30_day_window',
+      beforePeriod: { start: formatDate(beforeStart), end: formatDate(beforeEnd), description: '30-15 days ago' },
+      afterPeriod: { start: formatDate(afterStart), end: formatDate(afterEnd), description: '15 days ago to today' },
       byLanguage: results,
       totals: {
         before: totalBefore,
