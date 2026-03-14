@@ -331,7 +331,7 @@ async function sendConversionEmail(transporter, leadId, leadData) {
     const firmName = leadData.analysis?.firmName || leadData.firmName || 'Your Firm';
     const toEmail = leadData.email;
     const firstName = leadData.name?.split(' ')[0] || '';
-    const accountUrl = `https://preintake.ai/create-account.html?firm=${leadId}`;
+    const accountUrl = `https://preintake.ai/create-account.html?lead=${leadId}`;
 
     try {
         await transporter.sendMail({

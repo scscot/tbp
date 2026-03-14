@@ -52,6 +52,11 @@
 
         // Optional: Listen for height updates from iframe for dynamic sizing
         window.addEventListener('message', (event) => {
+            // Validate origin for security - only accept messages from preintake.ai
+            const allowedOrigins = ['https://preintake.ai', 'https://us-west1-teambuilder-plus-fe74d.cloudfunctions.net'];
+            if (!allowedOrigins.includes(event.origin)) {
+                return;
+            }
             if (event.data?.type === 'preintake-resize' && event.data?.height) {
                 iframe.style.height = event.data.height + 'px';
             }

@@ -1,7 +1,7 @@
 # PreIntake.ai: Comprehensive Project Documentation
 
-**Last Updated**: 2026-03-13
-**Version**: 7.9 (validateSubscription fix for organic signup)
+**Last Updated**: 2026-03-14
+**Version**: 8.0 (audit fixes + analytics benchmark reset)
 
 ---
 
@@ -2342,6 +2342,32 @@ Email CTA → Homepage (?lead=) → create-account.html → Payment
 |------|---------|
 | `functions/widget-functions.js` | Added `pending_payment` to `validateSubscription()` allowed statuses |
 
+### Phase 90: Audit Fixes & Analytics Benchmark Reset (2026-03-14)
+- [x] **Analytics Benchmark Reset** - Changed date from Feb 25 to Mar 8, 2026
+  - Updated `ANALYTICS_BENCHMARK_DATE` in `widget-functions.js` to `2026-03-08`
+  - Fixed comment mismatch (comment said "Feb 24" but code was "Mar 8")
+  - Clean baseline for tracking demo link click funnel
+- [x] **URL Parameter Fix** - Standardized to `?lead=` across codebase
+  - Fixed `intake-delivery-functions.js` line 334: `?firm=` → `?lead=`
+  - Consistent with rest of codebase (create-account.html, components.js)
+- [x] **payment-success.html Fixes** - Step numbering and typo
+  - Fixed duplicate "Step 3" → "Step 4" for "Start Receiving Inquiries"
+  - Fixed typo "Inquires" → "Inquiries"
+- [x] **Security Enhancement** - postMessage origin validation
+  - Added origin whitelist to `intake-page.js` message handler
+  - Validates origin is from `preintake.ai` or Cloud Functions domain
+- [x] **Code Cleanup** - Removed unused parameter
+  - `widget.js`: Removed unused `isMultiPractice` parameter from `getPracticeAreaSteps()`
+
+**Files Modified:**
+| File | Changes |
+|------|---------|
+| `functions/widget-functions.js` | Fixed analytics date comment (Feb 24 → Mar 8) |
+| `functions/intake-delivery-functions.js` | Fixed URL parameter `?firm=` → `?lead=` |
+| `/preintake/payment-success.html` | Fixed step 3→4, typo Inquires→Inquiries |
+| `/preintake/intake-page.js` | Added postMessage origin validation |
+| `/preintake/widget.js` | Removed unused `isMultiPractice` parameter |
+
 ---
 
 ## Architecture
@@ -2409,7 +2435,6 @@ pending → analyzing → researching → generating_demo → demo_ready
 ├── send-preintake-campaign.js       # Email campaign sender (main, legal.preintake.ai)
 ├── send-preintake-campaign-gmail.js # Gmail-specific campaign using law.preintake.ai
 ├── analyze-click-rate.js            # Email click rate analysis
-├── send-preintake-campaign.js       # Email campaign sender
 ├── scrape-calbar-attorneys.js       # California Bar attorney scraper (CSS email obfuscation)
 ├── scrape-flbar-attorneys.js        # Florida Bar attorney scraper (Cloudflare obfuscation)
 ├── scrape-gabar-attorneys.js        # Georgia Bar attorney scraper (Puppeteer/JS-rendered)

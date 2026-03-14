@@ -101,7 +101,7 @@
     /**
      * Get practice-area-specific step labels (matches demo-generator)
      */
-    function getPracticeAreaSteps(practiceAreas, isMultiPractice) {
+    function getPracticeAreaSteps(practiceAreas) {
         const primaryArea = practiceAreas?.[0] || 'Legal Matter';
         const area = primaryArea.toLowerCase();
 
@@ -151,8 +151,7 @@
             config = await response.json();
 
             // Set practice-area-specific steps
-            const isMultiPractice = config.practiceAreas && config.practiceAreas.length > 1;
-            progressSteps = getPracticeAreaSteps(config.practiceAreas, isMultiPractice);
+            progressSteps = getPracticeAreaSteps(config.practiceAreas);
 
             // Render UI
             render();

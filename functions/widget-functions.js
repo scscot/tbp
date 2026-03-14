@@ -28,7 +28,7 @@ const db = getFirestore('preintake');
 const anthropicApiKey = defineSecret('ANTHROPIC_API_KEY');
 
 // Analytics benchmark date - all data before this date is excluded from analytics
-// Reset to Feb 24, 2026 - fresh start for analytics dashboard
+// Reset to Mar 8, 2026 - fresh start for analytics dashboard
 const ANALYTICS_BENCHMARK_DATE = new Date('2026-03-08T00:00:00-08:00'); // PST - Reset to track demo link click funnel
 
 // Import prompt/tools generators from demo-generator
