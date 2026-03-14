@@ -1,0 +1,28 @@
+# PreIntake.ai Robots.txt
+# https://preintake.ai
+
+# Allow all search engines
+User-agent: *
+Allow: /
+
+# Disallow internal/utility pages (not for public indexing)
+Disallow: /create-account.html
+Disallow: /new-account.html
+Disallow: /payment-success.html
+Disallow: /widget-test.html
+Disallow: /intake-button-test.html
+Disallow: /preintake.html
+Disallow: /intake.html
+Disallow: /account.html
+Disallow: /login.html
+Disallow: /preintake-analytics.html
+Disallow: /how-it-works-schematic.html
+Disallow: /debug-flow.html
+Disallow: /unsubscribe.html
+
+# Disallow dynamic demo and intake pages (served by Cloud Functions)
+Disallow: /demo/
+Disallow: /intake/
+
+# Sitemap location
+Sitemap: https://preintake.ai/sitemap.xml
