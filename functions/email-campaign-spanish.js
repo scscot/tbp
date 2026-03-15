@@ -2,8 +2,7 @@
  * Team Build Pro Email Campaign for Spanish MLM Companies
  *
  * Sends emails to scraped contacts from Spanish-speaking MLM company distributors.
- * Currently supports: Omnilife (omnilife_contacts collection)
- * Future: Belcorp, FuXion, Yanbal, Vivri, Exialoe
+ * Collection: spanish_contacts (unified collection for Spanish MLM companies)
  *
  * Uses Mailgun API with V18 A/B/C testing (3 template variations for conversion optimization).
  *

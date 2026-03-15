@@ -3704,6 +3704,11 @@
                 const farmasius = campaigns.farmasius || {};
                 document.getElementById('execFarmasiusSent').textContent = formatNumber(farmasius.sent || 0);
                 document.getElementById('execFarmasiusRemaining').textContent = formatNumber(farmasius.remaining || 0);
+
+                // Spanish Campaign
+                const spanish = campaigns.spanish || {};
+                document.getElementById('execSpanishSent').textContent = formatNumber(spanish.sent || 0);
+                document.getElementById('execSpanishRemaining').textContent = formatNumber(spanish.remaining || 0);
             }
 
             // GA4 Campaign Traffic (from date-range website data)
@@ -4600,7 +4605,8 @@
                     { key: 'scentsy', name: 'Scentsy', data: campaigns.scentsy },
                     { key: 'mpg', name: 'MPG', data: campaigns.mpg },
                     { key: 'three', name: 'Three', data: campaigns.three },
-                    { key: 'farmasius', name: 'Farmasius', data: campaigns.farmasius }
+                    { key: 'farmasius', name: 'Farmasius', data: campaigns.farmasius },
+                    { key: 'spanish', name: 'Spanish', data: campaigns.spanish }
                 ];
 
                 campaignList.forEach(c => {
