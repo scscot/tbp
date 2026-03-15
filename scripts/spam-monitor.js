@@ -1,20 +1,20 @@
 /**
  * Email Deliverability Monitoring Script
  *
- * Sends test emails directly via Mailgun API using V18 A/B/C templates,
- * then uses Gmail API to verify inbox placement. If any email lands
- * in junk folder, all campaigns are automatically disabled and an alert is sent.
+ * Sends a single test email via Mailgun API using one V18 template variant,
+ * then uses Gmail API to verify inbox placement. If email lands in junk folder,
+ * all campaigns are automatically disabled and an alert is sent.
  *
- * V18 Template Variants Tested:
- * - V18-A: Curiosity Hook - "What if your next recruit joined with 20 people?"
- * - V18-B: Pain Point Hook - "75% of your recruits will quit this year (here's why)"
- * - V18-C: Direct Value Hook - "Give your prospects an AI recruiting coach"
+ * V18 Template Variants (one per scheduled run):
+ * - V18-A: Curiosity Hook - "What if your next recruit joined with 12 people?" (10am PST)
+ * - V18-B: Pain Point Hook - "75% of your recruits will quit this year (here's why)" (3pm PST)
+ * - V18-C: Direct Value Hook - "Give your prospects an AI recruiting coach" (8pm PST)
  *
  * Key behaviors:
- * - Tests all 3 V18 variants sequentially with 5-second delays between sends
- * - Waits 2 minutes after all sends before checking Gmail placement
- * - If ANY variant lands in junk, ALL campaigns are disabled
- * - Total runtime: ~3-4 minutes
+ * - Selects template based on current PST hour (8am=A, 2pm=B, 8pm=C)
+ * - Waits 2 minutes after send before checking Gmail placement
+ * - If email lands in junk, ALL campaigns are disabled
+ * - Total runtime: ~2-3 minutes
  *
  * Usage:
  *   node scripts/spam-monitor.js
@@ -25,7 +25,7 @@
  *   GMAIL_OAUTH_CREDENTIALS - OAuth client credentials JSON
  *   GMAIL_OAUTH_TOKEN - OAuth refresh token JSON
  *
- * GitHub Actions Schedule: 5x daily at 6am, 9am, 12pm, 3pm, 6pm PT
+ * GitHub Actions Schedule: 3x daily at 10am, 3pm, 8pm PST (one V18 variant per run)
  */
 
 const admin = require('firebase-admin');
@@ -55,26 +55,53 @@ const FROM_ADDRESS = 'Stephen Scott <stephen@news.teambuildpro.com>';
 const CHECK_DELAY_MS = 2 * 60 * 1000; // 2 minutes (Gmail typically delivers in 1-2 min)
 
 // V18 A/B/C template configurations for spam testing
-const V18_TEMPLATES = [
-  {
+const V18_TEMPLATES = {
+  'v18-a': {
     templateVersion: 'v18-a',
     subject: 'What if your next recruit joined with 12 people?',
     subjectTag: 'delivery_test_v18_a',
     description: 'V18-A: Curiosity Hook'
   },
-  {
+  'v18-b': {
     templateVersion: 'v18-b',
     subject: "75% of your recruits will quit this year (here's why)",
     subjectTag: 'delivery_test_v18_b',
     description: 'V18-B: Pain Point Hook'
   },
-  {
+  'v18-c': {
     templateVersion: 'v18-c',
     subject: 'Give your prospects an AI recruiting coach',
     subjectTag: 'delivery_test_v18_c',
     description: 'V18-C: Direct Value Hook'
   }
-];
+};
+
+/**
+ * Get the current PST hour and determine which V18 template to use.
+ * Schedule: 10am PST = V18-A, 3pm PST = V18-B, 8pm PST = V18-C
+ */
+function getScheduledTemplate() {
+  // Get current time in PST
+  const now = new Date();
+  const pstOptions = { timeZone: 'America/Los_Angeles', hour: 'numeric', hour12: false };
+  const pstHour = parseInt(new Intl.DateTimeFormat('en-US', pstOptions).format(now), 10);
+
+  console.log(`Current PST hour: ${pstHour}`);
+
+  // Map scheduled hours to templates
+  // 10am (hour 10) = V18-A, 3pm (hour 15) = V18-B, 8pm (hour 20) = V18-C
+  if (pstHour >= 9 && pstHour < 13) {
+    return V18_TEMPLATES['v18-a'];
+  } else if (pstHour >= 14 && pstHour < 18) {
+    return V18_TEMPLATES['v18-b'];
+  } else if (pstHour >= 19 && pstHour < 23) {
+    return V18_TEMPLATES['v18-c'];
+  }
+
+  // Default to V18-A for manual runs or unexpected times
+  console.log('Outside scheduled hours, defaulting to V18-A');
+  return V18_TEMPLATES['v18-a'];
+}
 
 // All campaigns to disable if junk detected (13 campaigns total)
 const ALL_BATCH_SIZE_FIELDS = [
@@ -345,84 +372,75 @@ Generated at ${new Date().toISOString()}`;
 // =============================================================================
 
 async function main() {
-  console.log('=== Email Monitor (V18 A/B/C Testing) ===');
+  console.log('=== Email Monitor (V18 Single Template) ===');
   console.log(`Time: ${new Date().toISOString()}`);
   console.log(`Target: ${TEST_EMAIL}`);
-  console.log(`Templates: V18-A, V18-B, V18-C (3 variants)`);
+
+  // Select template based on current PST hour
+  const template = getScheduledTemplate();
+  console.log(`Template: ${template.description}`);
   console.log(`Method: Direct Mailgun API\n`);
 
   const results = [];
-  const sentEmails = [];
+  let sentEmail = null;
   const gmail = await getGmailClient();
 
-  // Step 1: Send all test emails
-  console.log(`\n--- Step 1: Sending Test Emails ---\n`);
+  // Step 1: Send test email
+  console.log(`\n--- Step 1: Sending Test Email ---\n`);
+  console.log(`Sending ${template.description}`);
 
-  for (let i = 0; i < V18_TEMPLATES.length; i++) {
-    const template = V18_TEMPLATES[i];
-    console.log(`[${i + 1}/${V18_TEMPLATES.length}] ${template.description}`);
-
-    try {
-      const sent = await sendTestEmailViaMailgun(template);
-      sentEmails.push(sent);
-    } catch (error) {
-      console.error(`Failed to send ${template.templateVersion}: ${error.message}`);
-      results.push({
-        campaign: template.description,
-        variant: template.templateVersion,
-        placement: 'send_failed',
-        subject: template.subject,
-        error: error.message
-      });
-    }
-
-    // Small delay between sends to avoid rate limiting
-    if (i < V18_TEMPLATES.length - 1) {
-      await new Promise(resolve => setTimeout(resolve, 5000));
-    }
+  try {
+    sentEmail = await sendTestEmailViaMailgun(template);
+  } catch (error) {
+    console.error(`Failed to send ${template.templateVersion}: ${error.message}`);
+    results.push({
+      campaign: template.description,
+      variant: template.templateVersion,
+      placement: 'send_failed',
+      subject: template.subject,
+      error: error.message
+    });
   }
 
-  if (sentEmails.length === 0) {
+  if (!sentEmail) {
     console.log('\n=== Summary ===');
-    console.log('All emails failed to send. Exiting.');
+    console.log('Email failed to send. Exiting.');
     process.exit(1);
   }
 
-  // Step 2: Wait for emails to be delivered
+  // Step 2: Wait for email to be delivered
   console.log(`\n--- Step 2: Waiting ${CHECK_DELAY_MS / 1000} seconds for delivery ---\n`);
   await new Promise(resolve => setTimeout(resolve, CHECK_DELAY_MS));
 
-  // Step 3: Check placement for each sent email
+  // Step 3: Check placement
   console.log(`--- Step 3: Checking Email Placement ---\n`);
 
-  for (const sent of sentEmails) {
-    console.log(`Checking ${sent.variant}...`);
-    try {
-      const placement = await checkEmailPlacement(gmail, sent.subject);
-      console.log(`  ${sent.variant}: ${placement.toUpperCase()}`);
+  console.log(`Checking ${sentEmail.variant}...`);
+  try {
+    const placement = await checkEmailPlacement(gmail, sentEmail.subject);
+    console.log(`  ${sentEmail.variant}: ${placement.toUpperCase()}`);
 
-      results.push({
-        campaign: sent.campaign,
-        variant: sent.variant,
-        placement,
-        subject: sent.subject
-      });
+    results.push({
+      campaign: sentEmail.campaign,
+      variant: sentEmail.variant,
+      placement,
+      subject: sentEmail.subject
+    });
 
-      // Disable ALL campaigns immediately if junk detected
-      if (placement === 'junk') {
-        console.log(`\n  JUNK FOLDER DETECTED for ${sent.variant}`);
-        await disableAllCampaigns(sent.variant);
-      }
-    } catch (error) {
-      console.error(`  Failed to check ${sent.variant}: ${error.message}`);
-      results.push({
-        campaign: sent.campaign,
-        variant: sent.variant,
-        placement: 'check_failed',
-        subject: sent.subject,
-        error: error.message
-      });
+    // Disable ALL campaigns immediately if junk detected
+    if (placement === 'junk') {
+      console.log(`\n  JUNK FOLDER DETECTED for ${sentEmail.variant}`);
+      await disableAllCampaigns(sentEmail.variant);
     }
+  } catch (error) {
+    console.error(`  Failed to check ${sentEmail.variant}: ${error.message}`);
+    results.push({
+      campaign: sentEmail.campaign,
+      variant: sentEmail.variant,
+      placement: 'check_failed',
+      subject: sentEmail.subject,
+      error: error.message
+    });
   }
 
   // Send alert if any junk detected
@@ -447,19 +465,15 @@ async function main() {
     console.log(`${result.campaign}: ${status}`);
   }
 
-  const inboxCount = results.filter(r => r.placement === 'inbox').length;
-  const junkCount = results.filter(r => r.placement === 'junk').length;
-  const notFoundCount = results.filter(r => r.placement === 'not_found').length;
-
-  console.log(`\nResults: ${inboxCount} INBOX, ${junkCount} JUNK, ${notFoundCount} NOT FOUND`);
+  const result = results[0];
 
   if (hasJunk) {
     console.log(`\nJunk folder detected. ALL campaigns disabled.`);
     process.exit(1); // Non-zero exit for GitHub Actions visibility
-  } else if (inboxCount === V18_TEMPLATES.length) {
-    console.log('\nAll V18 templates passed deliverability check.');
+  } else if (result.placement === 'inbox') {
+    console.log(`\n${result.variant} passed deliverability check.`);
   } else {
-    console.log('\nSome templates not found - may need more delivery time.');
+    console.log(`\nEmail not found in inbox - may need more delivery time.`);
   }
 }
 
