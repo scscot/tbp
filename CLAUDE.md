@@ -1761,14 +1761,16 @@ Corporate email domains are excluded from all contact collections using a **blac
   - Outputs refresh token for GMAIL_OAUTH_TOKEN secret
   - Requires GMAIL_OAUTH_CREDENTIALS secret (OAuth client JSON)
 - `spam-monitor.js` - Email spam detection and auto-disable system
-  - Sends test emails directly via Mailgun API using V18 A/B/C templates
-  - Tests 3 subject line variants: V18-A (Curiosity), V18-B (Pain Point), V18-C (Direct Value)
+  - Sends one V18 template per run based on PST hour (rotates through A/B/C daily)
+  - Schedule: 3x daily via `.github/workflows/spam-monitor.yml`:
+    - 10am PST → V18-A (Curiosity Hook)
+    - 3pm PST → V18-B (Pain Point Hook)
+    - 8pm PST → V18-C (Direct Value Hook)
   - Waits 2 minutes for Gmail delivery, then checks inbox vs spam placement
   - Auto-disables **ALL 12 campaigns** if spam detected:
     - `batchSize`, `batchSizePurchased`, `batchSizeBfh`, `batchSizePaparazzi`, `batchSizeFsr`, `batchSizeZinzino`, `batchSizePruvit`, `scentsyBatchSize`, `batchSizeMpg`, `batchSizeFarmasius`, `batchSizeThree`, `spanishBatchSize`
   - Sends alert email via Mailgun on spam detection
   - Stores previous batch size values for recovery
-  - Schedule: 5x daily (6am, 9am, 12pm, 3pm, 6pm PT) via `.github/workflows/spam-monitor.yml`
 
 **Email Bounce Handling:**
 - `sync-tbp-mailgun-failures.js` - Daily sync of permanent bounces from Mailgun
