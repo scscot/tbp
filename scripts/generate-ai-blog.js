@@ -161,8 +161,8 @@ function validateGeneratedContent(content) {
     'AI Script Generator', 'Script Generator button',
     'voice recognition', 'facial recognition',
     'blockchain', 'cryptocurrency',
-    'video conferencing', 'screen sharing',
-    '120+ countries', '100+ companies'
+    'video conferencing', 'screen sharing'
+    // Note: '120+ countries' and '100+ companies' are valid per CLAUDE.md
   ];
 
   const warnings = [];
@@ -986,7 +986,7 @@ function generateTranslatedBlogHTML(blogPost, lang) {
       <h1>${blogPost.title}</h1>
 
       <div class="meta">
-        <span>Por ${blogPost.author || 'Team Build Pro'}</span>
+        <span>${lang === 'de' ? 'Von' : 'Por'} ${blogPost.author || 'Team Build Pro'}</span>
         <span>•</span>
         <span>${formattedDate}</span>
       </div>
@@ -1318,11 +1318,12 @@ async function processImport(importFile) {
     // Spanish translation
     console.log(`${colors.cyan}📝 Requesting Spanish translation from Claude Code API...${colors.reset}`);
     const spanishPrompt = generateTranslationPrompt(blogPost, 'es');
+    let spanishTransFile;
 
     try {
       // Call Claude Code API for Spanish translation
       const spanishTranslation = await callClaudeForTranslation(spanishPrompt, 'Spanish');
-      const spanishTransFile = path.join(__dirname, 'spanish-translation.json');
+      spanishTransFile = path.join(__dirname, 'spanish-translation.json');
       fs.writeFileSync(spanishTransFile, JSON.stringify(spanishTranslation, null, 2), 'utf8');
       console.log(`${colors.green}  ✅ Spanish translation received and saved${colors.reset}`);
 
@@ -1351,11 +1352,12 @@ async function processImport(importFile) {
     // Portuguese translation
     console.log(`\n${colors.cyan}📝 Requesting Portuguese translation from Claude Code API...${colors.reset}`);
     const portuguesePrompt = generateTranslationPrompt(blogPost, 'pt');
+    let portugueseTransFile;
 
     try {
       // Call Claude Code API for Portuguese translation
       const portugueseTranslation = await callClaudeForTranslation(portuguesePrompt, 'Portuguese');
-      const portugueseTransFile = path.join(__dirname, 'portuguese-translation.json');
+      portugueseTransFile = path.join(__dirname, 'portuguese-translation.json');
       fs.writeFileSync(portugueseTransFile, JSON.stringify(portugueseTranslation, null, 2), 'utf8');
       console.log(`${colors.green}  ✅ Portuguese translation received and saved${colors.reset}`);
 
@@ -1381,6 +1383,40 @@ async function processImport(importFile) {
       console.log(`${colors.yellow}  📝 Portuguese prompt saved to: scripts/portuguese-translation-prompt.txt${colors.reset}`);
     }
 
+    // German translation
+    console.log(`\n${colors.cyan}📝 Requesting German translation from Claude Code API...${colors.reset}`);
+    const germanPrompt = generateTranslationPrompt(blogPost, 'de');
+    let germanTransFile;
+
+    try {
+      // Call Claude Code API for German translation
+      const germanTranslation = await callClaudeForTranslation(germanPrompt, 'German');
+      germanTransFile = path.join(__dirname, 'german-translation.json');
+      fs.writeFileSync(germanTransFile, JSON.stringify(germanTranslation, null, 2), 'utf8');
+      console.log(`${colors.green}  ✅ German translation received and saved${colors.reset}`);
+
+      // Generate German HTML
+      const germanHTML = generateTranslatedBlogHTML(germanTranslation, 'de');
+      const germanPath = path.join(__dirname, '..', 'web-de', 'blog', `${blogPost.slug}.html`);
+      fs.writeFileSync(germanPath, germanHTML, 'utf8');
+      console.log(`${colors.green}  ✅ German blog created: ${colors.cyan}web-de/blog/${blogPost.slug}.html${colors.reset}`);
+
+      // Update German sitemap
+      const germanSitemapPath = path.join(__dirname, '..', 'web-de', 'sitemap.xml');
+      updateSitemap(germanSitemapPath, blogPost, 'de');
+
+      // Update German blog index
+      const germanBlogIndexPath = path.join(__dirname, '..', 'web-de', 'blog.html');
+      updateBlogIndex(germanBlogIndexPath, germanTranslation, 'de');
+
+    } catch (error) {
+      console.error(`${colors.yellow}⚠️  Error with German translation: ${error.message}${colors.reset}`);
+      console.log(`${colors.cyan}  Falling back to manual translation workflow...${colors.reset}`);
+      const germanPromptFile = path.join(__dirname, 'german-translation-prompt.txt');
+      fs.writeFileSync(germanPromptFile, germanPrompt, 'utf8');
+      console.log(`${colors.yellow}  📝 German prompt saved to: scripts/german-translation-prompt.txt${colors.reset}`);
+    }
+
     console.log(`\n${colors.green}🎉 All translations complete!${colors.reset}\n`)
 
     // Update English sitemap
@@ -1392,9 +1428,14 @@ async function processImport(importFile) {
     console.log(`  1. Review the generated files:`);
     console.log(`     ${colors.cyan}web/blog/${blogPost.slug}.html${colors.reset}`);
     console.log(`     ${colors.cyan}web/blog.html${colors.reset} (updated index)`);
-    if (fs.existsSync(spanishTransFile) && fs.existsSync(portugueseTransFile)) {
+    if (spanishTransFile && fs.existsSync(spanishTransFile)) {
       console.log(`     ${colors.cyan}web-es/blog/${blogPost.slug}.html${colors.reset}`);
+    }
+    if (portugueseTransFile && fs.existsSync(portugueseTransFile)) {
       console.log(`     ${colors.cyan}web-pt/blog/${blogPost.slug}.html${colors.reset}`);
+    }
+    if (germanTransFile && fs.existsSync(germanTransFile)) {
+      console.log(`     ${colors.cyan}web-de/blog/${blogPost.slug}.html${colors.reset}`);
     }
     console.log(`  2. Deploy: ${colors.yellow}firebase deploy --only hosting${colors.reset}`);
     console.log(`\n${colors.green}🎉 Blog creation complete!${colors.reset}\n`);
@@ -1591,9 +1632,9 @@ async function runFullAutomation(title, category, keywords, extraNotes) {
   try {
     const { generatePodcastForLanguage } = require('./generate-podcasts');
 
-    // Generate podcasts for EN, ES, PT (DE disabled until Jan 13, 2026 credit reset)
+    // Generate podcasts for EN, ES, PT, DE
     const podcastResults = {};
-    for (const lang of ['en', 'es', 'pt']) {
+    for (const lang of ['en', 'es', 'pt', 'de']) {
       try {
         console.log(`${colors.cyan}  Generating ${lang.toUpperCase()} podcast...${colors.reset}`);
         const result = await generatePodcastForLanguage(blogPost.slug, lang);
@@ -1607,7 +1648,7 @@ async function runFullAutomation(title, category, keywords, extraNotes) {
 
     // Summary of podcast generation
     const successCount = Object.values(podcastResults).filter(r => r.success).length;
-    console.log(`${colors.green}  ✓ Generated ${successCount}/3 podcasts${colors.reset}\n`);
+    console.log(`${colors.green}  ✓ Generated ${successCount}/4 podcasts${colors.reset}\n`);
   } catch (podcastModuleError) {
     console.log(`${colors.yellow}  ⚠️  Podcast generation skipped: ${podcastModuleError.message}${colors.reset}\n`);
   }
@@ -2034,7 +2075,7 @@ async function main() {
     console.log(`\n${colors.bright}Flags:${colors.reset}`);
     console.log(`  ${colors.cyan}--full-auto${colors.reset}         Complete automation: research + generate + deploy + email`);
     console.log(`  ${colors.cyan}--research${colors.reset}          Analyze trends and recommend blog topics`);
-    console.log(`  ${colors.cyan}--generate${colors.reset}          Generate EN, ES, PT blogs from title`);
+    console.log(`  ${colors.cyan}--generate${colors.reset}          Generate EN, ES, PT, DE blogs from title`);
     console.log(`  ${colors.cyan}--notify-email=...${colors.reset} Email for notifications (default: scscot@gmail.com)`);
     console.log(`  ${colors.cyan}--category="..."${colors.reset}   Set blog category (default: Recruiting Tips)`);
     console.log(`  ${colors.cyan}--keywords="..."${colors.reset}   Set target SEO keywords`);
