@@ -2347,10 +2347,9 @@ Email CTA → Homepage (?lead=) → create-account.html → Payment
 | `functions/widget-functions.js` | Added `pending_payment` to `validateSubscription()` allowed statuses |
 
 ### Phase 90: Audit Fixes & Analytics Benchmark Reset (2026-03-14)
-- [x] **Analytics Benchmark Reset** - Changed date from Feb 25 to Mar 8, 2026
-  - Updated `ANALYTICS_BENCHMARK_DATE` in `widget-functions.js` to `2026-03-08`
-  - Fixed comment mismatch (comment said "Feb 24" but code was "Mar 8")
-  - Clean baseline for tracking demo link click funnel
+- [x] **Analytics Benchmark Reset** - Changed date to Mar 14, 2026
+  - Updated `ANALYTICS_BENCHMARK_DATE` in `widget-functions.js` to `2026-03-14`
+  - Clean baseline for fresh analytics tracking
 - [x] **URL Parameter Fix** - Standardized to `?lead=` across codebase
   - Fixed `intake-delivery-functions.js` line 334: `?firm=` → `?lead=`
   - Consistent with rest of codebase (create-account.html, components.js)
@@ -2366,7 +2365,7 @@ Email CTA → Homepage (?lead=) → create-account.html → Payment
 **Files Modified:**
 | File | Changes |
 |------|---------|
-| `functions/widget-functions.js` | Fixed analytics date comment (Feb 24 → Mar 8) |
+| `functions/widget-functions.js` | Updated analytics benchmark date to Mar 14, 2026 |
 | `functions/intake-delivery-functions.js` | Fixed URL parameter `?firm=` → `?lead=` |
 | `/preintake/payment-success.html` | Fixed step 3→4, typo Inquires→Inquiries |
 | `/preintake/intake-page.js` | Added postMessage origin validation |
